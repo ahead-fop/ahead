@@ -1,0 +1,19 @@
+#!/bin/bash
+
+cat $2 > $1.cpp
+cat $1 > $2.cpp
+cat $1 > $3.cpp
+
+echo -n "uncomposing $4 into $1 & $2 & $3 ..."
+
+if ! java unmix.Main $4 ; then
+   echo "failed 'java unmix.Main $4'"
+   exit 1
+fi
+
+bash regress-test $1 \
+&& bash regress-test $2 \
+&& bash regress-test $3 \
+|| exit 1
+
+echo "succeeded"

@@ -1,0 +1,35 @@
+C D foo 
+Line range (-1, -1)
+ endMods 
+ beginNest
+        F D arr String[] 
+        Line range (6, 6)
+        final  endMods 
+         beginKeys
+        finalValue :(   = { "a", "b", "c" } ):
+         endKeys
+        F D baff String 
+        Line range (5, 5)
+        final  endMods 
+         beginKeys
+        finalValue :(   = "baff" ):
+         endKeys
+        F D bar int 
+        Line range (4, 4)
+        final  endMods 
+         beginKeys
+        finalValue :(   = 4 ):
+         endKeys
+        F D biff String 
+        Line range (5, 5)
+        final  endMods 
+         beginKeys
+        finalValue :(   = "biff" ):
+         endKeys
+        F D foo int 
+        Line range (4, 4)
+        final  endMods 
+         beginKeys
+        finalValue :(   = 44 ):
+         endKeys
+ endNest

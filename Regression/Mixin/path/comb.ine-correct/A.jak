@@ -1,0 +1,26 @@
+layer comb.ine;
+
+SoUrCe RooT one "../one/A.jak";
+
+abstract class A$$one {
+    public static int a = 12;
+
+    public void print() { System.out.println("It works!"); }
+
+    public static void main( String args[] ) {
+        $pack.left.B l = new $pack.left.B();
+        l.print();
+        $pack.right.B r = new $pack.right.B();
+        r.print();
+        top.tryit();
+   }
+}
+
+SoUrCe  two "../two/A.jak";
+
+ public class A extends  A$$one  {
+
+    public static void main( String args[] )
+    { Super(String[]).main(args);
+      System.out.println("extensions of main works"); }
+}

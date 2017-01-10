@@ -1,0 +1,19 @@
+#!/bin/bash
+
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+FAILURES=0
+
+unset -v BEFORE
+for DIR in cpy path class gpl interf local sm astgscope ; do
+    [ -n "${BEFORE}" ] && echo -e "${BEFORE}" || BEFORE='\n'
+    (cd "${DIR}" ; bash regress) || FAILURES=1
+done
+
+if ((FAILURES)) ; then
+   echo -e "${BEFORE}PJ Regression Tests Completed with ERRORS"
+else
+   echo -e "${BEFORE}PJ Regression Tests Completed Successfully"
+fi

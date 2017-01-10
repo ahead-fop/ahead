@@ -1,0 +1,23 @@
+
+// example that catches error of multiple constructors with the same signature
+
+SoUrCe RooT FsatsL "C:!Java!FsatsPackages!Frealm!FsatsL!MessageType.jak";
+
+abstract class MessageType$$FsatsL extends EventType implements MessageTypeInterface {
+        protected MessageType$$FsatsL(String name ) {
+           Super(String)(name);
+        }
+     }
+
+SoUrCe  MessageL "C:!Java!FsatsPackages!Frealm!MessageL!MessageType.jak";
+
+
+public abstract  class MessageType extends MessageType$$FsatsL
+        implements MessageTypeInterface
+    {
+
+        protected MessageType(String name)
+        {
+          MessageTypeConstructor(name);
+        }
+    }

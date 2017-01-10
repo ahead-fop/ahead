@@ -1,0 +1,64 @@
+layer JavaWriter;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+/**
+*com.sun.javadoc.*,
+*        sun.tools.java.*,
+*        com.sun.tools.javadoc.*,
+* @layer<JavaWriter>
+*/
+     /** Generates an HMTL file for a Java Class
+     */
+    
+public class ClassWriter {
+
+    /** Generates the Calls to the Documentor for the different
+     * class files.
+     * @layer<JavaWriter>
+     */
+    public static void GenerateClass( ClassDocJTS _class,
+                     String outDir,
+                      ClassTemplate ctemp ) 
+        throws Exception
+    {
+        // Call the generator for this class
+        try {
+            // HTMLGenerator.Lang generator = 
+            //     new HTMLGenerator.Lang();
+            GlobalWrapper.setOutputDirectory( outDir );
+
+            // @debug Code inserted for debuging purposes -> Please delete
+            // $TEqn.ClassGenerator.WhyNot(_class);
+
+            // Original code next line
+            ClassGenerator.GenerateClass( _class, ctemp );
+        }
+        catch( Exception ex ) 
+                {
+            System.out.println( "Error in Class " + _class.name() +
+                                                       " " + ex );
+        }
+
+    // Call GenerateClass recursively with the innerclasses
+    // $TEqn.ClassDocJTS[] innerclasses = _class.innerClasses();
+    // if (innerclasses!=null)
+    // {
+    //    for(int i=0; i< innerclasses.length; i++)
+    //        GenerateClass(innerclasses[i], outDir);
+    // }
+
+    // Call the Extensions to generate innerelements
+    // $TEqn.ClassWriter.GenerateClassExtensions(_class, outDir);
+        
+    } // of GenerateClass
+
+    public static void GenerateClassExtensions( ClassDocJTS _class, String outDir )
+        throws Exception
+    {}
+
+}

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+echo "****************jak2java Interface Regression Test***********"
+
+bash regress-one Event || exit 1
+
+rm -f -- *.java *.ser
+
+echo -e "\nj2j Interface Regression Test succeeded."

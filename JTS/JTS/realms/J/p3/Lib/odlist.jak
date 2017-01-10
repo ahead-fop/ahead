@@ -1,0 +1,475 @@
+/* odlist - key ordered doubly linked list */
+
+package p3Lib;
+
+import JakBasic.Lang;
+
+
+public final class odlist extends BaseDS implements DS {
+   //public DS        lower;
+   public TopParams tp;
+   environment first, last, left, right, adv, start, back, end, 
+      odlist_relink, odlist_unlink;
+   public String            keyfield;
+   public Lang.AST_QualifiedName keyfieldast;
+   public String            keytype;
+   public Lang.AST_QualifiedName keytypeast;
+   public int               keyid;
+   
+   public odlist( DS lowerlevel ) { 
+      lower = lowerlevel;
+   }
+
+   public odlist( ) { }
+
+   public DS_Container_Type make_container_type( TopParams t, ContParams c ) {
+      return new odlist_Container_Type( this, t, c );
+   }
+
+   public DS_Element_Type make_element_type( ) {
+      return new odlist_Element_Type( this );
+   }
+
+   public DS_CommonCursor_Type make_commoncursor_type() {
+      return new odlist_CommonCursor_Type( this );
+   }
+
+   public DS_Cursor_Type make_cursor_type( Usage u ) { 
+        return new odlist_Cursor_Type( this, u ); 
+   }
+
+   public DrcAttributes drc( DrcAttributes d ) {
+      DrcAttributes u;
+      
+      // check to see if there are multiple odlist layers that have
+	  // the same key.  If so, flag the error otherwise remember
+	  // the annotation
+	  
+	  d.test_and_set_annotation("odlist","----");
+	  d.check_annotation("odlist", keyfield);
+	  
+      // right now, odlist can be used anywhere, at any time.
+      // just signal to upper layers that there is a retrieval_layer_present
+
+      d.retrieval_layer_present = true;
+      if (!d.below_topmost_layers) {
+         d.below_topmost_layers = true;
+         d.below_topmost_set    = "odlist";
+      }
+      u = lower.drc(d);
+      u.retrieval_layer_present = true;
+      return u;
+   } 
+
+   public void set_keyword( TOP toplayer, TopParams tph ) {
+      tp = tph;     
+      environment parent toplayer;
+      lower.set_keyword( toplayer, tp );
+   }
+
+   public Object ParseArgs( Lang.AstNode x ) {
+      Object result = null;
+      int    i;
+      
+      if (x != null && x.arg[0] != null && x.arg[0].right != null 
+          && x.arg[0].right.right == null) {
+         if (x.arg[0].arg[0].arg[0] instanceof Lang.AST_QualifiedName)
+            keyfield = ((Lang.AST_QualifiedName) x.arg[0].arg[0].arg[0]).GetName();
+         else 
+            ParseTE.parseError(
+              "odlist layer expecting first argument as key name");
+         result = ParseTE.parse(x.arg[0].right.arg[0]);
+         if (result == null || !(result instanceof DS) )
+            ParseTE.parseError(
+              "odlist layer 2nd argument should be of type DS");
+      }
+      else
+         ParseTE.parseError(
+           "odlist layer expecting two arguments : keyname DS");
+      lower = (DS) result;
+      return this;
+   }
+}
+
+final class odlist_Container_Type implements DS_Container_Type {
+   ContParams        cp;
+   odlist            _layer;
+   DS_Container_Type lower;
+   environment;
+
+   odlist_Container_Type( DS odlistlayer, TopParams t, ContParams c ) { 
+      // Step 1: save the arguments as we'll refer to them later
+
+      _layer    = (odlist) odlistlayer;
+      cp       = c;
+      _layer.tp = t;
+      environment parent _layer;
+
+      // Step 2: create chain of lower level containers
+
+      lower = _layer.lower.make_container_type( t, cp );
+   }
+
+   public void validate() {
+      int i;
+
+      // Step 1: validation tests ensure that the keyfield specified
+      //         in the type equation actually corresponds to a known
+      //         attribute
+
+      for ( i = 0; i<_layer.tp.NFields; i++) {
+         if (_layer.tp.FieldName[i].compareTo(_layer.keyfield) == 0)
+            break;
+      }
+      if (i==_layer.tp.NFields)
+         ParseTE.parseError(_layer.keyfield+ " is not an attribute for odlist layer");
+
+      // Step 2: keyfield is legal, now go and remember a set of
+      //         derived values for later reference
+
+      _layer.keyid = i;
+      _layer.keytype = _layer.tp.FieldType[i];
+      _layer.keyfieldast = Lang.AST_QualifiedName.Make(_layer.keyfield);
+      _layer.keytypeast = Lang.AST_QualifiedName.Make(_layer.keytype);
+
+      // Step 3: now proceed to validate lower layers
+
+      lower.validate();
+   } 
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return mth{
+   CElemTyp first, last;
+   $mth(lower.dataMembers())
+      }mth;
+   }
+
+   public Lang.AST_Stmt containerMethod() {
+     return stm{
+     first = last = null;
+     $stm(lower.containerMethod());
+     }stm;
+   }
+
+   public Lang.AST_Exp is_fullMethod() {
+     return lower.is_fullMethod();
+   }
+   
+   public Lang.AST_Stmt insertMethod(){
+     return lower.insertMethod();
+   }
+
+   public Lang.AST_Stmt storageMethod() {
+      return lower.storageMethod();
+   }
+
+   public Lang.AST_Stmt finishMethod() {
+      return lower.finishMethod();
+   }
+   
+   public Lang.AST_Stmt openMethod(){
+      return lower.openMethod();
+  } 
+
+}
+
+
+final class odlist_Element_Type implements DS_Element_Type {
+   odlist          _layer;
+   DS_Element_Type lower;
+   String          keyfield;
+   environment;
+
+   odlist_Element_Type( DS odlistlayer ) {
+      _layer    = (odlist) odlistlayer;
+      lower    = _layer.lower.make_element_type();
+      keyfield = _layer.keyfield;
+      environment parent _layer;
+   }
+
+
+   // generate data members of transformed element class 
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return mth{
+   CElemTyp left, right;
+   $mth(lower.dataMembers())
+       }mth;
+   }
+
+   // link statements as part of element constructors
+
+   public Lang.AST_Stmt link() {
+      return stm{
+      odlist_relink();
+      $stm(lower.link());
+      }stm;
+   }
+
+   // link to head of the list
+   // Note:  this is a "stupid" relink.  A more intelligent relink would
+   //        divide the list in half where the current element is the partition
+   //        point.  if (newage < right.age) unlink and insert in first-half
+   //        if (newage > left.age) unlink and insert into second-half
+   //        else do nothing
+
+   // Note:  An even "smarter" relink would decide whether to search the list
+   //        forwards or backwards from the current position.
+
+
+   public Lang.AST_FieldDecl relink() {
+      Lang.AST_Exp cont_first_query;
+      Lang.AST_Exp tmp_age_query;
+      Lang.AST_QualifiedName contfirst;
+      range    r = new range("dummy");
+
+      contfirst = id{ cont.first }id;      
+
+      cont_first_query = r.Translate( contfirst, _layer.tp, 
+                           exp{ $id(_layer.keyfieldast)() >= $id(_layer.keyfieldast) }exp);
+      tmp_age_query = r.Translate( Lang.AST_QualifiedName.Make("tmp"), _layer.tp,
+                           exp{ $id(_layer.keyfieldast)() < $id(_layer.keyfieldast) }exp);
+
+      return mth{
+   final void odlist_relink( ) {
+      CElemTyp tmp;
+  
+      // Step 1: if container is empty, add first element
+
+      if (cont.first == null) {
+         right = left = null;
+         cont.first = cont.last = this;
+         return;
+      }
+
+      // Step 2: see if the element becomes the first element of a nonnull list
+
+      if ( $exp(cont_first_query) ) {
+         right = cont.first;
+         left  = null;
+         right.left = this;
+         cont.first = this;
+         return;
+      }
+
+      // Step 3: if not head, find element to the immediate right of insertion point
+
+      for (tmp = cont.first; tmp != null && $exp(tmp_age_query); tmp = tmp.right );
+
+      // Step 4: add to end of list (if tmp == null); note list might be empty
+
+      if (tmp == null) {
+          if (cont.last == null) {
+             cont.first = cont.last = this;
+             left = right = null;
+             return;
+          }
+          left = cont.last;
+          right = null;
+          cont.last = this;
+          left.right = this;
+          return;
+      }
+
+      // Step 5: else, add to middle of list
+
+      right = tmp;
+      left  = tmp.left;
+      if (left != null) left.right = this;
+      tmp.left = this;
+   }
+
+   $mth(lower.relink())
+      }mth;
+   }
+
+   // remove from list
+
+   public Lang.AST_FieldDecl unlink() {
+      return mth{
+   final void odlist_unlink() {
+      if (left != null) left.right = right;
+      if (right != null) right.left = left;
+      if (cont.first == this) cont.first = right;
+      if (cont.last == this) cont.last = left;
+   }
+
+   $mth(lower.unlink())
+      }mth;
+   }
+
+   // can update attributes at will, except for the keyfield
+
+   public Lang.AST_Stmt upd( int fieldno ) {
+      if (fieldno == _layer.keyid) 
+         return stm{ 
+      odlist_unlink();
+      $stm(lower.upd( fieldno ));
+      odlist_relink();
+         }stm;
+      return lower.upd( fieldno );
+   }
+   
+}
+
+final class odlist_CommonCursor_Type implements DS_CommonCursor_Type {
+   odlist _layer;
+   DS_CommonCursor_Type lower;
+   environment;
+
+   odlist_CommonCursor_Type( DS odlistlayer ) {
+      _layer = (odlist) odlistlayer;
+      lower = _layer.lower.make_commoncursor_type();
+      environment parent _layer;
+   }
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return lower.dataMembers();
+   }
+
+   public Lang.AST_Stmt insertMethod( ) {
+         return lower.insertMethod( );
+   }
+
+   public Lang.AST_Stmt removeMethod() {
+      return stm{
+      obj.odlist_unlink();
+      $stm(lower.removeMethod());
+      }stm;
+   }
+   public Lang.AST_FieldDecl movementMethods() {
+      return mth{
+      final protected void adv() { obj = obj.right; }
+      final protected void start() { obj = cont.first; }
+      final protected void back() { obj = obj.left; }
+      final protected void end() { obj = cont.last; } 
+      $mth(lower.movementMethods())
+      }mth;
+   }
+}
+
+final class odlist_Cursor_Type extends RetSometimes implements DS_Cursor_Type {
+   odlist         _layer;
+   range          r;
+   Usage          u;
+   boolean        fwd;
+   environment;
+
+   odlist_Cursor_Type( DS odlistlayer, Usage usage ) {
+      _layer = (odlist) odlistlayer;
+      u = usage;
+
+      lower = _layer.lower.make_cursor_type( u );
+      r = new range( _layer.keyfield );
+      r.DetermineRange( u.predicate );
+
+      environment parent _layer;
+   }
+
+   public void optimizeAction( Qopt q ) {
+      int cost = Qopt.INFINITY;
+
+      /* decide whether to go forward or backward
+       * if actual_order == desired_order, use the direction user specifies
+       * otherwise, choose forward (which is a little bit simpler) unless the 
+       * query type is UPPER_SCAN_QUERY (in this case backward is faster)
+       */
+      if ( u.order == -1 || u.order == _layer.keyid )
+         fwd = u.forward;
+      else if ( r.QueryType( ) == range.UPPER_SCAN_QUERY )
+         fwd = false;
+      else
+         fwd = true;
+
+      switch ( r.QueryType() ) {
+      case range.SCAN_QUERY:       cost = Qopt.LISTSCAN; break;
+      case range.UPPER_SCAN_QUERY: cost = ( fwd ? Qopt.LISTSCAN : Qopt.HALF_LISTSCAN ); break;
+      case range.LOWER_SCAN_QUERY: cost = ( fwd ? Qopt.HALF_LISTSCAN : Qopt.LISTSCAN ); break;
+      case range.RANGE_QUERY:      cost = Qopt.THIRD_LISTSCAN; break;
+      case range.POINT_QUERY:      cost = Qopt.HALF_LISTSCAN; break;
+      }
+       
+      if (q.cost > cost ) {
+         q.fastest_layer   = _layer;
+         q.cost            = cost;
+
+         q.requires_skip   = true;
+         q.requires_buffering = u.upd[_layer.keyid];
+         q.requires_sorting = ( u.order != -1 ) && ( u.order != _layer.keyid );
+         q.requires_inbetween = false;
+      }
+   }
+
+   public DS thisLayer() {
+      return _layer;
+   }
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return lower.dataMembers();
+   }
+
+   public Lang.AST_Stmt cursorMethod() {
+      return lower.cursorMethod();
+   }
+
+   // firstMth - returns first element of the list
+
+   public Lang.AST_Stmt firstMth() {
+      if (fwd)
+         return stm{ start(); }stm;
+      else
+         return stm{ end(); }stm;
+   }
+
+   // moreMth - tests for physical end-of-data structure 
+   //           the qualify layer tests for logical end-of-data structure
+
+   public Lang.AST_Exp moreMth() {
+      return exp{ obj != null }exp;
+   }
+
+   // noMoreMth() - sets cursor to the physical end of list 
+
+   public Lang.AST_Stmt noMoreMth() {
+      return stm{
+   obj = null;
+      }stm;
+   }
+
+   // nextMth - returns the next (unqualified) element
+
+   public Lang.AST_Stmt nextMth()  {
+      if (fwd)
+         return stm{ adv(); }stm;
+      else
+         return stm{ back(); }stm;
+   }
+
+   // return translated residual predicate
+   // Note: in the case that there is no residual, a null pointer
+   // is returned rather than exp{true}exp.  this should make
+   // it easier to do optimizations
+   
+   public Lang.AST_Exp lowerBoundExp( boolean pos ) {
+      if (fwd)
+         return r.LowerPredicate( pos );
+      else
+         return r.UpperPredicate( pos );
+   }
+
+   public Lang.AST_Exp upperBoundExp( boolean pos ) {
+      if (fwd)
+         return r.UpperPredicate( pos );
+      else
+         return r.LowerPredicate( pos );
+   }
+
+   public Lang.AST_Exp residualExp() {
+      if (u.predicate != null) return r.Residual(_layer.tp, u.predicate);
+      return null;
+   }
+
+   public Lang.AST_Stmt removeMethod() {
+      return lower.removeMethod();
+   }
+}

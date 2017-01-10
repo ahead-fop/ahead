@@ -1,0 +1,29 @@
+layer SmGen;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.util.*;
+import java.io.*;
+
+// _________________________________________________________________
+
+/** StateMachineRelationshipsTemplate.java
+ * JEDI Project
+ * Department of Computer Sciences
+ * University of Texas at Austin
+ * Defines the contents of a Class document.
+ * @author Roberto E. Lopez-Herrejon
+ * Last Update: November 30, 2002
+ * @layer<SmGen>
+ */
+
+public class StateMachineRelationshipsTemplate 
+extends DocumentDescriptor {
+
+    // Adds the bindings to the class
+    public VelocityContext 
+        addBindings( ProgramElementDocJTS parsedProgramElement, 
+                VelocityContext context ) {
+        return context;
+    }
+}

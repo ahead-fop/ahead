@@ -1,0 +1,42 @@
+/** @author Roberto E. Lopez-Herrejon */
+
+layer j2ajClassx;
+
+public refines class DecNameDim {
+
+    /** Reduce method */
+    public void reduce2java( AstProperties props ) {
+
+        String isAspect = (String) props.getProperty("Aspect");
+
+        // If we are dealing with an aspect
+        if (isAspect!=null) {
+
+          // Get node QName
+          AstToken token = arg[0].findToken();
+
+          // Obtain the name of the token
+          String tokenName = token.getTokenName();
+
+          // If it is a field just display the token only
+          // Otherwise reduce it and push it on the stack
+          String isField =(String)props.getProperty("isField");
+           if (isField!=null) {
+             props.print(tokenName);
+           }
+           else {
+             arg[0].reduce2java(props);
+
+             // Adds the name to the context of variables
+             VarContext context=(VarContext)props.getProperty("VariableContext");
+             System.out.println("Pushing " + tokenName);
+             context.push(tokenName);
+           }
+          // Reduces [Dims]
+          arg[1].reduce2java(props);
+
+        }else // it is not an aspect
+        Super(AstProperties).reduce2java(props);
+    }
+
+}

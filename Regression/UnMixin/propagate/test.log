@@ -1,0 +1,36 @@
++ '[' -z /usr/bin/bash ']'
++ echo '****************Propagation Regression Test***********'
+****************Propagation Regression Test***********
++ bash regress-one class c1
+uncomposing c1 ...succeeded
++ bash regress-one class c2
+uncomposing c2 ...succeeded
++ bash regress-one class c3
+uncomposing c3 ...succeeded
++ bash regress-one class c4
+uncomposing c4 ...succeeded
++ bash regress-one class c5
+uncomposing c5 ...succeeded
++ bash regress-one class c6
+uncomposing c6 ...succeeded
++ bash regress-one int i1
+uncomposing i1 ...succeeded
++ bash regress-one int i2
+uncomposing i2 ...succeeded
++ bash regress-one int i3
+uncomposing i3 ...succeeded
++ bash regress-one int i4
+uncomposing i4 ...succeeded
++ bash regress-one sm s1
+uncomposing s1 ...succeeded
++ bash regress-one sm s2
+uncomposing s2 ...succeeded
++ bash regress-one sm s3
+uncomposing s3 ...succeeded
++ bash regress-one sm s4
+uncomposing s4 ...succeeded
++ bash regress-one sm s5
+uncomposing s5 ...succeeded
++ echo -e '\nPropagation Regression Test succeeded.'
+
+Propagation Regression Test succeeded.

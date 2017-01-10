@@ -1,0 +1,33 @@
+layer MessageL;
+
+import fsats.util.DataContainer;
+
+import laydown.*;
+
+import java.util.*;
+
+public abstract class BasicEvent
+        implements Event {
+    protected String missionId;
+    public String getMissionId() {
+        return missionId;
+    }
+
+    public String toString() {
+        return getType()+" "+missionId;
+    }
+
+    protected BasicEvent( String missionId ) {
+        this.missionId=missionId;
+    }
+
+    public Object clone() 
+        {
+        Object o = null;
+        try {
+            o= Super().clone();
+        }
+        catch ( Exception e ) {}
+        return o;
+    }
+}

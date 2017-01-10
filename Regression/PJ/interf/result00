@@ -1,0 +1,10 @@
+
+layer IBase0;
+
+public static
+
+interface MyInt extends FooInterface, java.io.Serializable { 
+    void foo() throws SomeException;
+    SomeType bar( int x );
+    int increment( int i );
+}

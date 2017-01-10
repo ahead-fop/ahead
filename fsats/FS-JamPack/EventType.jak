@@ -1,0 +1,46 @@
+layer FS;
+
+import laydown.*;
+
+import java.util.*;
+
+import fsats.util.DataContainer;
+
+public class EventType implements EventTypeInterface {
+
+    /* delete -- never used and causes problems when attempting to compile
+        public static EventType fromString(String name)
+        {
+            EventType type = null;
+
+            if (name.equals("target"))
+            type = EventType.target;
+            else if (name.equals("lockGranted"))
+            type = EventType.lockGranted;
+
+            return type;
+        }
+    */
+
+    public static final EventType target = new EventType( "target" );
+
+    public static final EventType lockGranted = new EventType( "lockGranted" );
+    private String name;
+
+    // added -- Java insists that this constructor be present
+    // but oddly, it wasn't needed in the .layer format....
+
+    protected EventType() {
+        this.name = null;
+    }
+
+    protected EventType( String name )
+        {
+        this.name = name;
+    }
+
+    public String toString()
+        {
+        return name;
+    }
+}

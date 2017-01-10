@@ -1,0 +1,18 @@
+#!/bin/bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+FAILURES=0
+
+unset -v BEFORE
+for DIR in class interf sm gpl local astgscope propagate ; do
+    [ -n "${BEFORE}" ] && echo -e "${BEFORE}" || BEFORE='\n'
+    (cd "${DIR}" ; bash regress) || FAILURES=1
+done
+
+if ((FAILURES)); then
+    echo -e "${BEFORE}unmixin Regression Tests Completed with ERRORS"
+    exit 1
+fi
+
+echo -e "${BEFORE}unmixin Regression Tests Completed Successfully"

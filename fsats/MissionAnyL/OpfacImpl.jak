@@ -1,0 +1,162 @@
+layer MissionAnyL;
+
+import fsats.measures.Time ;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+/** Refinement of OPFAC to handle missions **/
+public refines class OpfacImpl 
+        implements Opfac {
+    /** A collection of active missions **/
+    private HashMap allMissions = null;
+
+    //
+
+    public boolean canElevate( Mission mission )
+        {
+        return false;
+    }
+
+    public boolean canSee( Location location )
+        {
+        return false;
+    }
+
+    public boolean hasDuplicate( Mission mission )
+        {
+        Iterator i = allMissions.values().iterator();
+        while ( i.hasNext() )
+            {
+            Mission duplicate= ( Mission )i.next();
+            if ( mission!=duplicate && mission.isDuplicate( duplicate ) )
+                return true;
+        }
+        return false;
+    }
+
+    // Mission id generation.
+
+    protected int nextMissionNumber = 0;
+    protected String baseMissionId;
+
+    protected String getMissionId()
+        {
+        String number = ""+nextMissionNumber;
+        ++nextMissionNumber;
+        return 
+                baseMissionId.substring( 0, baseMissionId.length()-number.length() ) + number;
+    }
+
+    public void init( OpfacDataWrapper opfac, Network network )
+        {
+        allMissions = new HashMap();
+        allMissions = new HashMap();
+        pendingMissions = new LinkedList();
+        Super( OpfacDataWrapper,Network ).init( opfac, network );
+        baseMissionId=opfac.getMinTargetNumber();
+        baseMissionId=
+                baseMissionId + "AA0000".substring( baseMissionId.length() );
+    }
+
+    // Mission serialization.
+
+    protected LinkedList pendingMissions = null;
+    protected Mission currentMission = null;
+
+    public void missionLock( Mission mission )
+        {
+        if ( currentMission==null )
+            {
+            currentMission=mission;
+            mission.delivery( new LockGranted( mission.getId() ) );
+        }
+        else
+            if ( !pendingMissions.contains( mission ) )
+                pendingMissions.add( mission );
+            else
+                Log.error( ""+mission+" requested lock twice." );
+                        
+    }
+
+    public void missionFree( Mission mission )
+        {
+        String missionId = mission.getId();
+        if ( mission==currentMission )
+            {
+            currentMission=null;
+            if ( pendingMissions.size()>0 )
+                {
+                currentMission= ( Mission )pendingMissions.remove( 0 );
+                currentMission.delivery( new LockGranted( missionId ) );
+            }
+        }
+        else
+            Log.warn( ""+mission+" called free but doesn't hold lock." );
+    }
+
+    public void ponder( float seconds )
+        {
+        try 
+            {
+            Thread.sleep( ( int ) ( seconds * Time.SECOND ) );
+        }
+        catch ( Exception e ) {}
+    }
+
+    // Mission creation and message dispatching.
+
+    protected Mission findMission( String id )
+        {
+        return ( Mission )allMissions.get( id );
+    }
+
+    protected Mission createMission( String missionId )
+        {
+        Mission mission = 
+                newMission().init( ( Opfac )this, missionId );
+        allMissions.put( missionId, mission );
+        return mission;
+    }
+       
+    /** A list of currently active Missions. */
+    public Collection getActiveMissions() 
+        {
+        return allMissions.values();
+    }
+
+    protected void receive( Event message ) 
+        {
+        Super( Event ).receive( message );
+
+        String missionId = message.getMissionId();
+ 
+        if ( message instanceof TargetEvent )
+            {
+            TargetEvent target = ( TargetEvent )message;
+            if ( canSee( target.getMissionData().getTarget().getLocation() ) )
+                {
+                if ( missionId.equals( "" ) )
+                    missionId=getMissionId();
+                Mission active = findMission( missionId );
+                if ( active!=null )
+                    Log.warn( "Ignoring target with same id as "+active );
+                else
+                    {
+                    active=createMission( missionId );
+                    active.delivery( message );
+                }
+            }
+        }
+        else 
+            {
+            Mission active = findMission( missionId );
+            if ( active==null )
+                active=createMission( missionId );
+            active.delivery( message );
+        }
+    }
+}

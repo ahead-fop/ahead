@@ -1,0 +1,16 @@
+// this tests if the mangling of long layer package names works
+
+layer foobar.longFoobar;
+
+import x.y.z.*;
+import java.io.Serializable;
+
+public static
+
+class MyInt implements FooInterface, java.io.Serializable { 
+    int Silent = 0;
+    final SomeType bar$$foobar$longFoobar( int x ) { }
+    SomeType bar( int i ) { bar$$foobar$longFoobar(i); }
+    final void foo$$foobar$longFoobar() throws AFit { }
+    void foo() throws SomeException, AFit { foo$$foobar$longFoobar(); }
+}

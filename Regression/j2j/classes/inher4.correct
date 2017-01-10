@@ -1,0 +1,57 @@
+jak2java: inher4.jak:15: Error multiple constructors have the same signature: ()
+jak2java: inher4.jak:33: Error multiple constructors have the same signature: (int)
+jak2java: inher4.jak:14: Error refining non-existent constructor myclass$$L2
+jak2java: inher4.jak:27: Error refining non-existent constructor myclass$$L4
+
+// example that tests errors of multiple constructor defintion
+// and mismatched constructor refinements
+
+
+
+abstract class myclass$$L1 {
+        public myclass$$L1() { a=5; }
+ }
+
+
+
+abstract class myclass$$L2 extends myclass$$L1 {
+       public myclass$$L2() { b = 6; }
+      // inherited constructors
+
+
+        public myclass$$L2 (  ) { super(); }
+ }
+
+
+
+abstract class myclass$$L3 extends myclass$$L2 {
+       public myclass$$L3(int i) { c = 4; }
+      // inherited constructors
+
+
+       public myclass$$L3 (  ) { super(); }
+ }
+
+
+
+abstract class myclass$$L4 extends myclass$$L3 {
+      // inherited constructors
+
+
+       public myclass$$L4 ( int i ) { super(i); }
+       public myclass$$L4 (  ) { super(); }
+ }
+
+
+
+public class myclass extends myclass$$L4 {
+       public myclass$$L5( int d ) {
+           /* something new */
+       }
+      // inherited constructors
+
+
+       public myclass ( int i ) { super(i); }
+       public myclass (  ) { super(); }
+    }
+jak2java: Summary 4 errors

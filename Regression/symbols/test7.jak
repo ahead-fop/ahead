@@ -1,0 +1,59 @@
+
+import Jakarta.symtab.*;
+import jak2java.* ;
+import java.io.PrintWriter;
+
+public class test7 {
+    private static PrintWriter pw = new PrintWriter(System.out);
+    private static Symtab st = Symtab.instance();
+
+    public static void bind(String expr) {
+	Declaration dcl = st.lookup(expr);
+
+	pw.print("Binding of '" + expr + "': ");
+	dcl.dump(pw, 0);
+	pw.println();
+    }
+
+    public static void bind(String expr, Scope scope) {
+	Declaration dcl = st.lookup(expr, scope);
+
+	pw.print("Binding of '" + expr + "': ");
+	dcl.dump(pw, 0);
+	pw.println();
+    }
+
+    public static void main(String[] args) {
+	// test some bindings of expressions
+
+	bind("5");
+
+	bind("3+2");
+
+	bind("a || b");
+
+	bind("5 * 2.5");
+
+	bind("5.7 >> 3");
+
+	AST_Program prg = prg{
+	    public class foo {
+		public void bar() {
+		    char a;
+		    float b;
+		}
+	    }
+	}prg;
+
+	// Build symbol table
+	prg.buildSymbolTable();
+
+	// Bind a context
+	Scope method = (Scope) st.lookup("foo.bar()");
+	bind("a << 4", method);
+
+	bind("-a", method);
+
+	pw.close();
+    }
+}

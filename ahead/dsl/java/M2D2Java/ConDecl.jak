@@ -1,0 +1,62 @@
+layer M2D2Java;
+
+refines class ConDecl {
+
+   public void extract( context c ) {
+
+      // Step 1: get modifier
+
+      String visibility = "";  // default
+      AST_Modifiers am = (AST_Modifiers) arg[0].arg[0];
+      if (am!=null) {
+         visibility = am.visibility();
+      }
+
+      // Step 2: get name and signature
+
+      String methName = ((QName)arg[1]).GetName();
+      String signature = "";
+      AST_ParList pl = ((AST_ParList) arg[2].arg[0]);
+      if (pl != null) signature = pl.Signature();
+
+      // Step 3: declare constructor object
+
+      String n = methName+"("+signature+")";
+      c.setMemberName(n);
+      c.isConstructor=true;
+      String cls = c.getClassName();
+      String body = bodyString( 
+                     "{" + arg[4].toString() + arg[5].toString() + "}");
+      String constId = cls+"."+n;
+      c.Footer.add( 
+         RubyInstCreator.createClassConstructor( constId, constId, cls, body, 
+             visibility, false ));
+
+      // Step 4: now declare parameters
+
+      if (pl != null) {
+         AstCursor curs = new AstCursor();
+         for (curs.FirstElement(pl); curs.MoreElement(); curs.NextElement()) {
+            FormParDecl fpd = ((FormParDecl) curs.node);
+            String cn = ((AST_TypeName) fpd.arg[0]).GetName();
+            String fn = ImpQual.fullPath(cn,c);
+   
+            DecNameDim dnd = ((DecNameDim) fpd.arg[1]);
+            String varName = dnd.GetName();
+            String dims = dnd.GetDims();
+
+            String cname = cls+"."+n+"."+ varName;
+         
+            c.Footer.add(
+               RubyInstCreator.createConstructorParameter(cname, 
+                  cname, fn, constId));
+         }
+      }
+
+      // Step 5: now declare throws
+
+      arg[3].extract(c);
+
+      c.Footer.blankLine();
+   }
+}

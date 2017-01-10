@@ -1,0 +1,133 @@
+layer JavaAPI;
+
+import java.io.*;
+import java.util.*;
+
+ // of MethodDocJTS
+
+// _________________________________________________________________
+
+ /** JEDI Project
+ * PackageDocJTS_Java.java
+ * University of Texas at Austin
+ * Department of Computer Sciences
+ * Product-line Architecture Research Group
+ * @author Roberto E. Lopez-Herrejon
+ * @version 1.1
+ * @since November 25, 2002
+* @layer<JavaAPI>
+*/
+
+public class PackageDocJTS extends  DocJTS {
+
+    // ********************************************************************
+    // ********************************************************************
+    // ** Interface methods that have to be implemented
+
+    /** Get all classes (including Exceptions and Errors) and interfaces.
+     * @return all included classes and interfaces in this package.
+     * Current implementation returns an empty array ???
+     * @layer<JavaAPI>
+     */
+    public  ClassDocJTS allClasses()[] 
+    {
+        return new  ClassDocJTS[0];
+    }
+
+    /** Get ordinary classes (excluding Exceptions and Errors) in this package.
+     * @return included classes in this package.
+     * Current implementation returns an empty array ???
+     * @layer<JavaAPI>
+     */
+    public  ClassDocJTS ordinaryClasses()[] 
+    {
+        return new  ClassDocJTS[0];
+    }
+
+    /** Get Exception classes in this package.
+     * @return included Exceptions in this package.
+     * Current implementation returns an empty array ???
+     * @layer<JavaAPI>
+     */
+    public  ClassDocJTS exceptions()[] 
+    {
+        return new  ClassDocJTS[0];
+    }
+
+    /** Get Error classes in this package.
+     * @return included Errors in this package.
+     * Current implementation returns an empty array ???
+     * @layer<JavaAPI>
+     */
+    public  ClassDocJTS errors()[] {
+        return new  ClassDocJTS[0];
+    }
+
+    /** Get Interfaces in this package.
+     * @return included Errors in this package.
+     * Current implementation returns an empty array ??
+     * @layer<JavaAPI>
+     */
+    public  ClassDocJTS interfaces()[] 
+    {
+        return new  ClassDocJTS[0];
+    }
+
+    /** Lookup for a class within this package.
+     * @return ClassDoc of found class, or null if not found.
+     * Current implementation returns null.
+     * @layer<JavaAPI>
+     */
+    public  ClassDocJTS findClass( String className ) {
+        return null;
+    }
+
+    /**************** End of interface implementation ****************
+     * @layer<JavaAPI>
+     */
+    
+    /**************** Implementation members **************************/
+    
+    // *** Field Summary     
+    /** Variable that indicates if the package is included or not ???
+     * Initial value is false.
+     */
+    boolean isIncluded = false;
+
+    /** Variable that contains the name of the package.
+     * @layer<JavaAPI>
+     */
+    String name;
+
+    // *** Constructors
+    /** Additional constructor.
+     * @layer<JavaAPI>
+     */
+    public PackageDocJTS( String _name ) {
+        name = _name;
+    }
+
+    // *** Method summary    
+    /** Returns the name of the package.
+     * @layer<JavaAPI>
+     */
+    public String name() {
+        return name;
+    }
+
+    /** Returns the isIncluded variable ???
+     * @layer<JavaAPI>
+     */
+    public boolean isIncluded() {
+        return isIncluded;
+    }
+
+    /** Sets the variable isIncluded.
+     * @layer<JavaAPI>
+     */
+    public void setIncluded( boolean _isIncluded )
+    {
+        isIncluded = _isIncluded;
+    }
+    
+}

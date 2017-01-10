@@ -1,0 +1,67 @@
+jak2java: SourceErr.jak:6: Error cannot translate a refinement, only base classes
+
+// This file should generate an error, as the top-most Source
+// declaration is not a RooT
+
+
+
+abstract class myclass$$L1 {
+        public myclass$$L1() { a=5; }
+ }
+
+
+
+abstract class myclass$$L2 extends myclass$$L1 {
+        public myclass$$L2() { super(); 
+ b=6; }
+
+      // inherited constructors
+
+
+ }
+
+
+
+abstract class myclass$$L3 extends myclass$$L2 {
+       public myclass$$L3(int i) { c = 4; }
+      // inherited constructors
+
+
+        public myclass$$L3 (  ) { super(); }
+ }
+
+
+
+abstract class myclass$$L4 extends myclass$$L3 {
+       public myclass$$L4(int j) { super(j); 
+ d = j; }
+
+      // inherited constructors
+
+
+        public myclass$$L4 (  ) { super(); }
+ }
+
+
+
+abstract class myclass$$L5 extends myclass$$L4 {
+       public myclass$$L5( double d ) {
+           /* something new */
+       }
+      // inherited constructors
+
+
+       public myclass$$L5 ( int i ) { super(i); }
+        public myclass$$L5 (  ) { super(); }
+    }
+
+
+
+class myclass extends myclass$$L5 {
+      // inherited constructors
+
+
+       public myclass ( int i ) { super(i); }
+       public myclass (  double d ) { super(d); }
+        public myclass (  ) { super(); } }
+jak2java: Summary 1 error

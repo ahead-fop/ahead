@@ -1,0 +1,10 @@
+// tests mixin composition
+
+layer allesuber;
+
+class g6 {
+   environment i, j, k; 
+   void anothermethod() {}
+
+   void bar() { }
+}

@@ -1,0 +1,30 @@
+#!/bin/bash
+
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+echo "****************Class Regression Test***********"
+
+bash regress-two Cons1 Cons2 CExt1 C1C1E1 \
+&& bash regress-one root0 root1 root \
+&& bash regress-one onec twoc 12result \
+&& bash regress-one ref ref refresult \
+&& bash regress-one C0 mref C0mref \
+&& bash regress-one C1 mref C1mref \
+&& bash regress-one CBase0 CExt1 rc01 \
+&& bash regress-one CB0 CE1 long \
+&& bash regress-one Ctop Cmidthis resultCmidthis \
+&& bash regress-one CBase1 CExt0 resultlongname \
+&& bash regress-one CExt1 CExt1 rc11 \
+&& bash regress-one CExt1 CExt2 rc12 \
+&& bash regress-one CBase3 CExt3 rc33 \
+&& bash regress-two one two three rall \
+&& bash regress-two eins zwei drei alles \
+&& bash leftassoc one two three rall \
+&& bash rightassoc one two three rall \
+&& bash leftassoc eins zwei drei alles \
+&& bash rightassoc eins zwei drei alles \
+|| exit 1
+
+echo -e "\nClass Composition Regression Test succeeded."

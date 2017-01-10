@@ -1,0 +1,44 @@
+
+// example that tests constructor refinement and propagates
+// constructors DOWN the chain
+
+SoUrCe RooT L1 "myclass.jak";
+
+abstract State_machine myclass$$L1 {
+       Delivery_parameters( M m );
+       int a;
+        public myclass$$L1() { a=5; }
+ }
+
+SoUrCe  L2 "myclass.jak";
+
+abstract State_machine myclass$$L2 extends myclass$$L1 {
+       int b;
+       refines myclass$$L2() { b=6; }
+ }
+
+SoUrCe  L3 "myclass.jak";
+
+abstract State_machine myclass$$L3 extends myclass$$L2 {
+       int c;
+       public myclass$$L3(int i) { c = 4; }
+ }
+
+SoUrCe  L4 "myclass.jak";
+
+abstract State_machine myclass$$L4 extends myclass$$L3 {
+       int d;
+       refines myclass$$L4(int j) { d = j; }
+ }
+
+SoUrCe  L5 "myclass.jak";
+
+abstract State_machine myclass$$L5 extends myclass$$L4 {
+       public myclass$$L5( double d ) {
+           /* something new */
+       }
+    }
+
+SoUrCe  L6 "myclass.jak";
+
+State_machine myclass extends myclass$$L5 { }

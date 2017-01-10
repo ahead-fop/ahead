@@ -1,0 +1,35 @@
+layer FS;
+
+import laydown.OpfacDataWrapper;
+
+import log.Log;
+
+import java.util.*;
+
+import fsats.util.*;
+
+SoUrCe RooT OpfacL "C:!Java!FeatureOrientedProgramming!fsats!OpfacL!OpfacTimeout.jak";
+
+public class OpfacTimeout 
+        extends Thread {
+    protected Opfac opfac;
+    protected float delay; // In seconds
+    protected Timeout timeout;
+       
+    public OpfacTimeout( Opfac opfac, float delay, Timeout timeout )
+        {
+        this.opfac=opfac;
+        this.delay=delay;
+        this.timeout=timeout;
+        start();
+    }
+
+    public void run() 
+        {
+        try {
+            sleep( ( int ) ( delay*1000 ) );
+        }
+        catch ( Exception e ) {}
+        opfac.deliver( timeout );
+    }
+}

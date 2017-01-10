@@ -1,0 +1,6 @@
+
+
+class foo extends biff { 
+   foo() { super(); }
+   void bar() { super.bar(4); }
+}

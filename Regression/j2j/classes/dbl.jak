@@ -1,0 +1,26 @@
+SoUrCe RooT syntax "...";
+
+class dbl$$1 {
+
+   String alpha;
+
+   dbl$$1() { this.alpha = "x"; }
+
+   void foo() { this.alpha = "zxx"; }
+
+	static class single {
+	   String beta;
+
+		void bar() { this.beta = "xxx"; }
+	}
+}
+
+SoUrCe  j2jClassx "...";
+
+class dbl extends dbl$$1 {
+    String barf;
+
+   dbl(int x) { barf = "xx"; }
+
+	void bar() { this.barf = "xxx"; }
+}

@@ -1,0 +1,23 @@
+layer FS;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+SoUrCe RooT BasicL "C:!Java!FeatureOrientedProgramming!fsats!BasicL!FseOpfac.jak";
+
+abstract class FseOpfac$$BasicL extends OpfacImpl {}
+
+SoUrCe  MissionAnyL "C:!Java!FeatureOrientedProgramming!fsats!MissionAnyL!FseOpfac.jak";
+
+// class OPFAC
+
+public class FseOpfac extends FseOpfac$$BasicL {
+    public boolean canElevate( Mission mission )
+        {
+        Proxy up = getSuperProxy();
+        return up!=null && up.canShoot( mission );
+    }
+}

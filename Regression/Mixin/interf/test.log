@@ -1,0 +1,16 @@
++ '[' -z /usr/bin/bash ']'
++ echo '****************Interface Regression Test***********'
+****************Interface Regression Test***********
++ bash regress-one IBase1 IExt1 r11
+composing IBase1 & IExt1 -> r11 ... succeeded
++ bash regress-one IExt1 IExt2 r12
+composing IExt1 & IExt2 -> r12 ... succeeded
++ bash regress-one IExt2 IExt2 r22
+composing IExt2 & IExt2 -> r22 ... succeeded
++ bash leftassoc IBase1 IExt1 IExt2 b12
+testing left-associativity (IBase1 & IExt1) & IExt2 -> b12 ... succeeded
++ bash rightassoc IBase1 IExt1 IExt2 b12
+testing right-associativity IBase1 & (IExt1 & IExt2) -> b12 ... succeeded
++ echo -e '\nInterface Composition Regression Test succeeded.'
+
+Interface Composition Regression Test succeeded.

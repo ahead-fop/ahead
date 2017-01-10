@@ -1,0 +1,54 @@
+layer JavaWriter;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+// of ClassWriter
+
+  // Global wrapper for methods and global vars 
+   
+public class GlobalWrapper {
+
+    /** Generate the document for a file. 
+     * @layer<JavaWriter>
+     */
+    public static void CallGenerator( String arg, String outDir, 
+                    LinkedList documentsList )
+    throws IOException
+   {
+        // System.out.println (
+        // "CallGenerator("
+        // + arg
+        // + "," + outDir
+        // + "," + documentsList
+        // + ")"
+        // ) ;
+
+        String[] args = new String[1];
+        args[0]=arg;
+        Main.main( args );
+
+        // @debug
+        // System.out.println("Parsing done ");
+
+        ProgramDocJTS containingProgram
+            =  GlobalWrapper.containingProgram;
+        try {
+            // @debug
+            // System.out.println("Starting Output Generation ... ");
+
+            containingProgram.generateProgram( outDir, documentsList );
+
+        // @debug
+        // System.out.println("Output Generation Completed !");
+        }
+        catch( Exception e )
+        {
+            System.out.println( "Error in Doc generation " + e );
+        }
+    }
+
+}

@@ -1,0 +1,17 @@
+interface empty { };
+
+container<emp> empcont;
+
+cursor<empcont> empcursor;
+
+container empcont1 extends empcont implements empty
+   using hashcmp(name, hashcmp(dept, odlist( dept, malloc( ) )));
+
+cursor t1(empcont1 e) 
+     where dept() == "Biology" && name() == "Akerson, Gwyn" && age() > 20;
+
+cursor t2(empcont1 e) 
+     where name() == "Akerson, Gwyn" && age() < 40;
+
+cursor t3(empcont1 e, String x) 
+     where dept() == x ;

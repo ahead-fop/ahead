@@ -1,0 +1,23 @@
+State_machine s1 {
+
+   Delivery_parameters(M m);
+   Unrecognizable_state { System.err.println( m.msg ); }
+   Otherwise_default { Proceed(m); System.out.println( "nested ignoring message " + m.msg ); }
+
+   States one, two, three;
+
+   Transition e1: start -> one
+   condition m.msg == M.one do { /*init-action*/; }
+
+   Transition e2 : one -> two
+   condition m.msg == M.two do { /* m2Transition-action */; }
+
+   Transition e22: two -> two
+   condition m.msg == M.two do { /* m2Transition-action */; }
+
+   Transition e3 : two -> three
+   condition m.msg == M.three do { /* t3Transition-action */; }
+
+   Transition t4 : three -> stop
+   condition m.msg == M.eom do { /* t4Transition-action */; }
+}

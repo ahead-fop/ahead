@@ -1,0 +1,28 @@
+#!/bin/bash
+
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+echo "****************SM2 Regression Test***********"
+
+rm -f *.ser
+rm -f *.class
+rm -f wrffe_*.java
+cp M.jjava M.java
+cp wrffe.jjava wrffe.java
+javac M.java wrffe.java
+
+FAILURES=0
+
+unset -v BEFORE
+for FIL in fist fo mortar artillery mlrs repeater inherit star ; do
+    [ -n "${BEFORE}" ] && echo -e "${BEFORE}" || BEFORE='\n'
+    (bash "${FIL}") || FAILURES=1
+done
+
+if ((FAILURES)); then
+  echo -e "${BEFORE}SM2Test Regression Tests Completed with ERRORS"
+else
+  echo -e "${BEFORE}SM2Test Regression Tests Completed Successfully"
+fi

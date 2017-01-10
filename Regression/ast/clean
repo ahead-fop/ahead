@@ -1,0 +1,2 @@
+rm -rf foo
+rm -rf base *.class *.java

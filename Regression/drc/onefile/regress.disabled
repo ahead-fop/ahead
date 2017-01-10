@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+echo "****************onefile DRC Regression Test***********"
+
+bash regress-one test1 -s \
+&& bash regress-one test2 -s \
+&& bash regress-one test3 -i \
+&& bash regress-one test4 -s \
+&& bash regress-one test5 -i \
+&& bash regress-one test6 -i \
+&& bash regress-one test7 -i \
+&& bash regress-one test8 -i \
+&& bash regress-one test9 -i \
+&& bash regress-one path/test10 -i \
+|| exit 1
+
+echo -e "\nDRC Regression Test succeeded."

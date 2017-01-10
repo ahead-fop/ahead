@@ -1,0 +1,23 @@
+#!/bin/bash
+
+echo -n "composing equation $1"
+
+rm -rf $1
+# composer --equation=$1
+mkdir $1
+mkdir $1/left
+mkdir $1/right
+
+java jampack.Main -a $1 one/A.jak two/A.jak -f $1/A.jak
+java jampack.Main -a $1 one/left/B.jak two/left/B.jak -f $1/left/B.jak
+java jampack.Main -a $1 one/right/B.jak two/right/B.jak -f $1/right/B.jak
+java jampack.Main -a $1 one/top.jak two/top.jak -f $1/top.jak
+
+bash jakcompare $1 A.jak \
+&& bash jakcompare $1 left/B.jak \
+&& bash jakcompare $1 right/B.jak \
+&& bash jakcompare $1 top.jak \
+|| exit 1
+
+rm -rf $1
+echo " ... succeeded"

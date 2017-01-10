@@ -1,0 +1,364 @@
+<?xml version="1.0"?>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- SKELETON ANT BUILD FILE HEADER COMMENT:                                -->
+<!--                                                                        -->
+<!-- This header comment block contains information that is helpful to the  -->
+<!-- -developer- of the build file and his/her co-developers.  There's no   -->
+<!-- need to put -user- help here.  Instead, that should go in the element  -->
+<!-- named "description" below.                                             -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+<project name="Skeleton Ant Build File" default="jar">
+
+ <description>
+ Skeleton Ant Build File
+ (C) 2002 Jacob Neal Sarvela and The University of Texas at Austin
+
+ The first paragraph should briefly describe the purpose of this build file
+ from the point-of-view of someone who will be using it.  In this case, it's a
+ skeleton Ant build file that other developers can use as a starting point for
+ their own build files.  Of course, all sections in this skeleton should be
+ modified to meet each developer's particular purpose.
+
+ The second paragraph should introduce specific options and examples for the
+ build file.  Since this is a skeleton, everything is an example!  Then, later
+ paragraphs should build on the introduction.  In particular, here are some
+ points to notice about this section:
+
+ First, it's reasonably formatted.  After all, users will be reading this
+ everytime they use the "-projecthelp" option to Ant.  In particular, it is
+ indented by one (1) space since that's the indentation that Ant uses for the
+ target name tables.
+
+ Second, observe the copyright notice!  Each developer should put one into
+ their build files both here and in the "initialize" target.  The first one
+ will be printed in response to the "-projecthelp" option and the second will
+ be printed for each build.
+
+ Third, this text is XML content.  That means that XML entity substitution is
+ enabled.  So, a character entity such as "&amp;lt;" will be printed as a
+ "less-than" symbol.  E.g., "&lt;".  Non-character entities can also be used
+ if they're defined as per the XML standards.
+
+ Options (the important ones should be described in this section):
+
+ -Dexample=value (default is none since this just an example)
+  Doesn't do anything since this is only an example.  If this were a real
+  option, a brief description would go here.
+ </description>
+
+    <!-- ================================================================= -->
+    <!-- PROJECT PROPERTIES:                                               -->
+    <!-- These standard properties should be defined for most build files. -->
+    <!-- An exception might be "sub-routine" build files which are only    -->
+    <!-- -part- of a project.  Even there, they'd probably be useful.      -->
+    <!-- ================================================================= -->
+
+    <!-- - - - - - - - - - - - - - - - - -->
+    <!-- Single-word names or acronyms.  -->
+    <!-- Often used when naming jars and -->
+    <!-- release files.  Also for use in -->
+    <!-- FilterSets.  Lower-case is to   -->
+    <!-- build filenames in a standard   -->
+    <!-- way.  Upper-case is for use in  -->
+    <!-- text documents for a human.     -->
+    <!-- - - - - - - - - - - - - - - - - -->
+
+    <property name="project.name"	value="skeleton"/>
+    <property name="project.Name"	value="Skeleton"/>
+
+    <!-- - - - - - - - - - - - - - - - - -->
+    <!-- The owner of the software, such -->
+    <!-- as the copyright owner.  Also   -->
+    <!-- may be used to generate text to -->
+    <!-- be read by a human.             -->
+    <!-- - - - - - - - - - - - - - - - - -->
+
+    <property
+        name="project.owner"
+        value="Jacob Neal Sarvela and The University of Texas at Austin"/>
+
+    <!-- - - - - - - - - - - - - - - - - -->
+    <!-- Title and version also are put  -->
+    <!-- into generated documentation.   -->
+    <!-- - - - - - - - - - - - - - - - - -->
+
+    <property name="project.title"	value="Skeleton Ant Build File"/>
+    <property name="project.version"	value="v2002.12.02alpha"/>
+
+    <!-- ================================================================= -->
+    <!-- STATIC DIRECTORY AND FILE PROPERTIES:                             -->
+    <!-- Never embed constant path names into a build file!  Use "virtual  -->
+    <!-- path names" instead.  These are properties that are defined to    -->
+    <!-- point to the real path name.  Do it this way so that the user can -->
+    <!-- override the defaults.                                            -->
+    <!--                                                                   -->
+    <!-- Now, what makes a property static?  If the property has a value   -->
+    <!-- that seldom changes and that can easily be typed into the build   -->
+    <!-- file, then it's probably static.  On the other hand, a dynamic    -->
+    <!-- property is one whose value is calculated for a build.  Dynamic   -->
+    <!-- property definitions go in the "initialize" target.  For example, -->
+    <!-- properties whose value depend on the build time are dynamic.      -->
+    <!--                                                                   -->
+    <!-- Also, never use absolute path names!  That'll make the build file -->
+    <!-- non-portable.  Further, be very sparing of relative path names!   -->
+    <!-- Ok, that may sound like no path name can be used.  However, there -->
+    <!-- really is a third alternative.  For most path names, use a value  -->
+    <!-- -relative to a virtual path-.  See "dir.build.bin" below.         -->
+    <!--                                                                   -->
+    <!-- Further, always generate output files into a "build" hierarchy.   -->
+    <!-- This is because there is a real chance that other developers will -->
+    <!-- have only read access to the codebase.  So, write the build file  -->
+    <!-- to generate output into a -virtual- build hierarchy.              -->
+    <!--                                                                   -->
+    <!-- Finally, since Ant properties are untyped, it's good idea to use  -->
+    <!-- property names that specify the type of the property.  Look at    -->
+    <!-- the properties here for example names.  A "dir" prefix means that -->
+    <!-- it references a directory and a "jar" means it's for a Jar file.  -->
+    <!-- Other useful prefixes are "file" and "url".                       -->
+    <!-- ================================================================= -->
+
+    <property name="dir.build"		location="build"/>
+    <property name="dir.build.bin"	location="${dir.build}/bin"/>
+    <property name="dir.build.classes"	location="${dir.build}/classes"/>
+    <property name="dir.build.lib"	location="${dir.build}/lib"/>
+    <property name="dir.build.source"	location="${dir.build}/source"/>
+
+    <property
+	name="jar.build"
+	location="${dir.build.lib}/${project.name}.jar"/>
+
+    <property
+	name="mf.build"
+	location="${dir.build}/MANIFEST.MF"/>
+
+    <property name="dir.layers"		location="${basedir}"/>
+
+    <property
+	name="file.equation"
+	location="${basedir}/${project.name}.equation"/>
+
+    <!-- ================================================================= -->
+    <!-- OTHER STATIC DEFINITIONS:                                         -->
+    <!-- These can include any of the following Ant types:                 -->
+    <!-- * FileList ..... an ordered list of files;                        -->
+    <!-- * Path ......... an ordered list of directories (a search path);  -->
+    <!-- * PatternSet ... a set of filename patterns;                      -->
+    <!-- * TaskDef ...... an externally defined Ant task.                  -->
+    <!--                                                                   -->
+    <!-- Again, static definitions go here and dynamic definitions go into -->
+    <!-- the "initialize" task.                                            -->
+    <!-- ================================================================= -->
+
+    <taskdef name="jak2java" classname="j2j.DeriveAntTask"/>
+
+    <!-- ================================================================= -->
+    <!-- TARGETS:                                                          -->
+    <!-- These are the actual steps in the build process.  In this comment -->
+    <!-- block, describe the basic flow for developers.                    -->
+    <!--                                                                   -->
+    <!-- Also, put the targets in alphabetical order.  Otherwise, they'll  -->
+    <!-- be hard to find!                                                  -->
+    <!-- ================================================================= -->
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "compose" target composes the layers needed for the tool.      -->
+    <!--                                                                    -->
+    <!-- A target header comment, like this, provides developer(s) help.  A -->
+    <!-- one-line help message for the user should go in the "description"  -->
+    <!-- attribute below.  If more help is needed for the user(s), put it   -->
+    <!-- into the "description" element at the start of this build file.    -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target
+	name="compose"
+	depends="prepare"
+	description="Composes the layers to build the tool">
+
+	<java
+	    classname="composer.Main"
+	    failonerror="true"
+	    fork="true"
+	    taskname="compose">
+
+	    <arg value="-equation"/>
+	    <arg file="${file.equation}"/>
+
+	    <arg value="-layer"/>
+	    <arg value="${project.name}"/>
+
+	    <arg value="-target"/>
+	    <arg file="${dir.build.source}"/>
+	</java>
+
+	<echo message="Result -> ${dir.build.source}" taskname="compose"/>
+
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "initialize" target defines dynamic properties and prints the  -->
+    <!-- build message.  This isn't a target that a user needs to know, so  -->
+    <!-- no "description" is included as an attribute.                      -->
+    <!--                                                                    -->
+    <!-- Since this task defines dynamic properties, -every- other target   -->
+    <!-- must depend on it either directly or indirectly.  BE WARNED!       -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="initialize">
+
+        <tstamp>
+	    <format property="initialize.date" pattern="yyyy-MM-dd"/>
+	    <format property="initialize.time" pattern="HH:mm:ss"/>
+	    <format property="initialize.year" pattern="yyyy"/>
+	</tstamp>
+
+	<property
+	    name="timestamp"
+	    value="${initialize.date} ${initialize.time}"/>
+
+	<echo message="Build begins ${timestamp}"/>
+	<echo message=""/>
+	<echo message="skeleton.xml ${project.version}"/>
+	<echo message="(C) ${project.owner}"/>
+
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "jak2java" task translates composed Jak files to Java.         -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target
+        name="jak2java"
+        depends="compose"
+	description="Translates composed Jak files to Java">
+
+	<jak2java
+	    srcdir="${dir.build.source}"
+	    includes="**/*.jak"
+	    listfiles="false">
+
+	    <arg value="-b"/>
+
+	</jak2java>
+
+	<echo message="Java -> ${dir.build.source}" taskname="jak2java"/>
+
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "jar" target packages the generated class and property files.  -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target
+	name="jar"
+	depends="java2class,manifest"
+	description="Packages class and property files into the final Jar">
+
+	<jar
+	    jarfile="${jar.build}"
+	    manifest="${mf.build}">
+	    
+	    <fileset dir="${dir.build.classes}">
+		<include name="**/*.class"/>
+		<include name="**/*.gif"/>
+		<include name="**/*.jpg"/>
+		<include name="**/*.properties"/>
+	    </fileset>
+
+	</jar>
+
+	<echo message="Jar -> ${jar.build}" taskname="jar"/>
+
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "java2class" target compiles all Java source files.            -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target
+        name="java2class"
+	depends="jak2java"
+	description="Compiles all Java source files">
+
+	<javac
+	    classpath="${dir.build.classes}"
+	    debug="true"
+	    destdir="${dir.build.classes}"
+	    includes="**/*.java"
+	    srcdir="${dir.build.source}"/>
+
+	<echo message="Classes -> ${dir.build.classes}" taskname="java2class"/>
+
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "manifest" target creates a Jar manifest for this project.  It -->
+    <!-- isn't clear whether a user needs to know about this target.  Here, -->
+    <!-- the assumption is that a user does, so a "description" is added.   -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target
+        name="manifest"
+	depends="prepare"
+        description="Creates a manifest file for the packaged project">
+
+	<manifest file="${mf.build}">
+	    <attribute name="Build-Timestamp"	value="${timestamp}"/>
+	    <attribute name="Build-Username"	value="${user.name}"/>
+	    <attribute name="Main-Class"	value="${project.name}.Main"/>
+	<!--<attribute name="Class-Path"        value="???"/>-->
+	</manifest>
+
+	<echo message="Manifest -> ${mf.build}" taskname="manifest"/>
+
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "prepare" target creates an empty build hierarchy.  This isn't -->
+    <!-- a target that a user needs to know about, so no "description" is   -->
+    <!-- included as an attribute.                                          -->
+    <!--                                                                    -->
+    <!-- Do you understand the philosophy of build files?  Here's a short   -->
+    <!-- question to test your understanding.  In the documentation for the -->
+    <!-- "mkdir" task, it says that "non-existent parent directories are    -->
+    <!-- created when necessary".  Now, in the target below, the first two  -->
+    <!-- "mkdir" tasks create the paths to "dir.build" and "dir.build.bin". -->
+    <!-- Yet, in the property definitions above, we defined "dir.build.bin" -->
+    <!-- to point to a sub-directory of "dir.build".  So, the "mkdir" for   -->
+    <!-- "dir.build.bin" seems like it would always create the parent path, -->
+    <!-- "dir.build", as well so that the first "mkdir" is unnecessary.     -->
+    <!--                                                                    -->
+    <!-- Why would it be a mistake to delete the first "mkdir" below?       -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="prepare" depends="initialize">
+
+	<mkdir dir="${dir.build}"/>
+	<mkdir dir="${dir.build.bin}"/>
+	<mkdir dir="${dir.build.classes}"/>
+	<mkdir dir="${dir.build.lib}"/>
+	<mkdir dir="${dir.build.source}"/>
+
+    </target>
+
+</project>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- TRAILER COMMENT:                                                       -->
+<!--                                                                        -->
+<!-- Very few humans will ever read the comments in the trailer section.    -->
+<!-- However, it's a useful place to put text that is read or generated by  -->
+<!-- programs.  For example, (X)Emacs will read the "Local Variables" part  -->
+<!-- below each time it loads this file.                                    -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Local Variables:                    -->
+<!-- mode:                           XML -->
+<!-- fill-column:                     79 -->
+<!-- sgml-ignore-undefined-elements: nil -->
+<!-- sgml-indent-data:                 t -->
+<!-- sgml-indent-step:                 4 -->
+<!-- End:                                -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->

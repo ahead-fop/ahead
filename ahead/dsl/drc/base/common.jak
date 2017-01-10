@@ -1,0 +1,77 @@
+layer core;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+// ******** Aspect that encapsulates common classes
+// *******  of DRC attribute types
+
+// common roots the hierarchy of all DRC attribute types
+
+abstract public class common {
+    public static String outside = "flowleft ";
+    public static String inside  = "flowright ";
+    public static String requiresLeft = "requires " + inside;
+    public static String requiresRight = "requires " + outside;
+    public static String providesLeft = "provides " + outside;
+    public static String providesRight = "provides " + inside;
+   
+    public String property; // name of property
+    public String propertyType; // name of propertyType
+    public String lastSetBy; // name of layer that last set this property
+   
+    public common( String pname ) {
+        property = pname;
+        lastSetBy = "ERROR";
+    }
+   
+    public String getLayer() {
+        return lastSetBy;
+    }
+   
+    // this is the "$TEqn.common" version, which all subclasses implement
+    // however, subclasses will also implement a more refined operation
+    // that is, an operation that inputs and outputs a subclass.
+   
+    abstract public  common and( common x );
+    abstract public boolean implies( common x );
+    abstract public  common assign( common x );
+    abstract public  common factory();
+    abstract public boolean typecheck( Pred p );
+   
+    public String inbetween( common a,  common b ) {
+        if ( a.lastSetBy.equals( b.lastSetBy ) )
+            return "in " + a.lastSetBy + " : ";
+        else
+            return "inbetween [" + a.lastSetBy + ", " + 
+                   b.lastSetBy + "] : ";
+    }
+   
+    public void validateName( common p ) {
+        if ( !p.property.equals( property ) )
+            fatalError( "operating on attributes with different names:" +
+                    p.property + " and " + property );
+    }
+
+    // error reporting utilities
+
+    // static $TEqn.common singleton = new $TEqn.Bool("---");
+
+    public static void fatalError( String msg ) {
+        // singleton.ferr( msg );
+        AstNode.fatalError( msg );
+    }
+
+    public static void error( String msg ) {
+        // singleton.err( msg );
+        AstNode.error( msg );
+    }
+
+    public static void warning( String msg ) {
+        // singleton.warn( msg );
+        AstNode.warning( msg );
+    }
+
+}

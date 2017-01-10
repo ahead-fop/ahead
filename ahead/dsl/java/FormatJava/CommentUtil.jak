@@ -1,0 +1,276 @@
+layer FormatJava;
+
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public refines class CommentUtil {
+   
+    public static char TabChar = '\t'; // the horizontal tab character
+    public static char NewlineChar = '\n'; // the new-line character
+    public static String NewlineStr = "\n"; // a string formed by a new-line character
+
+    // generate a string of white spaces specified by position
+    private static String getIndentation( int position ) {
+        String s = "";
+        for ( int i=0; i < position; i++ )
+            s = s + " ";
+        s = NewlineStr + s;
+        return s;
+    }
+
+    private static String concatString( Vector v ) {
+        String s = "";
+        if ( v.size() == 0 )
+            return s;
+        for ( int i=0; i < v.size(); i++ )
+            s = s + NewlineStr + ( String ) ( v.elementAt( i ) );
+        return s;
+    }
+            
+    // separate lines in a given string according to new-line characters
+    // and put the result in a string vector
+    private static Vector separateLines( String s ) {
+        Vector v = new Vector();
+        int index;
+         
+        String current = new String( s );
+        while ( true ) {
+            index = current.indexOf( NewlineChar );
+            if ( index < 0 ) {
+                v.add( current );
+                break;
+            }
+            else {
+                v.add( current.substring( 0, index ) );
+                current = current.substring( index+1, current.length() );
+            }
+        }
+
+        return v;
+    }
+      
+    // Add some JavaDoc comments to the code, which 
+    // will take a comment with white-space of the form:
+    //   /**
+    //    ...
+    //    */
+    // and augment it with:
+    //   /**
+    //    ...
+    //    * @layer <name>
+    //    */
+    // That is a next-to-last javadoc-comment line @layer <name>
+    // is added, where name is a second parameter to the function.
+    // In the case that there is no Javadoc comment, the function
+    // adds nothing and returns the original comment. 
+    // If @layer <name> line is found within the JavaDoc comment, 
+    // the function returns the original string.
+    public static String addLayerComment( String origString, String layerName ) {
+        int i, j, k, count;
+        String s, whites, newline;
+         
+        Vector v = separateLines( origString );
+        s = "";
+
+        // try to find "/**" in the non-white lines
+        i = 0;
+        while ( i < v.size() ) {
+            s = ( ( String ) v.elementAt( i ) ).trim();
+            if ( s.startsWith( "/**" ) )
+                break;
+            i++;
+        }
+
+        if ( i >= v.size() )
+            return origString;
+
+        // try to find "*/" in the following non-white lines
+        j = i;
+        while ( j < v.size() ) {
+            s = ( ( String ) v.elementAt( j ) ).trim();
+            if ( s.indexOf( "*/" ) >= 0 )
+                break;
+            j++;
+        }
+
+        if ( j >= v.size() )
+            return origString;
+         
+        // try to find "@layer<" in the following non-white lines
+        k = i;
+        while ( k < v.size() ) {
+            s = ( ( String ) v.elementAt( k ) ).trim();
+            if ( s.indexOf( "@layer<" ) >= 0 )
+                return origString;
+            k++;
+        }
+
+        // OK, now we have determined that this is Javadoc
+        // comment without layer comment. We will add 
+        // *@layer<name> into it.
+        s = ( String ) v.elementAt( j );
+        count = 0;
+        while ( count < s.length() ) {
+            if ( s.charAt( count ) == ' ' )
+                count++;
+            else
+                break;
+        }
+        whites = s.substring( 0, count );
+        if ( i == j )
+            whites = whites + " ";
+
+        k = s.indexOf( "*/" );
+        s = s.substring( 0, k );
+        if ( !s.trim().equals( "" ) ) {
+            v.setElementAt( s, j );
+            j++;
+            newline = whites + "*/";
+            v.add( j, newline );
+        }
+
+        newline = whites + "* @layer<" + layerName + ">";
+        v.add( j, newline );
+   
+        return concatString( v );
+    }
+
+    // Replace all Tabs in a string with current indentation specified
+    // in position
+    public static String replaceTabs( String comment, int position ) {
+        String result = "", whites = "";
+        char c;
+         
+        for ( int i=0; i < position; i++ )
+            whites = whites + " ";
+         
+        for ( int i=0; i<comment.length(); i++ ) {
+            c = comment.charAt( i );
+            if ( c == TabChar )
+                result = result + whites;
+            else
+                result = result + String.valueOf( c );
+        }
+         
+        return result;
+    }
+      
+    public static String trimComment( String comment ) {
+        String s;
+        if ( comment.indexOf( NewlineChar ) >= 0 )
+            s = comment;
+        else {
+            s = comment.trim();
+            if ( s.equals( "" ) )
+                s = " ";
+            else
+                s = " " + s + " ";
+        }
+        return s;
+    }
+      
+    // inser a white line into the comment if it is not present
+    public static String insertLine( String comment ) {
+        String s;
+        int i = comment.indexOf( NewlineChar );
+        if ( i < 0 )
+            s = comment + NewlineStr + NewlineStr;
+        else
+            s = comment.substring( 0, i ) + NewlineStr +  comment.substring( i );
+        return s;
+    }
+            
+    public static String adjustComment( String comment, int position ) {
+        int i, j, min, count;
+        String s, result, white = "", first_line = "";
+
+        i = comment.indexOf( NewlineChar );
+        if ( i >= 0 ) {
+            first_line = comment.substring( 0, i );
+            comment = comment.substring( i );
+            first_line = first_line.trim();
+            if ( first_line.length() > 0 )
+                first_line = " " + first_line;
+        }
+        else {
+            first_line = comment.trim();
+            if ( first_line.length() > 0 )
+                first_line = " " + first_line;
+            comment = "";
+        }
+         
+        Vector v = separateLines( comment );
+
+        // delete beginning and ending white lines
+        v.remove( 0 );
+        if ( v.size() > 0 )
+            v.remove( v.size()-1 );
+         
+        // delete white lines that are beyond the pre-set maxium number of 
+        // consecutive white lines in the program
+        i = 0;
+        count = 0;
+        while ( i < v.size() ) {
+            s = ( String ) v.elementAt( i );
+            if ( s.trim().length() > 0 ) {
+                count = 0;
+                i++;
+            }
+            else
+                if ( count == WhiteLine )
+                    v.remove( i );
+                else {
+                    count++;
+                    i++;
+                }
+        }
+         
+        // find the smallest number of white-spaces before each line
+        i = 0;
+        min = -1;
+        for ( i=0; i<v.size(); i++ ) {
+            s = ( String ) v.elementAt( i );
+            if ( s.trim().length() == 0 )
+                continue;
+            for ( j=0; j < s.length(); j++ ) {
+                if ( s.charAt( j ) != ' ' )
+                    break;
+            }
+            if ( ( min < 0 ) || ( j < min ) )
+                min = j;
+        }
+        if ( min < 0 )
+            min = 0;
+         
+        // adjust the comments with indentation
+        for ( i=0; i < ( position ); i++ )
+            white = white + " ";
+        for ( i=0; i<v.size(); i++ ) {
+            s = ( String ) v.elementAt( i );
+            if ( s.trim().length() == 0 ) {
+                s = "";
+                continue;
+            }
+            s = s.substring( min );
+            s = white + s;
+            v.set( i, s );
+        }
+         
+        // construct comments to be returned
+        if ( first_line.length() > 0 )
+            result = first_line;
+        else
+            result = "";
+        result = result + concatString( v ) + getIndentation( position );
+         
+        return result;
+    }
+
+    // some routins that will be used by tokens that starts a new line
+    public static void token_routins( AstToken tok, int position ) {
+        tok.white_space = CommentUtil.replaceTabs( tok.white_space, position );
+        tok.white_space = CommentUtil.adjustComment( tok.white_space, position );
+    }
+}

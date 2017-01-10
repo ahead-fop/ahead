@@ -1,0 +1,2810 @@
+
+
+PARSER_BEGIN(BaliParser)
+
+package theParser;
+
+public class BaliParser {
+    static private StringBuffer buffer = new StringBuffer(64);
+
+    // This method builds an AstToken from a Token. It uses the StringBuffer
+    // 'buffer'.
+    static Lang.AstToken t2at(Token tok) {
+	Token special;
+	String bstr;
+
+        // This special case happens if an optional token is involved.
+        if (tok == null)
+            return(null);
+
+	buffer.setLength(0);
+	special = tok.specialToken;
+	while (special != null) {
+	    buffer.insert(0, special.toString());
+	    special = special.specialToken;
+	}
+
+	bstr = buffer.substring(0, buffer.length());
+	buffer.setLength(0);
+	return(new Lang.AstToken().setParms(bstr, tok.image, tok.endLine));
+    }
+
+
+}
+
+PARSER_END(BaliParser)
+
+SPECIAL_TOKEN :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+| "\f"
+}
+
+/* COMMENTS */
+
+MORE :
+{
+  "//" : IN_SINGLE_LINE_COMMENT
+|
+  <"/**" ~["/"]> { input_stream.backup(1); } : IN_FORMAL_COMMENT
+|
+  "/*" : IN_MULTI_LINE_COMMENT
+}
+
+<IN_SINGLE_LINE_COMMENT>
+SPECIAL_TOKEN :
+{
+  <SINGLE_LINE_COMMENT: "\n" | "\r" | "\r\n" > : DEFAULT
+}
+
+<IN_FORMAL_COMMENT>
+SPECIAL_TOKEN :
+{
+  <FORMAL_COMMENT: "*/" > : DEFAULT
+}
+
+<IN_MULTI_LINE_COMMENT>
+SPECIAL_TOKEN :
+{
+  <MULTI_LINE_COMMENT: "*/" > : DEFAULT
+}
+
+<IN_SINGLE_LINE_COMMENT,IN_FORMAL_COMMENT,IN_MULTI_LINE_COMMENT>
+MORE :
+{
+  < ~[] >
+}
+
+
+TOKEN :
+{
+	<#LETTER: ["a"-"z", "A"-"Z", "_", "$"]>
+|
+	<#DIGIT: ["0"-"9"]>
+}
+
+TOKEN :
+{	<TYPEEQN: "typeEquation">
+|	<LAYER: "layer">
+|	<REALM: "realm">
+|	<IMPORTS: "imports">
+|	<RELATIVE: "relative">
+|	< ABSTRACT: "abstract">
+|	< BOOLEAN: "boolean">
+|	< BREAK: "break">
+|	< BYTE: "byte">
+|	< CASE: "case">
+|	< CATCH: "catch">
+|	< CHAR: "char">
+|	< CLASS: "class">
+|	< CONST: "const">
+|	< CONTINUE: "continue">
+|	< _DEFAULT: "default">
+|	< DO: "do">
+|	< DOUBLE: "double">
+|	< ELSE: "else">
+|	< EXTENDS: "extends">
+|	< FALSE: "false">
+|	< FINAL: "final">
+|	< FINALLY: "finally">
+|	< FLOAT: "float">
+|	< FOR: "for">
+|	< GOTO: "goto">
+|	< IF: "if">
+|	< IMPLEMENTS: "implements">
+|	< IMPORT: "import">
+|	< INSTANCEOF: "instanceof">
+|	< INT: "int">
+|	< INTERFACE: "interface">
+|	< LONG: "long">
+|	< NATIVE: "native">
+|	< NEW: "new">
+|	< NULL: "null">
+|	< PACKAGE: "package">
+|	< PRIVATE: "private">
+|	< PROTECTED: "protected">
+|	< PUBLIC: "public">
+|	< RETURN: "return">
+|	< SHORT: "short">
+|	< STATIC: "static">
+|	< SUPER: "super">
+|	< SWITCH: "switch">
+|	< SYNCHRONIZED: "synchronized">
+|	< THIS: "this">
+|	< THROW: "throw">
+|	< THROWS: "throws">
+|	< TRANSIENT: "transient">
+|	< TRUE: "true">
+|	< TRY: "try">
+|	< VOID: "void">
+|	< VOLATILE: "volatile">
+|	< WHILE: "while">
+|	< LBRACE: "{">
+|	< RBRACE: "}">
+|	< LBRACKET: "[">
+|	< RBRACKET: "]">
+|	< SEMICOLON: ";">
+|	< COMMA: ",">
+|	< DOT: ".">
+|	< ASSIGN: "=">
+|	< GT: ">">
+|	< LT: "<">
+|	< BANG: "!">
+|	< TILDE: "~">
+|	< HOOK: "?">
+|	< COLON: ":">
+|	< EQ: "==">
+|	< LE: "<=">
+|	< GE: ">=">
+|	< NE: "!=">
+|	< SC_OR: "||">
+|	< SC_AND: "&&">
+|	< INCR: "++">
+|	< DECR: "--">
+|	< PLUS: "+">
+|	< MINUS: "-">
+|	< STAR: "*">
+|	< SLASH: "/">
+|	< BIT_AND: "&">
+|	< BIT_OR: "|">
+|	< XOR: "^">
+|	< REM: "%">
+|	< LSHIFT: "<<">
+|	< RSIGNEDSHIFT: ">>">
+|	< RUNSIGNEDSHIFT: ">>>">
+|	< PLUSASSIGN: "+=">
+|	< MINUSASSIGN: "-=">
+|	< STARASSIGN: "*=">
+|	< SLASHASSIGN: "/=">
+|	< ANDASSIGN: "&=">
+|	< ORASSIGN: "|=">
+|	< XORASSIGN: "^=">
+|	< REMASSIGN: "%=">
+|	< LSHIFTASSIGN: "<<=">
+|	< RSIGNEDSHIFTASSIGN: ">>=">
+|	< RUNSIGNEDSHIFTASSIGN: ">>>=">
+|	<		LPAREN: "(">
+|	<		RPAREN: ")">
+}
+
+TOKEN :
+{	< INTEGER_LITERAL: 
+        <DECIMAL_LITERAL> (["l","L"])?
+      | <HEX_LITERAL> (["l","L"])?
+      | <OCTAL_LITERAL> (["l","L"])?>
+|	<#DECIMAL_LITERAL:  ["1"-"9"] (["0"-"9"])*>
+|	<#HEX_LITERAL:  "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+>
+|	<#OCTAL_LITERAL:  "0" (["0"-"7"])*>
+|	< FLOATING_POINT_LITERAL: 
+        (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)? (["f","F","d","D"])?
+      | "." (["0"-"9"])+ (<EXPONENT>)? (["f","F","d","D"])?
+      | (["0"-"9"])+ <EXPONENT> (["f","F","d","D"])?
+      | (["0"-"9"])+ (<EXPONENT>)? ["f","F","d","D"]>
+|	<#EXPONENT:  ["e","E"] (["+","-"])? (["0"-"9"])+>
+|	< CHARACTER_LITERAL: 
+      "'"
+      (   (~["'","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )
+      "'">
+|	< STRING_LITERAL: 
+      "\""
+      (   (~["\"","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )*
+      "\"">
+}
+Lang.AST_Program AST_Program() :
+{
+	Lang.AstNode nt1=null, nt2=null, nt3=null;
+	Lang.AstOptNode ont1=null, ont2=null, ont3=null;
+	boolean justNT;
+}
+{
+	nt1= TE_Generator()
+	{ return((Lang.AST_Program) nt1); }
+|	LOOKAHEAD( [ LayerModifiers() ] <LAYER>)  nt1=Layer_Decl()
+		{
+		return(new Lang.LDecl().setParms(nt1));
+		}
+|	 [  nt1=PackageDeclaration() ] [  nt2=AST_Imports() ] [  nt3=AST_Class() ]
+		{
+		ont1 = new Lang.AstOptNode().setParms(nt1);
+		ont2 = new Lang.AstOptNode().setParms(nt2);
+		ont3 = new Lang.AstOptNode().setParms(nt3);
+		return(new Lang.program().setParms(ont1, ont2, ont3));
+		}
+
+}
+
+Lang.TE_Generator TE_Generator() :
+{
+	Lang.AstNode nt1=null, nt2=null, nt3=null;
+	Token t1=null, t2=null, t3=null;
+	boolean justNT;
+}
+{
+	 t1=<TYPEEQN> nt1=AST_QualifiedName() nt2=AST_QualifiedName() t2="=" nt3=AST_Exp() t3=";"
+		{
+		return(new Lang.TEGen().setParms(t2at(t1), nt1, nt2, t2at(t2), nt3, t2at(t3)));
+		}
+
+}
+
+Lang.LayerHeader LayerHeader() :
+{
+	Lang.AstNode nt1=null, nt2=null, nt3=null;
+	Lang.AstOptNode ont1=null, ont2=null, ont3=null;
+	Token t1=null, t2=null, t3=null;
+	boolean justNT;
+}
+{
+	 [  nt1=LayerModifiers() ] t1=<LAYER> nt2=QName() t2="(" [  nt3=AST_ParList() ] t3=")"
+		{
+		ont1 = new Lang.AstOptNode().setParms(nt1);
+		ont3 = new Lang.AstOptNode().setParms(nt3);
+		return(new Lang.LyrHeader().setParms(ont1, t2at(t1), nt2, t2at(t2), ont3, t2at(t3)));
+		}
+
+}
+
+Lang.Layer_Decl Layer_Decl() :
+{
+	Lang.AstNode nt1=null, nt2=null, nt3=null, nt4=null, nt5=null, nt6=null, nt7=null;
+	Lang.AstOptNode ont1=null, ont2=null, ont3=null, ont4=null, ont5=null, ont6=null, ont7=null;
+	Token t1=null, t2=null, t3=null, t4=null;
+	boolean justNT;
+}
+{
+	 [  nt1=LayerModifiers() ] t1=<LAYER> nt2=QName() t2="(" [  nt3=AST_ParList() ] t3=")" t4=<REALM> nt4=QName() [  nt5=SuperLayer() ] [  nt6=LayerImports() ] nt7=ClassBody()
+		{
+		ont1 = new Lang.AstOptNode().setParms(nt1);
+		ont3 = new Lang.AstOptNode().setParms(nt3);
+		ont5 = new Lang.AstOptNode().setParms(nt5);
+		ont6 = new Lang.AstOptNode().setParms(nt6);
+		return(new Lang.LayerDecl().setParms(ont1, t2at(t1), nt2, t2at(t2), ont3, t2at(t3), t2at(t4), nt4, ont5, ont6, nt7));
+		}
+
+}
+
+Lang.LayerModifiers LayerModifiers() :
+{
+	Lang.LayerModifiers list = new Lang.LayerModifiers();
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	( nt1=LayerModifier() { list.add(new Lang.LayerModifiersElem().setParms(nt1)); } )+
+		{ return(list); }
+
+}
+
+Lang.LayerModifier LayerModifier() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 nt1=Modifier()
+		{
+		return(new Lang.NonRelMod().setParms(nt1));
+		}
+|	 t1=<RELATIVE>
+		{
+		return(new Lang.ModRelative().setParms(t2at(t1)));
+		}
+
+}
+
+Lang.SuperLayer SuperLayer() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1=<EXTENDS> nt1=AST_QualifiedName()
+		{
+		return(new Lang.SupLayer().setParms(t2at(t1), nt1));
+		}
+
+}
+
+Lang.LayerImports LayerImports() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1=<IMPORTS> nt1=ImportList()
+		{
+		return(new Lang.LyrImports().setParms(t2at(t1), nt1));
+		}
+
+}
+
+Lang.ImportList ImportList() :
+{
+	Lang.ImportList list = new Lang.ImportList();
+	Lang.AstNode nt1=null, nt2=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 nt1=ImportPack()
+		{ list.add(new Lang.ImportListElem().setParms(null, nt1)); }
+	( t1="," nt2=ImportPack()
+		{ list.add(new Lang.ImportListElem().setParms(t2at(t1), nt2)); }
+	)*
+		{ return(list); }
+
+}
+
+Lang.ImportPack ImportPack() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Lang.AstOptNode ont1=null, ont2=null;
+	boolean justNT;
+}
+{
+	 nt1=AST_QualifiedName() [  nt2=DotTimes() ]
+		{
+		ont2 = new Lang.AstOptNode().setParms(nt2);
+		return(new Lang.ImportPak().setParms(nt1, ont2));
+		}
+
+}
+
+Lang.AST_Imports AST_Imports() :
+{
+	Lang.AST_Imports list = new Lang.AST_Imports();
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	( nt1=ImportDeclaration() { list.add(new Lang.AST_ImportsElem().setParms(nt1)); } )+
+		{ return(list); }
+
+}
+
+Lang.AST_Class AST_Class() :
+{
+	Lang.AST_Class list = new Lang.AST_Class();
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	( nt1=TypeDeclaration() { list.add(new Lang.AST_ClassElem().setParms(nt1)); } )+
+		{ return(list); }
+
+}
+
+Lang.PackageDeclaration PackageDeclaration() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null, t2=null;
+	boolean justNT;
+}
+{
+	 t1="package" nt1=AST_QualifiedName() t2=";"
+		{
+		return(new Lang.PackStm().setParms(t2at(t1), nt1, t2at(t2)));
+		}
+
+}
+
+Lang.ImportDeclaration ImportDeclaration() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Lang.AstOptNode ont1=null, ont2=null;
+	Token t1=null, t2=null;
+	boolean justNT;
+}
+{
+	 t1="import" nt1=AST_QualifiedName() [  nt2=DotTimes() ] t2=";"
+		{
+		ont2 = new Lang.AstOptNode().setParms(nt2);
+		return(new Lang.ImpQual().setParms(t2at(t1), nt1, ont2, t2at(t2)));
+		}
+
+}
+
+Lang.DotTimes DotTimes() :
+{
+	Token t1=null, t2=null;
+	boolean justNT;
+}
+{
+	 t1="." t2="*"
+		{
+		return(new Lang.DotTimesC().setParms(t2at(t1), t2at(t2)));
+		}
+
+}
+
+Lang.TypeDeclaration TypeDeclaration() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Lang.AstOptNode ont1=null, ont2=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 [  nt1=AST_Modifiers() ] nt2=UnmodifiedTypeDeclaration()
+		{
+		ont1 = new Lang.AstOptNode().setParms(nt1);
+		return(new Lang.ModTypeDecl().setParms(ont1, nt2));
+		}
+|	 t1=";"
+		{
+		return(new Lang.EmptyTDecl().setParms(t2at(t1)));
+		}
+
+}
+
+Lang.UnmodifiedTypeDeclaration UnmodifiedTypeDeclaration() :
+{
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	nt1= UnmodifiedClassDeclaration()
+	{ return((Lang.UnmodifiedTypeDeclaration) nt1); }
+|	nt1= UnmodifiedInterfaceDeclaration()
+	{ return((Lang.UnmodifiedTypeDeclaration) nt1); }
+
+}
+
+Lang.AST_Modifiers AST_Modifiers() :
+{
+	Lang.AST_Modifiers list = new Lang.AST_Modifiers();
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	( nt1=Modifier() { list.add(new Lang.AST_ModifiersElem().setParms(nt1)); } )+
+		{ return(list); }
+
+}
+
+Lang.Modifier Modifier() :
+{
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1=<ABSTRACT>
+		{
+		return(new Lang.ModAbstract().setParms(t2at(t1)));
+		}
+|	 t1=<FINAL>
+		{
+		return(new Lang.ModFinal().setParms(t2at(t1)));
+		}
+|	 t1=<PUBLIC>
+		{
+		return(new Lang.ModPublic().setParms(t2at(t1)));
+		}
+|	 t1=<PROTECTED>
+		{
+		return(new Lang.ModProtected().setParms(t2at(t1)));
+		}
+|	 t1=<PRIVATE>
+		{
+		return(new Lang.ModPrivate().setParms(t2at(t1)));
+		}
+|	 t1=<STATIC>
+		{
+		return(new Lang.ModStatic().setParms(t2at(t1)));
+		}
+|	 t1=<TRANSIENT>
+		{
+		return(new Lang.ModTransient().setParms(t2at(t1)));
+		}
+|	 t1=<VOLATILE>
+		{
+		return(new Lang.ModVolatile().setParms(t2at(t1)));
+		}
+|	 t1=<NATIVE>
+		{
+		return(new Lang.ModNative().setParms(t2at(t1)));
+		}
+|	 t1=<SYNCHRONIZED>
+		{
+		return(new Lang.ModSynchronized().setParms(t2at(t1)));
+		}
+
+}
+
+Lang.UnmodifiedClassDeclaration UnmodifiedClassDeclaration() :
+{
+	Lang.AstNode nt1=null, nt2=null, nt3=null, nt4=null;
+	Lang.AstOptNode ont1=null, ont2=null, ont3=null, ont4=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="class" nt1=QName() [  nt2=ExtendsClause() ] [  nt3=ImplementsClause() ] nt4=ClassBody()
+		{
+		ont2 = new Lang.AstOptNode().setParms(nt2);
+		ont3 = new Lang.AstOptNode().setParms(nt3);
+		return(new Lang.UmodClassDecl().setParms(t2at(t1), nt1, ont2, ont3, nt4));
+		}
+
+}
+
+Lang.ExtendsClause ExtendsClause() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="extends" nt1=AST_QualifiedName()
+		{
+		return(new Lang.ExtClause().setParms(t2at(t1), nt1));
+		}
+
+}
+
+Lang.ImplementsClause ImplementsClause() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="implements" nt1=AST_TypeNameList()
+		{
+		return(new Lang.ImplClause().setParms(t2at(t1), nt1));
+		}
+
+}
+
+Lang.ClassBody ClassBody() :
+{
+	Lang.AstNode nt1=null;
+	Lang.AstOptNode ont1=null;
+	Token t1=null, t2=null;
+	boolean justNT;
+}
+{
+	 t1="{" [  nt1=AST_FieldDecl() ] t2="}"
+		{
+		ont1 = new Lang.AstOptNode().setParms(nt1);
+		return(new Lang.ClsBody().setParms(t2at(t1), ont1, t2at(t2)));
+		}
+
+}
+
+Lang.AST_FieldDecl AST_FieldDecl() :
+{
+	Lang.AST_FieldDecl list = new Lang.AST_FieldDecl();
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	( nt1=ClassBodyDeclaration() { list.add(new Lang.AST_FieldDeclElem().setParms(nt1)); } )+
+		{ return(list); }
+
+}
+
+Lang.ClassBodyDeclaration ClassBodyDeclaration() :
+{
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	LOOKAHEAD(2) nt1=
+	  Initializer()
+	{ return((Lang.ClassBodyDeclaration) nt1); }
+|	LOOKAHEAD( [ AST_Modifiers() ] "class") nt1=
+	  NestedClassDeclaration()
+	{ return((Lang.ClassBodyDeclaration) nt1); }
+|	LOOKAHEAD( [ AST_Modifiers() ] "interface") nt1=
+	  NestedInterfaceDeclaration()
+	{ return((Lang.ClassBodyDeclaration) nt1); }
+|	LOOKAHEAD( [ "public" | "protected" | "private" ] AST_QualifiedName() "(") nt1=
+	  ConstructorDeclaration()
+	{ return((Lang.ClassBodyDeclaration) nt1); }
+|	LOOKAHEAD( MethodDeclarationLookahead()) nt1=
+	  MethodDeclaration()
+	{ return((Lang.ClassBodyDeclaration) nt1); }
+|	nt1= FieldDeclaration()
+	{ return((Lang.ClassBodyDeclaration) nt1); }
+
+}
+
+Lang.NestedClassDeclaration NestedClassDeclaration() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Lang.AstOptNode ont1=null, ont2=null;
+	boolean justNT;
+}
+{
+	 [  nt1=AST_Modifiers() ] nt2=UnmodifiedClassDeclaration()
+		{
+		ont1 = new Lang.AstOptNode().setParms(nt1);
+		return(new Lang.NClassDecl().setParms(ont1, nt2));
+		}
+
+}
+
+Lang.MethodDeclarationLookahead MethodDeclarationLookahead() :
+{
+	Lang.AstNode nt1=null, nt2=null, nt3=null;
+	Lang.AstOptNode ont1=null, ont2=null, ont3=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 [  nt1=AST_Modifiers() ] nt2=AST_TypeName() nt3=QName() t1="("
+		{
+		ont1 = new Lang.AstOptNode().setParms(nt1);
+		return(new Lang.MDeclLA().setParms(ont1, nt2, nt3, t2at(t1)));
+		}
+
+}
+
+Lang.InterfaceDeclaration InterfaceDeclaration() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Lang.AstOptNode ont1=null, ont2=null;
+	boolean justNT;
+}
+{
+	 [  nt1=AST_Modifiers() ] nt2=UnmodifiedInterfaceDeclaration()
+		{
+		ont1 = new Lang.AstOptNode().setParms(nt1);
+		return(new Lang.InterDecl().setParms(ont1, nt2));
+		}
+
+}
+
+Lang.NestedInterfaceDeclaration NestedInterfaceDeclaration() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Lang.AstOptNode ont1=null, ont2=null;
+	boolean justNT;
+}
+{
+	 [  nt1=AST_Modifiers() ] nt2=UnmodifiedInterfaceDeclaration()
+		{
+		ont1 = new Lang.AstOptNode().setParms(nt1);
+		return(new Lang.NInterDecl().setParms(ont1, nt2));
+		}
+
+}
+
+Lang.UnmodifiedInterfaceDeclaration UnmodifiedInterfaceDeclaration() :
+{
+	Lang.AstNode nt1=null, nt2=null, nt3=null;
+	Lang.AstOptNode ont1=null, ont2=null, ont3=null;
+	Token t1=null, t2=null, t3=null;
+	boolean justNT;
+}
+{
+	 t1="interface" nt1=QName() [  nt2=IntExtClause() ] t2="{" [  nt3=InterfaceMemberDeclarations() ] t3="}"
+		{
+		ont2 = new Lang.AstOptNode().setParms(nt2);
+		ont3 = new Lang.AstOptNode().setParms(nt3);
+		return(new Lang.UmInterDecl().setParms(t2at(t1), nt1, ont2, t2at(t2), ont3, t2at(t3)));
+		}
+
+}
+
+Lang.IntExtClause IntExtClause() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="extends" nt1=AST_TypeNameList()
+		{
+		return(new Lang.IntExtClauseC().setParms(t2at(t1), nt1));
+		}
+
+}
+
+Lang.InterfaceMemberDeclarations InterfaceMemberDeclarations() :
+{
+	Lang.InterfaceMemberDeclarations list = new Lang.InterfaceMemberDeclarations();
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	( nt1=InterfaceMemberDeclaration() { list.add(new Lang.InterfaceMemberDeclarationsElem().setParms(nt1)); } )+
+		{ return(list); }
+
+}
+
+Lang.InterfaceMemberDeclaration InterfaceMemberDeclaration() :
+{
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	LOOKAHEAD( [ AST_Modifiers() ] "class")  nt1=NestedClassDeclaration()
+		{
+		return(new Lang.NCDecl().setParms(nt1));
+		}
+|	LOOKAHEAD( [ AST_Modifiers() ] "interface")  nt1=NestedInterfaceDeclaration()
+		{
+		return(new Lang.NIDecl().setParms(nt1));
+		}
+|	LOOKAHEAD( MethodDeclarationLookahead())  nt1=MethodDeclaration()
+		{
+		return(new Lang.MDecl().setParms(nt1));
+		}
+|	 nt1=FieldDeclaration()
+		{
+		return(new Lang.FDecl().setParms(nt1));
+		}
+
+}
+
+Lang.FieldDeclaration FieldDeclaration() :
+{
+	Lang.AstNode nt1=null, nt2=null, nt3=null;
+	Lang.AstOptNode ont1=null, ont2=null, ont3=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 [  nt1=AST_Modifiers() ] nt2=AST_TypeName() nt3=AST_VarDecl() t1=";"
+		{
+		ont1 = new Lang.AstOptNode().setParms(nt1);
+		return(new Lang.FldVarDec().setParms(ont1, nt2, nt3, t2at(t1)));
+		}
+
+}
+
+Lang.AST_VarDecl AST_VarDecl() :
+{
+	Lang.AST_VarDecl list = new Lang.AST_VarDecl();
+	Lang.AstNode nt1=null, nt2=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 nt1=VariableDeclarator()
+		{ list.add(new Lang.AST_VarDeclElem().setParms(null, nt1)); }
+	( t1="," nt2=VariableDeclarator()
+		{ list.add(new Lang.AST_VarDeclElem().setParms(t2at(t1), nt2)); }
+	)*
+		{ return(list); }
+
+}
+
+Lang.VariableDeclarator VariableDeclarator() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Lang.AstOptNode ont1=null, ont2=null;
+	boolean justNT;
+}
+{
+	 nt1=VariableDeclaratorId() [  nt2=VarAssign() ]
+		{
+		ont2 = new Lang.AstOptNode().setParms(nt2);
+		return(new Lang.VarDecl().setParms(nt1, ont2));
+		}
+
+}
+
+Lang.VarAssign VarAssign() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="=" nt1=AST_VarInit()
+		{
+		return(new Lang.VarAssignC().setParms(t2at(t1), nt1));
+		}
+
+}
+
+Lang.VariableDeclaratorId VariableDeclaratorId() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Lang.AstOptNode ont1=null, ont2=null;
+	boolean justNT;
+}
+{
+	 nt1=QName() [  nt2=Dims() ]
+		{
+		ont2 = new Lang.AstOptNode().setParms(nt2);
+		return(new Lang.DecNameDim().setParms(nt1, ont2));
+		}
+
+}
+
+Lang.Dims Dims() :
+{
+	Lang.Dims list = new Lang.Dims();
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	(LOOKAHEAD(2)  nt1=Dim() { list.add(new Lang.DimsElem().setParms(nt1)); } )+
+		{ return(list); }
+
+}
+
+Lang.Dim Dim() :
+{
+	Token t1=null, t2=null;
+	boolean justNT;
+}
+{
+	 t1="[" t2="]"
+		{
+		return(new Lang.Dim2().setParms(t2at(t1), t2at(t2)));
+		}
+
+}
+
+Lang.AST_VarInit AST_VarInit() :
+{
+	Lang.AstNode nt1=null;
+	Lang.AstOptNode ont1=null;
+	Token t1=null, t2=null, t3=null;
+	Lang.AstOptToken ot1=null, ot2=null, ot3=null;
+	boolean justNT;
+}
+{
+	 t1="{" [  nt1=AST_ArrayInit() ] [  t2="," ] t3="}"
+		{
+		ont1 = new Lang.AstOptNode().setParms(nt1);
+		ot2 = new Lang.AstOptToken().setParms(t2at(t2));
+		return(new Lang.ArrInit().setParms(t2at(t1), ont1, ot2, t2at(t3)));
+		}
+|	 nt1=Expression()
+		{
+		return(new Lang.VarInitExpr().setParms(nt1));
+		}
+
+}
+
+Lang.AST_ArrayInit AST_ArrayInit() :
+{
+	Lang.AST_ArrayInit list = new Lang.AST_ArrayInit();
+	Lang.AstNode nt1=null, nt2=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 nt1=AST_VarInit()
+		{ list.add(new Lang.AST_ArrayInitElem().setParms(null, nt1)); }
+	(LOOKAHEAD(2)  t1="," nt2=AST_VarInit()
+		{ list.add(new Lang.AST_ArrayInitElem().setParms(t2at(t1), nt2)); }
+	)*
+		{ return(list); }
+
+}
+
+Lang.MethodDeclaration MethodDeclaration() :
+{
+	Lang.AstNode nt1=null, nt2=null, nt3=null, nt4=null, nt5=null;
+	Lang.AstOptNode ont1=null, ont2=null, ont3=null, ont4=null, ont5=null;
+	boolean justNT;
+}
+{
+	 [  nt1=AST_Modifiers() ] nt2=AST_TypeName() nt3=MethodDeclarator() [  nt4=ThrowsClause() ] nt5=MethodDeclSuffix()
+		{
+		ont1 = new Lang.AstOptNode().setParms(nt1);
+		ont4 = new Lang.AstOptNode().setParms(nt4);
+		return(new Lang.MethodDcl().setParms(ont1, nt2, nt3, ont4, nt5));
+		}
+
+}
+
+Lang.ThrowsClause ThrowsClause() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="throws" nt1=AST_TypeNameList()
+		{
+		return(new Lang.ThrowsClauseC().setParms(t2at(t1), nt1));
+		}
+
+}
+
+Lang.MethodDeclSuffix MethodDeclSuffix() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 nt1=Block()
+		{
+		return(new Lang.MDSBlock().setParms(nt1));
+		}
+|	 t1=";"
+		{
+		return(new Lang.MDSEmpty().setParms(t2at(t1)));
+		}
+
+}
+
+Lang.MethodDeclarator MethodDeclarator() :
+{
+	Lang.AstNode nt1=null, nt2=null, nt3=null;
+	Lang.AstOptNode ont1=null, ont2=null, ont3=null;
+	Token t1=null, t2=null;
+	boolean justNT;
+}
+{
+	 nt1=QName() t1="(" [  nt2=AST_ParList() ] t2=")" [  nt3=Dims() ]
+		{
+		ont2 = new Lang.AstOptNode().setParms(nt2);
+		ont3 = new Lang.AstOptNode().setParms(nt3);
+		return(new Lang.MthDector().setParms(nt1, t2at(t1), ont2, t2at(t2), ont3));
+		}
+
+}
+
+Lang.AST_ParList AST_ParList() :
+{
+	Lang.AST_ParList list = new Lang.AST_ParList();
+	Lang.AstNode nt1=null, nt2=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 nt1=FormalParameter()
+		{ list.add(new Lang.AST_ParListElem().setParms(null, nt1)); }
+	( t1="," nt2=FormalParameter()
+		{ list.add(new Lang.AST_ParListElem().setParms(t2at(t1), nt2)); }
+	)*
+		{ return(list); }
+
+}
+
+Lang.FormalParameter FormalParameter() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Token t1=null;
+	Lang.AstOptToken ot1=null;
+	boolean justNT;
+}
+{
+	 [  t1="final" ] nt1=AST_TypeName() nt2=VariableDeclaratorId()
+		{
+		ot1 = new Lang.AstOptToken().setParms(t2at(t1));
+		return(new Lang.FormParDecl().setParms(ot1, nt1, nt2));
+		}
+
+}
+
+Lang.ConstructorDeclaration ConstructorDeclaration() :
+{
+	Lang.AstNode nt1=null, nt2=null, nt3=null, nt4=null, nt5=null, nt6=null;
+	Lang.AstOptNode ont1=null, ont2=null, ont3=null, ont4=null, ont5=null, ont6=null;
+	Token t1=null, t2=null, t3=null, t4=null;
+	boolean justNT;
+}
+{
+	 [  nt1=AST_Modifiers() ] nt2=QName() t1="(" [  nt3=AST_ParList() ] t2=")" [  nt4=ThrowsClause() ] t3="{" [ LOOKAHEAD(ExplicitConstructorInvocation())  nt5=ExplicitConstructorInvocation() ] [  nt6=AST_Stmt() ] t4="}"
+		{
+		ont1 = new Lang.AstOptNode().setParms(nt1);
+		ont3 = new Lang.AstOptNode().setParms(nt3);
+		ont4 = new Lang.AstOptNode().setParms(nt4);
+		ont5 = new Lang.AstOptNode().setParms(nt5);
+		ont6 = new Lang.AstOptNode().setParms(nt6);
+		return(new Lang.ConDecl().setParms(ont1, nt2, t2at(t1), ont3, t2at(t2), ont4, t2at(t3), ont5, ont6, t2at(t4)));
+		}
+
+}
+
+Lang.ExplicitConstructorInvocation ExplicitConstructorInvocation() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Lang.AstOptNode ont1=null, ont2=null;
+	Token t1=null, t2=null;
+	boolean justNT;
+}
+{
+	LOOKAHEAD("this" Arguments() ";")  t1="this" nt1=Arguments() t2=";"
+		{
+		return(new Lang.ConThis().setParms(t2at(t1), nt1, t2at(t2)));
+		}
+|	 [ LOOKAHEAD(2)  nt1=PrimDot() ] t1="super" nt2=Arguments() t2=";"
+		{
+		ont1 = new Lang.AstOptNode().setParms(nt1);
+		return(new Lang.ConSuper().setParms(ont1, t2at(t1), nt2, t2at(t2)));
+		}
+
+}
+
+Lang.PrimDot PrimDot() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 nt1=PrimaryExpression() t1="."
+		{
+		return(new Lang.PrimDotC().setParms(nt1, t2at(t1)));
+		}
+
+}
+
+Lang.Initializer Initializer() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	Lang.AstOptToken ot1=null;
+	boolean justNT;
+}
+{
+	 [  t1="static" ] nt1=Block()
+		{
+		ot1 = new Lang.AstOptToken().setParms(t2at(t1));
+		return(new Lang.Init().setParms(ot1, nt1));
+		}
+
+}
+
+Lang.AST_TypeName AST_TypeName() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Lang.AstOptNode ont1=null, ont2=null;
+	boolean justNT;
+}
+{
+	 nt1=PrimitiveType() [ LOOKAHEAD(2)  nt2=Dims() ]
+		{
+		ont2 = new Lang.AstOptNode().setParms(nt2);
+		return(new Lang.PrimType().setParms(nt1, ont2));
+		}
+|	 nt1=AST_QualifiedName() [ LOOKAHEAD(2)  nt2=Dims() ]
+		{
+		ont2 = new Lang.AstOptNode().setParms(nt2);
+		return(new Lang.QNameType().setParms(nt1, ont2));
+		}
+
+}
+
+Lang.PrimitiveType PrimitiveType() :
+{
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="boolean"
+		{
+		return(new Lang.BoolTyp().setParms(t2at(t1)));
+		}
+|	 t1="char"
+		{
+		return(new Lang.CharTyp().setParms(t2at(t1)));
+		}
+|	 t1="byte"
+		{
+		return(new Lang.ByteTyp().setParms(t2at(t1)));
+		}
+|	 t1="short"
+		{
+		return(new Lang.ShortTyp().setParms(t2at(t1)));
+		}
+|	 t1="int"
+		{
+		return(new Lang.IntTyp().setParms(t2at(t1)));
+		}
+|	 t1="long"
+		{
+		return(new Lang.LongTyp().setParms(t2at(t1)));
+		}
+|	 t1="float"
+		{
+		return(new Lang.FloatTyp().setParms(t2at(t1)));
+		}
+|	 t1="double"
+		{
+		return(new Lang.DoubleTyp().setParms(t2at(t1)));
+		}
+|	 t1="void"
+		{
+		return(new Lang.VoidTyp().setParms(t2at(t1)));
+		}
+
+}
+
+Lang.AST_QualifiedName AST_QualifiedName() :
+{
+	Lang.AST_QualifiedName list = new Lang.AST_QualifiedName();
+	Lang.AstNode nt1=null, nt2=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 nt1=QName()
+		{ list.add(new Lang.AST_QualifiedNameElem().setParms(null, nt1)); }
+	(LOOKAHEAD(2)  t1="." nt2=QName()
+		{ list.add(new Lang.AST_QualifiedNameElem().setParms(t2at(t1), nt2)); }
+	)*
+		{ return(list); }
+
+}
+
+Lang.QName QName() :
+{
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1=<IDENTIFIER>
+		{
+		return(new Lang.NameId().setParms(t2at(t1)));
+		}
+
+}
+
+Lang.AST_TypeNameList AST_TypeNameList() :
+{
+	Lang.AST_TypeNameList list = new Lang.AST_TypeNameList();
+	Lang.AstNode nt1=null, nt2=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 nt1=TName()
+		{ list.add(new Lang.AST_TypeNameListElem().setParms(null, nt1)); }
+	( t1="," nt2=TName()
+		{ list.add(new Lang.AST_TypeNameListElem().setParms(t2at(t1), nt2)); }
+	)*
+		{ return(list); }
+
+}
+
+Lang.TName TName() :
+{
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	 nt1=AST_TypeName()
+		{
+		return(new Lang.TNClass().setParms(nt1));
+		}
+
+}
+
+Lang.Expression Expression() :
+{
+	Lang.AstNode nt1=null, nt2=null, nt3=null;
+	boolean justNT;
+}
+{
+	 nt1=ConditionalExpression() {justNT=true;} [ LOOKAHEAD(2)  nt2=AssignmentOperator() nt3=Expression() {justNT=false;} ]
+		{
+		if (justNT)
+			return((Lang.Expression) nt1);
+		return(new Lang.AsgExpr().setParms(nt1, nt2, nt3));
+		}
+
+}
+
+Lang.AST_Exp AST_Exp() :
+{
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	nt1= Expression()
+	{ return((Lang.AST_Exp) nt1); }
+
+}
+
+Lang.AssignmentOperator AssignmentOperator() :
+{
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="="
+		{
+		return(new Lang.Assign().setParms(t2at(t1)));
+		}
+|	 t1="*="
+		{
+		return(new Lang.AssnTimes().setParms(t2at(t1)));
+		}
+|	 t1="/="
+		{
+		return(new Lang.AssnDiv().setParms(t2at(t1)));
+		}
+|	 t1="%="
+		{
+		return(new Lang.AssnMod().setParms(t2at(t1)));
+		}
+|	 t1="+="
+		{
+		return(new Lang.AssnPlus().setParms(t2at(t1)));
+		}
+|	 t1="-="
+		{
+		return(new Lang.AssnMinus().setParms(t2at(t1)));
+		}
+|	 t1="<<="
+		{
+		return(new Lang.AssnShL().setParms(t2at(t1)));
+		}
+|	 t1=">>="
+		{
+		return(new Lang.AssnShR().setParms(t2at(t1)));
+		}
+|	 t1=">>>="
+		{
+		return(new Lang.AssnShRR().setParms(t2at(t1)));
+		}
+|	 t1="&="
+		{
+		return(new Lang.AssnAnd().setParms(t2at(t1)));
+		}
+|	 t1="^="
+		{
+		return(new Lang.AssnXor().setParms(t2at(t1)));
+		}
+|	 t1="|="
+		{
+		return(new Lang.AssnOr().setParms(t2at(t1)));
+		}
+
+}
+
+Lang.ConditionalExpression ConditionalExpression() :
+{
+	Lang.AstNode nt1=null, nt2=null, nt3=null;
+	Token t1=null, t2=null;
+	boolean justNT;
+}
+{
+	 nt1=ConditionalOrExpression() {justNT=true;} [ LOOKAHEAD(2)  t1="?" nt2=Expression() t2=":" nt3=ConditionalExpression() {justNT=false;} ]
+		{
+		if (justNT)
+			return((Lang.ConditionalExpression) nt1);
+		return(new Lang.QuestExpr().setParms(nt1, t2at(t1), nt2, t2at(t2), nt3));
+		}
+
+}
+
+Lang.ConditionalOrExpression ConditionalOrExpression() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	boolean justNT;
+}
+{
+	 nt1=ConditionalAndExpression() {justNT=true;} [ LOOKAHEAD(2)  nt2=MoreCondOrExpr() {justNT=false;} ]
+		{
+		if (justNT)
+			return((Lang.ConditionalOrExpression) nt1);
+		return(new Lang.CondOrExpr().setParms(nt1, nt2));
+		}
+
+}
+
+Lang.MoreCondOrExpr MoreCondOrExpr() :
+{
+	Lang.MoreCondOrExpr list = new Lang.MoreCondOrExpr();
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	(LOOKAHEAD(2)  nt1=COEBody() { list.add(new Lang.MoreCondOrExprElem().setParms(nt1)); } )+
+		{ return(list); }
+
+}
+
+Lang.COEBody COEBody() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="||" nt1=ConditionalAndExpression()
+		{
+		return(new Lang.COEBod().setParms(t2at(t1), nt1));
+		}
+
+}
+
+Lang.ConditionalAndExpression ConditionalAndExpression() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	boolean justNT;
+}
+{
+	 nt1=InclusiveOrExpression() {justNT=true;} [ LOOKAHEAD(2)  nt2=MoreCondAndExpr() {justNT=false;} ]
+		{
+		if (justNT)
+			return((Lang.ConditionalAndExpression) nt1);
+		return(new Lang.CondAndExpr().setParms(nt1, nt2));
+		}
+
+}
+
+Lang.MoreCondAndExpr MoreCondAndExpr() :
+{
+	Lang.MoreCondAndExpr list = new Lang.MoreCondAndExpr();
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	(LOOKAHEAD(2)  nt1=CAEBody() { list.add(new Lang.MoreCondAndExprElem().setParms(nt1)); } )+
+		{ return(list); }
+
+}
+
+Lang.CAEBody CAEBody() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="&&" nt1=InclusiveOrExpression()
+		{
+		return(new Lang.CAEBod().setParms(t2at(t1), nt1));
+		}
+
+}
+
+Lang.InclusiveOrExpression InclusiveOrExpression() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	boolean justNT;
+}
+{
+	 nt1=ExclusiveOrExpression() {justNT=true;} [ LOOKAHEAD(2)  nt2=MoreInclOrExpr() {justNT=false;} ]
+		{
+		if (justNT)
+			return((Lang.InclusiveOrExpression) nt1);
+		return(new Lang.InclOrExpr().setParms(nt1, nt2));
+		}
+
+}
+
+Lang.MoreInclOrExpr MoreInclOrExpr() :
+{
+	Lang.MoreInclOrExpr list = new Lang.MoreInclOrExpr();
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	(LOOKAHEAD(2)  nt1=IOEBody() { list.add(new Lang.MoreInclOrExprElem().setParms(nt1)); } )+
+		{ return(list); }
+
+}
+
+Lang.IOEBody IOEBody() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="|" nt1=ExclusiveOrExpression()
+		{
+		return(new Lang.IOEBod().setParms(t2at(t1), nt1));
+		}
+
+}
+
+Lang.ExclusiveOrExpression ExclusiveOrExpression() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	boolean justNT;
+}
+{
+	 nt1=AndExpression() {justNT=true;} [ LOOKAHEAD(2)  nt2=MoreExclOrExpr() {justNT=false;} ]
+		{
+		if (justNT)
+			return((Lang.ExclusiveOrExpression) nt1);
+		return(new Lang.ExclOrExpr().setParms(nt1, nt2));
+		}
+
+}
+
+Lang.MoreExclOrExpr MoreExclOrExpr() :
+{
+	Lang.MoreExclOrExpr list = new Lang.MoreExclOrExpr();
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	(LOOKAHEAD(2)  nt1=EOEBody() { list.add(new Lang.MoreExclOrExprElem().setParms(nt1)); } )+
+		{ return(list); }
+
+}
+
+Lang.EOEBody EOEBody() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="^" nt1=AndExpression()
+		{
+		return(new Lang.EOEBod().setParms(t2at(t1), nt1));
+		}
+
+}
+
+Lang.AndExpression AndExpression() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	boolean justNT;
+}
+{
+	 nt1=EqualityExpression() {justNT=true;} [ LOOKAHEAD(2)  nt2=MoreAndExpr() {justNT=false;} ]
+		{
+		if (justNT)
+			return((Lang.AndExpression) nt1);
+		return(new Lang.AndExpr().setParms(nt1, nt2));
+		}
+
+}
+
+Lang.MoreAndExpr MoreAndExpr() :
+{
+	Lang.MoreAndExpr list = new Lang.MoreAndExpr();
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	(LOOKAHEAD(2)  nt1=AEBody() { list.add(new Lang.MoreAndExprElem().setParms(nt1)); } )+
+		{ return(list); }
+
+}
+
+Lang.AEBody AEBody() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="&" nt1=EqualityExpression()
+		{
+		return(new Lang.AEBod().setParms(t2at(t1), nt1));
+		}
+
+}
+
+Lang.EqualityExpression EqualityExpression() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	boolean justNT;
+}
+{
+	 nt1=InstanceOfExpression() {justNT=true;} [ LOOKAHEAD(2)  nt2=MoreEqExpr() {justNT=false;} ]
+		{
+		if (justNT)
+			return((Lang.EqualityExpression) nt1);
+		return(new Lang.EqExpr().setParms(nt1, nt2));
+		}
+
+}
+
+Lang.MoreEqExpr MoreEqExpr() :
+{
+	Lang.MoreEqExpr list = new Lang.MoreEqExpr();
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	(LOOKAHEAD(2)  nt1=EEBody() { list.add(new Lang.MoreEqExprElem().setParms(nt1)); } )+
+		{ return(list); }
+
+}
+
+Lang.EEBody EEBody() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	boolean justNT;
+}
+{
+	 nt1=EqExprChoices() nt2=InstanceOfExpression()
+		{
+		return(new Lang.EEBodyC().setParms(nt1, nt2));
+		}
+
+}
+
+Lang.EqExprChoices EqExprChoices() :
+{
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="=="
+		{
+		return(new Lang.Eq().setParms(t2at(t1)));
+		}
+|	 t1="!="
+		{
+		return(new Lang.Neq().setParms(t2at(t1)));
+		}
+
+}
+
+Lang.InstanceOfExpression InstanceOfExpression() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 nt1=RelationalExpression() {justNT=true;} [ LOOKAHEAD(2)  t1="instanceof" nt2=AST_TypeName() {justNT=false;} ]
+		{
+		if (justNT)
+			return((Lang.InstanceOfExpression) nt1);
+		return(new Lang.IoExpr().setParms(nt1, t2at(t1), nt2));
+		}
+
+}
+
+Lang.RelationalExpression RelationalExpression() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	boolean justNT;
+}
+{
+	 nt1=ShiftExpression() {justNT=true;} [ LOOKAHEAD(2)  nt2=MoreRelExpr() {justNT=false;} ]
+		{
+		if (justNT)
+			return((Lang.RelationalExpression) nt1);
+		return(new Lang.RelExpr().setParms(nt1, nt2));
+		}
+
+}
+
+Lang.MoreRelExpr MoreRelExpr() :
+{
+	Lang.MoreRelExpr list = new Lang.MoreRelExpr();
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	(LOOKAHEAD(2)  nt1=REBody() { list.add(new Lang.MoreRelExprElem().setParms(nt1)); } )+
+		{ return(list); }
+
+}
+
+Lang.REBody REBody() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	boolean justNT;
+}
+{
+	 nt1=RelExprChoices() nt2=ShiftExpression()
+		{
+		return(new Lang.REBod().setParms(nt1, nt2));
+		}
+
+}
+
+Lang.RelExprChoices RelExprChoices() :
+{
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="<"
+		{
+		return(new Lang.LtOp().setParms(t2at(t1)));
+		}
+|	 t1=">"
+		{
+		return(new Lang.GtOp().setParms(t2at(t1)));
+		}
+|	 t1="<="
+		{
+		return(new Lang.LeOp().setParms(t2at(t1)));
+		}
+|	 t1=">="
+		{
+		return(new Lang.GeOp().setParms(t2at(t1)));
+		}
+
+}
+
+Lang.ShiftExpression ShiftExpression() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	boolean justNT;
+}
+{
+	 nt1=AdditiveExpression() {justNT=true;} [ LOOKAHEAD(2)  nt2=MoreShiftExpr() {justNT=false;} ]
+		{
+		if (justNT)
+			return((Lang.ShiftExpression) nt1);
+		return(new Lang.ShiftExpr().setParms(nt1, nt2));
+		}
+
+}
+
+Lang.MoreShiftExpr MoreShiftExpr() :
+{
+	Lang.MoreShiftExpr list = new Lang.MoreShiftExpr();
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	(LOOKAHEAD(2)  nt1=SEBody() { list.add(new Lang.MoreShiftExprElem().setParms(nt1)); } )+
+		{ return(list); }
+
+}
+
+Lang.SEBody SEBody() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	boolean justNT;
+}
+{
+	 nt1=ShiftExprChoices() nt2=AdditiveExpression()
+		{
+		return(new Lang.SEBodyC().setParms(nt1, nt2));
+		}
+
+}
+
+Lang.ShiftExprChoices ShiftExprChoices() :
+{
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="<<"
+		{
+		return(new Lang.LShift().setParms(t2at(t1)));
+		}
+|	 t1=">>"
+		{
+		return(new Lang.RShift().setParms(t2at(t1)));
+		}
+|	 t1=">>>"
+		{
+		return(new Lang.RRShift().setParms(t2at(t1)));
+		}
+
+}
+
+Lang.AdditiveExpression AdditiveExpression() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	boolean justNT;
+}
+{
+	 nt1=MultiplicativeExpression() {justNT=true;} [ LOOKAHEAD(2)  nt2=MoreAddExpr() {justNT=false;} ]
+		{
+		if (justNT)
+			return((Lang.AdditiveExpression) nt1);
+		return(new Lang.AddExpr().setParms(nt1, nt2));
+		}
+
+}
+
+Lang.MoreAddExpr MoreAddExpr() :
+{
+	Lang.MoreAddExpr list = new Lang.MoreAddExpr();
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	(LOOKAHEAD(2)  nt1=AdEBody() { list.add(new Lang.MoreAddExprElem().setParms(nt1)); } )+
+		{ return(list); }
+
+}
+
+Lang.AdEBody AdEBody() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	boolean justNT;
+}
+{
+	 nt1=AddExprChoices() nt2=MultiplicativeExpression()
+		{
+		return(new Lang.AdEBod().setParms(nt1, nt2));
+		}
+
+}
+
+Lang.AddExprChoices AddExprChoices() :
+{
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="+"
+		{
+		return(new Lang.Plus().setParms(t2at(t1)));
+		}
+|	 t1="-"
+		{
+		return(new Lang.Minus().setParms(t2at(t1)));
+		}
+
+}
+
+Lang.MultiplicativeExpression MultiplicativeExpression() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	boolean justNT;
+}
+{
+	 nt1=UnaryExpression() {justNT=true;} [ LOOKAHEAD(2)  nt2=MoreMultExpr() {justNT=false;} ]
+		{
+		if (justNT)
+			return((Lang.MultiplicativeExpression) nt1);
+		return(new Lang.MultExpr().setParms(nt1, nt2));
+		}
+
+}
+
+Lang.MoreMultExpr MoreMultExpr() :
+{
+	Lang.MoreMultExpr list = new Lang.MoreMultExpr();
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	(LOOKAHEAD(2)  nt1=MEBody() { list.add(new Lang.MoreMultExprElem().setParms(nt1)); } )+
+		{ return(list); }
+
+}
+
+Lang.MEBody MEBody() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	boolean justNT;
+}
+{
+	 nt1=MultExprChoices() nt2=UnaryExpression()
+		{
+		return(new Lang.MEBod().setParms(nt1, nt2));
+		}
+
+}
+
+Lang.MultExprChoices MultExprChoices() :
+{
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="*"
+		{
+		return(new Lang.Mult().setParms(t2at(t1)));
+		}
+|	 t1="/"
+		{
+		return(new Lang.Div().setParms(t2at(t1)));
+		}
+|	 t1="%"
+		{
+		return(new Lang.Mod().setParms(t2at(t1)));
+		}
+
+}
+
+Lang.UnaryExpression UnaryExpression() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="+" nt1=UnaryExpression()
+		{
+		return(new Lang.PlusUE().setParms(t2at(t1), nt1));
+		}
+|	 t1="-" nt1=UnaryExpression()
+		{
+		return(new Lang.MinusUE().setParms(t2at(t1), nt1));
+		}
+|	nt1= PreIncrementExpression()
+	{ return((Lang.UnaryExpression) nt1); }
+|	nt1= PreDecrementExpression()
+	{ return((Lang.UnaryExpression) nt1); }
+|	nt1= UnaryExpressionNotPlusMinus()
+	{ return((Lang.UnaryExpression) nt1); }
+
+}
+
+Lang.PreIncrementExpression PreIncrementExpression() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="++" nt1=PrimaryExpression()
+		{
+		return(new Lang.PIncExpr().setParms(t2at(t1), nt1));
+		}
+
+}
+
+Lang.PreDecrementExpression PreDecrementExpression() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="--" nt1=PrimaryExpression()
+		{
+		return(new Lang.PDecExpr().setParms(t2at(t1), nt1));
+		}
+
+}
+
+Lang.UnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="~"
+		{
+		return(new Lang.TildeUE().setParms(t2at(t1)));
+		}
+|	 t1="!" nt1=UnaryExpression()
+		{
+		return(new Lang.NotUE().setParms(t2at(t1), nt1));
+		}
+|	LOOKAHEAD( CastLookahead()) nt1=
+	  CastExpression()
+	{ return((Lang.UnaryExpressionNotPlusMinus) nt1); }
+|	nt1= PostfixExpression()
+	{ return((Lang.UnaryExpressionNotPlusMinus) nt1); }
+
+}
+
+Lang.CastLookahead CastLookahead() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Token t1=null, t2=null, t3=null;
+	boolean justNT;
+}
+{
+	LOOKAHEAD(2)  t1="(" nt1=PrimitiveType()
+		{
+		return(new Lang.Cla1().setParms(t2at(t1), nt1));
+		}
+|	LOOKAHEAD("(" AST_QualifiedName() "[")  t1="(" nt1=AST_QualifiedName() t2="[" t3="]"
+		{
+		return(new Lang.Cla2().setParms(t2at(t1), nt1, t2at(t2), t2at(t3)));
+		}
+|	 t1="(" nt1=AST_QualifiedName() t2=")" nt2=CastLookaheadChoices()
+		{
+		return(new Lang.Cla3().setParms(t2at(t1), nt1, t2at(t2), nt2));
+		}
+
+}
+
+Lang.CastLookaheadChoices CastLookaheadChoices() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="~"
+		{
+		return(new Lang.TildeLA().setParms(t2at(t1)));
+		}
+|	 t1="!"
+		{
+		return(new Lang.BangLA().setParms(t2at(t1)));
+		}
+|	 t1="("
+		{
+		return(new Lang.OpParenLA().setParms(t2at(t1)));
+		}
+|	 t1=<IDENTIFIER>
+		{
+		return(new Lang.IdLA().setParms(t2at(t1)));
+		}
+|	 t1="this"
+		{
+		return(new Lang.ThisLA().setParms(t2at(t1)));
+		}
+|	 t1="super"
+		{
+		return(new Lang.SuperLA().setParms(t2at(t1)));
+		}
+|	 t1="new"
+		{
+		return(new Lang.NewLA().setParms(t2at(t1)));
+		}
+|	 nt1=Literal()
+		{
+		return(new Lang.LitLA().setParms(nt1));
+		}
+
+}
+
+Lang.PostfixExpression PostfixExpression() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	boolean justNT;
+}
+{
+	 nt1=PrimaryExpression() {justNT=true;} [ LOOKAHEAD(2)  nt2=PEPostIncDec() {justNT=false;} ]
+		{
+		if (justNT)
+			return((Lang.PostfixExpression) nt1);
+		return(new Lang.PEIncDec().setParms(nt1, nt2));
+		}
+
+}
+
+Lang.PEPostIncDec PEPostIncDec() :
+{
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="++"
+		{
+		return(new Lang.PlusPlus2().setParms(t2at(t1)));
+		}
+|	 t1="--"
+		{
+		return(new Lang.MinusMinus2().setParms(t2at(t1)));
+		}
+
+}
+
+Lang.CastExpression CastExpression() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Token t1=null, t2=null;
+	boolean justNT;
+}
+{
+	LOOKAHEAD("(" PrimitiveType())  t1="(" nt1=AST_TypeName() t2=")" nt2=UnaryExpression()
+		{
+		return(new Lang.CastExpr1().setParms(t2at(t1), nt1, t2at(t2), nt2));
+		}
+|	 t1="(" nt1=AST_TypeName() t2=")" nt2=UnaryExpressionNotPlusMinus()
+		{
+		return(new Lang.CastExpr2().setParms(t2at(t1), nt1, t2at(t2), nt2));
+		}
+
+}
+
+Lang.PrimaryExpression PrimaryExpression() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	boolean justNT;
+}
+{
+	 nt1=PrimaryPrefix() {justNT=true;} [ LOOKAHEAD(2)  nt2=Suffixes() {justNT=false;} ]
+		{
+		if (justNT)
+			return((Lang.PrimaryExpression) nt1);
+		return(new Lang.PrimExpr().setParms(nt1, nt2));
+		}
+
+}
+
+Lang.Suffixes Suffixes() :
+{
+	Lang.Suffixes list = new Lang.Suffixes();
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	(LOOKAHEAD(2)  nt1=PrimarySuffix() { list.add(new Lang.SuffixesElem().setParms(nt1)); } )+
+		{ return(list); }
+
+}
+
+Lang.PrimaryPrefix PrimaryPrefix() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null, t2=null;
+	boolean justNT;
+}
+{
+	nt1= Literal()
+	{ return((Lang.PrimaryPrefix) nt1); }
+|	 t1="this"
+		{
+		return(new Lang.ThisPre().setParms(t2at(t1)));
+		}
+|	 t1="super" t2="." nt1=QName()
+		{
+		return(new Lang.SuperPre().setParms(t2at(t1), t2at(t2), nt1));
+		}
+|	 t1="(" nt1=Expression() t2=")"
+		{
+		return(new Lang.ExprPre().setParms(t2at(t1), nt1, t2at(t2)));
+		}
+|	nt1= AllocationExpression()
+	{ return((Lang.PrimaryPrefix) nt1); }
+|	LOOKAHEAD( AST_TypeName() "." "class")  nt1=AST_TypeName() t1="." t2="class"
+		{
+		return(new Lang.RTPre().setParms(nt1, t2at(t1), t2at(t2)));
+		}
+|	 nt1=AST_QualifiedName()
+		{
+		return(new Lang.PPQualName().setParms(nt1));
+		}
+
+}
+
+Lang.PrimarySuffix PrimarySuffix() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null, t2=null;
+	boolean justNT;
+}
+{
+	LOOKAHEAD(2)  t1="." t2="this"
+		{
+		return(new Lang.ThisSuf().setParms(t2at(t1), t2at(t2)));
+		}
+|	LOOKAHEAD(2)  t1="." nt1=AllocationExpression()
+		{
+		return(new Lang.AllocSuf().setParms(t2at(t1), nt1));
+		}
+|	 t1="[" nt1=Expression() t2="]"
+		{
+		return(new Lang.ExprSuf().setParms(t2at(t1), nt1, t2at(t2)));
+		}
+|	 t1="." nt1=QName()
+		{
+		return(new Lang.QNameSuf().setParms(t2at(t1), nt1));
+		}
+|	 nt1=Arguments()
+		{
+		return(new Lang.MthCall().setParms(nt1));
+		}
+
+}
+
+Lang.Literal Literal() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1=<INTEGER_LITERAL>
+		{
+		return(new Lang.IntLit().setParms(t2at(t1)));
+		}
+|	 t1=<FLOATING_POINT_LITERAL>
+		{
+		return(new Lang.FPLit().setParms(t2at(t1)));
+		}
+|	 t1=<CHARACTER_LITERAL>
+		{
+		return(new Lang.CharLit().setParms(t2at(t1)));
+		}
+|	 t1=<STRING_LITERAL>
+		{
+		return(new Lang.StrLit().setParms(t2at(t1)));
+		}
+|	nt1= BooleanLiteral()
+	{ return((Lang.Literal) nt1); }
+|	nt1= NullLiteral()
+	{ return((Lang.Literal) nt1); }
+
+}
+
+Lang.BooleanLiteral BooleanLiteral() :
+{
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="true"
+		{
+		return(new Lang.True().setParms(t2at(t1)));
+		}
+|	 t1="false"
+		{
+		return(new Lang.False().setParms(t2at(t1)));
+		}
+
+}
+
+Lang.NullLiteral NullLiteral() :
+{
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="null"
+		{
+		return(new Lang.Null().setParms(t2at(t1)));
+		}
+
+}
+
+Lang.Arguments Arguments() :
+{
+	Lang.AstNode nt1=null;
+	Lang.AstOptNode ont1=null;
+	Token t1=null, t2=null;
+	boolean justNT;
+}
+{
+	 t1="(" [  nt1=AST_ArgList() ] t2=")"
+		{
+		ont1 = new Lang.AstOptNode().setParms(nt1);
+		return(new Lang.Args().setParms(t2at(t1), ont1, t2at(t2)));
+		}
+
+}
+
+Lang.AST_ArgList AST_ArgList() :
+{
+	Lang.AST_ArgList list = new Lang.AST_ArgList();
+	Lang.AstNode nt1=null, nt2=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 nt1=Expression()
+		{ list.add(new Lang.AST_ArgListElem().setParms(null, nt1)); }
+	( t1="," nt2=Expression()
+		{ list.add(new Lang.AST_ArgListElem().setParms(t2at(t1), nt2)); }
+	)*
+		{ return(list); }
+
+}
+
+Lang.AllocationExpression AllocationExpression() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	LOOKAHEAD(2)  t1="new" nt1=PrimitiveType() nt2=ArrayDimsAndInits()
+		{
+		return(new Lang.PrimAllocExpr().setParms(t2at(t1), nt1, nt2));
+		}
+|	 t1="new" nt1=AST_QualifiedName() nt2=AllocExprChoices()
+		{
+		return(new Lang.ObjAllocExpr().setParms(t2at(t1), nt1, nt2));
+		}
+
+}
+
+Lang.AllocExprChoices AllocExprChoices() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Lang.AstOptNode ont1=null, ont2=null;
+	boolean justNT;
+}
+{
+	nt1= ArrayDimsAndInits()
+	{ return((Lang.AllocExprChoices) nt1); }
+|	 nt1=Arguments() [  nt2=ClassBody() ]
+		{
+		ont2 = new Lang.AstOptNode().setParms(nt2);
+		return(new Lang.AnonClass().setParms(nt1, ont2));
+		}
+
+}
+
+Lang.ArrayDimsAndInits ArrayDimsAndInits() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Lang.AstOptNode ont1=null, ont2=null;
+	boolean justNT;
+}
+{
+	LOOKAHEAD(2)  nt1=ExprDims() [ LOOKAHEAD(2)  nt2=Dims() ]
+		{
+		ont2 = new Lang.AstOptNode().setParms(nt2);
+		return(new Lang.ArrDim1().setParms(nt1, ont2));
+		}
+|	 nt1=Dims() nt2=AST_ArrayInit()
+		{
+		return(new Lang.ArrDim2().setParms(nt1, nt2));
+		}
+
+}
+
+Lang.ExprDims ExprDims() :
+{
+	Lang.ExprDims list = new Lang.ExprDims();
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	(LOOKAHEAD(2)  nt1=ExDimBody() { list.add(new Lang.ExprDimsElem().setParms(nt1)); } )+
+		{ return(list); }
+
+}
+
+Lang.ExDimBody ExDimBody() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null, t2=null;
+	boolean justNT;
+}
+{
+	 t1="[" nt1=Expression() t2="]"
+		{
+		return(new Lang.ExDimBod().setParms(t2at(t1), nt1, t2at(t2)));
+		}
+
+}
+
+Lang.Statement Statement() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	LOOKAHEAD(QName() ":") nt1=
+	  LabeledStatement()
+	{ return((Lang.Statement) nt1); }
+|	nt1= Block()
+	{ return((Lang.Statement) nt1); }
+|	nt1= EmptyStatement()
+	{ return((Lang.Statement) nt1); }
+|	nt1= SwitchStatement()
+	{ return((Lang.Statement) nt1); }
+|	nt1= IfStatement()
+	{ return((Lang.Statement) nt1); }
+|	nt1= WhileStatement()
+	{ return((Lang.Statement) nt1); }
+|	nt1= DoStatement()
+	{ return((Lang.Statement) nt1); }
+|	nt1= ForStatement()
+	{ return((Lang.Statement) nt1); }
+|	nt1= BreakStatement()
+	{ return((Lang.Statement) nt1); }
+|	nt1= ContinueStatement()
+	{ return((Lang.Statement) nt1); }
+|	nt1= ReturnStatement()
+	{ return((Lang.Statement) nt1); }
+|	nt1= ThrowStatement()
+	{ return((Lang.Statement) nt1); }
+|	nt1= SynchronizedStatement()
+	{ return((Lang.Statement) nt1); }
+|	nt1= TryStatement()
+	{ return((Lang.Statement) nt1); }
+|	 nt1=AST_Exp() t1=";"
+		{
+		return(new Lang.ExprStmt().setParms(nt1, t2at(t1)));
+		}
+
+}
+
+Lang.LabeledStatement LabeledStatement() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 nt1=QName() t1=":" nt2=Statement()
+		{
+		return(new Lang.LabeledStmt().setParms(nt1, t2at(t1), nt2));
+		}
+
+}
+
+Lang.Block Block() :
+{
+	Lang.AstNode nt1=null;
+	Lang.AstOptNode ont1=null;
+	Token t1=null, t2=null;
+	boolean justNT;
+}
+{
+	 t1="{" [  nt1=AST_Stmt() ] t2="}"
+		{
+		ont1 = new Lang.AstOptNode().setParms(nt1);
+		return(new Lang.BlockC().setParms(t2at(t1), ont1, t2at(t2)));
+		}
+
+}
+
+Lang.AST_Stmt AST_Stmt() :
+{
+	Lang.AST_Stmt list = new Lang.AST_Stmt();
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	( nt1=BlockStatement() { list.add(new Lang.AST_StmtElem().setParms(nt1)); } )+
+		{ return(list); }
+
+}
+
+Lang.BlockStatement BlockStatement() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	LOOKAHEAD([ "final" ] AST_TypeName() <IDENTIFIER>)  nt1=LocalVariableDeclaration() t1=";"
+		{
+		return(new Lang.BlockStmt().setParms(nt1, t2at(t1)));
+		}
+|	nt1= Statement()
+	{ return((Lang.BlockStatement) nt1); }
+|	 nt1=UnmodifiedClassDeclaration()
+		{
+		return(new Lang.BlkClassDcl().setParms(nt1));
+		}
+|	 nt1=UnmodifiedInterfaceDeclaration()
+		{
+		return(new Lang.BlkInterDcl().setParms(nt1));
+		}
+
+}
+
+Lang.LocalVariableDeclaration LocalVariableDeclaration() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Token t1=null;
+	Lang.AstOptToken ot1=null;
+	boolean justNT;
+}
+{
+	 [  t1="final" ] nt1=AST_TypeName() nt2=AST_VarDecl()
+		{
+		ot1 = new Lang.AstOptToken().setParms(t2at(t1));
+		return(new Lang.LocalVarDecl().setParms(ot1, nt1, nt2));
+		}
+
+}
+
+Lang.EmptyStatement EmptyStatement() :
+{
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1=";"
+		{
+		return(new Lang.Empty().setParms(t2at(t1)));
+		}
+
+}
+
+Lang.AST_ExpStmt AST_ExpStmt() :
+{
+	Lang.AST_ExpStmt list = new Lang.AST_ExpStmt();
+	Lang.AstNode nt1=null, nt2=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 nt1=StatementExpression()
+		{ list.add(new Lang.AST_ExpStmtElem().setParms(null, nt1)); }
+	( t1="," nt2=StatementExpression()
+		{ list.add(new Lang.AST_ExpStmtElem().setParms(t2at(t1), nt2)); }
+	)*
+		{ return(list); }
+
+}
+
+Lang.StatementExpression StatementExpression() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Lang.AstOptNode ont1=null, ont2=null;
+	boolean justNT;
+}
+{
+	 nt1=PreIncrementExpression()
+		{
+		return(new Lang.PIExpr().setParms(nt1));
+		}
+|	 nt1=PreDecrementExpression()
+		{
+		return(new Lang.PDExpr().setParms(nt1));
+		}
+|	 nt1=PrimaryExpression() [  nt2=StmtExprChoices() ]
+		{
+		ont2 = new Lang.AstOptNode().setParms(nt2);
+		return(new Lang.PEStmtExpr().setParms(nt1, ont2));
+		}
+
+}
+
+Lang.StmtExprChoices StmtExprChoices() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="++"
+		{
+		return(new Lang.PlusPlus().setParms(t2at(t1)));
+		}
+|	 t1="--"
+		{
+		return(new Lang.MinusMinus().setParms(t2at(t1)));
+		}
+|	 nt1=AssignmentOperator() nt2=Expression()
+		{
+		return(new Lang.AssnExpr().setParms(nt1, nt2));
+		}
+
+}
+
+Lang.SwitchStatement SwitchStatement() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Lang.AstOptNode ont1=null, ont2=null;
+	Token t1=null, t2=null, t3=null, t4=null, t5=null;
+	boolean justNT;
+}
+{
+	 t1="switch" t2="(" nt1=Expression() t3=")" t4="{" [  nt2=AST_SwitchEntry() ] t5="}"
+		{
+		ont2 = new Lang.AstOptNode().setParms(nt2);
+		return(new Lang.SwitchStmt().setParms(t2at(t1), t2at(t2), nt1, t2at(t3), t2at(t4), ont2, t2at(t5)));
+		}
+
+}
+
+Lang.AST_SwitchEntry AST_SwitchEntry() :
+{
+	Lang.AST_SwitchEntry list = new Lang.AST_SwitchEntry();
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	( nt1=SwitchEntryBody() { list.add(new Lang.AST_SwitchEntryElem().setParms(nt1)); } )+
+		{ return(list); }
+
+}
+
+Lang.SwitchEntryBody SwitchEntryBody() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Lang.AstOptNode ont1=null, ont2=null;
+	boolean justNT;
+}
+{
+	 nt1=SwitchLabel() [  nt2=AST_Stmt() ]
+		{
+		ont2 = new Lang.AstOptNode().setParms(nt2);
+		return(new Lang.SEBod().setParms(nt1, ont2));
+		}
+
+}
+
+Lang.SwitchLabel SwitchLabel() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null, t2=null;
+	boolean justNT;
+}
+{
+	 t1="case" nt1=Expression() t2=":"
+		{
+		return(new Lang.CaseLabel().setParms(t2at(t1), nt1, t2at(t2)));
+		}
+|	 t1="default" t2=":"
+		{
+		return(new Lang.DefLabel().setParms(t2at(t1), t2at(t2)));
+		}
+
+}
+
+Lang.IfStatement IfStatement() :
+{
+	Lang.AstNode nt1=null, nt2=null, nt3=null;
+	Lang.AstOptNode ont1=null, ont2=null, ont3=null;
+	Token t1=null, t2=null, t3=null;
+	boolean justNT;
+}
+{
+	 t1="if" t2="(" nt1=Expression() t3=")" nt2=Statement() [ LOOKAHEAD(1)  nt3=ElseClause() ]
+		{
+		ont3 = new Lang.AstOptNode().setParms(nt3);
+		return(new Lang.IfStmt().setParms(t2at(t1), t2at(t2), nt1, t2at(t3), nt2, ont3));
+		}
+
+}
+
+Lang.ElseClause ElseClause() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="else" nt1=Statement()
+		{
+		return(new Lang.ElseClauseC().setParms(t2at(t1), nt1));
+		}
+
+}
+
+Lang.WhileStatement WhileStatement() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Token t1=null, t2=null, t3=null;
+	boolean justNT;
+}
+{
+	 t1="while" t2="(" nt1=Expression() t3=")" nt2=Statement()
+		{
+		return(new Lang.WhileStm().setParms(t2at(t1), t2at(t2), nt1, t2at(t3), nt2));
+		}
+
+}
+
+Lang.DoStatement DoStatement() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Token t1=null, t2=null, t3=null, t4=null, t5=null;
+	boolean justNT;
+}
+{
+	 t1="do" nt1=Statement() t2="while" t3="(" nt2=Expression() t4=")" t5=";"
+		{
+		return(new Lang.DoWhileStm().setParms(t2at(t1), nt1, t2at(t2), t2at(t3), nt2, t2at(t4), t2at(t5)));
+		}
+
+}
+
+Lang.ForStatement ForStatement() :
+{
+	Lang.AstNode nt1=null, nt2=null, nt3=null, nt4=null;
+	Lang.AstOptNode ont1=null, ont2=null, ont3=null, ont4=null;
+	Token t1=null, t2=null, t3=null, t4=null, t5=null;
+	boolean justNT;
+}
+{
+	 t1="for" t2="(" [  nt1=ForInit() ] t3=";" [  nt2=Expression() ] t4=";" [  nt3=ForUpdate() ] t5=")" nt4=Statement()
+		{
+		ont1 = new Lang.AstOptNode().setParms(nt1);
+		ont2 = new Lang.AstOptNode().setParms(nt2);
+		ont3 = new Lang.AstOptNode().setParms(nt3);
+		return(new Lang.ForStmt().setParms(t2at(t1), t2at(t2), ont1, t2at(t3), ont2, t2at(t4), ont3, t2at(t5), nt4));
+		}
+
+}
+
+Lang.ForInit ForInit() :
+{
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	LOOKAHEAD( [ "final" ] AST_TypeName() <IDENTIFIER>) nt1=
+	  LocalVariableDeclaration()
+	{ return((Lang.ForInit) nt1); }
+|	 nt1=StatementExpressionList()
+		{
+		return(new Lang.FIExprList().setParms(nt1));
+		}
+
+}
+
+Lang.StatementExpressionList StatementExpressionList() :
+{
+	Lang.StatementExpressionList list = new Lang.StatementExpressionList();
+	Lang.AstNode nt1=null, nt2=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 nt1=StatementExpression()
+		{ list.add(new Lang.StatementExpressionListElem().setParms(null, nt1)); }
+	( t1="," nt2=StatementExpression()
+		{ list.add(new Lang.StatementExpressionListElem().setParms(t2at(t1), nt2)); }
+	)*
+		{ return(list); }
+
+}
+
+Lang.ForUpdate ForUpdate() :
+{
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	 nt1=StatementExpressionList()
+		{
+		return(new Lang.StmExprList().setParms(nt1));
+		}
+
+}
+
+Lang.BreakStatement BreakStatement() :
+{
+	Lang.AstNode nt1=null;
+	Lang.AstOptNode ont1=null;
+	Token t1=null, t2=null;
+	boolean justNT;
+}
+{
+	 t1="break" [  nt1=QName() ] t2=";"
+		{
+		ont1 = new Lang.AstOptNode().setParms(nt1);
+		return(new Lang.BreakStm().setParms(t2at(t1), ont1, t2at(t2)));
+		}
+
+}
+
+Lang.ContinueStatement ContinueStatement() :
+{
+	Lang.AstNode nt1=null;
+	Lang.AstOptNode ont1=null;
+	Token t1=null, t2=null;
+	boolean justNT;
+}
+{
+	 t1="continue" [  nt1=QName() ] t2=";"
+		{
+		ont1 = new Lang.AstOptNode().setParms(nt1);
+		return(new Lang.ContinueStm().setParms(t2at(t1), ont1, t2at(t2)));
+		}
+
+}
+
+Lang.ReturnStatement ReturnStatement() :
+{
+	Lang.AstNode nt1=null;
+	Lang.AstOptNode ont1=null;
+	Token t1=null, t2=null;
+	boolean justNT;
+}
+{
+	 t1="return" [  nt1=Expression() ] t2=";"
+		{
+		ont1 = new Lang.AstOptNode().setParms(nt1);
+		return(new Lang.ReturnStm().setParms(t2at(t1), ont1, t2at(t2)));
+		}
+
+}
+
+Lang.ThrowStatement ThrowStatement() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null, t2=null;
+	boolean justNT;
+}
+{
+	 t1="throw" nt1=Expression() t2=";"
+		{
+		return(new Lang.ThrowStm().setParms(t2at(t1), nt1, t2at(t2)));
+		}
+
+}
+
+Lang.SynchronizedStatement SynchronizedStatement() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Token t1=null, t2=null, t3=null;
+	boolean justNT;
+}
+{
+	 t1="synchronized" t2="(" nt1=Expression() t3=")" nt2=Block()
+		{
+		return(new Lang.SyncStmt().setParms(t2at(t1), t2at(t2), nt1, t2at(t3), nt2));
+		}
+
+}
+
+Lang.TryStatement TryStatement() :
+{
+	Lang.AstNode nt1=null, nt2=null, nt3=null;
+	Lang.AstOptNode ont1=null, ont2=null, ont3=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="try" nt1=Block() [  nt2=AST_Catches() ] [  nt3=Finally() ]
+		{
+		ont2 = new Lang.AstOptNode().setParms(nt2);
+		ont3 = new Lang.AstOptNode().setParms(nt3);
+		return(new Lang.TryStmt().setParms(t2at(t1), nt1, ont2, ont3));
+		}
+
+}
+
+Lang.Finally Finally() :
+{
+	Lang.AstNode nt1=null;
+	Token t1=null;
+	boolean justNT;
+}
+{
+	 t1="finally" nt1=Block()
+		{
+		return(new Lang.FinallyC().setParms(t2at(t1), nt1));
+		}
+
+}
+
+Lang.AST_Catches AST_Catches() :
+{
+	Lang.AST_Catches list = new Lang.AST_Catches();
+	Lang.AstNode nt1=null;
+	boolean justNT;
+}
+{
+	( nt1=Catch() { list.add(new Lang.AST_CatchesElem().setParms(nt1)); } )+
+		{ return(list); }
+
+}
+
+Lang.Catch Catch() :
+{
+	Lang.AstNode nt1=null, nt2=null;
+	Token t1=null, t2=null, t3=null;
+	boolean justNT;
+}
+{
+	 t1="catch" t2="(" nt1=FormalParameter() t3=")" nt2=Block()
+		{
+		return(new Lang.CatchStmt().setParms(t2at(t1), t2at(t2), nt1, t2at(t3), nt2));
+		}
+
+}
+
+
+TOKEN :
+{	<IDENTIFIER:  <LETTER> (<LETTER>|<DIGIT>)*>
+|	<OTHER:  ~[]>
+}

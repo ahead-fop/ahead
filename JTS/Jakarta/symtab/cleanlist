@@ -1,0 +1,18 @@
+# The Clean facility looks for this file in the specified or current
+# directory and removes all file matching the file specifications contained
+# within using rm.exe.  There are 3 types of directives that can be
+# specified:
+#
+#  1.rmfile(spec)                       e.g.: rmfile(*x??.*y*)
+#  2.rmfile(prefix.suffix=.new_suffix)	e.g.: rmfile(*.java=.class)
+#  3.rmrecursive(spec)                  e.g.: rmrecursive(savedir)
+#
+# The standard "*" and "?" wildcards can be used in parts of the
+# specification except in the .suffix and .new_suffix of directive 2.
+# Directive 1 simply removes files that match the file spec.  For each file
+# that ends in the .suffix string, directive 2 removes the cooresponding
+# file that ends in .new_suffix string.  Directive 3 recursively (rm -fr)
+# removes files that match the file spec.  Though not shown above, multiple
+# file specs can appear in any directive.
+#
+rmfile(*.class)

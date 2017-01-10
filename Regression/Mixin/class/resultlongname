@@ -1,0 +1,21 @@
+// this tests if the mangling of long layer package names works
+
+layer foobar.longFoobar;
+
+import x.y.z.*;
+import java.io.Serializable;
+
+SoUrCe RooT foobar.longFoobar "C:!Java!FeatureOrientedProgramming!Regression!Mixin!class!CBase1.jak";
+
+abstract class MyInt$$foobar$longFoobar implements FooInterface { 
+    int Silent = 0;
+    void foo() throws AFit { }
+    SomeType bar( int x ) { }
+}
+
+SoUrCe  myaspect "C:!Java!FeatureOrientedProgramming!Regression!Mixin!class!CExt0.jak";
+
+ class MyInt extends MyInt$$foobar$longFoobar implements java.io.Serializable {
+    void foo() throws SomeException { Super().foo(); }
+    SomeType bar( int i ) { Super(int).bar(i); }
+}

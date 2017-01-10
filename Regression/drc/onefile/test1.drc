@@ -1,0 +1,7 @@
+// tests ability to add attributes
+
+single layer foo;
+
+outside Bool search ( search );
+outside Int  range ( range < 40 );
+inside  Bool isPresent;

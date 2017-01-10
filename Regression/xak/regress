@@ -1,0 +1,53 @@
+#!/bin/bash
+
+if [ -z "$BASH" ] ; then
+     exec bash $0 $@
+fi
+
+echo "**************** XAK - v1 - HTML Test ***************"
+
+# ATS=D:/ahead/bin/ahead-v2006.03.02-xak-ok
+
+
+echo "**************** XAK - HTML Test ***************"
+
+#java -jar $ATS/build/lib/xak.jar -c base-index.html ref-index.html -o result.html 
+
+java org.onekin.xak.Xak -c base-index.html ref-index.html -o result.html 
+
+if diff -wB index.html result.html ; then
+    echo "1 HTML succeeded"
+else
+    echo "1 HTML failed"
+    exit 1
+fi
+
+echo "**************** XAK -v1 - XML (Ant) Test **********"
+
+# java -jar $ATS/build/lib/xak.jar -c base-build.xml ref-build.xml -o result.xml
+
+java org.onekin.xak.Xak -c base-build.xml ref-build.xml -o result.xml
+
+#WARNING: there can not be a file named 'build.xml' in 'Regression/xak' folfer
+
+if diff -wB result-build.xml result.xml ; then
+    echo "2 XML (Ant) succeeded"
+else
+    echo "2 XML (Ant) failed"
+    exit 1
+fi
+
+echo "**************** XAK - v2 - HTML Test **********"
+
+#java -jar $ATS/build/lib/xak.jar -xak2 -c base-sven.xak refine-sven.xak -o result.xak 
+
+java org.onekin.xak.Xak -xak2 -c base-sven.xak refine-sven.xak -o result.xak 
+
+if diff -wB result.xak result-sven.xak ; then
+    echo "1 XAK-v2 succeeded"
+else
+    echo "1 XAK-v2 failed"
+    exit 1
+fi
+
+rm result.*

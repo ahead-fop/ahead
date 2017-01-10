@@ -1,0 +1,146 @@
+package fsats.gui;
+
+
+/**
+ * Contains the messages used by an Opfac
+ *
+ * @author Bryan Tower (btower@arlut.utexas.edu)
+ * @version 1.0, 04/05/99
+ */
+public class Message 
+{
+  private String specific;
+  private String type;
+  private String source; 
+  private String destination;
+  private String missionID;
+
+  Message(fsats.guiIf.Message simMessage)
+  {
+      specific = simMessage.getSpecific();
+      type = simMessage.getType();
+      source = simMessage.getSource();
+      destination = simMessage.getDestination();
+      missionID = simMessage.getMissionId();
+  }
+
+  /**
+   * Get the type of message (ex. fr;grid, fo;cmd).
+   *
+   * @return String type
+   */
+  public String getType() { return type; }
+
+  /**
+   * Get the opfacID that is the source of this message.
+   * @return String source
+   */
+  public String getSource() { return source; }
+
+  /**
+   * Get the opfacID that is the destination of this message.
+   *
+   * @return String destination
+   */
+  public String getDestination() { return destination; }
+
+  /**
+   * Get the MissionID of this message.
+   *
+   * @return MissionID missionID
+   */
+  public String getMissionID() { return missionID; }
+
+  /**
+   * Returns this message string.
+   *
+   * @return String message
+   */
+  public String getSpecific() { return specific; }
+
+  /**********************************************/
+  /******* EXCIS Demo Additions - Start *********/
+
+  /**
+   * Map the opfac name to its role.
+   * Hardcoded for now....
+   */
+   private String toRole(
+      String opfacName)
+   {
+      String opfacRole = "";
+      
+      if opfacName.trim().equals("F/D/C/3 /37") { opfacRole = "DS_BN_CP"}
+      if opfacName.trim().equals("/1/A/3 /37") { opfacRole = "DS_FA_PLT"}
+      if opfacName.trim().equals("F/S/E/TC/33") { opfacRole = "DIV_FSE_TAC"}
+      if opfacName.trim().equals("F/S/E/3C/BDE") { opfacRole = "BDE_FSE"}
+      if opfacName.trim().equals("F/S/E/1 /10") { opfacRole = "BN_FSE"}
+      if opfacName.trim().equals("F/I/S/10/110") { opfacRole = "MECH_FIST"}
+      if opfacName.trim().equals("F/O/11/110") { opfacRole = "FO"}
+
+      return opfacRole;
+   }
+
+  /**
+   * Return the role of the source opfac.
+   */
+   public String getSourceRole()
+   {
+      return toRole(source);
+   }
+
+  /**
+   * Return the role of the destination opfac.
+   */
+   public String getDestinationRole()
+   {
+      return toRole(destination);
+   }
+
+  /**
+   * Return the name of the message.
+   */
+   public String getName()
+   {
+      String name = new String(type);
+
+      if type.equals("Initiate") { name = "CALL_FOR_FIRE";}
+      if type.equals("Mission_Assigned") { name = "ACCEPT";}
+      if type.equals("Deny") { name = "DENY";}
+      if type.equals("Shot") { name = "SHOT";}
+      if type.equals("Splash") { name = "SPLASH";}
+      if type.equals("Rounds_Complete") { name = "ROUNDS_COMPLETE";}
+      if type.equals("End_of_Mission") { name = "END_OF_MISSION";}
+      if type.equals("Mission_Fired_Report") { name = "MISSION_FIRED_REPORT";}
+
+      return name;
+   }
+
+  /**
+   * Return the MSC block id.
+   * Just an empty string for now.
+   */
+   public String getBlockId()
+   {
+      return "";
+   }
+
+  /**
+   * Return the message name concatenated with the MSC block id.
+   * Delimitied by a |.  Since the block id is an empty string
+   * This returns "messageName|".
+   */
+   public String getNameAndBlockId()
+   {
+      return type+"|"
+   }
+
+   public String toString()
+   {
+      return getNameAndBlockId() + ":" + getSourceRole() + "->" + getDestinationRole();
+   }
+
+  /******* EXCIS Demo Additions - End ***********/
+  /**********************************************/
+
+}

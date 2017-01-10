@@ -1,0 +1,11 @@
+import initial.stuff;
+
+class myclass {
+    // a base variable
+    int baseVariable;
+
+    // a base method
+    void baseMethod() {
+        baseVariable = 1;
+    }
+}

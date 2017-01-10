@@ -1,0 +1,69 @@
+
+import java.io.PrintWriter;
+import Jakarta.symtab.*;
+import jak2java.* ;
+
+public class test1 {
+    public static void main(String[] args) {
+	AST_Program prg = prg{
+	    package MyPackage;
+
+	    public class myClass extends mySuperclass {
+		int foo;
+		void foo() {
+		    float foo = 0.0;
+
+		    this.foo = foo;
+		    foo();
+		    foo(0);
+		}
+
+		void foo(int foo) {
+		    this.foo = foo;
+		}
+	    }
+
+	    class mySuperclass {
+		float bar;
+	    }
+	}prg;
+
+	AstCursor csr1 = new AstCursor();
+	AstCursor csrFound = new AstCursor();
+	Expression exp;
+	AST_Exp fooPattern = match exp{ foo }exp;
+	Declaration dcl;
+	Symtab st = Symtab.instance();
+	PrintWriter pw = new PrintWriter(System.out);
+
+	csr1.First(prg);
+
+	fooPattern.findPattern(csr1, csrFound);
+	fooPattern.findPattern(csr1, csrFound);
+
+	// Build symbol table (was created above)
+	prg.buildSymbolTable();
+	pw.println("Symbol table built.");
+
+	dcl = Symtab.instance().lookup("java.lang.Object");
+
+	// Dump symbol table
+	pw.println("\n*** Symbol Table ***\n");
+	st.dump(pw);
+
+	// Scan the program AST and find occurances of 'foo', performing
+	// lookup's at each.
+
+	while (fooPattern.findPattern(csr1, csrFound)) {
+	    if (! (csrFound.node instanceof Expression)) {
+		pw.println("Found a non-expression instance of 'foo'");
+		continue;
+	    }
+
+	    exp = (Expression) csrFound.node;
+	    dcl = exp.lookup();
+	    pw.println("Found: " + dcl);
+	}
+	pw.close();
+    }
+}

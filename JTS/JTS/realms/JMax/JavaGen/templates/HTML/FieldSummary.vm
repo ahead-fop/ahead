@@ -1,0 +1,35 @@
+## FieldSummary.vm
+## JEDI Project 
+## HTML Template for Field Summary
+## Author: Roberto E. Lopez-Herrejon
+## Last update: November 6, 2002
+
+#if ($fields == "true")
+<!-- ======== FIELD SUMMARY ======== --> 
+<A NAME="field_summary"><!-- --></A> 
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%"> 
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor"> 
+<TD COLSPAN=2><FONT SIZE="+2"> 
+ <B>Field Summary</B></FONT>
+</TD> 
+</TR> 
+
+#foreach($field in $listFields)
+<TR BGCOLOR="white" CLASS="TableRowColor"> 
+	<TD ALIGN="right" VALIGN="top" WIDTH="1%">
+	<FONT SIZE="-1"> 
+	<CODE> $field.modifiers() $field.type() </CODE> 
+	</FONT>	
+	</TD> 
+	<TD>
+	<CODE> <B> $field.name() </B> </CODE> 
+ 	<BR> $field.comment().textFirstSentenceTags()
+ 	</TD> 	
+</TR> 
+#end
+
+</TABLE> 
+
+<BR>
+
+#end 

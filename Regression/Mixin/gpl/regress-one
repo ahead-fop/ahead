@@ -1,0 +1,20 @@
+#!/bin/sh
+
+[ -z "${BASH}" ] && exec bash "$0" "$@"
+
+function fixup() {
+    tr -s '\n\r' '\n' < "${1}"
+}
+
+echo -n Comparing {GPL,gpl-correct}/"$1".jak ...
+
+fixup GPL/$1.jak         > current
+fixup gpl-correct/$1.jak > correct 
+
+if ! diff -Bb correct current ; then
+    echo " failed"
+    exit 1
+fi
+
+echo " succeeded"
+

@@ -1,0 +1,23 @@
+
+#! JavaM => metamodels/JavaM.ecore 
+
+
+layer = JavaM::Layer.new(:name => 'test', :identifier => 'layer') 
+package_used = JavaM::Package.new(:name => 'used', :identifier => 'used', :ownerLayer => layer)
+package_feature = JavaM::Package.new(:name => 'test', :identifier => 'feature', , :ownerLayer => layer)
+
+# ref.jak
+
+feature_cls = JavaM::Class.new(:name => 'cls', :identifier => 'feature.cls', :visibility => 'public', :isRefinement => true, :owner => package_feature)
+
+#  implicitly imported files
+
+primitiveType_void = JavaM::PrimitiveType.new(:name =>'void', :identifier =>'void', :owner => package_used)
+primitiveType_int = JavaM::PrimitiveType.new(:name =>'int', :identifier =>'int', :owner => package_used)
+
+# ref.jak
+
+field_feature_cls_y = JavaM::Field.new(:name => 'feature.cls.y', :identifier => 'feature.cls.y', :type => primitiveType_int, :visibility => 'package', :nesting => 0, :isStatic => false, :isFinal => false, :ownerClass => feature_cls)
+method_feature_cls_m1int2 = JavaM::Method.new(:name => 'feature.cls.m(int)', :identifier => 'feature.cls.m(int)', :type => primitiveType_void, :nesting => 0, :visibility => 'package', :body => " {Super#.m(x); /* do nothing */ }", :ownerClass => feature_cls)
+parameter_feature_cls_m1int2_x = JavaM::Parameter.new(:name => 'feature.cls.m(int).x', :identifier => 'feature.cls.m(int).x', :type => primitiveType_int, :nesting => 0, :ownerMethod => method_feature_cls_m1int2)
+

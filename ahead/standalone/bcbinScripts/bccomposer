@@ -1,0 +1,14 @@
+#!/bin/bash
+# $1 is the given model name
+# $2 is the given equation file name (without the .equation)
+
+equationname=${2}.equation
+echo "Compose by the given equation file $equationname:"
+
+echo "	Step 1: composing......"
+bcmixin $1 $equationname
+
+echo "	Step 2: generating an executable jar file......"
+jar -cvf ${2}.jar $1/$2/*.class
+
+echo "	Composed succussefully."

@@ -1,0 +1,25 @@
+I D i9 
+Line range (-1, -1)
+ endMods 
+ beginNest
+        M D biff() boolean 
+        Line range (4, 4)
+         endMods 
+        M D foo2() void 
+        Line range (9, 9)
+         endMods 
+        C D nested 
+        Line range (5, 8)
+        final  endMods 
+         beginNest
+                M D foo() void 
+                Line range (6, 6)
+                 endMods 
+                F D v int 
+                Line range (7, 7)
+                final  endMods 
+                 beginKeys
+                finalValue :(   = 4 ):
+                 endKeys
+         endNest
+ endNest

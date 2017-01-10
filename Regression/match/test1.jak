@@ -1,0 +1,18 @@
+
+import jak.Lang;
+
+public class test1 {
+    public static void main(String[] args) {
+	Lang.AST_Stmt st = stm{ if (x < (y+5)) x++; }stm;
+	Lang.AST_Stmt pattern = match stm{ if (x < 5) x++; }stm;
+	Lang.AstCursor csr = new Lang.AstCursor();
+
+	csr.First(st);
+	if (pattern.prefixMatch(csr)) {
+	    System.out.println("Found statement");
+	}
+	else {
+	    System.out.println("Didn't match");
+	}
+    }
+}

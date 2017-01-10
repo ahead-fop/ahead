@@ -1,0 +1,12 @@
+layer cm2;
+
+refines class top {
+
+   public final void foo$$cm2( float x, float y ) { Super(float, float).foo(0,0); }
+
+   public void foo( float x, float y ) { foo$$cm2(0,0); }
+
+   final float foobar$$cm2() { Super().foobar(); }
+
+   float foobar() { foobar$$cm2(); }
+}

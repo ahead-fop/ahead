@@ -1,0 +1,30 @@
+package MissionAnyL;
+
+import  
+    java.util.*;
+import  
+    F.Libraries.laydown.*;
+import  
+    F.Libraries.log.Log;
+
+ // MissionImpl
+
+    public extends interface Opfac
+        {
+        /** Can mission be eleveated to this opfacs superior? */
+        boolean canElevate( Mission mission);
+
+        /** Can this opfac observe this location? */
+        boolean canSee( Location location);
+
+        /** Is there any other mission which duplicates mission? */
+        boolean hasDuplicate( Mission mission);
+
+        /** Prevent more than one mission at a time for guns. */
+        void missionLock( Mission mission);
+
+        /** Allow other missions to proceed. */
+        void missionFree( Mission mission);
+
+        /** Spend some time thinking. */
+        void ponder(float seconds);}

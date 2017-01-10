@@ -1,0 +1,40 @@
+layer FS;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+/**
+ * Interface of a proxy for an opfac.
+ * An opfac proxy represents one opfac's current beliefs about 
+ * the present status and combat readiness of another opfac.
+ */
+public interface Proxy 
+        extends Cloneable
+    {
+    public Object clone();
+
+    /** Pseudo constructor **/
+    void init( OpfacDataWrapper record );
+    
+    /** Precedence function on weapon types; highest goes first. */
+    int typePrecedence();
+
+    /** Ordering function on weapons given a mission; -1, 0, or 1. */
+    int compareWeapon( Mission mission, Proxy weapon );
+    SelectedProxy getBestWeapon( Mission mission );
+
+    /** Can this opfac accept the mission? */
+    boolean canShoot( Mission mission );
+
+    /** Get the opfac name for this proxy. */
+    String getName();
+
+    /** Get the opfac type for this proxy. */
+    OpfacType getType();
+
+    public boolean hasLocation();
+    public float distanceTo( Location loc );
+}

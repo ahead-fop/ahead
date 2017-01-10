@@ -1,0 +1,10 @@
+layer M2D2Base;
+
+refines class ConSSuper {
+
+   // strips off (...) from Super
+
+   public void print( AstProperties ps ) {
+      ps.println( "Super#" + arg[1] + ";");
+   }
+}

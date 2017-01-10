@@ -1,0 +1,92 @@
+//                              -*- Mode: JTS -*-
+// Version         :
+// Author          : Robert S. MacDonald
+// Last Modified By: Bryan D. Hopkins
+// Last Modified On: Thu May 25 11:25:00 2000
+
+layer MissionWrffeMlrsL( F lower )
+realm F
+extends lower
+imports
+    Jakarta.util.Util,
+    java.io.*,
+    F.Libraries.log.Log
+{
+    public static state_diagram MissionImpl
+        refines lower.MissionImpl
+    {
+        states wrffeMlrsAccepted;
+
+        // Take this branch when mission accepted by MLRS.
+        edge wrffeAcceptedMlrs : wrffeAccepted -> wrffeMlrsAccepted
+            conditions (getWeaponType().equals("MLRS_BTRY"))
+            do {}
+
+        // Relay MFR and stop.
+        edge wrffeMlrsAccepted1 : wrffeMlrsAccepted -> stop
+            conditions (message instanceof $TEqn.MfrMessage)
+            do { sendDown(($TEqn.Message)message.clone()); }
+    } // MissionImpl
+
+
+    public static state_diagram BnFseMission
+        refines lower.BnFseMission
+    {
+        // Ignore MFR and stop.
+        refines edge wrffeMlrsAccepted1 : wrffeMlrsAccepted -> stop
+            conditions (message instanceof $TEqn.MfrMessage) do {}
+    } // BnFseMission
+
+    
+    public static state_diagram FistMission
+        refines lower.FistMission
+    {
+        // If MLRS took mission then stop immediately.
+        Enter wrffeMlrsAccepted { event(null); }
+
+        refines edge wrffeMlrsAccepted1 : wrffeMlrsAccepted -> stop
+            conditions true do {}
+    } // FistMission
+
+
+    public static state_diagram FoMission
+        refines lower.FoMission
+    {
+        // If MLRS took mission then stop immediately.
+        Enter wrffeMlrsAccepted { event(null); }
+
+        refines edge wrffeMlrsAccepted1 : wrffeMlrsAccepted -> stop
+            conditions true do {}
+    } // FoMission
+
+    
+    public static state_diagram MlrsMission
+        refines lower.MlrsMission
+    {
+        states wrffeShooting;
+     
+        // MLRS shoots one mission at a time.
+        Enter wrffeMlrsAccepted { getOpfac().missionLock(this); }
+
+        // When it's this missions turn begin aim/load/shoot.
+        edge wrffeMlrsAccepted2 : wrffeMlrsAccepted -> wrffeShooting
+            conditions (message instanceof $TEqn.LockGranted)
+            do { getOpfac().timeout(20F, new $TEqn.CompleteTime(getId())); }
+     
+        // When done shooting send MFR and stop.
+        edge wrffeShooting1 : wrffeShooting -> stop
+            conditions (message instanceof $TEqn.CompleteTime)
+            do
+	    {
+		$TEqn.MfrMessage mfrMessage = new $TEqn.MfrMessage(getId());
+		if (initiatingUnit != null)
+		    mfrMessage.setInitiatingUnitId(initiatingUnit.intValue());
+		sendDown(mfrMessage);
+	    }
+
+        // Allow next mission to proceed.
+        Enter stop { getOpfac().missionFree(this); }
+    }
+    
+}   
+

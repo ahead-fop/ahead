@@ -1,0 +1,15 @@
+layer FormatGscope;
+
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public refines class Alias {
+    public void format( int position ) {
+        inline_routins( position );
+        arg[0].setComment( " " );
+        ( ( AstToken ) tok[1] ).white_space = "";
+        ( ( AstToken ) tok[3] ).white_space = " ";
+        super.format( position );
+    }
+}

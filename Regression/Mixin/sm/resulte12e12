@@ -1,0 +1,19 @@
+// checks Otherwise clause
+
+layer ext12;
+
+SoUrCe  ext12 "C:!Java!Regression!Mixin!sm!ext12.jak";
+
+ abstract State_machine root$$ext12 {
+
+  Otherwise_default { /* do something */ }
+
+}
+
+SoUrCe  ext12 "C:!Java!Regression!Mixin!sm!ext12.jak";
+
+ State_machine root extends root$$ext12 {
+
+  Otherwise_default { /* do something */ }
+
+}

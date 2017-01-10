@@ -1,0 +1,5 @@
+UnmodifiedTypeDeclaration SDDecl UmodSdDecl RefinesClause RefinesDecl SDClassBody
+SdClassDecl StatesClause StatesDecl RootClause RootDecl NoTransitionClause NoTransDecl
+DelivClause DelivDecl OtherwiseClause ODefaultDecl ESList Es ExitDecl EnterDecl
+EdgeDecl OtherDecl Refines RefinesMod StartName SdSName StarName NestedSDDeclaration
+NSDDecl ClassBodyDeclaration

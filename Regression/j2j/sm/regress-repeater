@@ -1,0 +1,24 @@
+#!/bin/bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+echo "************** WRFFE COMMON REPEATER ***********"
+java jak2java.Main wrffe_repeater.spec \
+&& javac wrffe_repeater.java \
+|| exit 1
+
+echo "************** WRFFE MORTAR REPEATER ***********"
+java wrffe_mortar_repeater > junk \
+&& diff -b junk correct-mortar-repeater \
+|| exit 1
+
+echo "************** WRFFE ARTILLERY REPEATER ***********"
+java wrffe_artillery_repeater > junk \
+&& diff -b junk correct-artillery-repeater \
+|| exit 1
+
+echo "************** WRFFE MLRS REPEATER ***********"
+java wrffe_mlrs_repeater > junk \
+&& diff -b junk correct-mlrs-repeater \
+|| exit 1
+

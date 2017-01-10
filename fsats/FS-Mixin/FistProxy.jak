@@ -1,0 +1,11 @@
+layer FS;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+SoUrCe RooT BasicL "C:!Java!FeatureOrientedProgramming!fsats!BasicL!FistProxy.jak";
+
+public class FistProxy extends FseProxy {}

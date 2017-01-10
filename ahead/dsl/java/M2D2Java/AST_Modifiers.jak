@@ -1,0 +1,11 @@
+layer M2D2Java;
+
+refines class AST_Modifiers {
+
+   String visibility() {
+      if (findModifier( "public" )) return "public";
+      if (findModifier( "private" )) return "private";
+      if (findModifier( "protected" )) return "protected";
+      return "";  // default
+   }
+}

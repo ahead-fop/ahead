@@ -1,0 +1,17 @@
+C D OpfacThread 
+Line range (-1, -1)
+public static  endMods 
+ beginNest
+        K D OpfacThread(OpfacImpl) __
+        Line range (19, 21)
+        public  endMods 
+        M D OpfacThreadConstructor(OpfacImpl) void 
+        Line range (23, 25)
+        public static  endMods 
+        F D oi OpfacImpl 
+        Line range (17, 17)
+         endMods 
+        M D run() void 
+        Line range (27, 32)
+        public  endMods 
+ endNest

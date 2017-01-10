@@ -1,0 +1,346 @@
+/* dlist - this is a terminal layer that simply outputs calls to it */
+
+package p3Lib;
+
+import JakBasic.Lang;
+
+
+public final class dlist extends BaseDS implements DS {
+   //public DS        lower;
+   public TopParams tp;
+   environment first, last, left, right, adv, start, back, end, 
+      dlist_relink, dlist_unlink;
+   
+   public dlist( DS lowerlevel ) { 
+      lower = lowerlevel;
+   }
+
+   public dlist( ) { }
+
+   public DS_Container_Type make_container_type( TopParams t, ContParams c ) {
+      return new dlist_Container_Type( this, t, c );
+   }
+
+   public DS_Element_Type make_element_type( ) {
+      return new dlist_Element_Type( this );
+   }
+
+   public DS_CommonCursor_Type make_commoncursor_type() {
+      return new dlist_CommonCursor_Type( this );
+   }
+
+   public DS_Cursor_Type make_cursor_type( Usage u ) { 
+        return new dlist_Cursor_Type( this, u ); 
+   }
+
+   public DrcAttributes drc( DrcAttributes d ) {
+    
+	 d.test_and_set_annotation( "dlist", "----" );
+	 if (d.unordered_layer_present) {
+	    if ("dlist".compareTo(d.unordered_layer_set) == 0)
+	       d.DrcError(
+	       "too many insertion-ordered data structures:   use only one dlist layer");
+	    else
+	        d.DrcError(
+	        "too many insertion-ordered data structures:   remove dlist or " 
+	          + d.unordered_layer_set);
+	 }
+
+      // test preconditions - if error, make primitive attempt at error recovery
+    
+      d.retrieval_layer_present = true;
+      d.unordered_layer_present = true;
+      d.unordered_layer_set     = "dlist";
+      if (!d.below_topmost_layers) {
+         d.below_topmost_layers = true;
+         d.below_topmost_set    = "dlist";
+      }
+      d = lower.drc(d);
+      d.retrieval_layer_present = true;
+      return d;
+   } 
+
+   public void set_keyword( TOP toplayer, TopParams tph ) {
+      tp = tph;     
+      environment parent toplayer;
+      lower.set_keyword( toplayer, tp );
+   }
+
+   public Object ParseArgs( Lang.AstNode x ) {
+      Object result = null;
+      
+      if (x != null && x.arg[0] != null && x.arg[0].right == null)
+         result = ParseTE.parse(x.arg[0].arg[0]);
+      if (result == null || !(result instanceof DS))
+         ParseTE.parseError("dlist layer expecting single argument of type DS");
+      lower = (DS) result;
+      return this;
+   }
+}
+
+final class dlist_Container_Type implements DS_Container_Type {
+   ContParams        cp;
+   dlist             _layer;
+   DS_Container_Type lower;
+   environment;
+
+   dlist_Container_Type( DS dlistlayer, TopParams t, ContParams c ) { 
+      // Step 1: save the arguments as we'll refer to them later
+
+      _layer    = (dlist) dlistlayer;
+      cp       = c;
+      _layer.tp = t;
+      environment parent _layer;
+
+      // Step 2: create chain of lower level containers
+
+      lower = _layer.lower.make_container_type( t, cp );
+   }
+
+   public void validate() {
+
+      // Step 1:  nothing to validate as there are no nonrealm parameters
+
+      lower.validate();
+   }
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return mth{
+   CElemTyp first, last;
+   $mth(lower.dataMembers())
+      }mth;
+   }
+
+   public Lang.AST_Stmt containerMethod() {
+     return stm{
+     first = last = null;
+     $stm(lower.containerMethod());
+     }stm;
+   }
+
+   public Lang.AST_Exp is_fullMethod() {
+     return lower.is_fullMethod();
+   }
+   
+   public Lang.AST_Stmt insertMethod(){
+     return lower.insertMethod();
+   }
+
+   public Lang.AST_Stmt storageMethod() {
+      return lower.storageMethod();
+   }
+
+   public Lang.AST_Stmt finishMethod() {
+      return lower.finishMethod();
+   }
+   
+   public Lang.AST_Stmt openMethod(){
+      return lower.openMethod();
+   } 
+
+}
+
+
+final class dlist_Element_Type implements DS_Element_Type {
+   dlist _layer;
+   DS_Element_Type lower;
+   environment;
+
+   dlist_Element_Type( DS dlistlayer ) {
+      _layer = (dlist) dlistlayer;
+      lower = _layer.lower.make_element_type();
+      environment parent _layer;
+   }
+
+
+   // generate data members of transformed element class 
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return mth{
+   CElemTyp left, right;
+   $mth(lower.dataMembers())
+       }mth;
+   }
+
+   // link statements as part of element constructors
+
+   public Lang.AST_Stmt link() {
+      return stm{
+      dlist_relink();
+      $stm(lower.link());
+      }stm;
+   }
+
+   // link to head of the list
+
+   public Lang.AST_FieldDecl relink() {
+      return mth{
+   final void dlist_relink() {
+      left = null;
+      if (cont.last == null) cont.last = this;
+      right = cont.first;
+      cont.first = this;
+      if (right != null) right.left = this;
+   }
+
+   $mth(lower.relink())
+      }mth;
+   }
+
+   // remove from list
+
+   public Lang.AST_FieldDecl unlink() {
+      return mth{
+   final void dlist_unlink() {
+      if (left != null) left.right = right;
+      if (right != null) right.left = left;
+      if (cont.first == this) cont.first = right;
+      if (cont.last == this) cont.last = left;
+   }
+
+   $mth(lower.unlink())
+      }mth;
+   }
+
+   // can update attributes at will
+
+   public Lang.AST_Stmt upd( int fieldno ) {
+      return lower.upd( fieldno );
+   }
+   
+}
+
+final class dlist_CommonCursor_Type implements DS_CommonCursor_Type {
+   dlist _layer;
+   DS_CommonCursor_Type lower;
+   environment;
+
+   dlist_CommonCursor_Type( DS dlistlayer ) {
+      _layer = (dlist) dlistlayer;
+      lower = _layer.lower.make_commoncursor_type();
+      environment parent _layer;
+   }
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return lower.dataMembers();
+   }
+
+   public Lang.AST_Stmt insertMethod( ) {
+        return lower.insertMethod( );
+   }
+
+   public Lang.AST_Stmt removeMethod() {
+      return stm{
+      obj.dlist_unlink();
+      $stm(lower.removeMethod());
+      }stm;
+   }
+   public Lang.AST_FieldDecl movementMethods() {
+      return mth{
+      final protected void adv() { obj = obj.right; }
+      final protected void start() { obj = cont.first; }
+      final protected void back() { obj = obj.left; }
+      final protected void end() { obj = cont.last; } 
+      $mth(lower.movementMethods())
+      }mth;
+   }
+}
+
+final class dlist_Cursor_Type extends RetSometimes implements DS_Cursor_Type {
+    dlist          _layer;
+    Lang.AST_Exp        pred;
+    range          r;
+    boolean        fwd;
+    int            ord;
+    environment;
+
+    dlist_Cursor_Type( DS dlistlayer, Usage u ) {
+       _layer = (dlist) dlistlayer;
+       lower = _layer.lower.make_cursor_type( u );
+       pred  = u.predicate;
+       r     = new range("!dummy");
+       fwd   = u.forward;
+       ord   = u.order;
+       environment parent _layer;
+     }
+
+    public final DS thisLayer() {
+       return _layer;
+    }
+
+    // optimizeAction just tests to see if this layer is more
+    // efficient in processing the given query than those seen
+    // earlier.  Any other action, such as recording whether this
+    // is the retrieval layer is the responsibility of the RetSometimes
+    // class
+
+    public void optimizeAction( Qopt q ) {
+       if (q.cost > Qopt.LISTSCAN ) {
+          q.fastest_layer = _layer;
+          q.cost          = Qopt.LISTSCAN;
+
+          q.requires_skip      = true;
+          q.requires_buffering = false;
+			 q.requires_sorting   = ( ord != -1 );
+          q.requires_inbetween = false;
+
+          if ( q.requires_buffering || q.requires_sorting )
+            fwd = true;
+       }
+    }
+
+    public Lang.AST_FieldDecl dataMembers() {
+       return lower.dataMembers();
+    }
+    
+    public Lang.AST_Stmt cursorMethod() {
+       return lower.cursorMethod();
+    }
+
+    public Lang.AST_Stmt firstMth() {
+       if (fwd)
+          return stm{ start(); }stm;
+       else
+          return stm{ end(); }stm;
+    }
+
+    public Lang.AST_Exp moreMth() {
+       return exp{ obj != null }exp;
+    }
+
+    public Lang.AST_Stmt noMoreMth() {
+       return stm{
+    obj = null;
+       }stm;
+    }
+
+    public Lang.AST_Stmt nextMth()  {
+       if (fwd)
+          return stm{ adv(); }stm;
+       else
+          return stm{ back(); }stm;
+    }
+
+    // return null if predicate is null.  Technically, this isn't
+    // correct as exp{ true }exp should be returned.  However, 
+    // null actually makes it a bit easier to do some optimizations
+
+    public Lang.AST_Exp lowerBoundExp( boolean pos ) {
+          return null;
+    }
+       
+    public Lang.AST_Exp upperBoundExp( boolean pos ) {
+          return null;
+    }
+
+    public Lang.AST_Exp residualExp() {
+       if (pred!=null) 
+          return r.Translate( id{ obj }id, _layer.tp, pred);
+       else      
+          return null;
+    }
+
+    public Lang.AST_Stmt removeMethod() {
+      return lower.removeMethod();
+    }
+}

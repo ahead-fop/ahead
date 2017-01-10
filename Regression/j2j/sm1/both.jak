@@ -1,0 +1,14 @@
+layer both;
+
+State_machine sm {
+    Delivery_parameters ( Event e );
+
+    States a;
+
+    Enter a {
+        enterBase();
+    }
+    Enter a {
+        enterRef();
+    }
+}

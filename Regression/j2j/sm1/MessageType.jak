@@ -1,0 +1,17 @@
+SoUrCe RooT FsatsL "C:!Java!FsatsPackages!Frealm!FsatsL!MessageType.jak";
+
+abstract class MessageType$$FsatsL extends EventType implements MessageTypeInterface {}
+
+SoUrCe  MessageL "C:!Java!FsatsPackages!Frealm!MessageL!MessageType.jak";
+
+
+public abstract  class MessageType extends MessageType$$FsatsL
+        implements MessageTypeInterface
+    {
+
+        protected MessageType(String name)
+        {
+            Super(String)(name);
+          MessageTypeConstructor(name);
+        }
+    }

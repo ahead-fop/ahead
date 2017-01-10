@@ -1,0 +1,149 @@
+layer JavaTagHandlers;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+ // ParamTagJedi
+
+// **********************************************************************
+// **********************************************************************
+// **********************************************************************
+/** The Tag Jedi for Throws Tags 
+ * @layer<JavaTagHandlers>
+ */
+
+public class ThrowsTagJedi extends AbstractTagJedi {
+
+    // ********* Interface methods that have to be implemented ********
+    
+    /** Returns the exception name. 
+     * @layer<JavaTagHandlers>
+     */
+    public String exceptionName() {
+        return exceptionName;
+    }
+
+    /** Returns the exception comment if any. 
+     * @layer<JavaTagHandlers>
+     */
+    public String exceptionComment() {
+        return exceptionComment;
+    }
+
+    /** It is the Doc reference to the exception class.      
+     * @layer<JavaTagHandlers>
+     */
+    public  ClassDocJTS exception() {
+        return exceptionClass;
+    }
+
+    /**************** Implementation members *************************
+     * @layer<JavaTagHandlers>
+     */
+
+    /** Name of the exception. Initialized to empty string. */
+    String exceptionName = "";
+
+    /** Exception comment. Initialized to empty string. 
+     * @layer<JavaTagHandlers>
+     */
+    String exceptionComment = "";
+
+    /** Reference to the exception class. Initialized to null.
+     * @layer<JavaTagHandlers>
+     */
+    ClassDocJTS exceptionClass = null;
+
+    /** Constructor.    
+     * @layer<JavaTagHandlers>
+     */
+    public ThrowsTagJedi( DocJTS _holder, String _text, String _name )
+    {
+        holder = _holder;
+        text = _text;
+        name = _name;
+    }
+
+    /** Default Constructor 
+     * @layer<JavaTagHandlers>
+     */
+    public ThrowsTagJedi() {
+        // @dummy code here
+        int x=3;
+    }
+
+    /** Sets the exception name field. 
+     * @layer<JavaTagHandlers>
+     */
+    public void setExceptionName( String _exceptionName )
+    {
+        exceptionName = _exceptionName;
+    }
+
+    /** Sets the exception comment field. 
+     * @layer<JavaTagHandlers>
+     */
+    public void setExceptionComment( String _exceptionComment )
+    {
+        exceptionComment = _exceptionComment;
+    }
+
+    /** Sets the doc reference of the exception class. 
+     * @layer<JavaTagHandlers>
+     */
+    public void setExceptionClass( ClassDocJTS _exceptionClass )
+    {
+        exceptionClass = _exceptionClass;
+    }
+
+    /** Method that parses and builds a ThrowsTag.
+     * ThrowsTag -> @throws class_name class_description
+     * @layer<JavaTagHandlers>
+     */
+    public void parse( DocJTS Document,  CommentJedi comment, 
+             String stringTag )
+   {
+        String className = "";
+        String classDescription ="";
+
+        String throwsPattern ="(^@throws)( +)(\\S*)( *)(.*)";
+        Pattern p = Pattern.compile( throwsPattern );
+        Matcher m = p.matcher( stringTag );
+        if ( m.find() ) {
+            className = m.group( 3 );
+            classDescription = m.group( 5 );
+        }
+           
+        // Parses the description part of the tag.
+        DefaultTagJedi tempTag =  new  DefaultTagJedi();
+        CommentParser.ParseDescription( Document,
+                   "@dummy " + className + " " + classDescription, 
+                   "@throws", tempTag );
+           
+        // Creates the ParamTag from the parts of tempTag
+        ThrowsTagJedi throwsTag = 
+               new  ThrowsTagJedi( Document, tempTag.text(), 
+                                             tempTag.name() );
+        throwsTag.setKind( tempTag.kind() );
+        throwsTag.setExceptionName( className );
+        throwsTag.setExceptionComment( classDescription );
+        throwsTag.setFirstSentenceTags( tempTag.firstSentenceTags() );
+        throwsTag.setInlineTags( tempTag.inlineTags() );
+
+        // @pending
+        // Formely, it created new tags and param arrays everytime a new
+        // tag was added, now, it directly adds them in the linked list
+        LinkedList throwsList = comment.throwsTags();
+        throwsList.add( throwsTag );
+        comment.setThrowsTag( throwsList ); // @redundant?
+
+        LinkedList tagsList = comment.getTags();
+        tagsList.add( throwsTag );
+        comment.setTags( tagsList ); // @redundant?
+
+    } // of parse
+}

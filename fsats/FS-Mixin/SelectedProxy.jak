@@ -1,0 +1,30 @@
+layer FS;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+SoUrCe RooT ProxyL "C:!Java!FeatureOrientedProgramming!fsats!ProxyL!SelectedProxy.jak";
+
+/** A pair of the best weapon found and 
+ *  to which opfac to send the mission.
+ */
+public class SelectedProxy {
+    private Proxy via;
+    private Proxy weapon;
+
+    public SelectedProxy( Proxy via, Proxy weapon )
+        {
+        this.via=via;
+        this.weapon=weapon;
+    }
+
+    public Proxy getVia() {
+        return via;
+    }
+    public Proxy getWeapon() {
+        return weapon;
+    }
+}

@@ -1,0 +1,45 @@
+layer LayerAPI;
+
+import java.io.*;
+import java.util.*;
+
+ /** JEDI Project
+ * ProgramElementDocJTS.java
+ * University of Texas at Austin
+ * Department of Computer Sciences
+ * Product-line Architecture Research Group
+ * @rationale Adds information to the API for the LayerDecl feature.
+ * @author Roberto E. Lopez-Herrejon
+ * @version 1.1
+ * @since November 26, 2001
+* @layer<LayerAPI>
+*/
+
+public abstract refines class ProgramElementDocJTS {
+
+    // Constructors added to provide inheritance     
+    /** Default constructor. 
+     * @layer<LayerAPI>
+     */
+    // public ProgramElementDocJTS()  { super(); }
+    
+    // ********************** For Layer Decl **********************************
+     
+    /** Variable that holds the layer's name */
+    String qualifiedLayerName  = "";
+
+    /** Gets the qualified name of the layer 
+     * @layer<LayerAPI>
+     */
+    public String getQualifiedLayerName() {
+        return qualifiedLayerName;
+    }
+
+    /** Sets the qualified name of the layer 
+     * @layer<LayerAPI>
+     */
+    public void setQualifiedLayerName( String qln ) {
+        qualifiedLayerName = qln;
+    }
+
+}

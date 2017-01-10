@@ -1,0 +1,30 @@
+<extend>
+<ul>
+<method featureList >
+  <li><font face="Arial"><a href="#File Copying">(Image) File Copying</a></font></li>
+<call featureList >
+</method>
+</ul>
+
+<method chapters >
+<h3><font face="Arial" color="#0000FF"><a name="File Copying">File Copying</a></font></h3>
+<p><font face="Arial">It is common to have GIF or image files displayed in HTML
+pages.&nbsp; XC has the capability of copying specified files in base and
+extension directories into the directory where composed HTML pages reside.&nbsp;
+The syntax of copy is the XC statement:</font></p>
+<blockquote>
+  <pre><font face="Courier New">&lt;copy FILENAME &gt;</font></pre>
+</blockquote>
+<p><font face="Arial">when this statement is parsed, the mentioned file is
+remembered.&nbsp; When the composite file is output by XC, all
+&quot;copied&quot; files are copied into the output directory as well.</font></p>
+<p><font face="Arial">At present, there is no provision to create subdirectories
+in the output directory in which all image files reside.&nbsp; So a limitation
+of XC at this time requires a base file be in the same directory as all image
+files that it references.&nbsp; The same holds for extension files and their gif
+files.</font></p>
+<p><font face="Arial">Another limitation of the copy command is that a FILENAME
+can not have embedded blanks. (Placing quotes around filenames with blanks won't
+work as XC's lexical analyzer is too stupid to understand blanks).</font></p>
+<call chapters >
+</method>

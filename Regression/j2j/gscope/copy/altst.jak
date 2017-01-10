@@ -1,0 +1,54 @@
+// this program computes the answer of aliastest
+// without the use of aliases.  It does so by 
+// using explicit escapes.
+
+import java.io.PrintWriter;
+import jak2java.*;
+
+class altst {
+    public static void main(String[] args) {
+	AA aa;
+	AstProperties props;
+	AST_Class cls;
+
+	// Step 1: do the standard stuff
+
+	props = new AstProperties();
+	PrintWriter pw = new PrintWriter(System.out);
+	props.setProperty("output",pw);
+
+	// Step 2: now create instance of AA
+
+	aa = new AA();
+	cls = aa.Acls();
+ 	cls.reduce2java(props);
+	pw.println();
+	pw.flush();
+    }
+}
+
+      
+class AA {
+    AST_QualifiedName A, A1, A2;
+    AST_QualifiedName B;
+    AST_TypeName      B1;
+    AST_Exp           C;
+
+    AA() {
+	A = id{ x }id;
+	A1 = (AST_QualifiedName) A.clone();
+	A2 = (AST_QualifiedName) A.clone();
+	B = id{ z.q.r }id;
+	B1 = typ{ z.q.r }typ;
+	C = exp{ r.s.t }exp;
+    }
+
+    AST_Class Acls() {
+	return cls{
+	    class $name(A) extends $id(B) { $name(A1)() { $typ(B1) b; $id(A2) = b * $exp(C); } }
+	}cls;
+    }
+    // should return:
+    // class x extends z.q.r { x() { z.q.r b; x = b * r.s.t; } }
+}
+

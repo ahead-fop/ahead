@@ -1,0 +1,35 @@
+layer JavaTagHandlers;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+ // of VersionTag
+
+// **********************************************************************
+// **********************************************************************
+// **********************************************************************
+/** The Tag Jedi for Since Tags 
+ * @layer<JavaTagHandlers>
+ */
+
+public class SinceTagJedi extends AbstractTagJedi {
+
+    /** Method that parses and builds a SinceTag.
+     * SinceTag -> @since since-text
+     * @layer<JavaTagHandlers>
+     */
+    public void parse( DocJTS Document,  CommentJedi comment, 
+             String stringTag ) {
+        SinceTagJedi tag = new  SinceTagJedi();
+        CommentParser.ParseDescription( Document, stringTag, "@since", tag );
+
+        LinkedList tagsList = comment.getTags();
+        tagsList.add( tag );
+        comment.setTags( tagsList ); // @redundant?
+   
+    } // of parse
+}

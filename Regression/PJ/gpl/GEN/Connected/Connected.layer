@@ -1,0 +1,57 @@
+// Graph Algorithms Product Line (GPL)
+// University of Texas at Austin
+// Department of Computer Sciences
+// Product-Line Architecture Research Group
+// Edge-Neighbor Representation
+// Connected : connected components layer
+// Last Update: May 15, 2001
+// Written by: Roberto E. Lopez-Herrejon (rlopez@cs.utexas.edu)
+
+layer Connected ( GEN lower )
+realm GEN
+extends lower
+{ 
+ // *****************************************************************
+   static public class Graph extends lower.Graph {
+
+      public void ConnectedComponents() {
+         GraphSearch( new RegionWorkSpace());
+      }
+   }
+
+ // *****************************************************************
+   static public class Vertex extends lower.Vertex {
+      public int componentNumber;
+
+      public void display() {
+         System.out.print(" comp# "+ componentNumber + " ");
+         super.display();
+      }
+   }
+
+ // *****************************************************************
+   public static class RegionWorkSpace extends $TEqn.WorkSpace {
+      int counter;
+
+      public RegionWorkSpace() { 
+         RegionWorkSpaceConstructor();
+      }
+
+      public void RegionWorkSpaceConstructor() {
+         counter = 0;
+      }
+
+      public void init_vertex( $TEqn.Vertex v ) {
+         v.componentNumber = -1;
+      }
+	  
+      public void postVisitAction( $TEqn.Vertex v ) {
+          v.componentNumber = counter;
+      }
+
+      public void nextRegionAction( $TEqn.Vertex v ) {
+          counter ++;
+      }
+   }
+}
+

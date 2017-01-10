@@ -1,0 +1,16 @@
+// This program tests a macro call and a macro definition nested inside
+// a macro definition.
+
+macro test6() cls{ class foo { #SORT(fooSort, fooType) } }cls
+
+#test6()
+
+macro test6b() cls{ macro inner() stm{ x=5; }stm }cls
+
+#test6b()
+
+public class test6 {
+    static public void main(String[] args) {
+	#inner();
+    }
+}

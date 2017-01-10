@@ -1,0 +1,103 @@
+
+import java.io.PrintWriter;
+import Jakarta.kernel.*;
+import jak.Base.AST_Exp;
+import jak.Lang;
+
+public class test14 {
+    public static void main(String args[]) {
+
+	dummy d = new dummy();
+
+	d.test();
+    }
+}
+	
+class dummy {
+	public Lang.Environment _E = (Lang.Environment) new Lang.Environment().addId("x");
+	public Lang.Environment getEnv() { return(_E); }
+
+
+    public void test() {
+	AST_Exp expression;
+	AstProperties props = new AstProperties();
+	PrintWriter pw = new PrintWriter(System.out);
+
+	props.setProperty("output", pw);
+	((Lang.Environment) _E).addAlias("x",  (Lang.PrimExpr)((Lang.PrimExpr) new Lang.PrimExpr().markStack())
+.setParms( (Lang.PPQualName) new Lang.PPQualName().setParms( 
+ (Lang.AST_QualifiedName) new Lang.AST_QualifiedName()
+
+.add( (Lang.AST_QualifiedNameElem) new Lang.AST_QualifiedNameElem().setParms(new Lang.AstToken().setParms("","", 0),
+ (Lang.NameId) new Lang.NameId().setParms(_E, new Lang.AstToken().setParms(" ","xArr", 0)) /* Lang.NameId */
+))/* Lang.AST_QualifiedNameElem + add */
+) /* Lang.PPQualName */
+,  (Lang.Suffixes) new Lang.Suffixes()
+
+.add( (Lang.SuffixesElem) new Lang.SuffixesElem().setParms( (Lang.ExprSuf) new Lang.ExprSuf().setParms( 
+new Lang.AstToken().setParms("","[", 0),  (Lang.PPQualName) new Lang.PPQualName().setParms( 
+ (Lang.AST_QualifiedName) new Lang.AST_QualifiedName()
+
+.add( (Lang.AST_QualifiedNameElem) new Lang.AST_QualifiedNameElem().setParms(new Lang.AstToken().setParms("","", 0),
+ (Lang.NameId) new Lang.NameId().setParms(_E, new Lang.AstToken().setParms("","ipos", 0)) /* Lang.NameId */
+))/* Lang.AST_QualifiedNameElem + add */
+) /* Lang.PPQualName */
+, new Lang.AstToken().setParms("","]", 0)) /* Lang.ExprSuf */
+))/* Lang.SuffixesElem + add */
+).patch() /* Lang.PrimExpr */
+);
+
+	expression = (Lang.AddExpr)((Lang.AddExpr) new Lang.AddExpr().markStack())
+.setParms( (Lang.PPQualName) new Lang.PPQualName().setParms( 
+ (Lang.AST_QualifiedName) new Lang.AST_QualifiedName()
+
+.add( (Lang.AST_QualifiedNameElem) new Lang.AST_QualifiedNameElem().setParms(new Lang.AstToken().setParms("","", 0),
+ (Lang.NameId) new Lang.NameId().setParms(_E, new Lang.AstToken().setParms(" ","x", 0)) /* Lang.NameId */
+))/* Lang.AST_QualifiedNameElem + add */
+) /* Lang.PPQualName */
+,  (Lang.MoreAddExpr) new Lang.MoreAddExpr()
+
+.add( (Lang.MoreAddExprElem) new Lang.MoreAddExprElem().setParms( (Lang.AdEBod) new Lang.AdEBod().setParms( 
+ (Lang.Plus) new Lang.Plus().setParms( 
+new Lang.AstToken().setParms("","+", 0)) /* Lang.Plus */
+,  (Lang.PPQualName) new Lang.PPQualName().setParms( 
+ (Lang.AST_QualifiedName) new Lang.AST_QualifiedName()
+
+.add( (Lang.AST_QualifiedNameElem) new Lang.AST_QualifiedNameElem().setParms(new Lang.AstToken().setParms("","", 0),
+ (Lang.NameId) new Lang.NameId().setParms(_E, new Lang.AstToken().setParms("","y", 0)) /* Lang.NameId */
+))/* Lang.AST_QualifiedNameElem + add */
+) /* Lang.PPQualName */
+) /* Lang.AdEBod */
+))/* Lang.MoreAddExprElem + add */
+).patch() /* Lang.AddExpr */
+;
+	expression.reduce2java(props);
+
+	 x = (Lang.AddExpr)((Lang.AddExpr) new Lang.AddExpr().markStack())
+.setParms( (Lang.PPQualName) new Lang.PPQualName().setParms( 
+ (Lang.AST_QualifiedName) new Lang.AST_QualifiedName()
+
+.add( (Lang.AST_QualifiedNameElem) new Lang.AST_QualifiedNameElem().setParms(new Lang.AstToken().setParms("","", 0),
+ (Lang.NameId) new Lang.NameId().setParms(_E, new Lang.AstToken().setParms(" ","x", 0)) /* Lang.NameId */
+))/* Lang.AST_QualifiedNameElem + add */
+) /* Lang.PPQualName */
+,  (Lang.MoreAddExpr) new Lang.MoreAddExpr()
+
+.add( (Lang.MoreAddExprElem) new Lang.MoreAddExprElem().setParms( (Lang.AdEBod) new Lang.AdEBod().setParms( 
+ (Lang.Plus) new Lang.Plus().setParms( 
+new Lang.AstToken().setParms("","+", 0)) /* Lang.Plus */
+,  (Lang.PPQualName) new Lang.PPQualName().setParms( 
+ (Lang.AST_QualifiedName) new Lang.AST_QualifiedName()
+
+.add( (Lang.AST_QualifiedNameElem) new Lang.AST_QualifiedNameElem().setParms(new Lang.AstToken().setParms("","", 0),
+ (Lang.NameId) new Lang.NameId().setParms(_E, new Lang.AstToken().setParms("","y", 0)) /* Lang.NameId */
+))/* Lang.AST_QualifiedNameElem + add */
+) /* Lang.PPQualName */
+) /* Lang.AdEBod */
+))/* Lang.MoreAddExprElem + add */
+).patch() /* Lang.AddExpr */
+;;
+	pw.println();
+	pw.flush();
+    }
+}

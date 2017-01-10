@@ -1,0 +1,9 @@
+drc: test4.drc:6: Error attribute anotherboolean cannot have initial value if it is extern
+drc: test4.drc: Error Multiple definitions of attribute aboolean
+Symbol table Contents
+extern outside Bool aboolean ()
+extern outside Bool anotherboolean ()
+         outside Bool foo ()
+         outside Int range (3 < range and range <= 4)
+         outside Bool search (search)
+drc: Summary 2 errors

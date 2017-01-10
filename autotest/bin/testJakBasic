@@ -1,0 +1,159 @@
+#!/usr/bin/env bash
+#  
+# Use: jakbasic <layer-file>
+#
+# Compares the results of the "old" JakBasic, implemented using the old layer
+# file format, with that of the "new" JakBasic, implemented using the new
+# layer directory format.
+#
+# This script assumes that both versions of JakBasic have been built and that
+# each version is packaged in its own "jar" file, as shown below:
+#
+# * newJakBasic: in bootstrap/JakBasic/classes/jakbasic.jar
+# * oldJakBasic: in JTS/lib/jakbasic.jar
+#=============================================================================#
+
+set -e					# Shell aborts on unhandled errors
+#set -x					# and prints individual commands.
+
+JAVA="$(type -p java)"
+
+PATH="/usr/local/bin"			# Start with "safe" directories.
+PATH="${PATH}:/usr/bin"
+PATH="${PATH}:/bin"
+export PATH
+
+PROG="testJakBasic"			# Default program name.
+PROGRAM="${0##*/}"			# Actual program name taken from base
+PROGRAM="${PROGRAM:-${PROG}}"		# name of calling script, if possible.
+
+ulimit -c 0 &> /dev/null || :		# Don't allow core files.
+
+#-----------------------------------------------------------------------------#
+# Basic helper functions:
+# * error --- puts labelled message to stderr; otherwise like "echo";
+# * fatal --- exits with failure status after printing error message.
+#
+function error() { echo 1>&2 -n "${PROGRAM}: " ; echo 1>&2 $@ ;}
+function fatal() { error $@ ; exit 1 ;}
+
+#-----------------------------------------------------------------------------#
+# Functions to invoke the two versions of JakBasic:
+# * newJakBasic --- runs the JakBasic that works with layer directories;
+# * oldJakBasic --- runs the JakBasic that works with .layer files.
+#
+[ -n "${JAVA}" ] || fatal "java not found"
+
+FOP=~+
+while [[ "${FOP}" != */FeatureOrientedProgramming ]] ; do
+    FOP="${FOP%/*}"
+done
+
+[ -d "${FOP}" ] || fatal "not in FeatureOrientedProgramming sub-directory"
+
+: "${JAKARTA:="${FOP}/JTS/lib/jakarta.jar"}"
+[ -f "${JAKARTA}" ] || fatal "Jakarta jar not found at ${JAKARTA}"
+
+: "${NEWJAR:="${FOP}/bootstrap/JakBasic/classes/jakbasic.jar"}"
+[ -f "${NEWJAR}" ] || fatal "new JakBasic jar not found at ${NEWJAR}"
+
+: "${OLDJAR:="${FOP}/JTS/lib/jakbasic.jar"}"
+[ -f "${OLDJAR}" ] || fatal "old JakBasic jar not found at ${OLDJAR}"
+
+function newJakBasic() {
+    "${JAVA}" -cp "${NEWJAR}:${JAKARTA}" JakBasic.Main "$@"
+}
+
+function oldJakBasic() {
+    "${JAVA}" -cp "${OLDJAR}:${JAKARTA}" JakBasic.Main "$@"
+}
+
+#-----------------------------------------------------------------------------#
+# Get argument, a layer file, and copy it to a temporary directory:
+#
+[ "$#" -eq 1 ] || fatal "Usage: ${PROGRAM} <layer-file>"
+
+LAYER="${1}"
+
+[ -f "${LAYER}" ] || fatal "${LAYER} is not a file"
+[ -r "${LAYER}" ] || fatal "${LAYER} is unreadable"
+
+TMP="/tmp/${PROGRAM}.$$"
+
+mkdir --parents -- "${TMP}"
+cp --force -- "${LAYER}" "${TMP}/test.layer"
+
+#-----------------------------------------------------------------------------#
+# Run each of the JakBasic translators on the layer file, saving results:
+#
+case "${OSTYPE}" in
+    cygwin*) ARG="$(cygpath --windows "${TMP}/test.layer")" ;;
+    *)       ARG="${TMP}/test.layer" ;;
+esac
+
+oldJakBasic "${ARG}" &> "${TMP}/old.out" \
+&& OLD="0" || OLD="1"
+
+mv --force -- "${TMP}/test.java" "${TMP}/test.old" &>/dev/null \
+|| touch "${TMP}/test.old"
+
+newJakBasic "${ARG}" &> "${TMP}/new.out" \
+&& NEW="0" || NEW="1"
+
+mv --force -- "${TMP}/test.java" "${TMP}/test.new" &>/dev/null \
+|| touch "${TMP}/test.new"
+
+diff --brief -- "${TMP}/test.old" "${TMP}/test.new" &>/dev/null \
+&& DIF="0" || DIF="1"
+
+#-----------------------------------------------------------------------------#
+# Report status:
+#
+function lineColumn() {
+    TEXT="$(grep 'line.*column' "${1}")"
+    LINE="$(expr "${TEXT}" : '.*line.\(.*\),.*')"
+    COL="$(expr "${TEXT}" : '.*column.\(.*\)[.].*')"
+    [ -n "${LINE}" -a -n "${COL}" ] && echo "${LINE}/${COL}"
+}
+
+case "${LAYER}" in
+
+    */realms/*)
+	LAYER="$(expr "${LAYER}" : '.*/\(realms/.*\)$')"
+	;;
+
+    */FeatureOrientedProgramming/* | FeatureOrientedProgramming/*)
+	LAYER="$(expr "${LAYER}" : '.*FeatureOrientedProgramming/\(.*\)$')"
+	;;
+
+    ./?*)
+	LAYER="$(expr "${LAYER}" : './\(.*\)$')"
+	;;
+
+esac
+
+case "${OLD}${NEW}${DIF}" in
+    000) echo "ok ....... ${LAYER}" ;;
+    001) echo "failed ... Java code differs; ${LAYER}" ;;
+    010) echo "failed ... new JakBasic; ${LAYER}" ;;
+    011) echo "failed ... new JakBasic; ${LAYER}" ;;
+    100) echo "failed ... old JakBasic; ${LAYER}" ;;
+    101) echo "failed ... old JakBasic; ${LAYER}" ;;
+
+    110)
+	NEW="$(lineColumn "${TMP}/new.out")"
+	OLD="$(lineColumn "${TMP}/old.out")"
+	if [ -n "${NEW}" -a "${OLD}" = "${NEW}" ]; then
+	    echo "ok ....... error at ${NEW}; ${LAYER}"
+	else
+	    echo "failed ... new ${NEW} vs. ${OLD}; ${LAYER}"
+	fi
+	;;
+
+    111) echo "failed ... Java code differs; ${LAYER}" ;;
+esac
+
+#-----------------------------------------------------------------------------#
+# Clean up temporary files:
+#
+rm --force --recursive -- "${TMP}"

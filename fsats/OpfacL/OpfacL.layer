@@ -1,0 +1,323 @@
+//                              -*- Mode: JTS -*-
+// Version         : 1.1
+// Author          : Robert S. MacDonald
+// Last Modified By: 
+// Last Modified On: Mon Jan 08 13:22:02 2001
+
+layer OpfacL ( F lower )
+realm F
+extends lower 
+imports 
+    F.Libraries.laydown.OpfacDataWrapper,
+    F.Libraries.log.Log,
+    java.util.*,
+    fsats.util.*
+{
+/* remove -- does nothing
+    public interface OpfacTypeInterface
+        extends lower.OpfacTypeInterface
+    {}
+*/
+
+    public interface Opfac
+        extends lower.Opfac
+    {
+        Object clone(); 
+
+        void sendTo(String to, $TEqn.Message message);
+
+        void timeout(float delay, $TEqn.Timeout event);
+    }
+
+    public static class OpfacType
+        implements OpfacTypeInterface
+    {
+        private int index;
+        private String name;
+
+        private static Vector values = new Vector();
+
+        protected OpfacType(String name)
+        {
+            index = values.size();
+            this.name = name;
+            values.add(this);
+        }
+
+        public String toString()
+        {
+            return name;
+        }
+
+        public int toInt()
+        {
+            return index;
+        }
+
+        public static OpfacType fromString(String name)
+        {
+            OpfacType result = null;
+
+            for (int i=0; i<values.size() && result==null; ++i)
+                if (values.elementAt(i).toString().equals(name))
+                    result = (OpfacType)values.elementAt(i);
+
+            return result;
+        }
+
+        public static MessageType fromInt(int index)
+        {
+            return 0<=index && index<values.size() ? (MessageType)values.elementAt(index) : null;
+        }
+
+	public static final OpfacType DIV_FSE_MAIN = new OpfacType("DIV_FSE_MAIN");
+        public static final OpfacType DIV_FSE_TAC = new OpfacType("DIV_FSE_TAC");
+        public static final OpfacType BDE_FSE = new OpfacType("BDE_FSE");
+        public static final OpfacType BN_FSE = new OpfacType("BN_FSE");
+        public static final OpfacType FIST = new OpfacType("FIST");
+        public static final OpfacType FO = new OpfacType("FO");
+	public static final OpfacType DIVARTY_CF = new OpfacType("DIVARTY_CF");
+        public static final OpfacType DIVARTY_CP = new OpfacType("DIVARTY_CP");
+        public static final OpfacType DS_BDE_CP = new OpfacType("DS_BDE_CP");
+        public static final OpfacType DS_BN_CP = new OpfacType("DS_BN_CP");
+        public static final OpfacType GS_BN_CP = new OpfacType("GS_BN_CP");
+        public static final OpfacType R_BN_CP = new OpfacType("R_BN_CP");
+        public static final OpfacType MLRS_BN = new OpfacType("MLRS_BN");
+        public static final OpfacType GSR_FA_PLT = new OpfacType("GSR_FA_PLT");
+        public static final OpfacType GSR_BN_CP = new OpfacType("GSR_BN_CP");
+	public static final OpfacType CORPS_ARTY_CP = new OpfacType("CORPS_ARTY_CP");
+        public static final OpfacType CORPS_FSE_MAIN = new OpfacType("CORPS_FSE_MAIN");
+        public static final OpfacType FA_PLT = new OpfacType("FA_PLT");
+        public static final OpfacType MECH_FIST = new OpfacType("MECH_FIST");
+        public static final OpfacType DS_FA_PLT = new OpfacType("DS_FA_PLT");
+        public static final OpfacType GS_FA_PLT = new OpfacType("GS_FA_PLT");
+        public static final OpfacType R_FA_PLT = new OpfacType("R_FA_PLT");
+        public static final OpfacType MTR_PLT = new OpfacType("MTR_PLT");
+        public static final OpfacType MLRS_BTRY = new OpfacType("MLRS_BTRY");
+	public static final OpfacType MLRS_PLT = new OpfacType("MLRS_PLT");
+	public static final OpfacType Q_36 = new OpfacType("Q_36");
+	public static final OpfacType Q_37 = new OpfacType("Q_37");
+	public static final OpfacType Q_37_TFVAR = new OpfacType("Q_37_TFVAR");
+	public static final OpfacType MET_SEC = new OpfacType("MET_SEC");
+	public static final OpfacType ATHS = new OpfacType("ATHS");
+	public static final OpfacType COLT = new OpfacType("COLT");
+	public static final OpfacType FA_BDE_CP = new OpfacType("FA_BDE_CP");
+	public static final OpfacType FA_SEC = new OpfacType("FA_SEC");
+	public static final OpfacType MLRS_SEC = new OpfacType("MLRS_SEC");
+	public static final OpfacType ATHS_TFVAR = new OpfacType("ATHS_TFVAR");
+	public static final OpfacType FO_TFVAR = new OpfacType("FO_TFVAR");
+	public static final OpfacType MECH_FIST_TFVAR =
+	       new OpfacType("MECH_FIST_TFVAR");
+	public static final OpfacType COLT_TFVAR = new OpfacType("COLT_TFVAR");
+	public static final OpfacType ARM_FIST_TFVAR =
+	       new OpfacType("ARM_FIST_TFVAR");
+	public static final OpfacType JSTARS = new OpfacType("JSTARS");
+	public static final OpfacType Q_36_TFVAR = new OpfacType("Q_36_TFVAR");
+	public static final OpfacType ARM_FIST = new OpfacType("ARM_FIST");
+    }
+
+    // added unnested class
+
+    public static class OpfacThread extends Thread
+    {
+        $TEqn.OpfacImpl oi;
+
+        public OpfacThread( $TEqn.OpfacImpl oi ) {
+           this.oi = oi;
+        }
+           
+        public void run() {
+           while (true)
+              {
+                 $TEqn.Event event = ($TEqn.Event)oi.deliveryQueue.get();
+                 oi.receive(event);
+              }
+        } // end run
+    }// OpfacThread
+
+    /** Basic OPFAC functionality **/
+    public static class OpfacImpl 
+        implements Opfac
+    {
+        protected SynchronizedQueue deliveryQueue = null;
+
+	protected $TEqn.OpfacThread opfacThread;  // BDH test
+
+/*
+        class OpfacThread extends Thread
+        {
+            public void run()
+            {
+                while (true)
+                {
+                    $TEqn.Event event = ($TEqn.Event)deliveryQueue.get();
+                    receive(event);
+                }
+            }
+        }
+*/
+
+        public void deliver($TEqn.Event event)
+        {
+            /*
+	    if(!opfacThread.isAlive())
+            {
+		opfacThread = new $TEqn.OpfacThread(this);
+		opfacThread.start();
+                Iterator i = getActiveMissions().iterator();
+		while(i.hasNext())
+                    System.out.println("State for "+getName()+": "+(($TEqn.Mission)i.next()).getState());
+            }
+            */
+
+            deliveryQueue.put(event);
+        }
+
+	protected void receive($TEqn.Event event ) 
+        {
+	    // Debugging
+	    Log.log("Opfac "+getName()+" received "+event);
+	}
+
+
+	protected String _name;
+	protected int _unit;
+	protected OpfacType _type;
+	protected String _superior;
+        protected Location _location;
+	protected Network _network;
+
+        public Object clone() 
+        { 
+            try { return super.clone(); } catch (Exception e) {}
+            return null;
+        }
+
+	/** Initializer sets fields according to laydown record **/
+	public void init( OpfacDataWrapper record, Network network) 
+	{
+	    // Initialize fields according to laydown record
+	    _network    = network;
+
+	    _name      = record.getName();
+	    _unit      = record.getUnit();
+	    _type      = OpfacType.fromString(record.getType());
+	    _superior  = record.getSuperior();
+            _location =
+                new LocationLatLong(
+                    record.getLatitude(),
+                    record.getLongitude());
+
+	    // Register with net object
+	    if( _network != null ) {
+		_network.register( _name, (Opfac) this );
+	    }
+            
+            deliveryQueue = new SynchronizedQueue();
+            opfacThread = new $TEqn.OpfacThread(($TEqn.OpfacImpl) this);      // BDH test -- added cast
+	    opfacThread.start();                  // BDH test
+            //new $TEqn.OpfacThread(this).start();
+	}
+
+        private static OpfacFactory factory = new $TEqn.OpfacFactory();
+
+        public static $TEqn.Opfac create(
+            OpfacDataWrapper record, Network network)
+        {
+            return factory.create(record, network);
+        }
+
+	/** A list of currently active Missions. */
+	public Collection getActiveMissions() {
+	    return Collections.EMPTY_SET;
+	}
+
+	/** Current location of Opfac. */
+	public Location getLocation() 
+        { 
+            return _location;
+        }
+
+	/** 
+	 * A unique identifier.  
+	 * Should be meaningful, will be shown to the user.
+	 */
+	public String getName()      { return _name; } 
+
+	/** The unit number of the Opfac. */
+	public int getUnit()       { return _unit; }
+
+	/** The type of the Opfac. fo, fist, etc.  */
+ 	public $TEqn.OpfacType getType()      { return _type; } 
+
+	/** This opfac's commanding unit **/
+	public String getSuperior()  { return _superior; } 
+
+	/** Schedule a timeout. */
+	public void timeout(float delay, $TEqn.Timeout event) 
+	{
+            new $TEqn.OpfacTimeout(($TEqn.Opfac)this, delay, event);
+	}
+
+        /** Send a message to another opfac. */
+        public void sendTo(String to, $TEqn.Message message)
+        {
+            message.setSource(getName());
+            message.setDestination(to);
+            _network.send(message);
+        }
+    }
+
+
+    public static class OpfacTimeout 
+        extends Thread 
+    {
+	protected Opfac opfac;
+	protected float delay; // In seconds
+	protected $TEqn.Timeout timeout;
+       
+        public OpfacTimeout(
+            $TEqn.Opfac opfac, float delay, $TEqn.Timeout timeout)
+        {
+            this.opfac=opfac;
+            this.delay=delay;
+            this.timeout=timeout;
+            start();
+        }
+
+	public void run() 
+        {
+            try { sleep((int)(delay*1000)); } catch (Exception e) {}
+            opfac.deliver(timeout);
+	}
+    }
+
+
+    /** Extend Factory to produce opfacs. */
+    public static class OpfacFactory 
+    {
+        private Map prototypes = new HashMap();
+
+        protected void register($TEqn.OpfacType name, $TEqn.Opfac prototype)
+        {
+            prototypes.put(name, prototype);
+        }
+
+        public $TEqn.Opfac create(OpfacDataWrapper record, Network network)
+        {
+	    System.out.println("In OpfacL.create(): record.getType() = " +
+				   record.getType());
+            OpfacType opfacType = OpfacType.fromString(record.getType());
+            $TEqn.Opfac opfac = ($TEqn.Opfac)prototypes.get(opfacType);
+            if (opfac==null)
+                Log.error("Cannot create opfac of type " + record.getType());
+            else
+            {
+                opfac = ($TEqn.Opfac)opfac.clone();
+                opfac.init(record, network);
+            }
+            return opfac;
+        }
+    }
+}
+

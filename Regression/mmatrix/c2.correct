@@ -1,0 +1,24 @@
+C E OpfacImpl 
+Line range (-1, -1)
+public  endMods 
+ beginKeys
+Classes :(  Opfac ):
+super :(  Opfac ):
+ endKeys
+ beginNest
+        M D getSelfProxy() Proxy 
+        Line range (23, 23)
+        public  endMods 
+        M D getSuperProxy() Proxy 
+        Line range (24, 24)
+        public  endMods 
+        M R init(OpfacDataWrapper,Network) void 
+        Line range (27, 32)
+        public  endMods 
+        F D selfProxy Proxy 
+        Line range (20, 20)
+        protected  endMods 
+        F D superProxy Proxy 
+        Line range (21, 21)
+        protected  endMods 
+ endNest

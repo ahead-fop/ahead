@@ -1,0 +1,10 @@
+// This program tests that calling a macro with the wrong type causes an error
+
+public class test4 {
+    #SORT(exp{ 4*5 }exp, fooType)
+
+    static public void main(String[] args) {
+	int[] iarray = new int[5];
+	fooSort(iarray);
+    }
+}

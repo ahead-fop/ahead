@@ -1,0 +1,40 @@
+//                              -*- Mode: JTS -*-
+// Version         : 1.1
+// Author          : Robert S. MacDonald
+// Last Modified By: Bryan D. Hopkins
+// Last Modified On: Mon May  1 16:41:00 2000
+
+layer MlrsL ( F lower )
+realm F
+extends lower 
+{
+    public static state_diagram MlrsMission refines $TEqn.WeaponMission {}
+    public static class MlrsOpfac extends $TEqn.WeaponOpfac 
+    {
+        public $TEqn.Mission newMission() 
+        {
+            return new $TEqn.MlrsMission();
+        }
+    }
+    public static class MlrsProxy extends $TEqn.WeaponProxy 
+    {
+        public int typePrecedence() { return 2; }
+    }
+
+    public static class OpfacFactory extends lower.OpfacFactory 
+    {
+	protected OpfacFactory() 
+        {
+	    register(OpfacType.MLRS_BTRY, new $TEqn.MlrsOpfac());
+	}
+    }
+
+    public static class ProxyFactory extends lower.ProxyFactory 
+    {
+	protected ProxyFactory() 
+        {
+	    register(OpfacType.MLRS_BTRY, new $TEqn.MlrsProxy());
+	}
+    }
+}
+

@@ -1,0 +1,39 @@
+
+// just a more complicated example that pushes constructors up and
+// down the chain.
+
+SoUrCe RooT FsatsL "C:!Java!FsatsPackages!Frealm!FsatsL!MessageType.jak";
+
+abstract class MessageType$$FsatsL extends EventType implements MessageTypeInterface {
+        protected MessageType$$FsatsL(String name, double n ) {
+           Super(String,double)(name, n);
+        }
+     }
+
+SoUrCe  MessageL "C:!Java!FsatsPackages!Frealm!MessageL!MessageType.jak";
+
+
+public abstract  class MessageType$$MessageL extends MessageType$$FsatsL
+        implements MessageTypeInterface
+    {
+
+        protected MessageType$$MessageL (double n)
+        {
+            Super(String)(""+n);
+          MessageTypeConstructor(name);
+        }
+
+        protected MessateType$$MessageL (String name, int cons ){
+            Super(String)(name);
+            /* something with cons */
+        }
+    }
+
+SoUrCe  MessageL "C:!Java!FsatsPackages!Frealm!MessageL!MessageType.jak";
+
+
+public abstract  class MessageType extends MessageType$$FsatsL
+        implements MessageTypeInterface
+    {
+    }
+

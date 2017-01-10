@@ -1,0 +1,10 @@
+//tests simplification of Bool expressions
+
+single layer foo;
+
+inside Bool b;
+inside Bool b2;
+
+requires inside b and b and b
+               and !b2 and ?b2;
+provides inside  !b and b2 and !b2 ;

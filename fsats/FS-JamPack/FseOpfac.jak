@@ -1,0 +1,15 @@
+layer FS;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+public class FseOpfac extends OpfacImpl {
+    public boolean canElevate( Mission mission )
+        {
+        Proxy up = getSuperProxy();
+        return up!=null && up.canShoot( mission );
+    }
+}

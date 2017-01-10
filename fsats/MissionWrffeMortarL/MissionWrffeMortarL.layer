@@ -1,0 +1,103 @@
+//                              -*- Mode: JTS -*-
+// Version         :
+// Author          : Robert S. MacDonald
+// Last Modified By: Bryan D. Hopkins
+// Last Modified On: Thu May 25 10:38:00 2000
+
+layer MissionWrffeMortarL( F lower )
+realm F
+extends lower
+imports
+    Jakarta.util.Util,
+    java.io.*,
+    F.Libraries.log.Log
+{
+    public static state_diagram MissionImpl
+        refines lower.MissionImpl
+    {
+        states wrffeMortarAccepted;
+
+        // Take this branch if accepting weapon is a mortar.
+        edge wrffeAcceptedMortar : wrffeAccepted -> wrffeMortarAccepted
+            conditions getWeaponType().equals("MTR_PLT") do { }
+
+        // Relay EOM to gun and stop.
+        edge wrffeMortarAccepted1 : wrffeMortarAccepted -> stop
+            conditions (message instanceof $TEqn.EomMessage)
+            do { sendUp(($TEqn.Message)message.clone()); }
+
+        // Relay Shot and RoundsComplete to observer.
+        edge wrffeMortarAccepted2 : wrffeMortarAccepted -> wrffeMortarAccepted
+            conditions (message instanceof $TEqn.ShotMessage)
+                || (message instanceof $TEqn.RoundsCompleteMessage)
+            do { sendDown(($TEqn.Message)message.clone()); }
+    } // MissionImpl
+ 
+
+    public static state_diagram FoMission
+        refines lower.FoMission
+    {
+        // On RoundsComplete send EOM to gun and stop.
+        refines edge wrffeMortarAccepted1 : wrffeMortarAccepted -> stop
+            conditions (message instanceof $TEqn.RoundsCompleteMessage)
+            do 
+	    {
+		$TEqn.EomMessage eomMessage = new $TEqn.EomMessage(getId());
+		if (initiatingUnit != null)
+		    eomMessage.setInitiatingUnitId(initiatingUnit.intValue());
+		sendUp(eomMessage);
+	    }
+
+        // Ignore Shot message.
+        refines edge wrffeMortarAccepted2 : 
+            wrffeMortarAccepted -> wrffeMortarAccepted
+            conditions (message instanceof $TEqn.ShotMessage) do {}
+    } // FoMission
+
+
+    public static state_diagram MortarMission
+        refines lower.MortarMission
+    {
+        states wrffeLoading, wrffeShot, wrffeComplete;
+
+        // Wait for exclusive control of the mortar to proceed with mission.
+        Enter wrffeMortarAccepted { getOpfac().missionLock(this); }
+
+        // When it's this missions turn, aim and load.
+        edge wrffeMortarAccepted3 : wrffeMortarAccepted -> wrffeLoading
+            conditions (message instanceof $TEqn.LockGranted) 
+            do { getOpfac().timeout(15F, new $TEqn.LoadTime(getId())); }
+
+        // When loaded shoot and notify observer.
+        edge wrffeLoading1 : wrffeLoading -> wrffeShot
+            conditions (message instanceof $TEqn.LoadTime)
+            do 
+            { 
+                getOpfac().timeout(15F, new $TEqn.CompleteTime(getId()));
+		$TEqn.ShotMessage shotMessage = new $TEqn.ShotMessage(getId());
+		if (initiatingUnit != null)
+		    shotMessage.setInitiatingUnitId(initiatingUnit.intValue());
+                sendDown(shotMessage);
+            }
+    
+        // When done shooting notify observer.
+        edge wrffeShot1 : wrffeShot -> wrffeComplete
+            conditions (message instanceof $TEqn.CompleteTime)
+            do
+	    {
+		$TEqn.RoundsCompleteMessage roundsCompleteMessage = new $TEqn.RoundsCompleteMessage(getId());
+		if (initiatingUnit != null)
+		    roundsCompleteMessage.setInitiatingUnitId(initiatingUnit.intValue());
+		sendDown(roundsCompleteMessage);
+	    }
+        
+        // Allow other missions to proceed.
+        Enter wrffeComplete { getOpfac().missionFree(this); }
+
+        // On EOM stop.
+        edge wrffeComplete1 : wrffeComplete -> stop
+            conditions (message instanceof $TEqn.EomMessage) do {}
+    } // MortarMission
+ 
+}   
+

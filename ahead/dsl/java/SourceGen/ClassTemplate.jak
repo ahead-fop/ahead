@@ -1,0 +1,43 @@
+layer SourceGen;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.util.*;
+import java.io.*;
+
+/** ClassTemplate.java
+* JEDI Project
+* Department of Computer Sciences
+* University of Texas at Austin
+* Defines the contents of a Class document.
+* @author Roberto E. Lopez-Herrejon
+* Last Update: November 30, 2002
+* @layer<SourceGen>
+*/
+  
+public refines class ClassTemplate {
+ 
+    /** Fall back method for the extensions to the document layout 
+     * @layer<SourceGen>
+     */
+    public void extendsClassDocument() {
+
+        // Source 
+        SourceTemplate st = new SourceTemplate();
+        st.setName( "Source" );
+        st.setTemplateFile( "SourceTemplates/Source.vm" );
+
+        // Select the place where to put it
+        // Class[2] -> Classbody[3] 
+
+        // Gets the Classbody refences, 2nd element of class
+        DocumentDescriptor classbody = getLayoutElement( 2 );
+        
+        // To the classbody add the layer document as its 3th element
+        classbody.insertLayoutElement( st, 3 );
+
+        // Daisy chains the calls
+        Super().extendsClassDocument();
+    }
+
+}

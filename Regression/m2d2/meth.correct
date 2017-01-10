@@ -1,0 +1,29 @@
+
+#! JavaM => metamodels/JavaM.ecore 
+
+
+layer = JavaM::Layer.new(:name => 'test', :identifier => 'layer') 
+package_used = JavaM::Package.new(:name => 'used', :identifier => 'used', :ownerLayer => layer)
+package_feature = JavaM::Package.new(:name => 'test', :identifier => 'feature', , :ownerLayer => layer)
+
+# meth.jak
+
+feature_meth = JavaM::Class.new(:name => 'meth', :identifier => 'feature.meth', :visibility => 'package', :isRefinement => false, :owner => package_feature)
+
+#  implicitly imported files
+
+primitiveType_void = JavaM::PrimitiveType.new(:name =>'void', :identifier =>'void', :owner => package_used)
+primitiveType_int = JavaM::PrimitiveType.new(:name =>'int', :identifier =>'int', :owner => package_used)
+primitiveType_double = JavaM::PrimitiveType.new(:name =>'double', :identifier =>'double', :owner => package_used)
+
+# meth.jak
+
+method_feature_meth_inc12 = JavaM::Method.new(:name => 'feature.meth.inc()', :identifier => 'feature.meth.inc()', :type => primitiveType_void, :nesting => 0, :visibility => 'package', :body => " { }", :ownerClass => feature_meth)
+
+method_feature_meth_twice1double2 = JavaM::Method.new(:name => 'feature.meth.twice(double)', :identifier => 'feature.meth.twice(double)', :type => primitiveType_double, :nesting => 0, :visibility => 'package', :body => " { }", :ownerClass => feature_meth)
+parameter_feature_meth_twice1double2_x = JavaM::Parameter.new(:name => 'feature.meth.twice(double).x', :identifier => 'feature.meth.twice(double).x', :type => primitiveType_double, :nesting => 0, :ownerMethod => method_feature_meth_twice1double2)
+
+method_feature_meth_add1int3434_int34342 = JavaM::Method.new(:name => 'feature.meth.add(int[][],int[][])', :identifier => 'feature.meth.add(int[][],int[][])', :type => primitiveType_int, :nesting => 0, :visibility => 'package', :body => " { }", :ownerClass => feature_meth)
+parameter_feature_meth_add1int3434_int34342_a = JavaM::Parameter.new(:name => 'feature.meth.add(int[][],int[][]).a', :identifier => 'feature.meth.add(int[][],int[][]).a', :type => primitiveType_int, :nesting => 0, :ownerMethod => method_feature_meth_add1int3434_int34342)
+parameter_feature_meth_add1int3434_int34342_b = JavaM::Parameter.new(:name => 'feature.meth.add(int[][],int[][]).b', :identifier => 'feature.meth.add(int[][],int[][]).b', :type => primitiveType_int, :nesting => 0, :ownerMethod => method_feature_meth_add1int3434_int34342)
+

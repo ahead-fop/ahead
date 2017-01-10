@@ -1,0 +1,27 @@
+layer JavaGen;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.util.*;
+import java.io.*;
+
+// _________________________________________________________________
+
+ /** FieldDetailsHeaderTemplate.java
+ * JEDI Project
+ * Department of Computer Sciences
+ * University of Texas at Austin
+ * @author Roberto E. Lopez-Herrejon
+ * Last Update: November 30, 2002
+ * @layer<JavaGen>
+ */
+
+public class FieldDetailsHeaderTemplate extends DocumentDescriptor {
+
+    // Adds the bindings to the class
+    public VelocityContext 
+        addBindings( ProgramElementDocJTS parsedProgramElement, 
+                VelocityContext context ) {
+        return context;
+    }
+}

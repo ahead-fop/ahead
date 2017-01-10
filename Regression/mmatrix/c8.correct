@@ -1,0 +1,44 @@
+C D c1 
+Line range (-1, -1)
+public  endMods 
+ beginNest
+        F D a int[] 
+        Line range (6, 6)
+         endMods 
+        F D b int 
+        Line range (6, 6)
+         endMods 
+        F D c int[][] 
+        Line range (6, 6)
+         endMods 
+        K D c1(c1[],c1[],c1[][],int,int[],int[],int[][]) __
+        Line range (8, 8)
+        public  endMods 
+        M D c2(c1[],c1[],c1[][],int,int[],int[],int[][]) void 
+        Line range (10, 10)
+        public  endMods 
+        M D main(String[]) void 
+        Line range (13, 13)
+        public static  endMods 
+        M D method() c1[][] 
+        Line range (15, 17)
+         endMods 
+        M D method2() c1[][] 
+        Line range (18, 20)
+         endMods 
+        M D method3() c1[][] 
+        Line range (22, 24)
+         endMods 
+        F D o1 c1[] 
+        Line range (5, 5)
+         endMods 
+        F D o2 c1[][] 
+        Line range (5, 5)
+         endMods 
+        F D o3 c1[][][] 
+        Line range (5, 5)
+         endMods 
+        M D run() void 
+        Line range (11, 11)
+        public  endMods 
+ endNest

@@ -1,0 +1,8 @@
+echo "******************* STAR test ***************"
+java jak2java.Main star.spec
+javac star.java
+java star > junk
+if ! diff -b junk correct-star ; then
+   echo failed
+   exit 1
+fi

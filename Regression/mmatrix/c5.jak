@@ -1,0 +1,11 @@
+layer L1;
+
+    // test constructors and constructor refinements
+
+    refines class C1 { 
+    
+        C1() { }
+	
+	refines C1(int d) { }
+    }
+

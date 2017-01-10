@@ -1,0 +1,46 @@
+#!/bin/bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+echo "****************jak2java Constructor Inheritance Regression Tests***********"
+
+rm -f -- *.java *.ser
+
+bash regress-one MissionImpl \
+&& bash regress-one MessageType \
+|| exit 1
+
+rm -f -- *.java *.ser
+
+echo -e "\nj2j Constructor Inheritance Regression Tests succeeded."
+
+
+echo "****************jak2java comment test ***********"
+
+bash regress-one rootc-extc-mixin \
+&& bash regress-one rootc-extc-jampack \
+|| exit 1
+
+rm -f -- *.java *.ser
+
+echo -e "\nj2j comment tests succeeded."
+
+echo "****************jak2java goto_state test ***********"
+
+bash regress-one sm \
+|| exit 1
+
+echo -e "\nj2j comment tests succeeded."
+
+echo "****************jak2java enter-proceed tests ***********"
+
+bash regress-one both \
+&& bash regress-one b2 \
+|| exit 1
+
+echo -e "\nj2j enter-proceed tests succeeded."
+
+bash regress-semantics || exit 1
+
+rm -f -- *.java *.ser *.class
+

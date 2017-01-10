@@ -1,0 +1,111 @@
+layer JavaHarvest;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+
+public refines class ModTypeDecl {
+    public void execute() {
+
+        Super().execute();
+
+        // Insert the corresponding modifiers to the class
+        // Gets the _harvest_class from its UnmodifiedClassDeclaration
+        ClassDocJTS cls =null;
+ 
+        if ( arg[1] instanceof UmodClassDecl )
+            cls = ( ( UmodClassDecl )arg[1] )._harvest_class;
+        if ( arg[1] instanceof UmInterDecl )
+            cls = ( ( UmInterDecl )arg[1] )._harvest_class;
+
+        // ******************************************************
+        // ******* Temporary solution this one should be made at their
+        // ******* own copy of ModTypeDecl
+  
+        // Extensions for the Interfaces
+        // if (arg[1].arg[0] instanceof UmodIntExt) {
+        //   st = ((UmodSmExt)arg[1].arg[0])._state;
+        //    System.out.println("Is UmodIntExt");
+        // }
+
+        AstCursor c = new AstCursor(); // c to traverse list
+        AstNode   e = arg[0].arg[0]; // e instanceOf Lang.AstList
+
+        if ( e != null && cls !=null ) 
+              { // if there are modifiers and it is a class
+                          
+            // Gets the comment from the first modifier
+            c.FirstElement( e );
+            AstNode first = c.node;
+                              
+            for ( ; c.MoreElement(); c.NextElement() ) {
+                    
+                // abstract method
+                if ( c.node instanceof ModAbstract ) 
+                                                  {
+                    cls.setAbstract( true );
+                }
+                                                
+                // final method
+                if ( c.node instanceof ModFinal ) 
+                                                    {
+                    cls.setFinal( true );
+                }
+                                                
+                // public method
+                if ( c.node instanceof ModPublic ) 
+                                                    {
+                    cls.setPublic( true );
+                }
+                                                
+                // protected method
+                if ( c.node instanceof ModProtected ) 
+                                                    {
+                    cls.setProtected( true );
+                }
+                                                
+                // private method
+                if ( c.node instanceof ModPrivate ) 
+                                                    {
+                    cls.setPrivate( true );
+                }
+                                                
+                // static method
+                if ( c.node instanceof ModStatic ) 
+                                                    {
+                    cls.setStatic( true );
+                }
+                                    
+            // these 4 somehow are not part of ProgramElementDocJTS
+            // transient, volatile, native, synchronized method
+
+            } // for all modifiers
+                              
+            // ********** Comment Processing ***************************
+            // if there are comments at Unmodified are overwritten
+            String comment = ( ( AstToken ) first.tok[0] ).white_space;
+            CommentJedi classComment = 
+                              CommentParser.ParseComment( cls, comment );
+            cls.setComment( classComment );
+                  
+        } // if there are modifiers
+
+        // Adds the class to the program classes
+        if ( cls!=null )
+            GlobalWrapper.containingProgram.addClass( cls );
+
+    // Temporary solution call the generation from this point only
+    // **  Generates the HTML file for a class.
+    /*
+    try{
+            HTMLGenerator.Lang generator = 
+        new HTMLGenerator.Lang();
+        generator.setOutputDirectory(OutputDirectory);
+        generator.ClassGenerator.GenerateClass(cls);
+    }catch(Exception ex) { }
+    */
+
+    } // execute
+}

@@ -1,0 +1,11 @@
+//tests errors for multiple definitions, externs
+
+single layer foo;
+
+extern outside Bool aboolean;
+extern outside Bool anotherboolean ( anotherboolean );
+
+extern outside Bool aboolean;
+
+outside Bool search ( search );
+outside Int  range ( range <= 4 and 3 < range );

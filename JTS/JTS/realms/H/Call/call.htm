@@ -1,0 +1,25 @@
+<extend>
+<ul>
+<method featureList >
+  <li><font face="Arial"><a href="#Method Calls">Method Calls</a></font></li>
+<call featureList >
+</method>
+</ul>
+
+<method chapters >
+<h3><font face="Arial" color="#0000FF"><a name="Method Calls">Method Calls</a></font></h3>
+<p><font face="Arial">A &quot;hole&quot; in an HTML (or XML) file is filled by a
+call to a method of an extension.&nbsp; A call to method METHODNAME has
+elementary syntax:</font></p>
+<blockquote>
+  <pre><font face="Courier New">&lt;call METHODNAME &gt;</font></pre>
+</blockquote>
+<p><font face="Arial">Note that the &lt;call&gt; must be on its own line and
+that a space must separate the end of a method name from the terminating
+right-widget (&quot;&gt;&quot;).</font></p>
+<p><font face="Arial">The semantics of a call is to replace the call with the
+body of the method in the document that extends the current document.&nbsp; If a
+call is made to method <b>M</b> and <b>M</b> is not defined in the extension
+document, <b>XC</b> throws an error.</font></p>
+<call chapters >
+</method>

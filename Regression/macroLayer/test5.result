@@ -1,0 +1,179 @@
+// This program tests a macro call nested inside an AST constructor as well
+// as a macro definition nested inside an AST constructor.
+
+import jak.Lang;
+
+public class test5 {
+    static public void main(String[] args) {
+	Lang.AST_Class cls = (Lang.AST_Class)((Lang.AST_Class) new Lang.AST_Class().markStack())
+
+.add( (Lang.AST_ClassElem) new Lang.AST_ClassElem().setParms( (Lang.ModTypeDecl) new Lang.ModTypeDecl().setParms( 
+ new Lang.AstOptNode(
+) /* AstOptNode */
+,  (Lang.MacroDcl) new Lang.MacroDcl().setParms( 
+new Lang.AstToken().setParms("\n\t    ","macro", 0),  (Lang.NameId) new Lang.NameId().setParms(new Lang.AstToken().setParms(" ","SORT", 0)) /* Lang.NameId */
+, new Lang.AstToken().setParms("","(", 0),  new Lang.AstOptNode(
+).setParms( (Lang.AST_ParList) new Lang.AST_ParList()
+
+.add( (Lang.AST_ParListElem) new Lang.AST_ParListElem().setParms(new Lang.AstToken().setParms("","", 0),
+ (Lang.FormParDecl) new Lang.FormParDecl().setParms( 
+ new Lang.AstOptToken(
+) /* AstOptToken */
+,  (Lang.QNameType) new Lang.QNameType().setParms( 
+ (Lang.AST_QualifiedName) new Lang.AST_QualifiedName()
+
+.add( (Lang.AST_QualifiedNameElem) new Lang.AST_QualifiedNameElem().setParms(new Lang.AstToken().setParms("","", 0),
+ (Lang.NameId) new Lang.NameId().setParms(new Lang.AstToken().setParms("","AST_QualifiedName", 0)) /* Lang.NameId */
+))/* Lang.AST_QualifiedNameElem + add */
+,  new Lang.AstOptNode(
+) /* AstOptNode */
+) /* Lang.QNameType */
+,  (Lang.DecNameDim) new Lang.DecNameDim().setParms( 
+ (Lang.NameId) new Lang.NameId().setParms(new Lang.AstToken().setParms(" ","sname", 0)) /* Lang.NameId */
+,  new Lang.AstOptNode(
+) /* AstOptNode */
+) /* Lang.DecNameDim */
+) /* Lang.FormParDecl */
+))/* Lang.AST_ParListElem + add */
+
+.add( (Lang.AST_ParListElem) new Lang.AST_ParListElem().setParms(new Lang.AstToken().setParms("",",", 0),
+ (Lang.FormParDecl) new Lang.FormParDecl().setParms( 
+ new Lang.AstOptToken(
+) /* AstOptToken */
+,  (Lang.QNameType) new Lang.QNameType().setParms( 
+ (Lang.AST_QualifiedName) new Lang.AST_QualifiedName()
+
+.add( (Lang.AST_QualifiedNameElem) new Lang.AST_QualifiedNameElem().setParms(new Lang.AstToken().setParms("","", 0),
+ (Lang.NameId) new Lang.NameId().setParms(new Lang.AstToken().setParms(" ","AST_TypeName", 0)) /* Lang.NameId */
+))/* Lang.AST_QualifiedNameElem + add */
+,  new Lang.AstOptNode(
+) /* AstOptNode */
+) /* Lang.QNameType */
+,  (Lang.DecNameDim) new Lang.DecNameDim().setParms( 
+ (Lang.NameId) new Lang.NameId().setParms(new Lang.AstToken().setParms(" ","type", 0)) /* Lang.NameId */
+,  new Lang.AstOptNode(
+) /* AstOptNode */
+) /* Lang.DecNameDim */
+) /* Lang.FormParDecl */
+))/* Lang.AST_ParListElem + add */
+) /* AstOptNode */
+, new Lang.AstToken().setParms("",")", 0),  new Lang.AstOptNode(
+) /* AstOptNode */
+,  (Lang.AST_FieldDeclC) new Lang.AST_FieldDeclC().setParms( 
+new Lang.AstToken().setParms("\n\t\t","mth{", 0),  new Lang.AstOptNode(
+).setParms( (Lang.AST_FieldDecl) new Lang.AST_FieldDecl()
+
+.add( (Lang.AST_FieldDeclElem) new Lang.AST_FieldDeclElem().setParms( (Lang.MethodDcl) new Lang.MethodDcl().setParms( 
+ new Lang.AstOptNode(
+) /* AstOptNode */
+,  (Lang.PrimType) new Lang.PrimType().setParms( 
+ (Lang.VoidTyp) new Lang.VoidTyp().setParms( 
+new Lang.AstToken().setParms(" ","void", 0)) /* Lang.VoidTyp */
+,  new Lang.AstOptNode(
+) /* AstOptNode */
+) /* Lang.PrimType */
+,  (Lang.MthDector) new Lang.MthDector().setParms( 
+ (Lang.NameId) new Lang.NameId().setParms(new Lang.AstToken().setParms(" ","sname", 0)) /* Lang.NameId */
+, new Lang.AstToken().setParms("","(", 0),  new Lang.AstOptNode(
+).setParms( (Lang.AST_ParList) new Lang.AST_ParList()
+
+.add( (Lang.AST_ParListElem) new Lang.AST_ParListElem().setParms(new Lang.AstToken().setParms("","", 0),
+ (Lang.FormParDecl) new Lang.FormParDecl().setParms( 
+ new Lang.AstOptToken(
+) /* AstOptToken */
+,  (Lang.QNameType) new Lang.QNameType().setParms( 
+ (Lang.AST_QualifiedName) new Lang.AST_QualifiedName()
+
+.add( (Lang.AST_QualifiedNameElem) new Lang.AST_QualifiedNameElem().setParms(new Lang.AstToken().setParms("","", 0),
+ (Lang.NameId) new Lang.NameId().setParms(new Lang.AstToken().setParms("","type", 0)) /* Lang.NameId */
+))/* Lang.AST_QualifiedNameElem + add */
+,  new Lang.AstOptNode(
+) /* AstOptNode */
+) /* Lang.QNameType */
+,  (Lang.DecNameDim) new Lang.DecNameDim().setParms( 
+ (Lang.NameId) new Lang.NameId().setParms(new Lang.AstToken().setParms(" ","in", 0)) /* Lang.NameId */
+,  new Lang.AstOptNode(
+) /* AstOptNode */
+) /* Lang.DecNameDim */
+) /* Lang.FormParDecl */
+))/* Lang.AST_ParListElem + add */
+) /* AstOptNode */
+, new Lang.AstToken().setParms("",")", 0),  new Lang.AstOptNode(
+) /* AstOptNode */
+) /* Lang.MthDector */
+,  new Lang.AstOptNode(
+) /* AstOptNode */
+,  (Lang.MDSBlock) new Lang.MDSBlock().setParms( 
+ (Lang.BlockC) new Lang.BlockC().setParms( 
+new Lang.AstToken().setParms(" ","{", 0),  new Lang.AstOptNode(
+) /* AstOptNode */
+, new Lang.AstToken().setParms("","}", 0)) /* Lang.BlockC */
+) /* Lang.MDSBlock */
+) /* Lang.MethodDcl */
+))/* Lang.AST_FieldDeclElem + add */
+) /* AstOptNode */
+, new Lang.AstToken().setParms(" ","}mth", 0)) /* Lang.AST_FieldDeclC */
+) /* Lang.MacroDcl */
+) /* Lang.ModTypeDecl */
+))/* Lang.AST_ClassElem + add */
+
+.add( (Lang.AST_ClassElem) new Lang.AST_ClassElem().setParms( (Lang.ModTypeDecl) new Lang.ModTypeDecl().setParms( 
+ new Lang.AstOptNode(
+).setParms( (Lang.AST_Modifiers) new Lang.AST_Modifiers()
+
+.add( (Lang.AST_ModifiersElem) new Lang.AST_ModifiersElem().setParms( (Lang.ModPublic) new Lang.ModPublic().setParms( 
+new Lang.AstToken().setParms("\n\n\t    ","public", 0)) /* Lang.ModPublic */
+))/* Lang.AST_ModifiersElem + add */
+) /* AstOptNode */
+,  (Lang.UmodClassDecl) new Lang.UmodClassDecl().setParms( 
+new Lang.AstToken().setParms(" ","class", 0),  (Lang.NameId) new Lang.NameId().setParms(new Lang.AstToken().setParms(" ","foo", 0)) /* Lang.NameId */
+,  new Lang.AstOptNode(
+) /* AstOptNode */
+,  new Lang.AstOptNode(
+) /* AstOptNode */
+,  (Lang.ClsBody) new Lang.ClsBody().setParms( 
+new Lang.AstToken().setParms(" ","{", 0),  new Lang.AstOptNode(
+).setParms( (Lang.AST_FieldDecl) new Lang.AST_FieldDecl()
+
+.add( (Lang.AST_FieldDeclElem) new Lang.AST_FieldDeclElem().setParms( (Lang.MacroMth) new Lang.MacroMth().setParms( 
+ (Lang.MacroCall) new Lang.MacroCall().setParms( 
+new Lang.AstToken().setParms("\n\t\t","#", 0),  (Lang.AST_QualifiedName) new Lang.AST_QualifiedName()
+
+.add( (Lang.AST_QualifiedNameElem) new Lang.AST_QualifiedNameElem().setParms(new Lang.AstToken().setParms("","", 0),
+ (Lang.NameId) new Lang.NameId().setParms(new Lang.AstToken().setParms("","SORT", 0)) /* Lang.NameId */
+))/* Lang.AST_QualifiedNameElem + add */
+, new Lang.AstToken().setParms("","(", 0),  new Lang.AstOptNode(
+).setParms( (Lang.AST_ArgList) new Lang.AST_ArgList()
+
+.add( (Lang.AST_ArgListElem) new Lang.AST_ArgListElem().setParms(new Lang.AstToken().setParms("","", 0),
+ (Lang.PPQualName) new Lang.PPQualName().setParms( 
+ (Lang.AST_QualifiedName) new Lang.AST_QualifiedName()
+
+.add( (Lang.AST_QualifiedNameElem) new Lang.AST_QualifiedNameElem().setParms(new Lang.AstToken().setParms("","", 0),
+ (Lang.NameId) new Lang.NameId().setParms(new Lang.AstToken().setParms("","fooSort", 0)) /* Lang.NameId */
+))/* Lang.AST_QualifiedNameElem + add */
+) /* Lang.PPQualName */
+))/* Lang.AST_ArgListElem + add */
+
+.add( (Lang.AST_ArgListElem) new Lang.AST_ArgListElem().setParms(new Lang.AstToken().setParms("",",", 0),
+ (Lang.PPQualName) new Lang.PPQualName().setParms( 
+ (Lang.AST_QualifiedName) new Lang.AST_QualifiedName()
+
+.add( (Lang.AST_QualifiedNameElem) new Lang.AST_QualifiedNameElem().setParms(new Lang.AstToken().setParms("","", 0),
+ (Lang.NameId) new Lang.NameId().setParms(new Lang.AstToken().setParms(" ","fooType", 0)) /* Lang.NameId */
+))/* Lang.AST_QualifiedNameElem + add */
+) /* Lang.PPQualName */
+))/* Lang.AST_ArgListElem + add */
+) /* AstOptNode */
+, new Lang.AstToken().setParms("",")", 0)) /* Lang.MacroCall */
+) /* Lang.MacroMth */
+))/* Lang.AST_FieldDeclElem + add */
+) /* AstOptNode */
+, new Lang.AstToken().setParms("\n\t    ","}", 0)) /* Lang.ClsBody */
+) /* Lang.UmodClassDecl */
+) /* Lang.ModTypeDecl */
+))/* Lang.AST_ClassElem + add */
+.patch() /* Lang.AST_Class */
+;
+    }
+}

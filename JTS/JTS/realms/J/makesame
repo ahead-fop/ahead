@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+base=""
+for i in $* ; do
+    if [ "$base" = "" ]; then
+	base=$i
+    else
+	cp $base/$base.b $i/$i.b
+    fi
+done

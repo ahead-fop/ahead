@@ -1,0 +1,19 @@
+#!/bin/bash
+
+cat A$1 | sed -e "/   /d" > A$1.jak
+cat B$1 | sed -e "/   /d" > B$1.jak
+
+echo -n "uncomposing $2 ..."
+
+java unmixin.Main -verbose $2 >out 2>&1
+
+cat out | sed -f updates | tr -s '\n\r' '\n' > current
+cat $2.correct | sed -f updates | tr -s '\n\r' '\n' > correct
+
+if ! diff -w correct current ; then
+   echo "failed 'java unmixin.Main $2'"
+   exit 1
+fi
+
+rm current correct out A$1.jak B$1.jak
+echo "succeeded"

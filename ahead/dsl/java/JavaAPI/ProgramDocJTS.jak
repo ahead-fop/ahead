@@ -1,0 +1,121 @@
+layer JavaAPI;
+
+import java.io.*;
+import java.util.*;
+
+ // of ParameterJTS
+
+// _________________________________________________________________
+
+ /** JEDI Project
+ * ProgramDocJTS.java
+ * University of Texas at Austin
+ * Department of Computer Sciences
+ * Product-line Architecture Research Group
+ * @author Roberto E. Lopez-Herrejon
+ * @version 1.1
+ * @since November 19, 2002
+ * @layer<JavaAPI>
+ */
+
+public class ProgramDocJTS {
+
+    /** Name that corresponds to the file name of the program
+     * @layer<JavaAPI>
+     */
+    String name;
+
+    /** Contains the reference to the package to where it contains, if any.
+     * @layer<JavaAPI>
+     */
+    PackageDocJTS containingPackage = null;
+
+    /** Contains a list with all the classes accesible from 
+     *    AST_Class production.
+     * @layer<JavaAPI>
+     */
+    LinkedList classes ;
+
+    /** Default constructor initializes the classes list. 
+     * @layer<JavaAPI>
+     */
+    // public ProgramDocJTS() {
+    //    classes = new LinkedList();
+    //    $TEqn.ProgramDocJTS.ProgramDocJTSConstructor();
+    // }    
+    
+    // /** Name constructor */
+    // public ProgramDocJTS(String _name)
+    // { 
+    //    name = _name;
+    //    classes = new LinkedList();
+    //    $TEqn.ProgramDocJTS.ProgramDocJTSConstructor(name);
+    // }
+      
+    // Methods added to avoid problems with multiple constructors
+    public static  ProgramDocJTS ProgramDocJTSFactory() {
+        return new  ProgramDocJTS();
+    }
+   
+    public void ProgramDocJTSConstructor() {
+        this.classes = new LinkedList();
+    }
+
+    public void ProgramDocJTSConstructor( String _name ) {
+        this.classes = new LinkedList();
+        this.name = _name;
+    }
+
+    /** Returns the list of classes accesible from AST_Class production.
+     * @layer<JavaAPI>
+     */
+    public LinkedList classes() {
+        return classes;
+    }
+
+    /** Returns the name of the program.
+     * @layer<JavaAPI>
+     */
+    public String name() {
+        return name;
+    }
+
+    /** Returns the containing package object reference.
+     * @layer<JavaAPI>
+     */
+    public  PackageDocJTS containingPackage() 
+    {
+        return containingPackage;
+    }
+
+    /** Sets the list of classes accesible form AST_Class production.
+     * @layer<JavaAPI>
+     */
+    public void setClasses( LinkedList _classes ) {
+        classes = _classes;
+    }
+
+    /** Adds a class to the list of Classes 
+     * @layer<JavaAPI>
+     */
+    public void addClass( ClassDocJTS _class )
+    {
+        classes.add( _class );
+    }
+
+    /** Sets the name of the program.
+     * @layer<JavaAPI>
+     */
+    public void setName( String _name ) {
+        name = _name;
+    }
+
+    /** Sets the containing Package.
+     * @layer<JavaAPI>
+     */
+    public void setContainingPackage( PackageDocJTS _containingPackage )
+    {
+        containingPackage = _containingPackage;
+    }
+    
+}

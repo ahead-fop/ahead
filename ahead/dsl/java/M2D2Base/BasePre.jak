@@ -1,0 +1,10 @@
+layer M2D2Base;
+
+refines class BasePre {
+
+   // strips off (...) in Super construct
+
+   public void print( AstProperties ps ) {
+      ps.print("Super#." + arg[1]);
+   }
+}

@@ -1,0 +1,23 @@
+layer M2D2Base;
+
+refines class AstList {
+   public void extract( context c ) {
+      AstNode l;
+      if (arg[0]==null) return;
+      for (l = arg[0]; l!=null; l = l.right) {
+         if (l.arg[0] == null) 
+             continue;
+         l.arg[0].extract( c );
+      }
+   }
+
+   public void registerImportOwnership( context c ) {
+      AstNode l;
+      if (arg[0]==null) return;
+      for (l = arg[0]; l!=null; l = l.right) {
+         if (l.arg[0] == null) 
+             continue;
+         l.arg[0].registerImportOwnership( c );
+      }
+   }
+}

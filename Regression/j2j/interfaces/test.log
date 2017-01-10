@@ -1,0 +1,9 @@
++ '[' -z /usr/bin/bash ']'
++ echo '****************jak2java Interface Regression Test***********'
+****************jak2java Interface Regression Test***********
++ bash regress-one Event
+translating Event ... succeeded
++ rm -f -- '*.java' '*.ser'
++ echo -e '\nj2j Interface Regression Test succeeded.'
+
+j2j Interface Regression Test succeeded.

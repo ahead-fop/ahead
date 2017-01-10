@@ -1,0 +1,8 @@
+
+
+ class foo {  fooType[]fooSort( fooType[] array) {
+	System.println("Called sort macro");
+	return(array);
+    } }
+
+ class foo {}

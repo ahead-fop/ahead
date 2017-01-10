@@ -1,0 +1,17 @@
+mixin: Cons2.jak: Warning overrides previous results
+layer Cons2;
+
+import java.io.Serializable;
+import anotherPackage;
+
+SoUrCe RooT Cons2 "C:!Java!FeatureOrientedProgramming!Regression!Mixin!class!Cons2.jak";
+
+abstract class MyClass$$Cons2 extends AstNode { /*2*/ }
+
+SoUrCe  CExt1 "C:!Java!FeatureOrientedProgramming!Regression!Mixin!class!CExt1.jak";
+
+ class MyClass extends MyClass$$Cons2 implements yyy, java.io.Serializable {
+    int Terse = 2;
+    void foo() throws SomeException { }
+    int increment( int i ) { }
+}

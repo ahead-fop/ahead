@@ -1,0 +1,13 @@
+// tests mangleing of names within escapes in AST constructors
+
+layer Escape; 
+
+import Jakarta.util.*;
+
+Local_Id i, j;
+
+refines class top {
+   AST_Exp j;
+   AST_Exp i = exp{ i + j + $exp( j ) }exp;
+}
+

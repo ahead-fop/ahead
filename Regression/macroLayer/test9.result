@@ -1,0 +1,21 @@
+
+
+
+    class XX {
+	void foo0() { System.out.println("X-method"); }
+	void bar() { foo0(); }
+    }
+
+    class YY extends XX {
+	void foo1() { System.out.println("Y-method"); }
+	void baz() { foo1(); }
+    }
+
+public class test9 {
+    public static void main(String[] args) {
+	YY y;
+
+	y = new YY();
+	y.bar();
+    }
+}

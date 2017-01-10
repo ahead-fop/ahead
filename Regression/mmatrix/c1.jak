@@ -1,0 +1,33 @@
+// layer OpfacL;
+
+import  
+    laydown.OpfacDataWrapper;
+import 
+    log.Log;
+import 
+    java.util.*;
+import 
+    fsats.util.*;
+
+
+
+    // added unnested class
+
+    public static class OpfacThread 
+    { OpfacImpl oi;
+
+        public OpfacThread( OpfacImpl oi ) {
+          OpfacThreadConstructor(oi);
+        }
+
+        public static void OpfacThreadConstructor( OpfacImpl oi) {
+           this.oi = oi;
+      }
+           
+        public void run() {
+           while (true)
+              { Event event = ( Event)oi.deliveryQueue.get();
+                 oi.receive(event);
+              }
+        } // end run
+    }

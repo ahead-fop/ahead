@@ -1,0 +1,28 @@
+
+#! JavaM => metamodels/JavaM.ecore 
+
+
+layer = JavaM::Layer.new(:name => 'con', :identifier => 'layer') 
+package_used = JavaM::Package.new(:name => 'used', :identifier => 'used', :ownerLayer => layer)
+package_feature = JavaM::Package.new(:name => 'con', :identifier => 'feature', , :ownerLayer => layer)
+
+# const.jak
+
+feature_foo = JavaM::Class.new(:name => 'foo', :identifier => 'feature.foo', :visibility => 'package', :isRefinement => false, :owner => package_feature)
+java_lang_String = JavaM::Class.new(:name => 'String', :identifier => 'java.lang.String', :owner => package_used)
+
+#  implicitly imported files
+
+primitiveType_int = JavaM::PrimitiveType.new(:name =>'int', :identifier =>'int', :owner => package_used)
+
+# const.jak
+
+constructor_feature_foo_foo12 = JavaM::Constructor.new(:name => 'feature.foo.foo()', :identifier => 'feature.foo.foo()', :type => feature_foo, :nesting => 0, :visibility => 'package', :isRefinement => 'false', :body => "{}", :ownerClass => feature_foo)
+
+constructor_feature_foo_foo1int2 = JavaM::Constructor.new(:name => 'feature.foo.foo(int)', :identifier => 'feature.foo.foo(int)', :type => feature_foo, :nesting => 0, :visibility => 'package', :isRefinement => 'false', :body => "{}", :ownerClass => feature_foo)
+parameter_feature_foo_foo1int2_x = JavaM::Parameter.new(:name => 'feature.foo.foo(int).x', :identifier => 'feature.foo.foo(int).x', :type => primitiveType_int, :nesting => 0, :ownerConstructor => constructor_feature_foo_foo1int2)
+
+constructor_feature_foo_foo1String_int2 = JavaM::Constructor.new(:name => 'feature.foo.foo(String,int)', :identifier => 'feature.foo.foo(String,int)', :type => feature_foo, :nesting => 0, :visibility => 'package', :isRefinement => 'false', :body => "{}", :ownerClass => feature_foo)
+parameter_feature_foo_foo1String_int2_y = JavaM::Parameter.new(:name => 'feature.foo.foo(String,int).y', :identifier => 'feature.foo.foo(String,int).y', :type => java_lang_String, :nesting => 0, :ownerConstructor => constructor_feature_foo_foo1String_int2)
+parameter_feature_foo_foo1String_int2_b = JavaM::Parameter.new(:name => 'feature.foo.foo(String,int).b', :identifier => 'feature.foo.foo(String,int).b', :type => primitiveType_int, :nesting => 0, :ownerConstructor => constructor_feature_foo_foo1String_int2)
+

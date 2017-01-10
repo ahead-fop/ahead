@@ -1,0 +1,12 @@
+jrename: source.java:3: Error layer declarations not supported
+jrename: source.java:9: Error state machines not supported
+jrename: source.java:16: Error state machines not supported
+
+
+import firstPackage.*;
+
+SoUrCe  ext111 "C:!Java!Regression!Mixin!sm!ext111.jak";
+
+ abstract
+
+SoUrCe  ext114 "C:!Java!Regression!Mixin!sm!ext114.jak";

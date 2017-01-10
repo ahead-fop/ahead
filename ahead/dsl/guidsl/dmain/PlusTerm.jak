@@ -1,0 +1,10 @@
+layer dmain;
+
+refines class PlusTerm {
+
+    public void visit( Visitor v ) {
+        
+        v.action( this );
+    }
+
+}

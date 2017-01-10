@@ -1,0 +1,29 @@
+/** @author Roberto E. Lopez-Herrejon */
+
+layer j2ajIntx;
+
+/** Adds "public abstract" to methods introduced to interfaces. */
+
+public refines class MethodDcl {
+
+
+    /** Reduce method */
+    public void reduce2java( AstProperties props ) {
+
+        // Checks to see if it is inside an aspect
+         String isAspect = (String) props.getProperty("Aspect");
+         String interfaceName = (String) props.getProperty("InterfaceName");
+
+         // If we are dealing with an interface extension
+         // Make sure you make the method public abstract
+         if (isAspect!=null && interfaceName!=null) {
+           props.print(" public abstract ");
+           // Continues with the reduction
+           arg[1].reduce2java(props);   // AST_TypeName
+           arg[2].reduce2java(props);   // MethodDeclarator
+           arg[3].reduce2java(props);   // ThrowsClause
+           arg[4].reduce2java(props);   // MethodDeclSuffix
+         }
+         Super(AstProperties).reduce2java(props);
+    }
+}

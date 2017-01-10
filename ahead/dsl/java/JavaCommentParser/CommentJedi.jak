@@ -1,0 +1,251 @@
+layer JavaCommentParser;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+ // of class TagParser
+
+/** JEDI Project
+ * CommentJedi.java
+ * University of Texas at Austin
+ * Department of Computer Sciences
+ * Product-line Architecture Research Group
+ * @author Roberto E. Lopez-Herrejon
+ * @version 1.1
+ * @since November 25, 2002
+ * @layer<JavaCommentParser>
+ */
+
+public class CommentJedi {
+
+    // *** Fields
+    /** Whole comment text. 
+     * @layer<JavaCommentParser>
+     */
+    String commentString;
+
+    /** The string with the header comment. 
+     * @layer<JavaCommentParser>
+     */
+    String text;
+
+    // *** Tags arrays
+    LinkedList    tags = new LinkedList();
+    LinkedList     throwsTags = new LinkedList();
+    LinkedList     paramTags = new LinkedList();
+    LinkedList  seeTags = new LinkedList();
+    LinkedList  firstSentenceTags = new LinkedList();
+    LinkedList  inlineTags = new LinkedList();
+
+    // *** Methods
+    /** Returns the whole comment string. 
+     * @layer<JavaCommentParser>
+     */
+    public String commentText() {
+        return commentString;
+    }
+
+    /** Returns all the tags harvested. 
+     * @layer<JavaCommentParser>
+     */
+    public LinkedList tags() {
+        return tags;
+    }
+
+    /** Returns an array of the tags of a given name.  
+     * @layer<JavaCommentParser>
+     */
+    public LinkedList tags( String tagname ) {
+ 
+        // Result list
+        LinkedList tagList = new LinkedList();
+        
+        // Adds the tags that have the name searched for.
+        for( int i=0; i< tags.size(); i++ ) {
+            AbstractTagJedi tag = ( AbstractTagJedi )tags.get( i );
+            if ( tag.name().compareTo( tagname ) == 0 )
+                tagList.add( tag );
+        }
+        
+        // @debug -> delete once tested
+        // // Creates the array to return them
+        // $TEqn.TagJTS[] arrayTags = 
+        //   new $TEqn.TagJTS[tagList.size()];
+        // 
+        // for(int i=0; i< tagList.size(); i++)
+        //    arrayTags[i] = ($TEqn.TagJTS) tagList.get(i); 
+        //
+        // return arrayTags;
+        
+        // Returns the list collected
+        return tagList;
+    }
+
+    /** Returns all the throws tags harvested. 
+     * @layer<JavaCommentParser>
+     */
+    public LinkedList throwsTags() {
+        return throwsTags;
+    }
+
+    /** Returns all the param tags harvested. 
+     * @layer<JavaCommentParser>
+     */
+    public LinkedList paramTags() {
+        return paramTags;
+    }
+
+    /** Returns all the see tags harvested. 
+     * @layer<JavaCommentParser>
+     */
+    public LinkedList seeTags() {
+        return seeTags;
+    }
+
+    /** First sentence tags are the tags from header comment. 
+     * @layer<JavaCommentParser>
+     */
+    public LinkedList firstSentenceTags( DocJTS d, String s ) 
+    {
+        return CommentParser.computeFST( d,s );
+    }
+
+    // *** Set methods for the arrays ******
+    
+    /** Set the tags of the comment. 
+     * @layer<JavaCommentParser>
+     */
+    public void setTags( LinkedList _tags ) {
+        tags = _tags;
+    }
+
+    /** Set the throws tags of the comment. 
+     * @layer<JavaCommentParser>
+     */
+    public void setThrowsTag( LinkedList _throwsTags ) 
+    {
+        throwsTags = _throwsTags;
+    }
+
+    /** Set the param tags of the comment.  
+     * @layer<JavaCommentParser>
+     */
+    public void setParamTag( LinkedList _paramTags )
+    {
+        paramTags = _paramTags;
+    }
+
+    /** Set the see tags of the comment. 
+     * @layer<JavaCommentParser>
+     */
+    public void setSeeTag( LinkedList _seeTags ) {
+        seeTags = _seeTags;
+    }
+
+    /** Sets the commentString to be the whole text of a comment. 
+     * @layer<JavaCommentParser>
+     */
+    public void setCommentString( String _commentString )
+    {
+        commentString = _commentString;
+    }
+
+    /** Sets the text variable to be header the text of a javadoc comment. 
+     * @layer<JavaCommentParser>
+     */
+    public void setText( String _text ) {
+        text = _text;
+    }
+
+    /** Sets the first sentence tags of the comment. 
+     * @layer<JavaCommentParser>
+     */
+    public void setFirstSentenceTag( LinkedList _firstSentenceTags )
+    {
+        firstSentenceTags = _firstSentenceTags;
+    }
+
+    /** Sets the inline tags of the comment. 
+     * @layer<JavaCommentParser>
+     */
+    public void setInlineTag( LinkedList _inlineTags )
+    {
+        inlineTags = _inlineTags;
+    }
+
+    /** Returns the text of a javadoc comment. 
+     * @layer<JavaCommentParser>
+     */
+    public String text() {
+        return text;
+    }
+
+    /** Returns the inline tags. 
+     * @layer<JavaCommentParser>
+     */
+    public LinkedList inlineTags() 
+    {
+        return inlineTags;
+    }
+
+    /** Returns all the tags 
+     * @layer<JavaCommentParser>
+     */
+    public LinkedList getTags() {
+        return tags;
+    }
+
+    /** Returns the text of the first sentence tags 
+     * @layer<JavaCommentParser>
+     */
+    public String textFirstSentenceTags() {
+        String fstText = "";
+        for( int m = 0; m < firstSentenceTags.size(); m++ ) {
+            AbstractTagJedi tag = 
+                        ( AbstractTagJedi ) ( firstSentenceTags.get( m ) );
+            fstText = fstText + tag.text();
+        }
+        return fstText;
+    }
+    // of textFirstSentenceTags
+
+       /** Writes tag description comment. 
+         * Extracts the info from the inline tags. 
+         * @layer<JavaCommentParser>
+         */
+    public String descriptionComment()
+    {
+        String descriptionString = "";
+
+        // If there are inlink, you have to cast them to see Tags and get the
+        //  referenced class, and member name plus the label.
+
+        for( int j=0; j< inlineTags.size(); j++ ) {
+            // if we are dealing with a text tag then just add it
+            AbstractTagJedi inlineTag = 
+                 ( AbstractTagJedi ) inlineTags.get( j );
+            if ( inlineTag.name().compareTo( "Text" ) == 0 ) {
+                descriptionString = descriptionString + " " + 
+                                    inlineTag.text();
+            }
+            else // it is an inlink tag so make the reference call
+                        {
+                SeeTagJedi seeTag = 
+                                                ( SeeTagJedi )inlineTags.get( j );
+                String seeString  = seeTag.referencedClassName() 
+                                                + "#" + seeTag.referencedMemberName();
+                descriptionString = descriptionString + 
+                                                "<A HREF = " + seeString  + ">" + 
+                                                seeTag.label() + "</A> ";
+            }
+        }
+
+        return descriptionString;
+     
+    } // of description Comment
+
+}

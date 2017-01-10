@@ -1,0 +1,15 @@
+single layer MissionWrffeMortarL;
+
+outside Bool mortarMissionPresent;
+
+extern outside Bool missionPresent;
+extern outside Bool basicPresent;
+extern outside Bool mortarPresent;
+extern outside Bool wrffeCommonPresent;
+extern outside Int  fsatsRank;
+extern inside  Bool libraries;
+
+requires outside fsatsRank == 3 and mortarPresent and wrffeCommonPresent 
+                 and basicPresent;
+provides outside missionPresent and mortarMissionPresent;
+requires inside  libraries;

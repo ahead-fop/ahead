@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+# should get rid of the dos/unix text file format
+# problems for build scripts
+  
+cd autotest/bin
+dos2unix submit summary testJakBasic
+cd ../..
+cd ahead/miscellaneous/bin
+dos2unix make-bin print-path run-tool

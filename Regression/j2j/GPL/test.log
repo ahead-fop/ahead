@@ -1,0 +1,14 @@
++ '[' -z /usr/bin/bash ']'
++ echo '****************jak2java GPL Regression Test***********'
+****************jak2java GPL Regression Test***********
++ rm -f -- '*.java' '*.class'
++ FAILURES=0
++ java jak2java.Main Edge.jak Graph.jak Main.jak Neighbor.jak NumberWorkSpace.jak Vertex.jak WorkSpace.jak
++ javac Edge.java Graph.java Main.java Neighbor.java NumberWorkSpace.java Vertex.java WorkSpace.java
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
++ rm -f -- Edge.java Graph.java Main.java Neighbor.java NumberWorkSpace.java Vertex.java WorkSpace.java Edge.class 'Graph$$BFS.class' 'Graph$$Number.class' 'Graph$$Undirected.class' Graph.class Main.class Neighbor.class NumberWorkSpace.class 'Vertex$$BFS.class' 'Vertex$$Undirected.class' Vertex.class WorkSpace.class
++ (( FAILURES ))
++ echo -e '\nj2j GPL Regression Test completed Successfully.'
+
+j2j GPL Regression Test completed Successfully.

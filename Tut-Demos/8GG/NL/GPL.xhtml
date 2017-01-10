@@ -1,0 +1,27 @@
+<!-- ++ Refinements needed to add feature G -->
+<xr:refine xmlns:xr="http://www.atarix.org/xmlRefinement" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.atarix.org/xmlRefinement">
+	<xr:at select="//table[@id='mainlayout']">
+		<xr:append>
+			<tr>
+				<td>
+					<div class="GPL_TEXT">
+The Neighbors-List (NL) data structure is an improvement over the 
+OnlyVertices or adjacency-list (AL) data structure.  Instead of
+having two parallel lists, one for listing adjacent vertices and
+a second parallel list for encoding edge weights, Neighbor objects
+are used to encode both in different fields.  The "Neighbor" concept
+is reified as an explicit class.  In general, the Neighbor-List
+data structure will outperform AL, especially when dealing with 
+algorithms that need edge information.  The disadvantage of this
+data structure is when algorithms must manipulate edges explicitly.
+</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" alt="FOP" src="images/G.jpg" width="626" height="300" />
+				</td>
+			</tr>
+		</xr:append>
+	</xr:at>
+</xr:refine>

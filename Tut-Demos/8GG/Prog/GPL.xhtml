@@ -1,0 +1,79 @@
+<!-- ++ Refinements needed to add feature TestBench -->
+<xr:refine xmlns:xr="http://www.atarix.org/xmlRefinement" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.atarix.org/xmlRefinement">
+	<xr:at select="//ul[@id='mMenu']">
+		<xr:append>
+			<li>
+				<span class="GPL_TEXT">
+					<a href="#Command Line Invocation">Command Line Invocation</a>
+				</span>
+			</li>
+		</xr:append>
+	</xr:at>
+	<xr:at select="//table[@id='mainlayout']">
+		<xr:append>
+			<tr>
+				<td>
+					<table id="mComInvo">
+						<tr>
+							<td class="GPL_TITLE2">
+								<a name="Command Line Invocation">Command Line Invocation</a>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="GPL_TEXT">Your package contains a Main class that has 2 command line 
+parameters: the name of a data file and the number of a vertex:</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<blockquote><br/>
+									<div class="GPL_CODE">&gt; java &lt;your_package_name&gt;.Main &lt;data_file_name&gt; &lt;vertex#&gt;</div>
+								</blockquote><br/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="GPL_TEXT">A data file is a text file with the following sequence of numbers:</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<ul>
+									<li>
+										<div class="GPL_TEXT">the number of vertices in the graph (v)</div>
+									</li>
+									<li>
+										<div class="GPL_TEXT">the number of edges in the graph (e)</div>
+									</li>
+									<li>
+										<div class="GPL_TEXT">3 numbers that are presently ignored (claimed for 
+  future use)</div>
+									</li>
+									<li>
+										<div class="GPL_TEXT">a sequence of e pairs of positive numbers 
+  (start-vertex#, end-vertex#) to define each vertex</div>
+									</li>
+									<li>
+										<div class="GPL_TEXT">a sequence of e positive numbers to indicate the weight 
+  of each vertex</div>
+									</li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="GPL_TEXT">Vertex numbers begin with 0..(v-1).</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="GPL_TEXT">The vertex# parameter of the command line indicates the root vertex of the graph.</div>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</xr:append>
+	</xr:at>
+</xr:refine>

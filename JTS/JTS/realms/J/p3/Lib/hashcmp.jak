@@ -1,0 +1,493 @@
+/* hashcmp - this is a "utility" layer that is designed to improve
+   performance over equality predicates on complex types.  In general,
+   equality predicates are quick to perform on primitive data types - 
+   int, float, byte, etc.  Equality comparisons on strings (and more 
+   complex types, like polygons), can be slow.  hashcmp encapsulates
+   the technique of adding a hash field for designated types.  when
+   an equality predicate T == value (where T is a designated type and
+   value is either a constant or expression) is encountered, it is
+   replaced with the more complex, but presumably more efficient
+   predicate (H == hash(value) && T == value).  Although this is 
+   probabalistic, it will more quickly perform equality tests on average. */
+
+package p3Lib;
+
+import JakBasic.Lang;
+
+
+public final class hashcmp extends BaseDS implements DS {
+   //public DS                lower;
+   public String            keyfield;
+   public Lang.AST_QualifiedName keyfieldast;
+   public String            keytype;
+   public Lang.AST_QualifiedName keytypeast;
+   public int               keyid;
+   public TopParams         tp;
+   environment              hash;
+   
+   public hashcmp( DS lowerlevel ) { 
+      lower = lowerlevel;
+   }
+
+   public hashcmp( ) { }
+
+   public DS_Container_Type make_container_type( TopParams t, ContParams c ) {
+      return new hashcmp_Container_Type( this, t, c );
+   }
+
+   public DS_Element_Type make_element_type( ) {
+      return new hashcmp_Element_Type( this );
+   }
+
+   public DS_CommonCursor_Type make_commoncursor_type() {
+      return new hashcmp_CommonCursor_Type( this );
+   }
+
+   public DS_Cursor_Type make_cursor_type( Usage u ) { 
+        return new hashcmp_Cursor_Type( this, u ); 
+   }
+
+   public DrcAttributes drc( DrcAttributes d ) {
+      
+	  // first, check to see if there is another hashcmp layer that
+	  // has the same key. If so, flag it as an error, otherwise
+	  // remember the annotation
+	  
+	  d.check_annotation("hashcmp", keyfield);
+  
+	  // test precondition that hashcmp is not below topmost layers
+      if (d.below_topmost_layers) 
+         DrcAttributes.DrcError( "hashcmp below " + d.below_topmost_set );
+      d = lower.drc(d);
+
+      // test prerequiste that there be a retrieval layer beneath
+      if (!d.retrieval_layer_present) {
+         DrcAttributes.DrcError( "no retrieval layer beneath hashcmp");
+         d.retrieval_layer_present = true;
+      }
+      return d;
+   } 
+
+   public void set_keyword( TOP toplayer, TopParams tph ) {
+      tp = tph;     
+      environment parent toplayer;
+      lower.set_keyword( toplayer, tp );
+   }
+
+   public Object ParseArgs( Lang.AstNode x ) {
+      Object result = null;
+      int    i;
+      
+      if (x != null && x.arg[0] != null && x.arg[0].right != null 
+          && x.arg[0].right.right == null) {
+         if (x.arg[0].arg[0].arg[0] instanceof Lang.AST_QualifiedName)
+            keyfield = ((Lang.AST_QualifiedName) x.arg[0].arg[0].arg[0]).GetName();
+         else 
+            ParseTE.parseError(
+              "hashcmp layer expecting attribute name as its first argument");
+         result = ParseTE.parse(x.arg[0].right.arg[0]);
+         if (result == null || !(result instanceof DS) )
+            ParseTE.parseError(
+              "hashcmp layer 2nd argument should be of type DS");
+      }
+      else
+         ParseTE.parseError(
+           "hashcmp layer expecting two arguments : attributename and DS");
+      lower = (DS) result;
+      return this;
+   }
+}
+
+final class hashcmp_Container_Type implements DS_Container_Type {
+   ContParams        cp;
+   hashcmp            _layer;
+   DS_Container_Type lower;
+   environment;
+
+   hashcmp_Container_Type( DS hashcmplayer, TopParams t, ContParams c ) { 
+      // Step 1: save the arguments as we'll refer to them later
+
+      _layer    = (hashcmp) hashcmplayer;
+      cp       = c;
+      _layer.tp = t;
+      environment parent _layer;
+
+      // Step 2: create chain of lower level containers
+
+      lower = _layer.lower.make_container_type( t, cp );
+   }
+
+   public void validate() {
+      String primitiveTypes = ":boolean:char:byte:short:int:long:float:double:void:";
+
+      // Step 1: validation tests ensure that the keyfield specified
+      //         in the type equation actually corresponds to a known
+      //         attribute
+
+      _layer.keyid = _layer.tp.FieldIndex(_layer.keyfield);
+      if (_layer.keyid == -1)
+         ParseTE.parseError(_layer.keyfield+ " is not an attribute for hashcmp layer");
+
+      // Step 2: We can hashcmp any class (that has a hashCode() method),
+      //         except the primitive types.  So make sure that the primitive
+      //         types aren't arguments
+
+      if (primitiveTypes.indexOf(":"+ _layer.tp.FieldType[_layer.keyid] +":") != -1)
+         ParseTE.parseError(_layer.keyfield + " is a primitive type and can't be hashed");
+
+      // Step 3: keyfield is legal, now go and remember a set of
+      //         derived values for later reference
+
+      _layer.keytype     = _layer.tp.FieldType[_layer.keyid];
+      _layer.keyfieldast = Lang.AST_QualifiedName.Make(_layer.keyfield);
+      _layer.keytypeast  = Lang.AST_QualifiedName.Make(_layer.keytype);
+
+      // Step 3: now proceed to validate lower layers
+
+      lower.validate();
+   } 
+
+   // nothing to add to the container, nothing to initialize
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return lower.dataMembers();
+   }
+
+   public Lang.AST_Stmt containerMethod() {
+      return lower.containerMethod();
+   }
+
+   public Lang.AST_Exp is_fullMethod() {
+      return lower.is_fullMethod();
+   }
+   
+   public Lang.AST_Stmt insertMethod(){
+     return lower.insertMethod();
+   }
+
+   public Lang.AST_Stmt storageMethod() {
+      return lower.storageMethod();
+   }
+
+   public Lang.AST_Stmt finishMethod() {
+      return lower.finishMethod();
+   }
+   
+   public Lang.AST_Stmt openMethod(){
+      return lower.openMethod();
+   } 
+
+}
+
+
+final class hashcmp_Element_Type implements DS_Element_Type {
+   hashcmp          _layer;
+   DS_Element_Type  lower;
+   environment;
+
+   hashcmp_Element_Type( DS hashcmplayer ) {
+      _layer    = (hashcmp) hashcmplayer;
+      lower    = _layer.lower.make_element_type();
+      environment parent _layer;
+   }
+
+
+   // generate data members of transformed element class 
+   // just add hash field and initialize it
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return mth{
+   int hash;
+   $mth(lower.dataMembers())
+       }mth;
+   }
+
+   // link is part of element constructors
+
+   public Lang.AST_Stmt link() {
+      return stm{
+      hash = $id(_layer.keyfieldast).hashCode();
+      $stm(lower.link());
+      }stm;
+   }
+
+   public Lang.AST_FieldDecl relink() {
+      return lower.relink();
+   }
+
+   public Lang.AST_FieldDecl unlink() {
+      return lower.unlink();
+   }
+
+   public Lang.AST_Stmt upd( int fieldno ) {
+       if (fieldno == _layer.keyid) 
+         return stm{ 
+      $stm(lower.upd( fieldno ));
+      hash = $id(_layer.keyfieldast).hashCode();
+         }stm;
+      return lower.upd( fieldno );
+   }
+   
+}
+
+final class hashcmp_CommonCursor_Type implements DS_CommonCursor_Type {
+   hashcmp _layer;
+   DS_CommonCursor_Type lower;
+   environment;
+
+   hashcmp_CommonCursor_Type( DS hashcmplayer ) {
+      _layer = (hashcmp) hashcmplayer;
+      lower = _layer.lower.make_commoncursor_type();
+      environment parent _layer;
+   }
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return lower.dataMembers();
+   }
+
+
+   public Lang.AST_Stmt insertMethod( ) {
+         return lower.insertMethod( );
+   }
+
+   public Lang.AST_Stmt removeMethod() {
+      return lower.removeMethod();
+   }
+
+   public Lang.AST_FieldDecl movementMethods() {
+      return lower.movementMethods();
+   }
+}
+
+final class hashcmp_Cursor_Type implements DS_Cursor_Type {
+
+    static int      unique = 1000;       // used for creating unique hash identifiers
+
+    hashcmp        _layer;
+    DS_Cursor_Type lower;
+    Lang.AST_Exp        tlb;      // lower bound transformed
+    Lang.AST_Exp        tub;      // transformed upper bound
+    Lang.AST_Exp        tre;      // transformed residual
+    Lang.AST_Stmt       first_method_code; // code to add to First() methods
+    Lang.AST_FieldDecl  hashmembers;       // data members to add to cursor class
+    environment;
+
+    hashcmp_Cursor_Type( DS hashcmplayer, Usage u ) {
+
+       _layer = (hashcmp) hashcmplayer;
+       lower = _layer.lower.make_cursor_type( u );
+       environment parent _layer;
+    }
+
+    public Qopt optimize( Qopt q ) {
+       Qopt result;
+       int  this_unique = unique;
+
+       // Step 1: perform query optimization
+
+       result            = lower.optimize(q);
+
+       // Step 2: now, go ahead and transform 3 predicates,
+       //         remembering the result for later use.
+       //         Note: only if we generate hashvars for lower
+       //         bounds will we not generate hashvars for upper
+       //         bounds. 
+  
+
+       first_method_code = null;
+       hashmembers       = null;   
+       tlb = HashTransform( _layer.tp, lower.lowerBound( false ),
+			    _layer.keyid, true );
+       tub = HashTransform( _layer.tp, lower.upperBound( true ),
+			    _layer.keyid, this_unique == unique);
+       tre = HashTransform( _layer.tp, lower.residual(), _layer.keyid, true );
+
+       // Step 3: return result of query optmization
+
+       return result;
+    }
+
+    public Lang.AST_FieldDecl dataMembers() {
+       return mth{
+       $mth(hashmembers)
+       $mth(lower.dataMembers())
+       }mth;
+    }
+
+    public Lang.AST_Stmt cursorMethod() {
+       return lower.cursorMethod();
+    }
+
+    public Lang.AST_Stmt firstMethod() {
+       return stm{
+       $stm(first_method_code);
+       $stm(lower.firstMethod());
+       }stm;
+    }
+
+    public Lang.AST_Exp moreMethod() {
+       return lower.moreMethod();
+    }
+
+    public Lang.AST_Stmt noMoreMethod() {
+       return lower.noMoreMethod();
+    }
+
+    public Lang.AST_Stmt nextMethod()  {
+       return lower.nextMethod();
+    }
+
+    public Lang.AST_Exp lowerBound( boolean pos ) {
+       if (!pos)
+          return tlb;
+       else
+          return exp{ !($exp(tlb)) }exp;
+    }
+
+    public Lang.AST_Exp upperBound( boolean pos ) {
+       if (pos)
+          return tub;
+       else
+          return exp{ !($exp(tub)) }exp;
+    }
+
+    public Lang.AST_Exp residual() {
+       return tre;
+    }
+
+   // HashTransform replaces all clauses of the form
+   // k() == const or k() == expr, for a given k, with
+   // h == lv1 && k() == cont or h == lv2 && k() == expr
+   // where lv1 = const.hashCode() and lv2 = (expr).hashCode()
+   // The idea here is that it is much faster to compare
+   // two integers for equality than it is for two strings
+   // (or other user defined objects).  Of course, the comparison
+   // is probabalistic, butstill it should be a win for String
+   // and user-defined object type equality comparisons.
+
+   // Also, note that HashTransform actually two other
+   // outputs: static first_method_code and static hashmembers. 
+   // first_method_code is a series of hash constants that are
+   // recomputed each time first() is called.  hashmembers
+   // are the data members that are to customize the cursor.
+
+   public Lang.AST_Exp HashTransform( 
+      TopParams tp, Lang.AST_Exp predicate, int hashfield, boolean inc ) {
+      Lang.AstCursor         c;
+      Lang.AST_QualifiedName fnast;
+      String            fieldname;
+      Lang.AST_QualifiedName hashvar;
+      Lang.AST_Exp           exprast;
+      Lang.AST_Exp           repl_expr;
+      Lang.AstNode           x;
+      Lang.AST_Exp           result;
+
+      // Step 1: exit if predicate is null
+ 
+      if (predicate == null)
+         return null;
+
+      c = new Lang.AstCursor();
+      result = (Lang.AST_Exp) predicate.clone();
+      for (c.First(result); c.More(); c.PlusPlus()) {
+
+         //  Step 1: What we need to determine if the clause is 
+         //  hashable. If so, add the hash predicate.
+
+         x = c.node;
+//          if (!(x instanceof Lang.EquExpr)) 
+         if (! ((x instanceof Lang.EqExpr)
+		&& (x.arg[1].arg[0].arg[0] instanceof Lang.Eq)))
+            continue;
+
+         // Step 1a: we know this is an equality clause,
+         //          now determine if this is a hashable field.
+
+//          if ( x.arg[0] instanceof Lang.MthCall 
+//            && x.arg[0].arg[0] instanceof Lang.QNList
+//            && x.arg[0].arg[1] instanceof Lang.AstOptNode 
+//            && x.arg[0].arg[1].arg[0] == null ) {
+//            fnast = (Lang.AST_QualifiedName) x.arg[0].arg[0].arg[0];
+         if (x.arg[0] instanceof Lang.PrimExpr
+	     && x.arg[0].arg[0] instanceof Lang.PPQualName) {
+	     Lang.AstNode mcall = x.arg[0].arg[1].arg[0].arg[0];
+	     if (mcall instanceof Lang.MthCall
+		 && mcall.arg[0].arg[0].arg[0] == null) {
+
+		 fnast = (Lang.AST_QualifiedName) x.arg[0].arg[0].arg[0];
+		 fieldname = ((Lang.AST_QualifiedName) fnast).GetName();
+		 if (fieldname.compareTo(tp.FieldName[hashfield]) != 0) 
+		     continue;
+	     }
+         }
+         else continue;
+
+         // Step 2: we now know that this is an equality clause over
+         //         a hashable field.  Remove this clause and replace
+         //         it with the expanded predicate
+
+         // Step 2a: create a unique hash variable, and get its 
+         //          constant/expression
+
+         hashvar = Lang.AST_QualifiedName.Make("hashvar"+unique);
+//          exprast = (Lang.AST_Exp) x.arg[1];
+         exprast = (Lang.AST_Exp) x.arg[1].arg[1];
+
+         // Step 2b: increment unique, if requested.  The reason
+         //          inc is here at all is so that we don't generate
+         //          more than one hash variable for equality expressions.
+         //          Remember, the point range [k,k], we will see the
+         //          predicate A == k twice, once for translating the
+         //          lower bound, and a second time for translating the
+         //          upper bound.
+
+         // Step 2b: create initial hash value
+
+         if (inc) {
+            unique++;
+            if (exprast instanceof Lang.Literal) {
+
+               // must be String, as no other literals are allowed...
+
+               if (hashmembers == null)
+                  hashmembers = mth{ 
+   static int $id(hashvar) = $exp(exprast).hashCode(); }mth;
+               else
+                  hashmembers = mth{ $mth(hashmembers)
+   static int $id(hashvar) = $exp(exprast).hashCode(); 
+                                }mth;
+            }
+            else {
+               if (first_method_code == null) 
+                  first_method_code = stm{ $id(hashvar) = $exp(exprast).hashCode(); }stm;
+               else 
+                  first_method_code = stm{ $stm(first_method_code); $id(hashvar) = $exp(exprast).hashCode(); }stm;
+
+               // Step 2c: add to list of variables to define
+
+               if (hashmembers == null) 
+                  hashmembers = mth{ int $id(hashvar); }mth;
+               else
+                  hashmembers = mth{ $mth(hashmembers) int $id(hashvar); }mth;
+             }
+         }
+         // Step 2d: create expression that is to replace the current expression
+
+         repl_expr = exp{ obj.hash == $id(hashvar) && $exp( (Lang.AST_Exp) x.clone() ) }exp;
+
+         // Step 2e: do the replacement and skip over this node
+
+         c.Replace(repl_expr);
+         c.Sibling();
+
+      } /* end-for */
+
+      // Step 5: return result, null if there is an empty residual
+
+      return (Lang.AST_Exp) c.Root();
+   }
+
+   public Lang.AST_Stmt removeMethod() {
+      return lower.removeMethod();
+   }
+}

@@ -1,0 +1,142 @@
+//                              -*- Mode: Java -*- 
+// LayerDeclSupport.jak --- 
+// Author          : Bernie Lofaso
+// Created On      : Wed May  6 10:53:15 1998
+// Last Modified By: 
+// Last Modified On: Mon Jul 05 11:26:56 1999
+// Update Count    : 25
+// Status          : Under Development
+// 
+// $Locker:  $
+// $Log: LayerDeclSupport.jak,v $
+// Revision 1.3  2002-08-18 20:19:17  dsb
+// The following layers were updated as a result of revising the
+// ast layer so that it generates "syntactically" correct parse
+// trees -- or something much, much closer to syntactically correct parse
+// trees.  These changes are required for bootstrapping.
+//
+// Revision 1.2  2002/02/22 18:19:42  sarvela
+// Removed carriage returns.
+//
+// Revision 1.1.1.1  1999/07/12 16:01:02  sarvela
+// Imported original v3.0beta4 sources from Webpage
+//
+// Revision 1.1.1.1  1999/07/12 16:01:02  lofaso
+// new composition component
+//
+// Revision 1.2  1999/06/14 14:55:13  lofaso
+// Made changes to allow layer modifiers to be passed through to the outer
+// class definition that we generate for that layer. Also fixed the problem
+// with the 'relative' keyword. It now works correctly for imported types such
+// as String.
+//
+// Revision 1.1.1.1  1999/02/18 16:15:40  lofaso
+// Snapshot 2-18-99
+//
+// Revision 1.2  1998/09/25 21:48:50  lofaso
+// Modified JTS such that only default constructor and constructor taking a
+// single int is required for extending grammar classes.
+//
+// Revision 1.1.1.1  1998/06/22 18:01:50  lofaso
+// Layer definition
+//
+// 
+
+package layersLib;
+
+import JakBasic.Lang;
+
+public class LayerDeclSupport {
+    public static Lang.AST_Program createProgram(Lang.LayerDecl ld,
+						 Lang.AstProperties props) {
+    	Lang.AST_QualifiedName layerName = Lang.AST_QualifiedName.Make(
+	       ld.arg[1].toString() );
+//	id{ $id(ld.arg[1]) }id;
+	Lang.AST_QualifiedName parentComponent = null;
+	Lang.AST_ParList parms = (Lang.AST_ParList) ld.arg[2].arg[0];
+	Lang.AST_Imports importList = null;
+	Lang.AST_ParList invisibleParms = plst{
+	    AST_QualifiedName $PackName,
+	    AST_QualifiedName $TEqn,
+	    AST_QualifiedName $id(layerName)
+	}plst;
+	Lang.AST_Program prog;
+	Lang.AST_Class outerClass;
+	Lang.ClsBody classBody;
+	Lang.AST_Modifiers oMods = null;
+	Lang.AstNode lnode;
+
+	// Create modifier list
+	lnode = ld.arg[0].arg[0];
+	if (lnode == null)
+	    oMods = mod{ public }mod;
+	else {
+	    oMods = new Lang.AST_Modifiers();
+	    lnode = lnode.arg[0];
+	    while (lnode != null) {
+		if (lnode.arg[0] instanceof Lang.NonRelMod) {
+		    oMods.add(new Lang.AST_ModifiersElem()
+			      .setParms(lnode.arg[0]));
+		}
+
+		lnode = lnode.right;
+	    }
+	    if (oMods.arg[0] == null)
+		oMods = mod{ public }mod;
+	}
+
+	// Get import list (if present)
+	if (ld.arg[5].arg[0] != null)
+	    importList =
+		((Lang.LyrImports) ld.arg[5].arg[0]).getImportList(props);
+
+	// Get parent component (if present)
+	if (ld.arg[4].arg[0] != null)
+	    parentComponent = (Lang.AST_QualifiedName) ld.arg[4].arg[0].arg[0];
+
+	// Augment arg list
+	if (parms == null) {
+	    parms = invisibleParms;
+
+	    // This assignment is to make the invisible parms print in
+	    // the output .java file.
+	    ld.arg[2].arg[0] = invisibleParms;
+	}
+	else
+	    parms.add(invisibleParms);
+
+	// Create outer class dependent on if parent is specified.
+	if (parentComponent == null) {
+	    outerClass = cls{
+		$mod(oMods) class $id(layerName) { }
+	    }cls;
+	}
+	else {
+	    outerClass = cls{
+		$mod(oMods) class $id(layerName) extends $id(parentComponent) {
+		}
+	    }cls;
+	}
+
+	// Insert the class body in arg[6] into the outer class
+	classBody = (Lang.ClsBody) outerClass.arg[0].arg[0].arg[1].arg[3];
+	classBody.Replace(ld.arg[6]);
+
+	// Put it all together to create a program
+	if (importList == null) {
+	    prog = prg{
+		package $PackName;
+		$cls(outerClass);
+	    }prg;
+	}
+	else {
+	    prog = prg{
+		package $PackName;
+		$imp(importList);
+		$cls(outerClass);
+	    }prg;
+	}
+
+	return(prog);
+    }
+}

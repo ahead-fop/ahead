@@ -1,0 +1,27 @@
+#!/bin/bash
+
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+echo "****************DRC-FSATS Regression Test***********"
+
+java drc.Main -a strata1 -e -f strata1.drc FsatsL.drc TargetL.drc MessageL.drc NetworkL.drc ScriptL.drc OpfacL.drc MissionL.drc ProxyL.drc
+java drc.Main -a strata2 -e -f strata2.drc strata1.drc BasicL.drc ArtilleryL.drc MortarL.drc MlrsL.drc
+java drc.Main -a strata3 -e -f strata3.drc strata2.drc MissionAnyL.drc MissionWrffeL.drc MissionWrffeMortarL.drc MissionWrffeArtyL.drc MissionWrffeMlrsL.drc
+java drc.Main -a strata4 -e -f strata4.drc strata3.drc GuiL.drc LocalL.drc Libraries.drc Configuration.drc
+
+cat strata4.drc | sed -f updates | tr -s '\n\r' '\n' > current
+cat strata4.drc.correct | sed -f updates | tr -s '\n\r' '\n' > correct
+
+if diff -b correct current ; then
+#    rm -f correct current || :
+    echo succeeded
+else
+#    rm -f correct current || :
+    echo failed
+    exit 1
+fi
+
+
+echo -e "\nDRC-fsats Regression Test succeeded."

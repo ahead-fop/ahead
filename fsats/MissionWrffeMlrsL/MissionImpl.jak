@@ -1,0 +1,31 @@
+layer MissionWrffeMlrsL;
+
+import java.io.*;
+
+import log.Log;
+
+public refines State_machine MissionImpl {
+    States wrffeMlrsAccepted;
+
+    // Take this branch when mission accepted by MLRS.
+    Transition wrffeAcceptedMlrs : wrffeAccepted -> wrffeMlrsAccepted
+        condition ( getWeaponType().equals( "MLRS_BTRY" ) )
+        do {}
+
+    // Relay MFR and stop.
+    Transition wrffeMlrsAccepted1 : wrffeMlrsAccepted -> stop
+        condition wrffeMlrsAccepted1Test( message )
+        do {
+            wrffeMlrsAccepted1Action( message );
+        }
+
+    // added
+    public void wrffeMlrsAccepted1Action( Event message ) {
+        sendDown( ( Message )message.clone() );
+    }
+
+    public boolean wrffeMlrsAccepted1Test( Event message ) {
+        return ( message instanceof MfrMessage );
+    }
+
+}

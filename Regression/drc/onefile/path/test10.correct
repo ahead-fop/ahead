@@ -1,0 +1,19 @@
+option is deprecated: i
+drc: path/test10.drc: Warning composed equation is incomplete: non-null requirements present
+requires left 30 < range
+
+
+layer path;
+
+// defined attributes
+
+left2right Int range;
+right2left Int val;
+
+// externally defined attributes
+
+
+
+requires left 30 < range;
+provides left val == 4;
+

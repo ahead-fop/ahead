@@ -1,0 +1,132 @@
+
+// example that tests propagation of constructors UP a chain
+
+
+
+abstract class myclass$$L1 extends mytop {
+   static int stateNumGenerator = 0;
+   final static int start = stateNumGenerator++; 
+   final static int stop = stateNumGenerator++;
+            protected interface disp {
+                void exit(M m );
+            }
+            protected int current_state = start;
+            protected disp dispatch = new disp() {
+                public void exit(M m ) {
+                    start_exit(m );
+                }
+            };
+            final public boolean atStop() {
+                return current_state == stop;
+            }
+      // delivery method
+
+   public void delivery( M m ) {      
+      if (current_state == start) { start_prepare(m); start_branches(m); return; }
+      if (current_state == stop) { stop_prepare(m); stop_branches(m); return; }
+      
+        System.err.println( "Unrecognizable_state" + current_state );
+        System.exit( 1 );
+   }
+
+   // getState method
+
+   public String getState() {
+      if (current_state == start) return "start";
+      if (current_state == stop) return "stop";
+      return "Unrecognizable_State";
+   }
+   // otherwise_Default method
+   void otherwise_Default(M m) { ; }
+
+   // methods for state start
+
+   void start_branches( M m ) {
+      start_otherwise( m );
+   }
+   void start_enter( M m ) {
+      current_state = start;
+      dispatch = new disp() { public void exit( M m ) { start_exit( m ); } };
+
+      start_enter_user(m);
+    }
+   void start_enter_user( M m ) { ;
+   }
+   void start_exit( M m ) { ; } 
+   void start_otherwise(M m) { otherwise_Default(m);}
+   void start_prepare( M m ) { ; }
+
+   // methods for state stop
+
+   void stop_branches( M m ) {
+      stop_otherwise( m );
+   }
+   void stop_enter( M m ) {
+      current_state = stop;
+      dispatch = new disp() { public void exit( M m ) { stop_exit( m ); } };
+
+      stop_enter_user(m);
+    }
+   void stop_enter_user( M m ) { ;
+   }
+   void stop_exit( M m ) { ; }
+   void stop_otherwise(M m) { otherwise_Default(m);}
+   void stop_prepare( M m ) { ; }
+        int a;
+        public myclass$$L1() { super(); a=5; }
+      // inherited constructors
+
+      myclass$$L1( int v0) { super(  v0); }      myclass$$L1( double v0) { super(  v0); }
+        }
+
+
+
+abstract class myclass$$L2 extends myclass$$L1 {
+      // inherited constructors
+
+      myclass$$L2( int v0) { super(  v0); }      myclass$$L2( double v0) { super(  v0); }
+        public myclass$$L2 (  ) { super(); }
+        }
+
+
+
+abstract class myclass$$L3 extends myclass$$L2 {
+       int c;
+       public myclass$$L3(int i) { super(i); c = 4; }
+      // inherited constructors
+
+      myclass$$L3( double v0) { super(  v0); }
+        public myclass$$L3 (  ) { super(); }
+        }
+
+
+
+abstract class myclass$$L4 extends myclass$$L3 {
+      // inherited constructors
+
+
+       public myclass$$L4 ( int i ) { super(i); }      myclass$$L4( double v0) { super(  v0); }
+        public myclass$$L4 (  ) { super(); }
+        }
+
+
+
+abstract class myclass$$L5 extends myclass$$L4 {
+       double d;
+       public myclass$$L5( double d ) { super(d); this.d = d; }
+      // inherited constructors
+
+
+       public myclass$$L5 ( int i ) { super(i); }
+        public myclass$$L5 (  ) { super(); }
+        }
+
+
+
+class myclass extends myclass$$L5 {
+      // inherited constructors
+
+
+       public myclass ( int i ) { super(i); }
+       public myclass (  double d ) { super(d); }
+        public myclass (  ) { super(); } }

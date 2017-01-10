@@ -1,0 +1,89 @@
+layer JavaAPI;
+
+import java.io.*;
+import java.util.*;
+
+ // of PackageDocJTS
+
+// _________________________________________________________________
+
+ /** JEDI Project
+ * ParameterJTS.java
+ * University of Texas at Austin
+ * Department of Computer Sciences
+ * Product-line Architecture Research Group
+ * @author Roberto E. Lopez-Herrejon
+ * @version 1.1
+ * @since November 19, 2002
+ * @layer<JavaAPI>
+ */
+
+public class ParameterJTS extends Object {
+
+    // ********************************************************************
+    // ********************************************************************
+    // ********* Interface methods that have to be implemented ************
+    
+    /** Returns the type variable of the parameter.
+     * @layer<JavaAPI>
+     */
+    public  TypeJTS type() {
+        return type;
+    }
+ 
+    /** Returns the name variable of the parameter. 
+     * Get local name of this parameter. For example if parameter is 
+     * the short 'index', returns "index" ???
+     * @layer<JavaAPI>
+     */
+    public String name() {
+        return name;
+    }
+
+    /** Get type name of this parameter. For example if parameter 
+     * is the short 'index', returns "short".
+     * Current implementation returns type.typeName() ???
+     * @layer<JavaAPI>
+     */
+    public String typeName() {
+        return type.typeName();
+    }
+
+    /** Returns a string representation of the class. 
+     * For example if parameter is the short 'index', returns "short index".
+     * @return type name and parameter name of this parameter.
+     * @overrides toString in class java.lang.Object ???
+     * Current implementation returns empty string.
+     * @layer<JavaAPI>
+     */
+    public String toString() {
+        return "";
+    }
+
+    // ***************** End of interface implementation **************
+    
+    /**************** Implementation members *************************
+     * @layer<JavaAPI>
+     */
+    // *** Fields
+    
+    /** Variable that indicates the type of the Parameter.
+     */
+    TypeJTS type;
+
+    /** Variable that contains the name of the Parameter.
+     * @layer<JavaAPI>
+     */
+    String name;
+
+    // *** Constructors
+    /** Additional constructor.
+     * @layer<JavaAPI>
+     */
+    public ParameterJTS( TypeJTS t, String n )
+    {
+        type = t;
+        name = n;
+    }
+    
+}

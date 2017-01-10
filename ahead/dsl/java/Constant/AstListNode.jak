@@ -1,0 +1,12 @@
+layer Constant;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+public abstract refines class AstListNode {
+    public void execute() {
+        Util.fatalError( "AstListNode.execute() method should not be called" );
+    }
+}

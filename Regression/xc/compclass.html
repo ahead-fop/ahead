@@ -1,0 +1,434 @@
+<method layers > begin layers method
+  <li><font face="Arial">CompClass -- compresses class extension
+    hierarchies</font></li>
+<call layers >
+</method> end layers method
+
+<method chapterLinks > 
+  <li><font face="Arial"><a href="#Specifying Classes and Class Extensions">Class extension specifications</a></font></li>
+<call chapterLinks >
+</method> 
+
+<method chapters >
+<h2><font face="Arial" color="#0000FF"><a name="Specifying Classes and Class Extensions">Specifying Classes and Class Extensions</a></font></h2>
+<p><font face="Arial">PJ expects a file containing a base class to have the
+following format:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package &lt;package-name&gt;;</font></pre>
+  <pre><font face="Courier New">[&lt;import-statements&gt;]</font></pre>
+  <pre><font face="Courier New">&lt;java-class-declaration&gt;</font></pre>
+</blockquote>
+<p><font face="Arial">Note:</font></p>
+<ul>
+  <li><font face="Arial">a package name is required.&nbsp; It is the
+    layer name to which this class belongs.</font></li>
+  <li><font face="Arial">import statements are optional.</font></li>
+  <li><font face="Arial">a standard Java class specification is expected with no
+    nested interfaces, nested class declarations.</font></li>
+  <li><font face="Arial">only one class can be defined per file.&nbsp; Unlike
+    Java which allows more than one class declaration per file, PJ assumes only one class definition per file.</font></li>
+</ul>
+<p><font face="Arial">An class extension file has the following format:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package &lt;package-name&gt;;</font></pre>
+  <pre><font face="Courier New">[&lt;import-statements&gt;]</font></pre>
+  <pre><font face="Courier New">[&lt;modifiers&gt;] extends class &lt;name&gt; [ implements &lt;interface-list&gt; ] { [body] }</font></pre>
+</blockquote>
+<p><font face="Arial">Note:</font></p>
+<ul>
+  <li><font face="Arial">a package name is required.&nbsp; It is the
+    layer name to which this class belongs.</font></li>
+  <li><font face="Arial">import statements are optional.</font></li>
+  <li><font face="Arial">note the special syntax used for class extensions.</font></li>
+  <li><font face="Arial">only one class extension can be defined per file; there
+    can be no other declarations.</font></li>
+</ul>
+<h3><font face="Arial" color="#0000FF">Rules of Composition</font></h3>
+<p><font face="Arial">Again, rules of composition are simple:</font></p>
+<ul>
+  <li><font face="Arial">base (or initial extension) must have the same name as
+    the class it extends.</font></li>
+  <li><font face="Arial">modifiers of the base and extension are merged (without
+    duplication).</font></li>
+  <li><font face="Arial">implements clause lists are merged (without
+    duplication).</font></li>
+  <li><font face="Arial">bodies are merged.</font></li>
+  <li><font face="Arial">with option -k, list of field declarations are key
+    sorted (discussed later).</font></li>
+</ul>
+<p><font face="Arial">An example of a base class file and an extension class
+file are:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package Ctop;
+
+import jakarta.util.*;
+
+class top {
+   static int i,j;
+   int ii,jj;
+
+   static { i = 4; }
+
+   top() {  ii = 5; }
+   top(int rj) { jj = rj; }
+
+   void foo(float x, float y) { /* do something */ }
+
+   float bar( float x ) { /* do something more */ }
+}</font></pre>
+  <hr>
+  <pre><font face="Courier New">package Cmid;
+
+<span style="background-color: #FFFF00">import AnotherPackage;</span>
+
+extends class top <span style="background-color: #FFFF00">implements java.io.Serializable, xxx</span> {
+   <span style="background-color: #FFFF00">static int k;</span>
+   <span style="background-color: #FFFF00">static { j = 5; }</span>
+
+   <span style="background-color: #FFFF00">top(float x) { /* do something */ }</span>
+
+   <span style="background-color: #FFFF00">float foobar() { Base(float).bar(4.0);</span>
+                    <span style="background-color: #FFFF00">Base(float,float).foo(0, 0); }</span>
+
+   <span style="background-color: #FFFF00">public void foo( float x, float y ) { /* something more */ }</span>
+}</font></pre>
+</blockquote>
+<p><font face="Arial">The result of their composition is shown below.&nbsp;
+Highlighted in <span style="background-color: #FFFF00"> yellow</span> are additions made by the top extension and
+highlighted in <span style="background-color: #00FFFF"> blue</span> are additions triggered by the extension:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package Ctop;
+
+import jakarta.util.*;
+<span style="background-color: #FFFF00">import AnotherPackage;</span>
+
+class top <span style="background-color: #FFFF00">implements java.io.Serializable, xxx</span> {
+
+   static { i = 4; }
+   <span style="background-color: #FFFF00">static { j = 5; }</span>
+   static int i,j;
+   int ii,jj;
+  <span style="background-color: #FFFF00"> static int k;</span>
+
+   top() {  ii = 5; }
+   top(int rj) { jj = rj; }
+
+   <span style="background-color: #FFFF00">top(float x) { /* do something */ }</span>
+
+   float bar(  float x ){ return <span style="background-color: #FFFF00">bar$$Ctop</span>( x ); } 
+   <span style="background-color: #FFFF00">final float bar</span><span style="background-color: #00FFFF">$$Ctop</span><span style="background-color: #FFFF00">( float x ) { /* do something more */ } </span>
+</font>   <font face="Courier New"><span style="background-color: #FFFF00">final void foo</span><span style="background-color: #00FFFF">$$Ctop</span><span style="background-color: #FFFF00">(float x, float y) { /* do something */ }</span>
+   <span style="background-color: #FFFF00">public void foo( float x, float y ) { /* something more */ }</span>
+</font>   float foobar() { <span style="background-color: #00FFFF">bar$$Ctop</span>(4.0);
+                    <span style="background-color: #00FFFF">foo$$Ctop</span>(0, 0); }
+}</pre>
+</blockquote>
+<p><font face="Arial"><b><a name="keySorting"></a>Key sorting</b> is a technique
+much like type sorting.&nbsp; The body of a class has different kinds of
+entities -- variable declarations, method declarations, etc. Key sorting is
+similar to type sorting in that all entities of a single type (initialization
+blocks, variable declarations, methods) are grouped together.&nbsp; Key sorting
+goes beyond this to sort methods.&nbsp; In particular, we expect that there will
+be many &quot;variations&quot; of a single method, such as bar, bar$$Ctop,
+etc.&nbsp; Key sorting groups all of these related methods together, as shown
+above.&nbsp; (It does this by assigning a key to each method and sorting the
+methods in key order.&nbsp; Hence the name &quot;key sort&quot;). If key sorting
+is not used, an unintelligible jungle of declarations is produce (see below):</font></p>
+<blockquote>
+<pre><font face="Courier New">class top implements java.io.Serializable, xxx {
+   static int i,j;
+   int ii,jj;
+
+   static { i = 4; }
+
+   top() {  ii = 5; }
+   top(int rj) { jj = rj; } final
+
+   void foo$$Ctop(float x, float y) { /* do something */ }
+
+
+   float bar(  float x ){ return bar$$Ctop( x ); } final
+
+   float bar$$Ctop( float x ) { /* do something more */ }
+   static int k;
+   static { j = 5; }
+
+   top(float x) { /* do something */ }
+
+   float foobar() { bar$$Ctop(4.0);
+                    foo$$Ctop(0, 0); }
+
+   public void foo( float x, float y ) { /* something more */ }
+}</font></pre>
+</blockquote>
+<p><font face="Arial">We explain later how methods are composed and where all
+the additional methods come from.&nbsp; For now, remember it is possible to
+compose two class extension files to produce a composite extension file.&nbsp;
+As in the case of interfaces, a base file is a &quot;constant&quot; and an
+extension file is a &quot;function&quot; in GenBorg.&nbsp; So composing a
+constant with a function (e.g., f(a)) produces a constant, and composing a pair
+of functions yields a composite function.</font></p>
+<p><font face="Arial">In the following sections, rules for extending variables,
+methods, and constructors are reviews.</font></p>
+<h3><font face="Arial" color="#0000FF">Rules for Composing Variables</font></h3>
+<p><font face="Arial">There is no notion of variable extension in GenBorg.&nbsp;
+It is one thing to override a method; it makes no sense to override a
+variable.&nbsp; Whenever the base class defines a variable and an extension
+class attempts to define the same variable, an error is reported by PJ.&nbsp;</font></p>
+<p><font face="Arial"><a name="inadvertentcaptuer"></a>This begs the question of
+<b>
+inadvertent capture</b>.&nbsp; What if a temporary variable x is defined in the base
+class and a different variable, also named x, is defined in the extension
+class?&nbsp; As mentioned above, PJ will complain.&nbsp; The clashing of names for temporary variables should be handled
+automatically.&nbsp; In a future version of PJ, we plan to add the capability of
+defining local variables whose names are mangled so that inadvertent capture is
+not possible.</font></p>
+<h3><font face="Arial" color="#0000FF">Rules for Composing Methods</font></h3>
+<p><font face="Arial">You may have noticed that composing classes is a lot more
+complicated than composing interfaces.&nbsp; The difficulty rests on the ability
+of methods of an extension class to call arbitrary methods of their &quot;superclass&quot; or rather,
+&quot;super extension&quot;.&nbsp; And part of the difficulty arises because PJ
+is a preprocessor which doesn't really understand type information.&nbsp; </font></p>
+<p><font face="Arial">You know that a subclass can call method foo() of its
+superclass by invoking super.foo().&nbsp; By analogy, a class extension can call
+method foo() of its super extension by&nbsp; invoking Base().foo().&nbsp;
+Because PJ is a preprocessor that does not type check programs, if an extension
+calls method of its super extension with signature foo(int, float, String), it
+does so by invoking Base(int,float,String).foo(5, 3.4, &quot;me&quot;).&nbsp;
+The token Base is a reserved keyword of PJ.&nbsp; Base is always followed by the
+type signature of the method that is to be invoked.&nbsp; Again, PJ is a
+preprocessor that doesn't understand type information.&nbsp; Base is the
+way the type signature of a &quot;base-class&quot; method is conveyed to PJ.</font></p>
+<p><font face="Arial">There are 4 rules that are specific to extending base-class methods.
+The actions taken depend on the following conditions:</font></p>
+<ul>
+  <li><font face="Arial">A method of the base class (or <i>base method</i>) is <b><i>overridden</i></b>
+    if there exists a method of the extension class (or extension method) with
+    an identical signature.&nbsp; (This is the usual notion of overriding).</font></li>
+  <li><font face="Arial">A base method is <i>referenced</i> if the method is
+    invoked in the extension class.</font></li>
+</ul>
+<p><font face="Arial">If a base method is:</font></p>
+<ul>
+  <li><font face="Arial">overridden and referenced -- The original method name
+    is mangled (&quot;uniquified&quot;) by appending the name of the layer from
+    which it came onto the name itself, and making the method local.&nbsp; This
+    is useful as programmers will know from which layer the method arose.&nbsp;
+    The extension method is rewritten to reference this local method.</font></li>
+</ul>
+<div align="center">
+  <center>
+  <table border="2" cellpadding="2" width="673">
+    <tr>
+      <td width="92">&nbsp;</td>
+      <td width="224"><font face="Arial"><b>Before Composition</b></font></td>
+      <td width="332"><font face="Arial"><b>After Composition in Composite Class</b></font></td>
+    </tr>
+    <tr>
+      <td width="92"><font face="Arial"><b>Base class</b></font></td>
+      <td width="224">
+        <pre><font face="Courier New">void foo( ) { 
+   /* do something */ 
+}</font></pre>
+      </td>
+      <td width="332" rowspan="2">
+        <pre><font face="Courier New">final void foo$$baseLayer() { 
+   /* do something */ 
+}</font></pre>
+        <pre><font face="Courier New">void foo( ) { 
+</font>   <font face="Courier New">foo$$baseLayer();
+   // something more
+</font>}</pre>
+      </td>
+    </tr>
+    <tr>
+      <td width="92"><font face="Arial"><b>Extension class</b></font></td>
+      <td width="224">
+        <pre><font face="Courier New">void foo( ) { 
+</font>   <font face="Courier New">Base( ).foo();
+   // something more
+</font>}</pre>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+<ul>
+  <li><font face="Arial">overridden and not referenced -- Base method is
+    discarded, as it is not referenced and is replaced by a extension method.</font></li>
+</ul>
+<div align="center">
+  <center>
+  <table border="2" cellpadding="2" width="673">
+    <tr>
+      <td width="92">&nbsp;</td>
+      <td width="224"><font face="Arial"><b>Before Composition</b></font></td>
+      <td width="332"><font face="Arial"><b>After Composition in Composite Class</b></font></td>
+    </tr>
+    <tr>
+      <td width="92"><font face="Arial"><b>Base class</b></font></td>
+      <td width="224">
+        <pre><font face="Courier New">void foo( ) { 
+   /* do something */ 
+}</font></pre>
+      </td>
+      <td width="332" rowspan="2">
+        <pre>&nbsp;</pre>
+        <pre><font face="Courier New">void foo( ) { 
+   // something more
+</font>}</pre>
+      </td>
+    </tr>
+    <tr>
+      <td width="92"><font face="Arial"><b>Extension class</b></font></td>
+      <td width="224">
+        <pre><font face="Courier New">void foo( ) { 
+   // something else
+</font>}</pre>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+<ul>
+  <li><font face="Arial">not overridden and referenced -- This is the most
+    complicated of rewrites.&nbsp; First, because the base method was
+    referenced, a local copy of it (with a layer-mangled name) is created.&nbsp;
+    Second, a new base method is created to refer to the local method (thereby
+    preserving the original base method's semantics).&nbsp; Lastly, all
+    references in the extension are made to the local method.</font></li>
+</ul>
+<div align="center">
+  <center>
+  <table border="2" cellpadding="2" width="673">
+    <tr>
+      <td width="92">&nbsp;</td>
+      <td width="224"><font face="Arial"><b>Before Composition</b></font></td>
+      <td width="332"><font face="Arial"><b>After Composition in Composite Class</b></font></td>
+    </tr>
+    <tr>
+      <td width="92"><font face="Arial"><b>Base class</b></font></td>
+      <td width="224">
+        <pre><font face="Courier New">void foo( ) { 
+   /* do something */ 
+}</font></pre>
+      </td>
+      <td width="332" rowspan="2">
+        <pre>final void foo$$baseLayer( ) {
+   /* do something */
+}</pre>
+        <pre>void foo( ) {
+   foo$$baseLayer();
+}</pre>
+        <pre><font face="Courier New">void bar( ) { 
+   </font>foo$$baseLayer();<font face="Courier New">
+   // something more
+</font>}</pre>
+      </td>
+    </tr>
+    <tr>
+      <td width="92"><font face="Arial"><b>Extension class</b></font></td>
+      <td width="224">
+        <pre><font face="Courier New">void bar( ) { 
+   Base().foo();
+   // something more 
+</font>}</pre>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+<ul>
+  <li><font face="Arial">not overridden and not referenced -- leave base method
+    as is.</font></li>
+</ul>
+<p><font face="Arial">There is an additional rule for extension methods: any
+extension method that does not override a base method is added to the composite
+class.</font></p>
+<h3><font face="Arial" color="#0000FF">Rules for Composing Constructors</font></h3>
+<p><font face="Arial">There are all sorts of problems with constructors.&nbsp;
+There are so many that it is much safer NOT to allow constructors to be
+extended.&nbsp; This is the position taken in PJ.&nbsp; New constructors can be
+added by an extension, but no existing constructor can be refined.&nbsp;&nbsp;</font></p>
+<p><font face="Arial">Constructors can be extended using the concepts already
+presented. The body of a
+constructor is moved into a method, which can be extended.&nbsp; Thus, instead
+of creating a superclass with a constructor and later extending the constructor
+via inheritance (left-hand- side of the table below), we rely on a design and coding technique to accomplish the same effect (right-hand-side of the table
+below):</font></p>
+<div align="center">
+  <center>
+  <table border="2" cellpadding="2" width="523">
+    <tr>
+      <td width="242"><font face="Arial"><b>Inheritance Hierarchy</b></font></td>
+      <td width="274"><font face="Arial"><b>Extension Hierarchy Equivalent</b></font></td>
+    </tr>
+    <tr>
+      <td width="242">
+        <pre><font face="Courier New">class foo {
+   int a;
+   foo(int a) {
+      this.a = a;
+   }
+}</font></pre>
+      </td>
+      <td width="274">
+        <pre><font face="Courier New">class foo {
+   int a;
+   void fooConstructor(int a) {
+      this.a = a;
+   }
+   foo(int a) {
+      fooConstructor(a);
+   }
+}</font></pre>
+      </td>
+    </tr>
+    <tr>
+      <td width="242">
+        <pre><font face="Courier New">class subfoo extends foo {
+   int b;
+   foo(int a) {
+      super(a);
+      b = 0;
+   }
+}</font></pre>
+      </td>
+      <td width="274">
+        <pre><font face="Courier New">extends foo {
+   int b;
+   void fooConstructor(int a) {
+      Base(int).fooConstructor(a);
+      b = 0;
+   }
+}</font></pre>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+<h3><font face="Arial" color="#0000FF">The New and Overrides Modifiers</font></h3>
+<p><font face="Arial">A convenient and optional feature is to designate methods
+of an extension by the modifiers &quot;new&quot; or &quot;overrides&quot;.&nbsp;
+&quot;new&quot; means that the extension is defining a new method whose name
+should not be used by a method in the base interface.&nbsp;
+&quot;overrides&quot; means that the extension is defining an extension to a
+previously defined method. PJ generates an error if it detects that the
+conditions for &quot;new&quot; or &quot;overrides&quot; are not satisfied.&nbsp;
+As an example,</font></p>
+<blockquote>
+  <pre><font face="Courier New">package mid;
+
+extends class c {
+   new void d() { }
+   overrides void b() { /* new code */ }
+}</font></pre>
+</blockquote>
+<p><font face="Arial">The above class&nbsp;extension defines a new method (d)
+and a method (b) that overrides a method in the base class of c.</font></p>
+<p><font face="Arial">The use of &quot;new&quot; and &quot;overrides&quot; makes
+a useful contribution to avoiding inadvertent capture; these modifiers should be
+used to guarentee that a method being defined by an extension is in fact a new
+method or does override an existing method.</font></p>
+<call chapters >
+</method>

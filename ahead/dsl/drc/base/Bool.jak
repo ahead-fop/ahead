@@ -1,0 +1,145 @@
+layer core;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+// Hierarchy of DRC types -- can be factored into separate layers later.
+ 
+public class Bool extends  common {
+   
+    // a Bool defines a boolean attribute whose value may be undefined.
+   
+    public boolean undefined; // true if undefined value
+    public boolean value; // actual value if defined
+   
+    public Bool( String pname ) {
+         Super( String )( pname ) ;
+        propertyType = "Bool";
+        undefined = true;
+        value = true; // anything will do here
+    }
+   
+    public  Bool setLayer( String name ) {
+        lastSetBy = name;
+        return this;
+    }
+   
+    public boolean typecheck( Pred p ) {
+        Element e = symtab.lookup( property );
+        if ( e == null ) {
+            error( "unable to lookup " + property );
+            return true;
+        }
+        String typeName = e.typeName;
+        return typeName.equals( "Bool" ) &&
+                ( p == null || 
+                 p instanceof  BoolAssert ||
+                 p instanceof  BoolNegate ||
+                 p instanceof  BoolUndef );
+    }
+         
+    public  common factory() {
+        return new Bool( property );
+    }
+   
+    public  Bool set( Bool x ) {
+        undefined = x.undefined;
+        value     = x.value;
+        return this;
+    }
+   
+    public  Bool Undefined() {
+        undefined = true;
+        return this;
+    }
+   
+    public  Bool Assert() {
+        undefined = false;
+        value = true;
+        return this;
+    }
+   
+    public  Bool Negate() {
+        undefined = false;
+        value = false;
+        return this;
+    }
+   
+    // assert is represented as "propertyname"
+    // negate is represented as "!propertyname"
+    // undefined is represented as null
+   
+    public String toString() {
+        if ( !undefined ) {
+            if ( value )
+                return property;
+            else
+                return "!" + property;
+        }
+        return "?" + property;
+    }
+   
+    // implementation of the "$TEqn.common" version
+   
+    public boolean implies( common p ) {
+        return implies( ( Bool ) p );
+    }
+   
+    public boolean implies( Bool p ) {
+        validateName( p );
+        if ( p.undefined || undefined )
+            return true;
+        boolean result = ( value == p.value );
+        if ( !result )
+            error( inbetween( this, p ) + "attribute " + property +
+                         " in layer " + p.lastSetBy + " should be " + value() +
+                         "." );
+        return result;
+    }
+   
+    public String value() {
+        if ( undefined )
+            return "undefined";
+        if ( !value )
+            return "asserted";
+        else
+            return "negated";
+    }
+   
+    public  common and( common p ) {
+        return and( ( Bool ) p );
+    }
+   
+    public  common and( Bool p ) {
+   
+        // Step 1: remember error message, if we need it
+    
+        validateName( p );
+        setLayer( p.getLayer() );
+   
+        String errmsg = "predicate for attribute " + p.property + 
+                         " is inconsistent for layer " + p.lastSetBy;
+   
+        // Step 2: now check to see if we are 'anding' the same value.
+        //         anything else is inconsistent (e.g., A and !A)
+   
+        if ( undefined != p.undefined )
+            error( errmsg );
+        else
+            if ( value != p.value )
+                error( errmsg );
+        return this;
+    }
+   
+    public  common assign( common p ) {
+        return assign( ( Bool ) p );
+    }
+   
+    public  common assign( Bool p ) {
+        validateName( p );
+        set( p );
+        return this;
+    }
+}

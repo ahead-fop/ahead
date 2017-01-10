@@ -1,0 +1,40 @@
+# TYPE ASSIGNMENTS:
+#
+# Each unit processed by the composer is assigned a type as defined by
+# properties.  The entire set of properties is built by taking a prioritized
+# combination of properties from the system properties (entered on the command
+# line), the properties in the model (this file), the user properties in
+# ~/.composer.properties and the defaults defined within the composer itself.
+# The unit's type is found via the following multi-stage search through the
+# properties.
+#
+# First, each unit is assigned a *base* key.  If the unit is a directory, the
+# base key is "unit.directory" and, if the unit is a normal file, the base key
+# is "unit.file".  Currently, the only units are either directories or files.
+#
+# Next, if the unit has an extension as part of its name, a property name is
+# formed by appending the extension to the base key.  A file named "main.java"
+# yields property name "unit.file.java" while a directory named "main.java"
+# yields "unit.directory.java".  If this name has a property assignment, the
+# search terminates.
+#
+# Otherwise, the base key is used as a property name.  If this name has a
+# property assignment, the search terminates.
+#
+# Otherwise, the composer uses type name "FileUnit".
+#-----------------------------------------------------------------------------#
+
+# Extension .config ... indicates a laydown configuration file;
+# extension .dc ....... indicates a plan file;
+# extension .gif ...... indicates a graphics element for the GUI;
+# extension .jpg ...... indicates a graphics element for the GUI.
+#
+unit.file.config: LastFileUnit
+unit.file.dc	: LastFileUnit
+unit.file.gif	: LastFileUnit
+unit.file.jpg	: LastFileUnit
+unit.file.jak   : XXXFileUnit
+unit.file.layer : IgnoreFileUnit
+unit.file.new  : IgnoreFileUnit
+
+#JamPackFileUnit MixinFileUnit

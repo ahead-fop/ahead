@@ -1,0 +1,39 @@
+package OpfacL;
+
+import  
+    F.Libraries.laydown.OpfacDataWrapper;
+import 
+    F.Libraries.log.Log;
+import 
+    java.util.*;
+import 
+    fsats.util.*;
+
+
+
+
+    public class OpfacTimeout 
+        extends Thread 
+    {
+	protected Opfac opfac;
+	protected float delay; // In seconds
+	protected Timeout timeout;
+       
+        public OpfacTimeout( Opfac opfac, float delay, Timeout timeout)
+        {
+          OpfacTimeoutConstructor(opfac, delay, timeout);
+        }
+       
+        public void OpfacTimeoutConstructor( Opfac opfac, float delay, Timeout timeout) {
+            this.opfac=opfac;
+            this.delay=delay;
+            this.timeout=timeout;
+            start();
+      }
+
+	public void run() 
+        {
+            try { sleep((int)(delay*1000)); } catch (Exception e) {}
+            opfac.deliver(timeout);
+	}
+    }

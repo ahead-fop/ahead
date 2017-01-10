@@ -1,0 +1,641 @@
+layer bali2CT;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.regex.*;
+import java.util.logging.Level;
+import Jakarta.loader.Loader;
+import Jakarta.loader.PrefixClassLoader;
+import java.io.*;
+import java.util.*;
+import java.lang.*;
+
+
+//-----------------------------------------------------------------------//
+// Main class:
+//-----------------------------------------------------------------------//
+
+/**
+ * Provides a <code>driver</code> to translate a Bali source file into a
+ * set of Jak source files.
+ **/
+    
+public refines class Main {
+        
+    static Loader           loader ;
+    static PrintWriter      outfile, Jakfile;
+    static String           GenCTPrefix = "bali2ref/" ;
+    static InputStream      in ;
+    static byte             bArray[] = new byte[256];
+    static int              bytesRead;
+    static String           inputString;
+    static String           Accumulator = null;
+    static StringTokenizer  st;
+    static boolean          outputMain    = false;
+    static boolean          fileInput     = false;
+    static boolean          KernelClasses = false;
+    static int              index = 0;
+    static String           Start;
+    static String           layerName;
+    static String           classFileName;
+    static String           grammarFileName;
+    static int              nargs;
+    static int              numMethod;
+    static String           methodName;
+    static String           signature;
+    static String           reference;
+    static boolean          classFileInput = false;
+    static boolean          baliFileInput  = false;
+    static String[]         methodGroup;
+    static String[]         signatureGroup;
+    static String[]         referenceGroup;
+    static String[]		typeGroup; 
+    static StringBuffer classNames = new StringBuffer() ;
+
+    /**
+     * Handles argument parsing, source parsing, parse-tree collection,
+     * and code generation.
+     *
+     * @return {@link $TEqn.Collector} with collected data from parse tree.
+     **/
+    public Object generateObject (String[] args) throws Throwable {
+
+
+	//step 1: parse arguments
+ 
+	//for(int i = 0; i < args.length; i++) System.out.println(args[i]);
+	try {
+	    parseArguments (Arrays.asList (args)) ;
+	} catch (Exception exception) {
+	    usage();
+	    throw exception ;
+	}
+
+	//step 2: create a temporary file and collect
+	//all calss names into {@link classNames}
+ 	    
+	try {
+	    outfile = new PrintWriter(new BufferedWriter(
+					  new FileWriter(layerName+".jak")));
+	} catch (IOException e) {
+	    System.err.println( e.getMessage() );
+	    System.exit(1);
+	}
+	    
+	Collector collector = null;
+
+	if(classFileInput){
+	    readFile (classNames, classFileName) ;
+	} else if (baliFileInput){
+	    collector = collectSource (argSourceFile) ;
+	    collector.collectClasses(classNames);
+		
+	    //if a Bali file is a grammar extension, it contains require statements
+	    //then {@link Start} is set as AST_PROGRAM by default
+	    //Otherwise, {@link Start} is the LHS of the first rule.
+
+	    if(!grammarRefinement(grammarFileName)){
+		Start = collector.baliRules.getStartName();
+	    }
+	} 
+            
+	//step 3: generate jak files
+
+	Accumulator = classNames.toString() ;
+	genJakFile(args);
+	outfile.close();
+	if (outputMain || KernelClasses) splitOutfile(layerName+".jak");
+
+	File tempFile = new File(layerName+".jak");
+	if(tempFile.exists()) 
+	    tempFile.delete();
+
+	return collector ;
+    }
+
+    /**
+     * Checks if a Bali file is a base grammar or a grammar extension
+     * @return true if it's an extension
+     **/
+             
+    private boolean grammarRefinement(String fileName) {
+
+	String line;
+	try {
+	    BufferedReader infile = new BufferedReader(new FileReader(fileName));
+	    while((line = infile.readLine()) != null){
+                line = line.trim();
+                if(line.startsWith("/*")) {
+		    while(!line.endsWith("*/") && line != null) line = infile.readLine();
+		    line = infile.readLine();
+		    line = line.trim();
+                }
+                if(line.startsWith("require")) return true;
+	    } 
+	} 
+	catch (IOException e) { System.err.println( e.getMessage() ); }
+	return false;   
+    }
+
+	
+
+    /**
+     * Processes an input {@link File} (with Bali source code) into a parse
+     * tree, then running a {@link $TEqn.Collector} over the tree to gather
+     * all necessary data for later code generation.
+     *
+     * @return {@link $TEqn.Collector} with collected data from parse tree.
+     **/
+    private  Collector collectSource (File inpFile)
+	throws IOException, ParseException {
+	Reader reader = new BufferedReader (
+	    new InputStreamReader (
+		new FileInputStream (inpFile),
+		"ISO-8859-1"
+		)
+	    ) ;
+
+	Parser parser =  Parser.getInstance (reader) ;
+	BaliParse tree = (BaliParse) parser.parseAll() ;
+	reader.close () ;
+
+	Collector collector = new  Collector () ;
+	collector.dispatch (tree) ;
+           
+	return collector ;
+    }
+
+        
+    /**
+     * Processes a {@link List} of {@link String} arguments that specify
+     * the input file and options.
+     *
+     * @see #usage()
+     **/
+    private void parseArguments (List args) throws IOException {
+
+	ListIterator p;
+	String arg = null;
+
+	loader = new PrefixClassLoader (GenCTPrefix) ;
+	for (p = args.listIterator () ; p.hasNext () ; ) {
+		
+	    arg = (String) p.next ();
+	    //System.out.println("iterator: " + arg);
+	    if(arg.charAt(0) == '-') {
+		//output Main with file input
+		if(arg.equals("-f")) {
+		    outputMain = true;
+		    fileInput = true;
+		    continue;
+		}
+
+		//output Main with std input
+		if(arg.equals("-s")) {
+		    outputMain = true;
+		    fileInput = false;
+		    continue;
+		}
+
+		//get classname file 
+		if( arg.equals("-l")) {
+		    classFileInput = true;
+		    baliFileInput = false;
+		    classFileName = (String) p.next();
+		    continue;
+		}
+
+		//get grammar file
+		if(arg.equals("-g")) {
+		    classFileInput = false;
+		    baliFileInput = true;
+		    grammarFileName = (String) p.next () ;
+		    argSourceFile = parseSourceFile(grammarFileName);
+		    continue;
+		}
+
+		//parse all kernel methods
+		
+		if(arg.equals("-k")) {
+		    KernelClasses = true;
+		    numMethod = Integer.parseInt((String) p.next());
+		    methodGroup = new String[numMethod];
+		    signatureGroup = new String[numMethod];
+		    referenceGroup = new String[numMethod];
+		    typeGroup = new String [numMethod];
+
+		    //parse methods to get the signature and reference form
+		    for(int i = 0; i < numMethod; i++) {
+			String[] s = new String[2];
+			methodGroup[i] = (String) p.next();
+			s = parseMethod(methodGroup[i]);
+			signatureGroup[i] = s[0];
+			referenceGroup[i] = s[1];
+			typeGroup[i] = s[2];
+		    }
+		    continue;
+		}
+
+		//get layer name
+		if(arg.equals("-layer")) {
+		    layerName = (String) p.next();
+		    int period = layerName.indexOf ('.') ;
+		    if (period >= 0)
+           		layerName = layerName.substring (0, period) ;
+		    continue;
+		}
+
+		//get start name
+		if(arg.equals("-start")) {
+		    Start = (String) p.next () ;
+		    continue;
+		}
+			
+		System.err.println("Unrecognizable Option " + arg);
+		System.err.println("");
+		usage();
+	    }
+	}
+    }
+
+    private File parseSourceFile (String fileName) {
+
+	if (argSourceFile != null)
+	    throw new IllegalArgumentException
+		("more than one Bali source file specified") ;
+
+	File file = new File (fileName) ;
+
+	if (! file.exists ())
+	    throw new IllegalArgumentException (
+		"file doesn't exist: "
+		+ fileName
+		) ;
+
+	if (! file.canRead ())
+	    throw new IllegalArgumentException (
+		"file can't be read: "
+		+ fileName
+		) ;
+
+	return file ;
+    }
+
+    protected static void usage() {
+	System.err.println("Usage: bali2CT.Main [-f] [-s]" +  
+			   "[-k n MethodSignature ...]  [-l clasFile]" + 
+			   "[-b grammar file] -start sname -layer lname");
+	System.err.println("  -f        output main class with file input");
+	System.err.println("  -s        output main class with std input");
+	System.err.println("  -k        generate Kernel classes");
+	System.err.println("  n         number of methods");
+	System.err.println("  -l        file of a list of classes");
+	System.err.println("  -g        bali grammer file");
+	System.err.println("  sname     name of start production");
+	System.err.println("  lname     name of layer file");
+	System.err.println("  ClassFile file containing class names to generate");
+	System.exit(0);
+    }
+    
+    /**
+     * Given a method singnature 
+     * return the reference form.
+     */ 
+    private static String[] parseMethod(String method){
+ 
+	String signature;
+	String reference  = "";
+	String type = "";
+	String methodRegex = "([$_a-zA-Z][$_a-zA-Z0-9]*)\\s*\\(\\s*(?:([a-zA-Z][.a-zA-Z]*)\\s+([$_a-zA-Z][$_a-zA-Z0-9]*)(?:\\s*,\\s*([a-zA-Z][.a-zA-Z]*)\\s+([$_a-zA-Z][$_a-zA-Z0-9]*))*){0,1}\\s*\\)\\s*";
+	signature = method.trim();
+	    
+	java.util.regex.Pattern p = java.util.regex.Pattern.compile(methodRegex);
+	Matcher m = p.matcher(method);
+	m.matches();
+
+	reference += m.group(1) + "(";
+	if(m.group(2) != null) {
+	    type = m.group(2);
+	    reference += m.group(3);
+	}
+	String sType = "";
+	String sPara = "";
+	while(method.lastIndexOf(",") != -1) {
+	    sType= ", " + m.group(4) + sType;
+	    sPara = ", " + m.group(5) + sPara;
+	    method = method.substring(0, method.lastIndexOf(",")) + ")";
+	    m = p.matcher(method);
+	    m.matches(); 
+	}
+	type += sType;
+	reference += sPara + ")";
+
+	String [] rs = new String[3];
+	rs[0] = signature;
+	rs[1] = reference;
+	rs[2] = type;
+	    
+	return(rs);     
+    }
+
+
+    private static void readFile (StringBuffer buffer, String fileName) {
+	try {
+	    FileReader fr = new FileReader (fileName) ;
+	    BufferedReader reader = new BufferedReader (fr) ;
+	    char[] readBuffer = new char[1024] ;
+	    int count = reader.read (readBuffer, 0, readBuffer.length) ;
+
+	    while (count > -1) {
+		if (count > 0)
+		    buffer.append (readBuffer, 0, count) ;
+		count = reader.read (readBuffer, 0, readBuffer.length) ;
+	    }
+	    fr.close();
+	} catch (IOException e) { 
+	    System.err.println( e.getMessage() );
+	}
+
+	//buffer.append (' ') ;
+    } 
+
+    static void genJakFile(String args[]) {
+
+	int i;
+	//step 1: generate a template for each class
+ 
+	st = new StringTokenizer(Accumulator);
+	while (st.hasMoreTokens()) {
+	    templateClass(args, st.nextToken(), KernelClasses);
+	}
+
+	//step 2: generate kernel classes
+	if (KernelClasses)
+	    copyResource(outfile, GenCTPrefix +"CTKernel.txt");
+	out("\r\n");
+
+	// Step 3: generate Main
+	if (outputMain) {
+	    if (fileInput)  {
+		copyResource(outfile, GenCTPrefix + "FileInputTemplateHeader.txt");
+		out("         "+Start+"    inputRoot = null;");
+		out("         try {");
+		out("            inputRoot = ("+Start+") myParser.parseAll() ;");
+		copyResource(outfile, GenCTPrefix + "FileInputTemplateFooter.txt");
+	    }
+	    else{
+		copyResource(outfile, GenCTPrefix + "StdInputTemplateHeader.txt");
+		outfile.println();
+		out("            (("+Start+") root).print();");
+		out("            System.out.println();");
+		outfile.println("            (("+Start+") root).execute();");
+		out("            pw.flush();");
+		out("");
+		out("            // Step 5.5: now dump the parse tree");
+		out("            //           this code can be removed for production systems");
+		out("");
+		out("            System.out.println(\"Dump root\");");
+		out("            root.PrettyDump();");
+		out("");
+		out("         } while (true);          // end Language statement loop");
+		out("      } //end main()");
+		out("   }  // end Main class");
+	    }
+	}     
+    }
+
+    /**
+     * Output each class into one .jak file
+     */
+        
+    static void splitOutfile(String fileName){
+
+	BufferedReader infile;
+	PrintWriter outfile;
+	String line;
+	String buffer = "";
+	boolean inExecute = false;
+	int i, j, depth;
+	i = -1;
+
+	try {
+	    depth = 0;
+	    infile = new BufferedReader(new FileReader(fileName));
+	    line = infile.readLine();
+
+	    //skip the leading blank lines
+	    while(line != null && (i = line.indexOf("class")) == -1) line = infile.readLine();
+	    char[] temp = line.toCharArray();
+
+	    //skip keyword "class"
+	    while(temp[i] != ' ') i++;
+	    while(temp[i] == ' ') i++;
+
+	    //get the class name
+	    char[] c = new char[100];
+	    j = 0;
+	    while(temp[i] != ' '&&temp[i]!='{'){
+		c[j] = temp[i];
+		i++;
+		j++;
+	    }         
+	    String s = new String(c, 0, j);
+
+	    //create a .jak file
+	    outfile = new PrintWriter(new BufferedWriter(
+					  new FileWriter(s +".jak")));
+	    outfile.println("layer "+ layerName + ";");
+	    outfile.println();
+	    copyfile(outfile, GenCTPrefix + "JakFileHeader.txt");
+	    outfile.println();
+	    outfile.println();
+	    outfile.println(line);
+
+
+	    while((line = infile.readLine()) != null){
+		if((i = line.indexOf("class")) != -1 && 
+		   line.indexOf(".class") == -1 && line.indexOf("//") == -1){
+		    //a new class starts, close the current .jak file
+		    outfile.close();
+		    temp = line.toCharArray();
+		    while(temp[i] != ' ') i++;
+		    while(temp[i] == ' ') i++;
+		    c = new char[100];
+		    j = 0;
+
+		    //get the next class name
+		    while(temp[i] != ' '&&temp[i]!='{'){
+			c[j] = temp[i];
+			i++;
+			j++;
+		    }         
+		    s = new String(c, 0, j);
+		    outfile = new PrintWriter(new BufferedWriter(
+						  new FileWriter(s +".jak")));
+		    //System.out.println("open file" + s + ".jak");
+		    outfile.println("layer "+ layerName + ";");
+		    outfile.println();
+		    copyfile(outfile, GenCTPrefix + "JakFileHeader.txt");
+		    outfile.println();
+		    outfile.println();
+		    outfile.println(line);
+		    buffer = "";
+		    continue;
+		}
+   
+		if(line.indexOf("void execute()") != -1 && !inExecute){
+		    inExecute = true;
+		    depth = 1;
+		    buffer += line + "\r\n";
+		    continue;
+		}
+
+		if(inExecute){
+		    //In an execute() method, read all of it into the buffer
+		    buffer += line + "\r\n";
+		    if(line.indexOf("{") != -1) depth++;
+		    if(line.indexOf("}") != -1) {
+			depth--;
+			/*if(depth == 0){ 
+			  outputBuffer(outfile, buffer);
+			  buffer = "";
+			  //outfile.println(buffer);
+			  }*/
+		    }
+
+		    //reach the end of execute method, output it
+		    if(depth == 0){
+			inExecute = false;                 
+			outputBuffer(outfile, buffer);
+			buffer = "";
+		    }
+		    continue;
+		}
+
+		//not in execute method, output it    
+		if(!inExecute){
+		    outfile.println(line);
+		    continue;
+		}
+	    }
+
+	    outfile.close();
+	    infile.close();
+	}
+	catch (IOException e) { System.err.println( e.getMessage() ); }
+    }
+
+
+
+    static void copyfile (PrintWriter outfile, String resource ) {
+	try {
+	    in = loader.getResource (resource) . openStream () ;
+	    while( in.available() > 0 ) {
+		bytesRead = in.read( bArray );
+		inputString = new String( bArray,0, bytesRead);
+		outfile.print(inputString);
+	    }
+	    in.close();
+	}
+	catch (IOException e) { System.err.println( e.getMessage() ); }
+    }
+
+
+    /**
+     *Replaces void execute() and a reference to it by the method specified by user
+     **/
+
+    public static void outputBuffer(PrintWriter outfile, String buffer){
+	int i;
+	String s;
+
+	if(buffer.length() == 0) return;
+	for(i = 0; i < numMethod; i++){
+	    s = new String(buffer);
+	    int j = s.indexOf("void execute()");
+	    String temp = s.substring(0, j);
+	    temp += "void " + signatureGroup[i];
+	    int k = s.indexOf("execute()", j + 14);
+	    temp += s.substring(j+14, k);
+	    temp += referenceGroup[i];
+	    temp += s.substring(k+9, s.length());
+	    outfile.println(temp); 
+	}
+    }
+   
+   
+    public static void out( String x ) {
+	outfile.println(x);
+    }
+
+    public static void out() {
+	outfile.println();
+    }
+
+    static void copyResource (PrintWriter outfile, String resource ) {
+       
+	InputStream in;
+	try {
+	    in = loader.getResource (resource) . openStream () ;
+	    while( in.available() > 0 ) {
+		bytesRead = in.read( bArray );
+		inputString = new String( bArray,0, bytesRead);
+		outfile.print(inputString);
+	    }
+	    in.close();
+	} 
+	catch (IOException e) { System.err.println( e.getMessage() ); }
+     
+    }
+
+    public static void templateClass(String args[], String x, boolean exe ) {
+      
+	int j = 1;
+	int i = 0;
+	int k = 0;
+
+	try {
+	    Jakfile = new PrintWriter(new BufferedWriter(
+					  new FileWriter( x +".jak")));
+	}
+	catch (IOException e) {
+ 
+	    System.err.println( e.getMessage() );
+	    System.exit(1);
+	}
+	Jakfile.println("layer "+layerName + ";");
+	Jakfile.println();
+
+	copyfile(Jakfile, GenCTPrefix + "JakFileHeader.txt");
+	Jakfile.println();
+	Jakfile.println("refines class " + x +" {");
+
+	if (exe){
+	    for(i = 0 ; i < numMethod; i++){
+		Jakfile.println();
+		Jakfile.print("    public void " + signatureGroup[i]);
+		Jakfile.print("{ Super(" + typeGroup[i] + ").");
+		Jakfile.print(referenceGroup[i]); 
+		Jakfile.println(";}") ;
+	    }
+	}
+	Jakfile.println("}");
+	Jakfile.println();
+	Jakfile.close();
+    }
+    private File argSourceFile = null ;	// Bali source file.   
+}

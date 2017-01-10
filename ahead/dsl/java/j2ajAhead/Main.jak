@@ -1,0 +1,80 @@
+/** @author Roberto E. Lopez-Herrejon
+ * Modified to rename the output file whenever generating an aspect
+*/
+
+layer j2ajAhead;
+
+import java.io.File;
+
+public refines class Main {
+    public static String newFileName = null;
+
+    protected void cleanUp() {
+        int nerrors =  AstNode.errorCount();
+        if ( nerrors == 0 )
+            return;
+        AstNode.toolReport( "Summary " + nerrors + " error" + ( nerrors==1?"":"s" ) );
+    }
+
+
+    //**************************************************
+    // outputAST()
+    //**************************************************
+    protected void outputAST( ArgList argObjects,  AstNode ast ) {
+
+        // Call outputAST() for other layers
+        Super( ArgList,AstNode ).outputAST( argObjects, ast );
+
+        // This is the absolute path of file with the .java extension
+        String outputFileName =  currentOutputFileName ;
+
+         //  kernelConstants.globals().mainProps.getProperty( "RenameOutputFileName" );
+
+        // @debug
+        System.out.println(" Output File NAme = " + outputFileName);
+        // @debug
+        System.out.println(" New file name = " + newFileName);
+
+        // This is only name of .java program
+        String outputName = (new File(outputFileName)).getName();
+
+        // Checks if the file should be renamed
+        if (newFileName == null) {
+          kernelConstants.globals().mainProps.removeProperty( "RenameOutputFileName" );
+          return;
+        }
+
+        // Creates a file handle of the .java file generated
+        File oldFile = new File(outputFileName);
+
+        // Computes the new path for the file
+        String pathName = outputFileName.substring(0,
+                                 outputFileName.lastIndexOf(outputName));
+
+        // Creates handle to new name
+        String fullNameNewFile = pathName+newFileName+".java";
+
+        // @debug
+        System.out.println("New file full name = " +  fullNameNewFile);
+
+        File newFile = new File (fullNameNewFile);
+
+        // @debug
+        System.out.println("New File name = " + newFile.getName());
+
+        // Performs the renaming, should throw an error if not?
+        // @debug
+        // boolean result = oldFile.renameTo(newFile);
+
+        // @debug
+        // System.out.println("Result = " + result);
+
+        // Removes the 3 renaming properties
+        kernelConstants.globals().mainProps.removeProperty( "RenameOutputFileName" );
+        kernelConstants.globals().mainProps.removeProperty( "RenameNewFileName" );
+
+        // Once everything has been executed, pop the context
+        kernelConstants.PopParseTreeStack();
+  }
+
+}

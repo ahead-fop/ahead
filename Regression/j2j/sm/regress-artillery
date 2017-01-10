@@ -1,0 +1,10 @@
+#!/bin/bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+echo "************ WRFFE ARTILLERY *************"
+java jak2java.Main wrffe_artillery.spec \
+&& javac wrffe_artillery.java \
+&& java wrffe_artillery > junk \
+&& diff -b junk correct_artillery \
+|| exit 1

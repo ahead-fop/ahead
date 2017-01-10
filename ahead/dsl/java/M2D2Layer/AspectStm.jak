@@ -1,0 +1,26 @@
+layer M2D2Layer;
+
+refines class AspectStm {
+    static boolean onlyOnce = true;
+
+    public void extract( context c ) {
+       String layerName = ( ( AST_QualifiedName ) arg[0] ).GetName();
+       common(c, layerName);
+    }
+
+    public static void common( context c, String layerName ) { 
+       if (onlyOnce) {
+          c.Header.add(
+              RubyInstCreator.createCurrentPackage( layerName, "feature" ) );
+          c.setPackageName("feature");
+          c.Header.blankLine();
+          onlyOnce = false;
+       }
+    }
+
+    // this method is called (by program) when no layer declaration is made
+
+    public static void defaultLayer( context c )  {
+       common(c, "feature");
+    }
+}

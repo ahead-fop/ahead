@@ -1,0 +1,199 @@
+layer SmGen;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.util.*;
+import java.io.*;
+
+// of ClassGenerator
+
+   /** Generates an HMTL file for States
+    * @layer<SmGen>
+    */
+    
+public class StateGenerator {
+    
+    // Variable declaration
+    public static VelocityContext context;
+    public static LinkedList extensionsList;
+
+    // **************************************************************
+    // **************************************************************
+    // **************************************************************
+    // **************************************************************
+    // **************************************************************
+    // ********** Creates the document Template for a State *********
+
+    public static  StateMachineTemplate createStateDocument() {
+
+        // General tags Documents
+        DeprecatedTagTemplate deprecatedTags = new DeprecatedTagTemplate();
+        deprecatedTags.setName( "DeprecatedTags" );
+        deprecatedTags.setTemplateFile( "SourceTemplates/DeprecatedTags.vm" );
+
+        AuthorTagTemplate authorTags = new AuthorTagTemplate();
+        authorTags.setName( "AuthorTags" );
+        authorTags.setTemplateFile( "SourceTemplates/AuthorTags.vm" );
+
+        VersionTagTemplate versionTags = new VersionTagTemplate();
+        versionTags.setName( "VersionTags" );
+        versionTags.setTemplateFile( "SourceTemplates/VersionTags.vm" );
+
+        SinceTagTemplate sinceTags = new SinceTagTemplate();
+        sinceTags.setName( "SinceTags" );
+        sinceTags.setTemplateFile( "SourceTemplates/SinceTags.vm" );
+
+        SeeTagTemplate seeTags = new SeeTagTemplate();
+        seeTags.setName( "SeeTags" );
+        seeTags.setTemplateFile( "SourceTemplates/SeeTags.vm" );
+
+        ParamTagTemplate paramTags = new ParamTagTemplate();
+        paramTags.setName( "ParamTags" );
+        paramTags.setTemplateFile( "SourceTemplates/ParamTags.vm" );
+
+        ThrowsTagTemplate throwsTags = new ThrowsTagTemplate();
+        throwsTags.setName( "ThrowsTags" );
+        throwsTags.setTemplateFile( "SourceTemplates/ThrowsTags.vm" );
+
+        ReturnTagTemplate returnTags = new ReturnTagTemplate();
+        returnTags.setName( "ReturnTags" );
+        throwsTags.setTemplateFile( "SourceTemplates/ReturnTags.vm" );
+
+        // Creates a class Document object and adds there
+        // the corresponding layout objects
+        StateMachineTemplate sd = new  StateMachineTemplate();
+        sd.setName( "StateMachine" );
+        sd.setTemplateFile( "SourceTemplates/StateMachine.vm" );
+
+        // **** Layout of a State Document
+
+        // StateMachineHead Object
+        StateMachineHeadTemplate smht = new StateMachineHeadTemplate();
+        smht.setName( "StateMachine_Head" );
+        smht.setTemplateFile( "SourceTemplates/StateMachine_Head.vm" );
+
+        // StateMachineTitle Object
+        StateMachineTitleTemplate smtt = new StateMachineTitleTemplate();
+        smtt.setName( "StateMachine_Title" );
+        smtt.setTemplateFile( "SourceTemplates/StateMachines_Title.vm" );
+        
+        // StateMachine Body  Object
+        StateMachineBodyTemplate smbt =new StateMachineBodyTemplate();
+        smbt.setName( "StateMachine_Body" );
+        smbt.setTemplateFile( "SourceTemplates/StateMachine_Body.vm" );
+        
+        // Adds the objects to the layout of the state
+        sd.addLayoutElement( smht );
+        sd.addLayoutElement( smtt );
+        sd.addLayoutElement( smbt );
+
+        // ****** Layout of State Body
+        // Defines the objects inside a State Body
+
+        // StateMachineToDoc
+        StateMachineToDoc smtdoc = new StateMachineToDoc();
+        smtdoc.setName( "StateToDoc" );
+        smtdoc.setTemplateFile( "SourceTemplates/StateToDoc.vm" );
+ 
+        // Relationships
+        StateMachineRelationshipsTemplate smrt = 
+                        new StateMachineRelationshipsTemplate();
+        smrt.setName( "StateMachine_Rels" );
+        smrt.setTemplateFile( "SourceTemplates/StateMachine_Rels.vm" );
+
+        // Header
+        StateMachineHeaderTemplate smheader = new StateMachineHeaderTemplate();
+        smheader.setName( "StateMachine_Header" );
+        smheader.setTemplateFile( "SourceTemplates/StateMachine_Header.vm" );
+
+        // Fills the Header layout
+        smheader.addLayoutElement( smtdoc );
+        smheader.addLayoutElement( deprecatedTags );
+        smheader.addLayoutElement( authorTags );
+        smheader.addLayoutElement( versionTags );
+        smheader.addLayoutElement( sinceTags );
+        smheader.addLayoutElement( seeTags );
+        smheader.addLayoutElement( paramTags );
+        smheader.addLayoutElement( throwsTags );
+        smheader.addLayoutElement( returnTags );
+
+        // Core
+        StateMachineCoreTemplate smcore = new StateMachineCoreTemplate();
+        smcore.setName( "StateMachine_Core" );
+        smcore.setTemplateFile( "SourceTemplates/StateMachine_Core.vm" );
+
+        // Summaries
+        StateMachineSummTemplate smsumm = new StateMachineSummTemplate();
+        smsumm.setName( "StateMachine_Summary" );
+        smsumm.setTemplateFile( "SourceTemplates/StateMachine_Summary.vm" );
+
+        // Adds the objects to the layout of the State Body
+        smbt.addLayoutElement( smtdoc ); // StateMachineToDoc
+        smbt.addLayoutElement( smrt ); // Relationships
+        smbt.addLayoutElement( smheader ); // Header
+        smbt.addLayoutElement( smcore ); // Core
+        smbt.addLayoutElement( smsumm ); // Summaries
+
+        // Adding to relationships
+        StateMachineModifiersTemplate smmod = 
+                        new StateMachineModifiersTemplate();
+        smmod.setName( "StateMachine_Modifiers" );
+        smmod.setTemplateFile( "SourceTemplates/StateMachine_Modifiers.vm" );
+
+        StateMachineInterfaceTemplate smint = 
+                        new StateMachineInterfaceTemplate();
+        smint.setName( "StateMachine_Interface" );
+        smint.setTemplateFile( "SourceTemplates/StateMachine_Interface.vm" );
+
+        smrt.addLayoutElement( smmod ); // Modifiers
+        smrt.addLayoutElement( smint ); // Interface
+
+        sd.extendsStateDocument();
+
+        // Returns the state template object
+        return sd;
+
+    }
+    // of CreateStateDocument
+
+       /** Fall back method for the extensions to the document layout 
+        * @layer<SmGen>
+        */
+    public static void extendsStateDocument( DocumentDescriptor dd ) {}
+
+    // New version of GenerateState    
+    public static void GenerateState( StateMachineDocJTS _state,
+                     StateMachineTemplate stateDocument )
+        throws Exception {
+  
+        System.out.println( "State Name = " + _state.name() );
+
+        // Create the Document Descriptor for a State Machine
+        // @pending -> this should be done only once per generation
+        // once tested remove from here and accomodate it correspondingly        
+        // StateMachineTemplate stateDocument = createStateDocument();
+
+        // @debug ->        
+        // System.out.println("State Document generated ");
+        
+        // Generates the templates for the Class in TargetTemplates Dir
+        // $TEqn.ClassGenerator.GenerateTemplates(stateDocument);
+
+        // @debug        
+        // System.out.println("Class Templates generated ");
+        
+        // Generates the context to fill up the class template
+        VelocityContext context = new VelocityContext();
+        context =  ClassGenerator.GenerateContext( _state, stateDocument, 
+                                                     context );
+
+        // @debug
+        // System.out.println("State Context generated ");
+        
+        // Generate ClassDocument with context, template, output file
+        String outputFile = _state.name();
+        ClassGenerator.GenerateDocument( context,stateDocument,outputFile );
+
+    } // of GenerateState
+
+}

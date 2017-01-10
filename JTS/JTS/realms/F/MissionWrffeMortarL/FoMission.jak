@@ -1,0 +1,52 @@
+package MissionWrffeMortarL;
+
+import 
+    Jakarta.util.Util;
+import 
+    java.io.*;
+import 
+    F.Libraries.log.Log;
+
+ // MissionImpl
+ 
+
+    public extends state_machine FoMission
+    {
+        // On RoundsComplete send EOM to gun and stop.
+        /*REFINES EDGE no longer supported.  
+   Move predicate or body into method, and extend method. 
+Refines edge wrffeMortarAccepted1 : wrffeMortarAccepted -> stop
+            conditions (message instanceof RoundsCompleteMessage)
+            do 
+	    { EomMessage eomMessage = new EomMessage(getId());
+		if (initiatingUnit != null)
+		    eomMessage.setInitiatingUnitId(initiatingUnit.intValue());
+		sendUp(eomMessage);
+	    } */
+
+        // Ignore Shot message.
+        /*REFINES EDGE no longer supported.  
+   Move predicate or body into method, and extend method.
+Refines edge wrffeMortarAccepted2 : 
+            wrffeMortarAccepted -> wrffeMortarAccepted
+            conditions (message instanceof ShotMessage) do {} */
+
+        // added -- first Refines changes action, condition
+
+        public void wrffeMortarAccepted1Action(Event message) {
+           EomMessage eomMessage = new EomMessage(getId());
+           if (initiatingUnit != null)
+              eomMessage.setInitiatingUnitId(initiatingUnit.intValue());
+           sendUp(eomMessage);
+	}
+
+        public boolean wrffeMortarAccepted1Test(Event message) {
+            return (message instanceof RoundsCompleteMessage);
+        }
+
+        public void wrffeMortarAccepted2Action(Event message) { }
+
+        public boolean wrffeMortarAccepted2Test(Event message) {
+           return (message instanceof ShotMessage);
+        }
+    }

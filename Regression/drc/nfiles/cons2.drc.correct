@@ -1,0 +1,5 @@
+Jakarta.util.ExitError: drc: cons1.drc: Fatal Error Shouldn't have constant cons1 in the middle of an equation
+	at Jakarta.util.Util.fatalError(Util.java:71)
+	at drc.kernel$AstNode.fatalError(kernel.java:2600)
+	at drc.core$Main.main(core.java:1438)
+Exception in thread "main" 

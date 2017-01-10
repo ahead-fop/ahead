@@ -1,0 +1,55 @@
+// tests composition of extensions that have state and Transition declarations
+// and method declarations
+
+layer root11;
+
+SoUrCe RooT root11 "C:!Java!Regression!Mixin!sm!root11.jak";
+
+ abstract State_machine root$$root11 {
+
+   Delivery_parameters( M m );
+   Unrecognizable_state { ignore(m); }
+
+   // from root11
+   States g;
+   States h;
+
+   // from root11
+   Transition e5 : d -> e 
+   condition m!=null
+   do { /* action 2 */ }
+
+   Transition e6 : c -> d
+   condition true
+   do { /* action 3 */ }
+
+   Exit h { /* action a */ }
+
+   // from root11
+   void fromext11() { as = 5; }
+}
+
+SoUrCe  ext14 "C:!Java!Regression!Mixin!sm!ext14.jak";
+
+ State_machine root extends root$$root11 {
+
+   // Otherwise_default { Super().fromext11(); }
+
+   // from ext 14
+   States g1;
+   States h1;
+
+   // from ext14
+   Transition e55 : d -> e 
+   condition m!=null
+   do { /* action 2 */ Super().fromext11(); }
+
+   Transition e66 : c -> d
+   condition true
+   do { /* action 3 */ Super().fromext11(); }
+
+   Exit h1 { Super().fromext11(); }
+
+   // from ext14
+   void fromext14() { Super().fromext11(); }
+}

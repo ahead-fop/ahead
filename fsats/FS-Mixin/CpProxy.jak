@@ -1,0 +1,17 @@
+layer FS;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+SoUrCe RooT BasicL "C:!Java!FeatureOrientedProgramming!fsats!BasicL!CpProxy.jak";
+
+public class CpProxy extends ProxyImpl {
+    public void init( OpfacDataWrapper record )
+        {
+        Super( OpfacDataWrapper ).init( record );
+        addAssets( LayDown.getSelf().getSubordinateNames( getName() ) );
+    }
+}

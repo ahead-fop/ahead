@@ -1,0 +1,103 @@
+layer core;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+//********** layer: symbol table and symbol table elements
+ 
+public class symtab {
+    static TreeMap t;
+  
+    static void init() {
+        t = new TreeMap();
+    }
+
+    static void add( String name,  Element e ) {
+
+        // Step 1: see if there is another attribute in the symbol table
+        //         with the same name 
+
+        Element o = ( Element ) t.get( name );
+
+        // Step 2: if so, override it only if the entry was defined
+        //         externally.  Otherwise we have a case of multiple
+        //         definitions.  We could make further distinctions
+        //         but this should do for now.
+
+        // Step 2: if so, here are the overriding rules.
+        //         if e is import, it doesn't override extern or define.
+        //             however, if o is import, then multiple declarations
+        //         if e is define, it overrides if o is extern
+        //             however, if import or define then declare mult. decls.
+        //         e is extern is impossible. no errors otherwise.
+
+        if ( o == null ) {
+            t.put( name,e );
+            return;
+        }
+        if ( e.extern ==  Element.imported ) {
+            if ( o.extern ==  Element.imported )
+                multiple( name );
+            return;
+        }
+        if ( e.extern ==  Element.defined ) {
+            if ( o.extern ==  Element.external )
+                t.put( name,e );
+            else
+                multiple( name );
+            return;
+        }
+        AstNode.fatalError( "undefined extern value" );
+    }
+
+    static void multiple( String name ) {
+        AstNode.error( "Multiple definitions of attribute " + name );
+    }
+
+    static  Element lookup( String name ) {
+        return ( Element ) t.get( name );
+    }
+     
+    static Iterator iterator() {
+        return t.values().iterator();
+    }
+
+    static void display() {
+        System.out.println( "Symbol table Contents" );
+        Iterator i = iterator();
+        while ( i.hasNext() ) {
+            Element e = ( Element ) i.next();
+            e.println();
+        }
+    }
+
+    static void print2file( PrintWriter pw ) {
+        pw.println( "// defined attributes" );
+        printset( pw, false );
+        pw.println( "// externally defined attributes" );
+        printset( pw, true );
+    }
+
+    static private void printset( PrintWriter pw, boolean extern ) {
+        pw.println( "" );
+        Iterator i = iterator();
+        while ( i.hasNext() ) {
+            Element e = ( Element ) i.next();
+            if ( e.isSingle )
+                continue; // don't print internally generated variables
+            if ( extern ^ e.extern ==  Element.defined )
+                e.print2file( pw );
+        }
+        pw.println( "" );
+    }
+
+    public static void promoteImported() {
+        Iterator i = iterator();
+        while ( i.hasNext() ) {
+            Element e = ( Element ) i.next();
+            e.promoteImported();
+        }
+    }
+}

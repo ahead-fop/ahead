@@ -1,0 +1,6 @@
+// tests if layer can be optional
+layer Mixin.Ref2;
+
+refines class MyClass { 
+   int foobar;
+}

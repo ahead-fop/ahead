@@ -1,0 +1,21 @@
+This feature encapsulates only the grammar of the guidsl tool.
+
+During build, a set of .jak files will be stuffed inside this
+directory.  You can remove them by running clean.bat
+
+These .jak files  define the abstract syntax tree inheritance 
+hierarchy that is derivable from the grammar.b file.  For example:
+
+R : <patternP1>
+  | <patternpP2>
+  ;
+
+Generates the following class hiearchy:
+
+class R  { }
+class patternP1 extends R {}
+class patternP2 extends R {}
+
+Subsequent features/layers will add methods and members to these
+classes.  In particular the next layer, dmain.
+

@@ -1,0 +1,60 @@
+layer core;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+public refines class RuleDecl {
+
+    void mustBeEmpty( predicate p, String predname ) {
+        if ( p.isNonEmpty() )
+            AstNode.error( tok[0], 
+                         AST_Program.layr.name + "." + predname + 
+                    " cannot be defined multiple times" );
+    }
+
+    public void reduce() {
+        boolean outside;
+        String msg = null;
+
+        // Step 1: harvest subtrees
+
+        boolean requires = arg[0] instanceof  Reqr;
+        if ( requires )
+            outside = ( arg[1] instanceof  Up ) ||  // Up = "outside"
+                                                          ( arg[1] instanceof  Right );
+        else
+            outside = ( arg[1] instanceof  Up ) ||  // Up = "outside"
+                                                          ( arg[1] instanceof  Left );
+        arg[2].reduce();
+        predicate p =  Predikate.p;
+
+        // Step 2: store information in layr, noting if there
+        //         are duplicate declarations
+
+        if ( requires && outside ) {
+            msg =  common.requiresRight;
+            mustBeEmpty( AST_Program.layr.prerestriction, msg );
+            AST_Program.layr.prerestriction = p;
+        }
+        else
+            if ( requires && !outside ) {
+                msg =  common.requiresLeft;
+                mustBeEmpty( AST_Program.layr.precondition, msg );
+                AST_Program.layr.precondition = p;
+            }
+            else
+                if ( !requires && !outside ) {
+                    msg =  common.providesRight;
+                    mustBeEmpty( AST_Program.layr.postcondition, msg );
+                    AST_Program.layr.postcondition= p;
+                }
+                else {
+                    msg=  common.providesLeft;
+                    mustBeEmpty( AST_Program.layr.postrestriction, msg );
+                    AST_Program.layr.postrestriction = p;
+                }
+        p.checkOutside( outside, AST_Program.layr.name + "." + msg );
+    }
+}

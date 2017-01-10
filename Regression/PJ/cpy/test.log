@@ -1,0 +1,8 @@
++ '[' -z /usr/bin/bash ']'
++ echo '****************Copy Regression Test***********'
+****************Copy Regression Test***********
++ bash cpytst
+succeeded
++ echo -e '\nCopy Regression Test succeeded.'
+
+Copy Regression Test succeeded.

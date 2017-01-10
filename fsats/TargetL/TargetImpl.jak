@@ -1,0 +1,64 @@
+layer TargetL;
+
+import java.util.*;
+
+import log.Log;
+
+/** 
+ * Something that should be shot at.
+ */
+public class TargetImpl
+implements Target, Cloneable, java.io.Serializable {
+    protected String _targetType;
+    protected Location _location;
+
+    public TargetImpl() {}
+
+    public TargetImpl( String targetType,
+              Location location ) 
+	{
+        _targetType = targetType;
+        _location   = location;
+    }
+
+    /** Copy constructor **/
+    public Object clone() {
+        try {
+            return Super().clone();
+        }
+        catch( CloneNotSupportedException shouldNeverHappen ) {
+            return null;
+        }
+    }
+
+    /** Two targets are equal if they have equal fields **/
+    public boolean equals( Object other ) {
+        if( ! ( other instanceof Target ) ) {
+            return false;
+        }
+
+        Target t = ( Target ) other;
+        return _targetType.equals( t.getType() )
+                && _location.equals( t.getLocation() );
+    }
+
+    /** Two targets are equal if they have equal fields **/
+    public int hashCode() {
+        int hash =         _targetType.hashCode();
+        hash = 37 * hash + _location.hashCode();
+        return hash;
+    }
+
+    public String getType() {
+        return _targetType;
+    }
+    public Location getLocation() {
+        return _location;
+    }
+
+    /** Standard String conversion **/
+    public String toString() {
+        return "Type=" + _targetType
+                +  " Location=(" + _location+")";
+    }
+}

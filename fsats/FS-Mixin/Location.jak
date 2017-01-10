@@ -1,0 +1,22 @@
+layer FS;
+
+import laydown.*;
+
+import java.util.*;
+
+SoUrCe RooT FsatsL "C:!Java!FeatureOrientedProgramming!fsats!FsatsL!Location.jak";
+
+/** 
+ * Interface for a position of an opfac or target.
+ * Don't care if we use Lat/Long or UTM coordinates.
+ * Prefer Lat/Longitude; it was used for illustration.
+ */
+public interface Location 
+        extends Cloneable, java.io.Serializable
+    {
+    /** Two locations are equal if they are the same lat and long **/
+    public boolean equals( Object other );
+    public float getLatitude();
+    public float getLongitude();
+    public float distanceTo( Location loc );
+}

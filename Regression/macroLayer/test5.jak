@@ -1,0 +1,17 @@
+// This program tests a macro call nested inside an AST constructor as well
+// as a macro definition nested inside an AST constructor.
+
+import jak.Lang;
+
+public class test5 {
+    static public void main(String[] args) {
+	Lang.AST_Class cls = cls{
+	    macro SORT(AST_QualifiedName sname, AST_TypeName type)
+		mth{ void sname(type in) {} }mth
+
+	    public class foo {
+		#SORT(fooSort, fooType)
+	    }
+	}cls;
+    }
+}

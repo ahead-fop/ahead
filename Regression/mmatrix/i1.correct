@@ -1,0 +1,29 @@
+I D Opfac 
+Line range (-1, -1)
+public  endMods 
+ beginNest
+        M D deliver(Event) void 
+        Line range (18, 18)
+         endMods 
+        M D getActiveMissions() Collection 
+        Line range (25, 25)
+         endMods 
+        M D getLocation() Location 
+        Line range (25, 25)
+         endMods 
+        M D getName() String 
+        Line range (20, 20)
+         endMods 
+        M D getSuperior() String 
+        Line range (28, 28)
+         endMods 
+        M D getType() OpfacType 
+        Line range (22, 22)
+         endMods 
+        M D getUnit() int 
+        Line range (22, 22)
+         endMods 
+        M D init(OpfacDataWrapper,Network) void 
+        Line range (16, 16)
+         endMods 
+ endNest

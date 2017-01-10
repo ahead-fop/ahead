@@ -1,0 +1,84 @@
+layer FS;
+
+import java.util.*;
+
+import log.Log;
+
+SoUrCe RooT TargetL "C:!Java!FeatureOrientedProgramming!fsats!TargetL!LocationLatLong.jak";
+
+/** 
+ * Implementation of Location storing explicit latitude/longitude.
+ */
+public class LocationLatLong
+implements Location, Cloneable, java.io.Serializable {
+    private float _latitude;
+    private float _longitude;
+    
+    public LocationLatLong() {}
+
+    public LocationLatLong( float latitude, float longitude ) {
+        _latitude = latitude;
+        _longitude = longitude;
+    }
+
+    /** Copy constructor **/
+    public Object clone() {
+        try {
+            return Super().clone();
+        }
+        catch( CloneNotSupportedException shouldNeverHappen ) {
+            return null;
+        }
+    }
+
+    public float getLatitude() {
+        return _latitude;
+    }
+    public float getLongitude() {
+        return _longitude;
+    }
+
+    /** Two locations are equal if they are the same lat and long **/
+    public boolean equals( Object other ) {
+        if( other instanceof Location ) {
+            Location l = ( Location ) other;
+            return l.getLatitude()  == getLatitude()
+                            && l.getLongitude() == getLongitude();
+        }
+        else {
+            return false;
+        }
+    }
+
+    /** Two locations are equal if they are the same lat and long **/
+    public int hashcode() {
+        return ( new Float( _latitude ).hashCode() ) * 37 
+                + ( new Float( _longitude ).hashCode() );
+    }
+
+    /** Standard String conversion **/
+    public String toString() 
+        {
+        return "Latitude="+_latitude+" Longitude="+_longitude;
+    }
+
+    private double degreesToRadians( double degrees )
+        {
+        return degrees*Math.PI/180.0;
+    }
+
+    public float distanceTo( Location loc )
+        {
+        double lat1 = degreesToRadians( getLatitude() );
+        double lat2 = degreesToRadians( loc.getLatitude() );
+        double dlat = lat2 - lat1;
+        double dlon = degreesToRadians( getLongitude() - loc.getLongitude() );
+        double sinLat = Math.sin( 0.5*dlat );
+        double sinLon = Math.sin( 0.5*dlon );
+        double radians = 
+                2.0*Math.asin( Math.sqrt( sinLat*sinLat 
+                        + Math.cos( lat1 )*Math.cos( lat2 )*sinLon*sinLon ) );
+        double meters = radians*180.0*60.0*1852.0/Math.PI;
+        return ( float )meters;
+    }
+}

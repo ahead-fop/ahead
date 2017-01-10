@@ -1,0 +1,200 @@
+layer SmHarvest;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+  // /**  
+  //  * UnmodifiedTypeExtension
+  //  *    : STATE_MACHINE QName [ ImplementsClause ] SmClassBody :: UmodSmExt
+  //  *;
+  //  */
+  //  static public class UmodSmExt extends lower.UmodSmExt {
+  //      $TEqn.StateMachineDocJTS _state;
+  //
+  //public void execute() { 
+  //
+  //    // State name
+  //    String state_name = (($TEqn.AstToken)arg[0].tok[0]).tokenName();
+  //    _state = new $TEqn.StateMachineDocJTS(state_name);
+  //
+  //    super.execute();
+  //    
+  //    // [ImplementsClase]
+  //    $TEqn.AstNode   e1 = arg[0].arg[0];
+  //   
+  //    // If there are implemented interfaces then add them
+  //    if (e1!=null) {
+  // 
+  //              // @debug
+  //              System.out.println("class of impl => " + e1.className());
+  //
+  //List implementsInterfaces = 
+  //    (($TEqn.ImplClause)e1).implementedInterfaces;
+  //_state.setImplementsList(implementsInterfaces);
+  //
+  //        // @debug
+  //              System.out.println("Aqui es donde truena");
+  //
+  //    }
+  //    else // otherwise it is empty (same as above here)
+  //{  _state.setImplementsList(new LinkedList());
+  //}
+  //   
+  //    // SmClassBody   
+  //    // Sets the methods for the class
+  //    $TEqn.SmClassDecl sdc = ($TEqn.SmClassDecl)arg[2];
+  //    _state.setRootClauseName(sdc.rootClauseName);
+  //    _state.setParameters(sdc.parameters);
+  //    _state.setNoTransitionClauseClasses(sdc.noTransitionClauseClasses);
+  //    _state.setOtherwiseClauseClasses(sdc.otherwiseClauseClasses);
+  //    _state.setStatesClauseStates(sdc.statesClauseStates);   
+  //  
+  //     // ESList information
+  //     _state.setExitTransitions(sdc.ExitTransitions);
+  //     _state.setEnterTransitions(sdc.EnterTransitions);
+  //      _state.setPrepareTransitions(sdc.PrepareTransitions);
+  //     _state.setTestTransitions(sdc.TestTransitions);
+  //     _state.setActionTransitions(sdc.ActionTransitions);
+  //     _state.setTransitionDeclarations(sdc.TransitionDeclarations);
+  //     _state.setOtherwiseTransitions(sdc.OtherwiseTransitions);
+  // 
+  //
+  //     // AST_FieldDecl information
+  //     _state.setMethods(sdc.listOfMethods);
+  //     _state.setInnerClasses(sdc.listOfInnerClasses);
+  //     _state.setConstructors(sdc.listOfConstructors);
+  //     _state.setFields(sdc.listOfFields);
+  //     _state.setStates(sdc.listOfStates);
+  //   
+  //     // $TEqn.ClassDocJTS theClass = sdc._sd_class;
+  //     // theClass.setName("state" +(_state.name()).trim());
+  //     //_state.setClassBody(theClass);
+  //   
+  //     // *********** Comment Processing ******************************
+  //     String comment = (($TEqn.AstToken) tok[0]).white_space;
+  //     $TEqn.CommentJedi stateComment = 
+  //       $TEqn.CommentParser.ParseComment(_state, comment);
+  //            _state.setComment(stateComment);
+  //
+  //} // of execute 
+  //
+  //    // Returns the pointer to the state machine
+  //    public $TEqn.StateMachineDocJTS getDocObject() {
+  //   return _state;
+  //    }
+  //
+  //   }
+  //
+  // static public class UnmodifiedTypeExtension extends 
+  //lower.UnmodifiedTypeExtension {
+  //    public void execute() { super.execute(); }
+  //  }
+  //
+  //
+// --- End of Harvest Extension
+ 
+ /**
+  * SmDeclaration
+  *: STATE_MACHINE QName [ SmExtendsClause ] 
+  *        [ ImplementsClause ] SmClassBody :: UmodSmDecl
+  *;
+  * @layer<SmHarvest>
+  */
+   
+public refines class UmodSmDecl {
+    public  StateMachineDocJTS _state;
+
+    public void execute() {
+
+        // State name
+        String state_name = ( ( AstToken )arg[0].tok[0] ).tokenName();
+        _state = new  StateMachineDocJTS( state_name );
+
+        // System.out.println("State name " + state_name);
+
+        // Calls the super        
+        Super().execute();
+
+        // -- copy of old part
+     
+        // System.out.println("Returned from Super ");
+        // [SMExtendsClause]
+        AstNode e1 = arg[1];
+
+        // If there is a SMExtendsClause
+        if ( e1!= null ) {
+            AstNode e11 = arg[1].arg[0];
+                        
+            // If it is a normal extension
+            if ( e11 instanceof SmExtends ) {
+                String extendsName = 
+                                                 GlobalWrapper.getAST_QualifiedName( ( AST_QualifiedName )
+                                                                                     e11.arg[0].arg[0] );
+                _state.setExtendsName( extendsName );
+            }
+
+            // If it is a class extension
+            if ( e11 instanceof SmClsExtends ) {
+                String extendsName = 
+                                      GlobalWrapper.getAST_QualifiedName( ( AST_QualifiedName )e11.arg[0] );
+                _state.setExtendsName( extendsName );
+                _state.setIsClassExtended( true );
+            }
+        }
+   
+        // System.out.println("Implements Clause");
+        // [ImplementsClase]
+        AstNode   e2 = arg[2].arg[0];
+           
+        // If there are implemented interfaces then added them
+        if ( e2!=null ) {
+            List implementsInterfaces = 
+                           ( ( ImplClause )e2 ).implementedInterfaces;
+            _state.setImplementsList( implementsInterfaces );
+        }
+        else // otherwise it is empty (same as above here)
+               {
+            _state.setImplementsList( new LinkedList() );
+        }
+                   
+        // SDClassBody           
+
+        // Here we have to make a big copy function to simplify code
+           
+        SmClassDecl sdc = ( SmClassDecl )arg[3];
+        _state.setRootClauseName( sdc.rootClauseName );
+        _state.setParameters( sdc.parameters );
+        _state.setNoTransitionClauseClasses( sdc.noTransitionClauseClasses );
+        _state.setOtherwiseClauseClasses( sdc.otherwiseClauseClasses );
+        _state.setStatesClauseStates( sdc.statesClauseStates );
+          
+        // ESList information
+        _state.setExitTransitions( sdc.ExitTransitions );
+        _state.setEnterTransitions( sdc.EnterTransitions );
+        _state.setPrepareTransitions( sdc.PrepareTransitions );
+        _state.setTestTransitions( sdc.TestTransitions );
+        _state.setActionTransitions( sdc.ActionTransitions );
+        _state.setTransitionDeclarations( sdc.TransitionDeclarations );
+        _state.setOtherwiseTransitions( sdc.OtherwiseTransitions );
+         
+        // AST_FieldDecl information
+        _state.setMethods( sdc.listOfMethods );
+        _state.setInnerClasses( sdc.listOfInnerClasses );
+        _state.setConstructors( sdc.listOfConstructors );
+        _state.setFields( sdc.listOfFields );
+        _state.setStates( sdc.listOfStates );
+           
+        // $TEqn.ClassDocJTS theClass = sdc._sd_class;
+        // theClass.setName("state" +(_state.name()).trim());
+        //_state.setClassBody(theClass);
+           
+        // *********** Comment Processing ******************************
+        String comment = ( ( AstToken ) tok[0] ).white_space;
+        CommentJedi stateComment = 
+                CommentParser.ParseComment( _state, comment );
+        _state.setComment( stateComment );
+
+    } // of execute
+}

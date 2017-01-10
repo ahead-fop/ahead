@@ -1,0 +1,234 @@
+/* this is a template for creating a non-retrieval layer - i.e., a layer
+   that retrieves elements from a container.
+
+   Steps to customize layer:
+
+   (1) replace "LAYERNAME" with the name of your layer.
+
+   (2) replace  "MANGLE" with the set of keywords that are to be 
+       mangled by the layer itself
+
+   (3) hand replace /* FILL IN */ with actual source of layer
+ 
+   (4) replace these comments with a description of what your layer
+       is supposed to do.
+
+*/
+
+package p3Lib;
+
+import JakBasic.Lang;
+
+
+public final class LAYERNAME extends BaseDS implements DS {
+   //public DS                lower;
+   environment              MANGLE;
+   
+   public LAYERNAME( DS lowerlevel ) { 
+      lower = lowerlevel;
+   }
+
+   public LAYERNAME( ) { }
+
+   public DS_Container_Type make_container_type( TopParams t, ContParams c ) {
+      return new LAYERNAME_Container_Type( this, t, c );
+   }
+
+   public DS_Element_Type make_element_type( ) {
+      return new LAYERNAME_Element_Type( this );
+   }
+
+   public DS_CommonCursor_Type make_commoncursor_type() {
+      return new LAYERNAME_CommonCursor_Type( this );
+   }
+
+   public DS_Cursor_Type make_cursor_type( Usage u ) { 
+        return new LAYERNAME_Cursor_Type( this, u ); 
+   }
+
+   public DrcAttributes drc( DrcAttributes d ) {
+    /* FILL IN */
+   } 
+
+   public void set_keyword( TOP toplayer, TopParams tph ) {
+      tp = tph;     
+      environment parent toplayer;
+      lower.set_keyword( toplayer, tp );
+   }
+
+   public Object ParseArgs( Lang.AstNode x ) {
+    /* FILL IN 
+
+       see hashcmp or odlist for layername( fieldname, TExpr )
+       see dlist for             layername( TExpr )
+       see malloc for            layername( )
+     */
+   }
+}
+
+final class LAYERNAME_Container_Type implements DS_Container_Type {
+   ContParams        cp;
+   LAYERNAME            layer;
+   DS_Container_Type lower;
+   environment;
+
+   LAYERNAME_Container_Type( DS LAYERNAMElayer, TopParams t, ContParams c ) { 
+      // Step 1: save the arguments as we'll refer to them later
+
+      layer    = (LAYERNAME) LAYERNAMElayer;
+      cp       = c;
+      layer.tp = t;
+      environment parent layer;
+
+      // Step 2: create chain of lower level containers
+
+      lower = layer.lower.make_container_type( t, cp );
+   }
+
+   public void validate() {
+      /* FILL IN - validate performs layer-specific validity checks */
+   } 
+
+
+   public Lang.AST_FieldDecl dataMembers() {
+      /* FILL IN - adds data members specific to the container type */
+   }
+
+   public Lang.AST_Stmt containerMethod() {
+      /* FILL IN - adds code specific to container constructor */
+   }
+
+   public Lang.AST_Exp is_fullMethod() {
+      /* FILL IN - adds code specific to is_full method */
+   }
+}
+
+
+final class LAYERNAME_Element_Type implements DS_Element_Type {
+   LAYERNAME          layer;
+   DS_Element_Type  lower;
+   environment;
+
+   LAYERNAME_Element_Type( DS LAYERNAMElayer ) {
+      layer    = (LAYERNAME) LAYERNAMElayer;
+      lower    = layer.lower.make_element_type();
+      environment parent layer;
+   }
+
+   public Lang.AST_FieldDecl dataMembers() {
+      /* FILL IN - adds data members specific to element type */
+   }
+
+   // link is part of element constructors
+
+   public Lang.AST_Stmt link() {
+      /* FILL IN - adds code that is part of element constructor, like
+                   link methods */
+   }
+
+   public Lang.AST_FieldDecl relink() {
+      /* FILL IN - adds methods as part of element class for element
+                   relinking */
+   }
+
+   public Lang.AST_FieldDecl unlink() {
+      /* FILL IN - adds methods as part of element class for element
+                   unlinking */
+   }
+
+   public Lang.AST_Stmt upd( int fieldno ) {
+      /* FILL IN - adds source code for updating element fieldno;,
+                   typically references to unlink and relink methods */
+   }
+   
+}
+
+final class LAYERNAME_CommonCursor_Type implements DS_CommonCursor_Type {
+   LAYERNAME layer;
+   DS_CommonCursor_Type lower;
+   environment;
+
+   LAYERNAME_CommonCursor_Type( DS LAYERNAMElayer ) {
+      layer = (LAYERNAME) LAYERNAMElayer;
+      lower = layer.lower.make_commoncursor_type();
+      environment parent layer;
+   }
+
+   public Lang.AST_FieldDecl dataMembers() {
+      /* FILL IN - adds data members specific to common cursor type */
+   }
+
+   public Lang.AST_Stmt removeMethod() {
+      /* FILL IN - adds (common) source code for deleting elements via cursors */
+   }
+
+   public Lang.AST_FieldDecl movementMethods() {
+      /* FILL IN - adds (common) source code for start() and adv() methods, 
+         which position the cursor on the first (next) unqualified
+         element */
+   }
+}
+
+final class LAYERNAME_Cursor_Type implements DS_Cursor_Type {
+
+    LAYERNAME        layer;
+    DS_Cursor_Type lower;
+    environment;
+
+    LAYERNAME_Cursor_Type( DS LAYERNAMElayer, Usage u ) {
+
+       layer = (LAYERNAME) LAYERNAMElayer;
+       lower = layer.lower.make_cursor_type( u );
+       environment parent layer;
+    }
+
+    public Qopt optimize( Qopt q ) {
+       /* FILL IN  - add decisions about query optimization */
+    }
+
+    public Lang.AST_FieldDecl dataMembers() {
+      /* FILL IN - adds data members specific to cursor type */
+    }
+
+    public Lang.AST_Stmt cursorMethod() {
+      /* FILL IN - adds source code to cursor constructor */
+    }
+
+    public Lang.AST_Stmt firstMethod() {
+      /* FILL IN - adds source code to first method  - i.e., position
+         on the first unqualified element of the container */
+    }
+
+    public Lang.AST_Exp moreMethod() {
+      /* FILL IN - adds source code to more method. i.e., are we at the
+         physical end of the container */
+    }
+
+    public Lang.AST_Stmt noMoreMethod() {
+      /* FILL IN - adds source code to nomore method. i.e., position
+         the cursor at the end of the container */
+    }
+
+    public Lang.AST_Stmt nextMethod()  {
+      /* FILL IN - adds source code to next method  - i.e., position
+         on the next unqualified element of the container */
+    }
+
+    public Lang.AST_Exp lowerBound( boolean pos ) {
+      /* FILL IN - adds source code to expression that defines the 
+                   lower bound of retrieval range. pos == false means
+                   return complement of the predicate */
+    }
+
+    public Lang.AST_Exp upperBound( boolean pos ) {
+      /* FILL IN - adds source code to expression that defines the 
+                   upper bound of retrieval range. pos == false means
+                   return complement of the predicate */
+    }
+
+    public Lang.AST_Exp residual() {
+      /* FILL IN - adds source code to expression that defines the 
+                   residual predicate */
+    }
+
+}

@@ -1,0 +1,14 @@
+layer SourceHarvest;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+public refines class GlobalWrapper {
+       // Global variables from where the States and Classes 
+    //will get their values
+    public static String string_literal = "";
+    public static String rootQualifiedName = "";
+    public static boolean hasRoot = false;
+}

@@ -1,0 +1,36 @@
+layer JavaTagHandlers;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+ // of ReturnTag
+
+// **********************************************************************
+// **********************************************************************
+// **********************************************************************
+/** The Tag Jedi for version Tags 
+ * @layer<JavaTagHandlers>
+ */
+
+public class VersionTagJedi extends AbstractTagJedi {
+
+    /** Method that parses and builds a VersionTag.
+     * VersionTag -> @version version-text
+     * @layer<JavaTagHandlers>
+     */
+    public void parse( DocJTS Document,  CommentJedi comment, 
+             String stringTag ) {
+        VersionTagJedi tag = new  VersionTagJedi();
+        CommentParser.ParseDescription( Document, stringTag, "@version", 
+                                        tag );
+
+        LinkedList tagsList = comment.getTags();
+        tagsList.add( tag );
+        comment.setTags( tagsList ); // @redundant?
+   
+    } // of parse
+}

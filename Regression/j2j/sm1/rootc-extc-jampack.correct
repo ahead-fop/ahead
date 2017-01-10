@@ -1,0 +1,76 @@
+package rootc;
+
+import firstPackage.*;
+
+// this is a comment on root
+
+class root extends common {
+   static int stateNumGenerator = 0;
+   final static int start = stateNumGenerator++; 
+   final static int stop = stateNumGenerator++;
+            protected interface disp {
+                void exit( M m );
+            }
+            protected int current_state = start;
+            protected disp dispatch = new disp() {
+                public void exit( M m ) {
+                    start_exit(m );
+                }
+            };
+            final public boolean atStop() {
+                return current_state == stop;
+            }
+      // delivery method
+
+   public void delivery(  M m ) {      
+      if (current_state == start) { start_prepare(m); start_branches(m); return; }
+      if (current_state == stop) { stop_prepare(m); stop_branches(m); return; }
+       ignore(m);
+   }
+
+   // getState method
+
+   public String getState() {
+      if (current_state == start) return "start";
+      if (current_state == stop) return "stop";
+      return "Unrecognizable_State";
+   }
+   // otherwise_Default method
+   void otherwise_Default( M m) { ; }
+   boolean starBranches(  M m ) { 
+       return true; }
+
+   // methods for state start
+
+   void start_branches(  M m ) {
+      if (starBranches(m) ) start_otherwise( m );
+   }
+   void start_enter(  M m ) {
+      current_state = start;
+      dispatch = new disp() { public void exit(  M m ) { start_exit( m ); } };
+
+      start_enter_user(m);
+    }
+   void start_enter_user(  M m ) { ;
+   }
+   void start_exit(  M m ) { ; } 
+   void start_otherwise( M m) { otherwise_Default(m);}
+   void start_prepare(  M m ) { ; }
+
+   // methods for state stop
+
+   void stop_branches(  M m ) {
+      if (starBranches(m) ) stop_otherwise( m );
+   }
+   void stop_enter(  M m ) {
+      current_state = stop;
+      dispatch = new disp() { public void exit(  M m ) { stop_exit( m ); } };
+
+      stop_enter_user(m);
+    }
+   void stop_enter_user(  M m ) { ;
+   }
+   void stop_exit(  M m ) { ; }
+   void stop_otherwise( M m) { otherwise_Default(m);}
+   void stop_prepare(  M m ) { ; }
+        }

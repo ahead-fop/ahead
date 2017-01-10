@@ -1,0 +1,33 @@
+/** Args.jak
+  * @author Roberto E. Lopez-Herrejon
+*/
+
+layer j2ajClassx;
+
+/** This class is executed whenever the is a method call (constructor call?)
+ * In here, verify that it is a call to super then append an extra parameter
+ * at the end of the list.
+*/
+public refines class Args {
+
+    /** Reduce method */
+    public void reduce2java( AstProperties props ) {
+        props.print(" (");
+        arg[0].reduce2java(props);  // AST_ArgList
+
+        // If these are the arguments of a Super method call then add
+        // the parameter called obj$ClassName
+        String fromSuper = (String) props.getProperty("SuperCall");
+        if (fromSuper != null) {
+          String className = (String) props.getProperty("ClassName");
+          // if there are no arguments dont put a comma
+          if (arg[0].arg[0] !=null) props.print(",");
+          props.print("obj$" + className);
+
+          // Remove the SuperCall flag to prevent unwanted target mangling
+          props.removeProperty("SuperCall");
+        }
+        props.print(" )");
+
+    } // of reduce2java
+}

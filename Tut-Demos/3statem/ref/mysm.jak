@@ -1,0 +1,9 @@
+import evenmore.*;
+
+refines State_machine mysm {
+
+    // add new transition
+    Transition loop : midpoint -> midpoint
+        condition e == null
+        do {}
+}

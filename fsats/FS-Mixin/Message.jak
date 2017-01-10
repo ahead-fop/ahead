@@ -1,0 +1,30 @@
+layer FS;
+
+import laydown.*;
+
+import java.util.*;
+
+import fsats.util.DataContainer;
+
+SoUrCe RooT FsatsL "C:!Java!FeatureOrientedProgramming!fsats!FsatsL!Message.jak";
+
+abstract interface Message$$FsatsL extends Event {}
+
+SoUrCe  MessageL "C:!Java!FeatureOrientedProgramming!fsats!MessageL!Message.jak";
+
+/** A tactical message received event. */
+public interface Message extends Message$$FsatsL
+    {
+    /** Get/set message source opfac. */
+    String getSource();
+    void setSource( String newval );
+
+    /** Get/set message destination opfac. */
+    String getDestination();
+    void setDestination( String newval );
+
+    /** Get a representation of message specific information. */
+    String getSpecific();
+
+    DataContainer toFsams();
+}

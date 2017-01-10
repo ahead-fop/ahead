@@ -1,0 +1,7 @@
+s/state_machine/State_machine/
+s/states/States/
+s/Edge/Transition/
+s/unrecognizable_state/Unrecognizable_state/
+s/goto_state/Goto_state/g
+s/proceed/Proceed/g
+s/delivery_parameters/Delivery_parameters/

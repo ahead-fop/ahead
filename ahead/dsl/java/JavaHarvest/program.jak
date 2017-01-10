@@ -1,0 +1,23 @@
+layer JavaHarvest;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+
+// of GlobalWrapper
+
+   /** Creates the Program DoctJTS  object to hold the references 
+    * of the classes/interfaces and any other extensions
+    * @layer<JavaHarvest>
+    */
+   
+public refines class program {
+    public void execute() {
+        GlobalWrapper.containingProgram = 
+                 ProgramDocJTS.ProgramDocJTSFactory();
+        GlobalWrapper.containingProgram.ProgramDocJTSConstructor( GlobalWrapper.ProgramName );
+        Super().execute();
+    }
+}

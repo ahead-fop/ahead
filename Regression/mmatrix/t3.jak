@@ -1,0 +1,33 @@
+layer FS;
+
+
+SoUrCe RooT OpfacL "C:!Java!FeatureOrientedProgramming!fsats!OpfacL!OpfacImpl.jak";
+
+ abstract class OpfacImpl$$OpfacL 
+        implements ABC, DEF
+    { }
+
+SoUrCe  ProxyL "C:!Java!FeatureOrientedProgramming!fsats!ProxyL!OpfacImpl.jak";
+
+ abstract  class OpfacImpl$$ProxyL extends OpfacImpl$$OpfacL 
+	implements ABC, HIG
+    { }
+
+SoUrCe  BasicL "C:!Java!FeatureOrientedProgramming!fsats!BasicL!OpfacImpl.jak";
+
+ abstract  class OpfacImpl$$BasicL extends OpfacImpl$$ProxyL
+        implements LMN
+    { }
+
+SoUrCe  MissionAnyL "C:!Java!FeatureOrientedProgramming!fsats!MissionAnyL!OpfacImpl.jak";
+
+ abstract  class OpfacImpl$$MissionAnyL extends OpfacImpl$$BasicL 
+        implements OPQ
+    { }
+
+SoUrCe  GuiL "C:!Java!FeatureOrientedProgramming!fsats!GuiL!OpfacImpl.jak";
+
+
+    /** Modify opfacs to notify the GUI of relevant events to display. */
+    public  class OpfacImpl extends OpfacImpl$$MissionAnyL
+    { }

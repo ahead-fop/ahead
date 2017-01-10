@@ -1,0 +1,68 @@
++ '[' -z /usr/bin/bash ']'
++ echo '****************Class Regression Test***********'
+****************Class Regression Test***********
++ bash regress-one CBase3 Asuper resultAsuper
+composing CBase3 & Asuper -> resultAsuper ... succeeded
++ bash regress-one root0 root1 root
+composing root0 & root1 -> root ... succeeded
++ bash regress-one ref ref refresult
+composing ref & ref -> refresult ... succeeded
++ bash regress-one onec twoc 12result
+composing onec & twoc -> 12result ... succeeded
++ bash regress-one C0 mref C0mref
+composing C0 & mref -> C0mref ... succeeded
++ bash regress-one C00 mref C00mref
+composing C00 & mref -> C00mref ... succeeded
++ bash regress-one C1 mref C1mref
+composing C1 & mref -> C1mref ... succeeded
++ bash regress-one constr1 constr2 result12
+composing constr1 & constr2 -> result12 ... succeeded
++ bash regress-one constr2 constr3 result23
+composing constr2 & constr3 -> result23 ... succeeded
++ bash regress-one constr1 constr4 result14
+composing constr1 & constr4 -> result14 ... succeeded
++ bash regress-one statik1 statik2 resultstatik12
+composing statik1 & statik2 -> resultstatik12 ... succeeded
++ bash regress-one Cbase1 Cext0 resultlongname
+composing Cbase1 & Cext0 -> resultlongname ... succeeded
++ bash regress-one Ctop Cmidthis resultCmidthis
+composing Ctop & Cmidthis -> resultCmidthis ... succeeded
++ bash regress-one ArefExtend Asuper resultAsuper
+composing ArefExtend & Asuper -> resultAsuper ... succeeded
++ bash regress-one Asuper ArefOverride resultAO
+composing Asuper & ArefOverride -> resultAO ... succeeded
++ bash regress-one Asuper ArefOverride2 resultAO2
+composing Asuper & ArefOverride2 -> resultAO2 ... succeeded
++ bash regress-one Asuper ArefExtend resultAE
+composing Asuper & ArefExtend -> resultAE ... succeeded
++ bash regress-one Cmidmods Cmidmod2error resultmoderror3
+composing Cmidmods & Cmidmod2error -> resultmoderror3 ... succeeded
++ bash regress-one Cmidmods Cmidmod2 resultmod2
+composing Cmidmods & Cmidmod2 -> resultmod2 ... succeeded
++ bash regress-one Ctopmods Cmidmodserror resultmoderror
+composing Ctopmods & Cmidmodserror -> resultmoderror ... succeeded
++ bash regress-one Ctopmods Cmidmods resultcmods1
+composing Ctopmods & Cmidmods -> resultcmods1 ... succeeded
++ bash regress-one cm cm resultcm2
+composing cm & cm -> resultcm2 ... succeeded
++ bash regress-one cm2 cm2 resultcm22
+composing cm2 & cm2 -> resultcm22 ... succeeded
++ bash regress-one Ctop Cmid resultCtopCmid
+composing Ctop & Cmid -> resultCtopCmid ... succeeded
++ bash regress-one Ctop1 Cmid1 resultc11
+composing Ctop1 & Cmid1 -> resultc11 ... succeeded
++ bash regress-one Ctop1 Cmid2 resultc12
+composing Ctop1 & Cmid2 -> resultc12 ... succeeded
++ bash regress-one Ctop1 Cmid3 resultc13
+composing Ctop1 & Cmid3 -> resultc13 ... succeeded
++ bash regress-one cons conse resultcons
+composing cons & conse -> resultcons ... succeeded
++ bash regress-one cons conserror resultconserror
+composing cons & conserror -> resultconserror ... succeeded
++ bash regress-one Ctop Ctoperror resultCtoperror
+composing Ctop & Ctoperror -> resultCtoperror ... succeeded
++ bash regress-one CBase3 CExt3 result33
+composing CBase3 & CExt3 -> result33 ... succeeded
++ echo -e '\nClass Composition Regression Test succeeded.'
+
+Class Composition Regression Test succeeded.

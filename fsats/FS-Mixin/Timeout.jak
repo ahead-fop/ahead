@@ -1,0 +1,20 @@
+layer FS;
+
+import fsats.util.DataContainer;
+
+import laydown.*;
+
+import java.util.*;
+
+SoUrCe RooT MessageL "C:!Java!FeatureOrientedProgramming!fsats!MessageL!Timeout.jak";
+
+/** A timeout expiration event. */
+public interface Timeout
+        extends Event
+    {
+    /** Cancel a timeout. */
+    void cancel();
+
+    /** Test if timeout has been canceled. */
+    boolean isCancelled();
+}

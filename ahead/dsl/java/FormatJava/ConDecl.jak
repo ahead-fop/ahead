@@ -1,0 +1,32 @@
+layer FormatJava;
+
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public refines class ConDecl {
+    public void format( int position ) {
+        newline_routins( position );
+        arg[0].format( position );
+        arg[1].format( position );
+        ( ( AstToken ) tok[0] ).white_space = "";
+        if ( arg[2].arg[0] == null )
+            ( ( AstToken ) tok[1] ).white_space = "";
+        else {
+            arg[2].arg[0].setComment( " " );
+            arg[2].format( position );
+            ( ( AstToken ) tok[1] ).white_space = " ";
+        }
+        arg[3].format( position );
+        if ( ( arg[4].arg[0] == null ) && ( arg[5].arg[0] == null ) && ( ( ( AstToken ) tok[3] ).white_space.trim().length() == 0 ) )
+            ( ( AstToken ) tok[3] ).white_space = "";
+        else {
+            position += CommentUtil.TabSpace;
+            arg[4].format( position );
+            arg[5].format( position );
+            position -= CommentUtil.TabSpace;
+            CommentUtil.token_routins( ( AstToken ) tok[3], position );
+        }
+    }
+}

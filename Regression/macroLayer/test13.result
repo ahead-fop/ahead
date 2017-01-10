@@ -1,0 +1,15 @@
+// This file tests calling a macro with a fully qualified name (in order
+// for this test to succeed, there must be a copy of the SORT.ser file
+// in the Jakarta/util directory).
+
+public class test4 {
+     fooType[] fooSort( fooType[] array) {
+	System.println("Called sort macro");
+	return(array);
+    }
+
+    static public void main(String[] args) {
+	int[] iarray = new int[5];
+	fooSort(iarray);
+    }
+}

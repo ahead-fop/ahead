@@ -1,0 +1,219 @@
+layer JavaAPI;
+
+import java.io.*;
+import java.util.*;
+
+ // end of Program ProgramDocJTS
+
+// _________________________________________________________________
+
+ /** JEDI Project
+ * ProgramElementDocJTS.java
+ * University of Texas at Austin
+ * Department of Computer Sciences
+ * Product-line Architecture Research Group
+ * @author Roberto E. Lopez-Herrejon
+ * @version 1.1
+ * @since November 19, 2002
+* @layer<JavaAPI>
+*/
+
+public abstract class ProgramElementDocJTS extends  DocJTS {
+
+    // ********************************************************************
+    // ********************************************************************
+    // ** Interface methods that have to be implemented
+
+    /** Get the containing class of this program element.
+     * @return a ClassDoc for this element's containing class. 
+     * If this is a class with no outer class, return null.
+     * @layer<JavaAPI>
+     */
+    public  ClassDocJTS containingClass() {
+        return containingClass;
+    }
+
+    /** Get the package that this program element is contained in.
+     * @return a PackageDoc for this element containing package. 
+     * If in the unnamed package, this PackageDoc will have the name "".
+     * @layer<JavaAPI>
+     */
+    public abstract  PackageDocJTS containingPackage();
+
+    /** Get the fully qualified name. 
+     * Example:  for the class java.util.Hashtable, return:
+     *       java.util.Hashtable
+     * for the method bar() in class Foo in the unnamed package, return:
+     * Foo.bar()
+     * @return the qualified name of the program element as a String.
+     * @layer<JavaAPI>
+     */
+    public abstract String qualifiedName();
+
+    /** Get the modifier specifier integer.
+     * @see Modifier
+     * I dont have any idea what is this )=:
+     * Current implementation returns 0.
+     * @layer<JavaAPI>
+     */
+    public int modifierSpecifier() {
+        return 0;
+    }
+
+    /** Get modifiers string. 
+     * Example, for:
+     * public abstract int foo() { ... }
+     * modifiers() would return:
+     * 'public abstract'
+     * @layer<JavaAPI>
+     */
+    public String modifiers() 
+    {
+        String output = "";
+        if ( isPublic )
+            output = output + " public ";
+        if ( isProtected )
+            output = output + " protected ";
+        if ( isPrivate )
+            output = output + " private ";
+        if ( isStatic )
+            output = output + " static ";
+        if ( isFinal )
+            output = output + " final ";
+        return output;
+    }
+
+    /** Return true if this program element is public.
+     * @layer<JavaAPI>
+     */
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    /** Return true if this program element is protected.
+     * @layer<JavaAPI>
+     */
+    public boolean isProtected() {
+        return isProtected;
+    }
+
+    /** Return true if this program element is private.
+     * @layer<JavaAPI>
+     */
+    public boolean isPrivate() {
+        return isPrivate;
+    }
+
+    /** Return true if this program element is package private.
+     * Current implementation : uncertain how to set it ???
+     * @layer<JavaAPI>
+     */
+    public boolean isPackagePrivate() {
+        return isPackagePrivate;
+    }
+
+    /** Return true if this program element is static.
+     * @layer<JavaAPI>
+     */
+    public boolean isStatic() {
+        return isStatic;
+    }
+
+    /** Return true if this program element is final. 
+     * @layer<JavaAPI>
+     */
+    public boolean isFinal() {
+        return isFinal;
+    }
+
+    /**************** End of interface implementation ****************
+     * @layer<JavaAPI>
+     */
+    
+    /**************** Implementation members **************************/
+    // *** Field Summary 
+    
+    /** Contains a reference to the class containing this class if any.
+     * Current implementation returns null.
+     */
+    ClassDocJTS containingClass;
+
+    /** Variable that indicates if the ProgramElement is public.
+     * @layer<JavaAPI>
+     */
+    boolean isPublic = false;
+
+    /** Variable that indicates if the ProgramElement is protected.
+     * @layer<JavaAPI>
+     */
+    boolean isProtected = false;
+
+    /** Variable that indicates if the ProgramElement is private.
+     * @layer<JavaAPI>
+     */
+    boolean isPrivate = false;
+
+    /** Variable that indicates if the ProgramElement is package private.
+     * Current implementation : uncertain what it means. ???
+     * @layer<JavaAPI>
+     */
+    boolean isPackagePrivate = false;
+
+    /** Variable that indicates if the ProgramElement is static.
+     * @layer<JavaAPI>
+     */
+    boolean isStatic = false;
+
+    /** Variable that indicates if the ProgramElement is final.
+     * @layer<JavaAPI>
+     */
+    boolean isFinal = false;
+
+    // *** Method Summary
+    /** Sets the isPublic variable of the ProgramElement.
+     * @layer<JavaAPI>
+     */
+    public void setPublic( boolean _isPublic ) {
+        isPublic = _isPublic;
+    }
+
+    /** Sets the isProtected variable of the ProgramElement.
+     * @layer<JavaAPI>
+     */
+    public void setProtected( boolean _isProtected ) 
+    {
+        isProtected = _isProtected;
+    }
+
+    /** Sets the isPrivate variable of the ProgramElement.
+     * @layer<JavaAPI>
+     */
+    public void setPrivate( boolean _isPrivate ) 
+    {
+        isPrivate = _isPrivate;
+    }
+
+    /** Sets the isPackagePrivate variable of the ProgramElement.
+     * @layer<JavaAPI>
+     */
+    public void setPrivatePackage( boolean _isPackagePrivate ) 
+    {
+        isPackagePrivate = _isPackagePrivate;
+    }
+
+    /** Sets the isStatic variable of the ProgramElement.
+     * @layer<JavaAPI>
+     */
+    public void setStatic( boolean _isStatic ) 
+    {
+        isStatic = _isStatic;
+    }
+
+    /** Sets the isFinal variable of the ProgramElement.
+     * @layer<JavaAPI>
+     */
+    public void setFinal( boolean _isFinal ) {
+        isFinal = _isFinal;
+    }
+    
+}

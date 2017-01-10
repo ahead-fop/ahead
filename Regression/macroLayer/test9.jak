@@ -1,0 +1,31 @@
+// This program tests name mangling via the macro local declaration
+
+macro X()
+local foo
+cls{
+    class XX {
+	void foo() { System.out.println("X-method"); }
+	void bar() { foo(); }
+    }
+}cls
+
+macro Y(AST_QualifiedName superclass)
+local foo
+cls{
+    class YY extends superclass {
+	void foo() { System.out.println("Y-method"); }
+	void baz() { foo(); }
+    }
+}cls
+
+#X()
+#Y(id{ XX }id)
+
+public class test9 {
+    public static void main(String[] args) {
+	YY y;
+
+	y = new YY();
+	y.bar();
+    }
+}

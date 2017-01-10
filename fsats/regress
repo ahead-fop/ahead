@@ -1,0 +1,8 @@
+# generates Mixin and JamPack versions of FS
+# compares this with "accepted" working version of July 2002
+
+bash regress-one JamPack \
+&& bash regress-one Mixin \
+|| exit 1
+
+echo -e "\nFsats Composition Regression test Succeeded"

@@ -1,0 +1,128 @@
+//                              -*- Mode: Java -*-
+// Version         :
+// Author          : Robert S. MacDonald
+// Last Modified By: Bryan D. Hopkins
+// Last Modified On: Wed May 17 11:35:00 2000
+
+layer FsatsL ()
+realm F
+imports
+    F.Libraries.laydown.*,
+    java.util.*
+{
+    /** 
+     * Interface for a position of an opfac or target.
+     * Don't care if we use Lat/Long or UTM coordinates.
+     * Prefer Lat/Longitude; it was used for illustration.
+     */
+    public interface Location 
+        extends Cloneable, java.io.Serializable
+    {
+        /** Two locations are equal if they are the same lat and long **/
+        public boolean equals(Object other);
+        public float getLatitude();
+        public float getLongitude();
+        public float distanceTo($TEqn.Location loc);
+    }
+
+    /** 
+     * Information about a mission thread.
+     */
+    public interface MissionData
+        extends java.io.Serializable, Cloneable 
+    {
+        /** Two missions are equal if they have same id **/
+        public boolean equals(Object other);
+
+        public $TEqn.MissionType getType();
+        public $TEqn.Target getTarget();
+        
+        /** Standard String conversion **/
+        public String toString();
+    }
+
+    public interface MissionTypeInterface {}
+
+    public interface Event {}
+
+    public interface Message extends $TEqn.Event {}
+
+    public interface EventTypeInterface {}
+
+    public interface MessageTypeInterface extends $TEqn.EventTypeInterface {}
+
+    public interface TimeoutTypeInterface extends $TEqn.EventTypeInterface {}
+
+    public static class MissionType implements MissionTypeInterface {}
+
+    public static class EventType implements EventTypeInterface {}
+
+    public static class MessageType /*extends $TEqn.EventType*/ implements MessageTypeInterface {}
+
+    /** Interface for a message relay object */
+    public interface Network
+    {
+        /** Notify this netobj of the availability of a named opfac. */
+        public boolean register( String opfacName, Opfac opfac );
+        
+        /** Notify this netobj that a named opfac is no longer available. */
+        public boolean unregister( String opfacName );
+        
+        /** Relay a message to its destination opfac. */
+        public void send( $TEqn.Message message );
+    }
+
+    public interface OpfacTypeInterface {}
+
+    public static class OpfacType implements OpfacTypeInterface {}
+
+    /** 
+     * Interface for an OPFAC 
+     */
+    public interface Opfac 
+        extends Cloneable, java.io.Serializable
+    {
+        /** Psuedo constructor **/
+        void init(OpfacDataWrapper record, Network network);
+        
+        void deliver($TEqn.Event event);
+
+        String getName();
+
+	int getUnit();
+
+        $TEqn.OpfacType getType();
+
+        /** A list of currently active Missions. */
+        Collection getActiveMissions();
+
+        /** Current location of Opfac. */
+        $TEqn.Location getLocation();
+        
+        /** This opfac's commanding unit **/
+        String getSuperior();
+    }
+
+    /** 
+     * Something that should be shot at.
+     */
+    public interface Target
+        extends Cloneable, java.io.Serializable 
+    {
+        /** 
+         * Two targets are equal if 
+         * they have equal target, location 
+         */
+        public boolean equals(Object other);
+
+        public String getType();
+        public Location getLocation();
+
+        /** Standard String conversion **/
+        public String toString();
+    }
+
+}   
+
+
+

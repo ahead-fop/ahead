@@ -1,0 +1,63 @@
+
+
+Equation: hashcmp[age, rbtree[age, malloc[]]]
+
+Explanation:
+equality predicates on attribute age are hash-qualified to improve selection performance, and all elements are stored on a red-black tree with key age in transient memory.
+
+
+Equation: predindx[age()>4, odlist[age,persistent[]]]
+
+Explanation:
+ a separate, insertion-ordered doubly-linked list is maintained for elements that satisfy the predicate age()>4, and all elements are stored on a ordered doubly-linked list with key age in persistent memory.
+
+
+Equation: hashcmp[age, delflag[bstree[name, malloc[]]]]
+
+Explanation: 
+equality predicates on attribute age are hash-qualified to improve selection performance, and elements are logically deleted, and all elements are stored on a binary tree with key name in transient memory.
+
+
+Equation: rbtree[age, bstree[age, dlist[ dlist[ malloc[]]]]]
+
+Precondition errors: 
+   multiple rbtree/bstree layers have annotation age
+   dlist is not expecting an unordered layer (dlist) above it.
+
+
+Equation: dlist[ hashcmp[ age, malloc[]]]
+
+Precondition errors: 
+   hashcmp is not expecting a below-topmost layer (dlist) above it.
+Prerestriction errors: 
+   a retrieval layer is expected between malloc and hashcmp.
+
+
+Equation: delflag[ delflag[ malloc[]]]
+
+Precondition errors: 
+   duplicate copies of a  logical_del_layer component.
+   a retrieval layer is expected above malloc.
+
+
+Equation: hash[age, 1000 hash[age, 2000, malloc[]]]
+
+Parsing error: expecting "," instead of "hash"
+
+
+Equation: predindx[age()>4, malloc[]]
+
+Precondition errors: 
+   a retrieval layer is expected above malloc.
+
+
+Equation: hash[age, 1000, hash[age, 2000, malloc[]]]
+
+Precondition errors: 
+   multiple hash layers have annotation age
+
+
+Equation: hashcmp[ name, bstree[ age, rbtree[name, odlist[name, persistent[]]]]]
+
+Explanation: 
+equality predicates on attribute name are hash-qualified to improve selection performance, and all elements are stored on a binary tree with key age, and all elements are stored on a red-black tree with key name, and all elements are stored on a ordered doubly-linked list with key name in persistent memory.

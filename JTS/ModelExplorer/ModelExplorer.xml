@@ -1,0 +1,350 @@
+<?xml version="1.0"?>
+
+<project name="modelexplorer" default="deflt">
+
+ <description>
+ (C) 2002-2003 The University of Texas at Austin
+ Tool invocation template for ModelExplorer.
+ </description>
+
+        <!-- parameters to script:   -->
+        <!-- layer - (required) name of layer/collective to operate -->
+        <!-- file  - (optional) name of file on which to operate -->
+        <!-- unit.file.jak - (optional) either MixinFileUnit (default) or -->
+        <!--               JamPackFileUnit -->
+        <!-- logging - (optional), used only for composer -->
+
+	 <!-- ant -f <thisFile> -->
+
+    <target name="deflt">
+       <echo level="info" message="invoked via modelexplorer"/>
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "java2class" target compiles Java sources to class files      -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+	 <!-- ant -f <thisFile> -Dlayer=<name> java2class -->
+
+    <target
+        name="java2class"
+	description="Compiles Java sources to class files">
+
+	<property name="javac.debug" value="true"/>
+	<property name="javac.debug@more" value="false"/>
+
+	<property name="javac.deprecate" value="false"/>
+	<property name="javac.deprecate@more" value="true"/>
+
+	<property name="javac.optimize" value="false"/>
+	<property name="javac.optimize@more" value="true"/>
+
+        <!-- include on classpath any jar files that are present in the -->
+        <!-- directory                                                  -->
+
+        <path id="java2class.classpath">
+ 	   <fileset dir="${layer}" includes="**/*.jar"/>
+           <pathelement location="${layer}"/>
+        </path>
+
+        <javac
+            classpathref="java2class.classpath"
+            debug="${javac.debug}"
+	    deprecation="${javac.deprecate}"
+	    includeantruntime="false"
+	    srcdir="${layer}"
+	    includes="**/*.java"
+            optimize="${javac.optimize}"/>
+    </target>
+
+    <!-- private; not to be called externally -->
+
+    <target name="initialize">
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- Timestamp properties:                                         -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <tstamp>
+	    <format property="initialize.date" pattern="yyyy-MM-dd"/>
+	    <format property="initialize.time" pattern="HH:mm:ss"/>
+	    <format property="initialize.year" pattern="yyyy"/>
+	</tstamp>
+
+	<property
+	    name="timestamp"
+	    value="${initialize.date} ${initialize.time}"/>
+
+	<echo level="info" message="Build begins ${timestamp}"/>
+
+    </target>
+
+    <!-- target "deleteDir" deletes the given directory -->
+    <!-- this script should be invokable through the tree view of a directory -->
+    <!-- ant -f <thisFile> -Dlayer=<name> deleteDir -->
+
+    <target name="deleteDir">
+       <delete dir="${layer}"/>
+    </target>
+
+    <!-- target "cleanTilde" removes tilda files in the given directory -->
+    <!-- really should be private, and not called externally -->
+
+    <target name="cleanTilde">
+	  <patternset id="clean.patterns">
+	       <include name="**/*~"/>
+	  </patternset>
+
+	  <delete>
+	      <fileset defaultexcludes="no" dir="${layer}">
+		<patternset refid="clean.patterns"/>
+	      </fileset>
+	  </delete>
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "jak2java" target translates all Jak files to Java sources.   -->
+    <!-- This target is provided *even* if there are no Jak files!         -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+	 <!-- ant -f <thisFile> -Dlayer=<name> jak2java -->
+
+    <target
+        name="jak2java"
+        depends="use.jts.lib"
+	description="Translates all Jak files to Java sources">
+
+        <property name="jakarta.jar"   location="${jts.lib}/jakarta.jar"/>
+        <property name="jak2java.jar"   location="${jts.lib}/jak2java.jar"/>
+
+        <taskdef
+            name="jak2java"
+            classname="jak2java.DeriveAntTask"
+            classpath="${jak2java.jar}:${jakarta.jar}"/>
+
+        <jak2java
+            srcdir="${layer}"
+            includes="**/*.jak"
+            failonerror="true"
+	    listfiles="false" >
+	    <arg value="-path ${layer}"/>
+	    </jak2java>
+
+    </target>
+
+	 <!-- property file.type is default to jak, although it could be -->
+	 <!-- java or jsm -->
+	 <!-- ant -f <thisFile> -Dlayer=<name> reform -->
+
+    <target
+        name="reform"
+        depends="use.jts.lib" 
+	description="Reformat the jak files to make it more readable">
+
+	<antcall target="cleanTilde"/>
+
+	<property name="file.type"	value="jak"/>
+       	<property name="reform.jar"	location="${jts.lib}/reform.jar"/>
+
+       	<taskdef
+            name="reform"
+            classname="reform.DeriveAntTask"
+            classpath="${reform.jar}"/>
+
+       	<reform
+      	    srcdir="${layer}"
+	    includes="**/*.${file.type}"
+	    errorifnofiles="false"
+            failonerror="true"
+            listfiles="false"/>
+
+   </target>
+
+    <target
+        name="xhtml2html"
+        depends="use.jts.lib" 
+	description="xhtml to html conversion">
+		
+	<java classname="org.onekin.util.Xhtml2html">
+         <arg value="${layer}"/>
+         <classpath>
+         	<fileset dir="${jts.lib}">
+			<include name="**/*.jar"/>
+			<include name="OnekinUtils-Standard.jar"/>
+		</fileset>           
+         </classpath>
+         
+       </java>	
+        		
+    </target>
+
+    <!-- runs layer.Main file with no command-line arguments  -->
+    <target
+	    name="run"
+	    depends="use.jts.lib"
+	    description="run application with no command-line arguments">
+
+	    <java classname="${layer}.Main"/>
+    </target>
+
+
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "composer" target composes equation file ${layer}.equation.   -->
+    <!-- it deletes directory ${layer}, composes and reforms the output,   -->
+    <!-- sets unit.file.jak, logging property if it was not set previously -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target
+        name="composer"
+        depends="use.jts.lib" 
+	description="Composes the layers specified in equation file.">
+
+	<property name="composer.jar"   location="${jts.lib}/composer.jar"/>
+	<property name="unit.file.jak@more"  value="JamPackFileUnit"/>
+	<property name="unit.file.jak" value="MixinFileUnit"/>
+	<property name="logging"        value="warning"/>
+	<property name="logging@more"   value="all;fine;info;severe;off"/>
+
+	<delete dir="${layer}" />
+
+        <java
+            jar="${composer.jar}"
+            failonerror="true"
+            fork="true"
+            taskname="compose">
+
+            <jvmarg value="-Dtool.ant="/>
+	    <jvmarg value="-Dunit.file.jak=${unit.file.jak}"/>
+
+	    <arg value="--logging=${logging}"/>
+	    <arg value="--equation=${layer}.equation"/>
+        </java>
+
+	<antcall target="reform"/>
+
+    </target>
+
+	 <!-- unmixin applied to a single file <filename> -->
+	 <!-- this script should be invokable through the tree view of a single Jak file -->
+
+	 <!-- ant -f <thisFile> -Dlayer=<name> -Dfile=<filename> unmixinFile -->
+
+    <target
+        name="unmixinFile"
+        depends="use.jts.lib">
+
+	<property name="unmixin.jar"   location="${jts.lib}/unmixin.jar"/>
+
+	<taskdef
+            name="unmixin"
+            classname="unmixin.DeriveAntTask"
+            classpath="${unmixin.jar}"/>
+
+	<unmixin
+            srcdir="${layer}"
+	    includes="${file}"
+            failonerror="true"
+	    listfiles="true"/>
+
+    </target>
+
+	 <!-- unmixin applied to a directory <name> -->
+	 <!-- ant -f <thisFile> -Dlayer=<name> unmixin -->
+
+    <target
+        name="unmixin"
+        depends="use.jts.lib"
+	description="Unmixin the files in the specified directory">
+
+	<property name="unmixin.jar"   location="${jts.lib}/unmixin.jar"/>
+
+        <taskdef
+            name="unmixin"
+            classname="unmixin.DeriveAntTask"
+            classpath="${unmixin.jar}"/>
+
+        <unmixin
+            srcdir="${layer}"
+	    includes="**/*.jak"
+            failonerror="true"
+	    listfiles="true"/>
+
+    </target>
+
+	 <!-- build an equation: compose, jak2java, java2clas -->
+	 <!-- ant -f <thisFile> -Dlayer=<name> buildAll -->
+
+    <target name="All"
+	description="compose, translate, compile, and document">
+	<echo message="********* composing ... "/>
+	<echo message=""/>
+	<antcall target="composer"/>
+	<echo message=""/>
+	<echo message="********* translating Jak Files to Java Files ... "/>
+	<echo message=""/>
+	<antcall target="jak2java"/>
+	<echo message=""/>
+	<echo message="********* translating Java Files to Class Files ... "/>
+	<echo message=""/>
+	<antcall target="java2class"/>
+	<echo message=""/>
+	<echo message="********* translating xhtml Files to html Files ... "/>
+	<echo message=""/>
+	<antcall target="xhtml2html"/>
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "use.*" targets prepare properties, environment variables and -->
+    <!-- other resources for use by another target.  A target that uses a  -->
+    <!-- resource specifies the usage by including a dependency on target  -->
+    <!-- "use.<resource>" defined below (where "<resource>" is replaced by -->
+    <!-- the actual resource name).                                        -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- Property "jts.home" specifies the location of the tool suite.     -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <target name="use.jts.home" depends="initialize" unless="jts.home">
+	<echo level="info" message="property jts.home is undefined" taskname="failed"/>
+	<fail message="property jts.home is undefined"/>
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- Property "jts.lib" specifies the location of the tool Jar files.  -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <target name="use.jts.lib" depends="use.jts.home" unless="jts.lib">
+	<property name="jts.lib" location="${jts.home}/lib"/>
+	<echo level="info" message="${jts.lib}" taskname="jts.lib"/>
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- Property "path.tools" is an internally generated class path used  -->
+    <!-- throughout the build.  It is built from Jars in ${jts.lib}.       -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <target name="use.path.tools" depends="use.jts.lib">
+
+	<path id="id.path.tools">
+	    <fileset dir="${jts.lib}" includes="**/*.jar"/>
+	</path>
+
+	<property name="path.tools" refid="id.path.tools"/>
+
+    </target>
+
+</project>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Local Variables:                    -->
+<!-- mode:                           XML -->
+<!-- fill-column:                     79 -->
+<!-- sgml-ignore-undefined-elements: nil -->
+<!-- sgml-indent-data:                 t -->
+<!-- sgml-indent-step:                 4 -->
+<!-- End:                                -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->

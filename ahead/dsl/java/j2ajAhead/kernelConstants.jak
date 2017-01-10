@@ -1,0 +1,19 @@
+layer j2ajAhead;
+
+public refines class kernelConstants {
+
+    // name of magic stub package for compiling refinements
+    // @debug: Prof. Batory code, not sure what is doing here
+    public static String stub = "stub";
+
+   // Attemp to overrde pop stack to preserve the mangled name
+   // of the new file
+   static public void PopParseTreeStack() {
+        // Assigns the mangled new name to use
+        Main.newFileName = (String)
+         kernelConstants.globals().mainProps.getProperty( "RenameNewFileName" );
+
+        Super().PopParseTreeStack();
+    }
+
+}

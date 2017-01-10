@@ -1,0 +1,1251 @@
+
+<h1><font face="Arial" color="#0000FF">PJ</font></h1>
+<p><font face="Arial">PJ is a new tool for JTS specifically written to
+support the GenBorg model.&nbsp;PJ compacts extension
+chains for classes, interfaces., and state diagrams To call PJ:</font></p>
+<blockquote>
+  <pre><font face="Courier New">&gt; java PJ.Main [-tk] &lt;base-file-name&gt; &lt;extension-file-name&gt;</font></pre>
+</blockquote>
+<p><font face="Arial">where:</font></p>
+<ul>
+  <li><font face="Arial">option -t performs typesorting (<a href="#typeSorting">discussed
+    below</a>)</font></li>
+  <li><font face="Arial">option -k performs key sorting of field declarations (<a href="#keySorting">discussed
+    below</a>)</font></li>
+  <li><font face="Arial">&lt;base-file-name&gt; may be a base class or an
+    extension</font></li>
+  <li><font face="Arial">&lt;extension-file-name&gt; must always be an extension</font></li>
+</ul>
+<p><font face="Arial">The Bali command to build PJ is:</font></p>
+<blockquote>
+  <pre><font face="Courier New">&gt; java Bali.Main PJ</font></pre>
+</blockquote>
+<p><font face="Arial">The layers that are included in PJ, along with a
+description of their semantics, is briefly below:</font></p>
+<ul>
+  <li><font face="Arial">CompInt -- compresses interface extension
+    hierarchies</font></li>
+  <li><font face="Arial">CompClass -- compresses class extension
+    hierarchies</font></li>
+<li><font face="Arial">CompSm -- compresses state diagram extension
+    hierarchies</font></li>
+<li><font face="Arial">LocalId -- addresses the inadvertent capture problem when
+  collapsing inheritance hierarchies,</font></li>
+<call layers >
+  <li><font face="Arial">preprocess -- code common to the above layers and
+    generally any layers that compress extension hierarchies</font></li>
+  <li><font face="Arial">StringAST -- a utility with methods to
+    convert strings into parse trees</font></li>
+  <li><font face="Arial">sortfd -- a utility that performs key sorting of
+    AST_FieldDecls (<a href="#keySorting">described below</a>)</font></li>
+  <li><font face="Arial">Java -- the Java 1.3.1 grammar</font></li>
+</ul>
+<p><font face="Arial">The following topics are covered in this document:</font></p>
+<ul>
+  <li><font face="Arial"><a href="#Specifying Interfaces and Interface Extensions">Interface extension specifications</a></font></li>
+  <li><font face="Arial"><a href="#Specifying Classes and Class Extensions">Class extension specifications</a></font></li>
+  <li><font face="Arial"><a href="#Specifying State Diagrams and State Diagram Extensions">State Diagram extension specifications</a></font></li>
+  <li><font face="Arial"><a href="#LocalIds">Local Identifiers and the Problem
+    of Inadvertent Capture</a></font></li>
+<call chapterLinks >
+  <li><font face="Arial"><a href="#commandLine">How to call PJ from the Command
+    Line</a></font></li>
+  <li><font face="Arial"><a href="#Program">How to call PJ from a Program</a></font></li>
+  <li><font face="Arial"><a href="#Future Versions and Known Problems">Regression Tests</a></font></li>
+  <li><font face="Arial"><a href="#Future Versions and Known Problems">Future
+    Versions and Known Problems</a></font></li>
+</ul>
+<h3><font face="Arial" color="#0000FF">Purpose</font></h3>
+<p><font face="Arial">The GenBorg model produces a set of equations that define
+the extension chains or extension hierarchies of generated files. An equation r =
+a(b(c)) means compose base class or interface c with
+extension b, and that with extension a to produce r. PJ flattens this extension
+chain to produce a single file.&nbsp; If this composition were to be performed via a command-line, you would write:</font></p>
+<blockquote>
+  <pre><font face="Courier New">&gt; java PJ.Main -tk c.java b.java &gt; tmp.java
+&gt; java PJ.Main -tk tmp.java a.java &gt; result.java</font></pre>
+</blockquote>
+<p><font face="Arial">This isn't the preferred way to do this composition, for
+several reasons.&nbsp; First, PJ annotates parse trees with information that is
+lost when outputting intermediate results to files.&nbsp; This information isn't
+critical for running the current stable of <a href="#regression"> regression
+tests</a>, but will be very
+important later on.&nbsp; Second, the above runs slowly.</font></p>
+<p><font face="Arial">The preferred way is via a programmatic means:</font></p>
+<blockquote>
+  <pre><font face="Courier New">import PJ.*;</font></pre>
+  <pre><font face="Courier New">// Step 1: set the -t and -k flags in PJ</font></pre>
+  <pre><font face="Courier New">Lang.JTSParseTree.setFlags( true, true ); // set the -t and -k flags in PJ</font></pre>
+  <pre><font face="Courier New">// Step 2: create parse trees for files a, b, and c</font><font face="Courier New">
+
+Lang.JTSParseTree a = new Lang.JTSParseTree( &quot;a.java&quot; );
+Lang.JTSParseTree b = new Lang.JTSParseTree( &quot;b.java&quot; );
+Lang.JTSParseTree c = new Lang.JTSParseTree( &quot;c.java&quot; );</font></pre>
+  <pre><font face="Courier New">// Step 3: compose the trees, a.compose(b) merges b into a 
+//         so a is modified</font></pre>
+  <pre><font face="Courier New">a.compose(b);
+a.compose(c);</font></pre>
+  <pre><font face="Courier New">// Step 4: set package name. The produced file will be
+</font>//         in package &quot;foo&quot;, and output the file.<font face="Courier New">
+
+a.setPackageName(&quot;foo&quot;);
+a.print2file( &quot;abc.java&quot;);</font></pre>
+</blockquote>
+<p><font face="Arial">The above calling sequence will be used in GUI tools that take GenBorg equations, expand them, and invoke the corresponding
+extension-hierarchy compaction tools (of which PJ will be the tool for
+compacting code chains).</font></p>
+<h2><font face="Arial" color="#0000FF"><a name="Specifying Interfaces and Interface Extensions">Specifying Interfaces and Interface
+Extensions</a></font></h2>
+<p><font face="Arial">PJ expects a file containing a base interface to have the
+following format:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package &lt;package-name&gt;;</font></pre>
+  <pre><font face="Courier New">[&lt;import-statements&gt;]</font></pre>
+  <pre><font face="Courier New">&lt;java-interface-declaration&gt;</font></pre>
+</blockquote>
+<p><font face="Arial">Note:</font></p>
+<ul>
+  <li><font face="Arial">a package name is required.&nbsp; It is the name
+    of the layer to which this interface belongs.</font></li>
+  <li><font face="Arial">import statements are optional.</font></li>
+  <li><font face="Arial">a standard Java interface specification is expected,
+    with no nested interfaces, nested class declarations.</font></li>
+  <li><font face="Arial">only one interface can be defined per file.&nbsp;
+    Unlike Java which allows more than one interface declaration per file (and
+    at most one file is &quot;public&quot;), PJ assumes only one interface
+    definition per file.</font></li>
+</ul>
+<p><font face="Arial">An interface extension file has the following format:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package &lt;package-name&gt;;</font></pre>
+  <pre><font face="Courier New">[&lt;import-statements&gt;]</font></pre>
+  <pre><font face="Courier New">[&lt;modifiers&gt;] extends interface &lt;name&gt; [ extends &lt;interface-list&gt; ] { [body] }</font></pre>
+</blockquote>
+<p><font face="Arial">Note:</font></p>
+<ul>
+  <li><font face="Arial">a package name is required.&nbsp; It is the name
+    of the layer to which this interface belongs.</font></li>
+  <li><font face="Arial">import statements are optional.</font></li>
+  <li><font face="Arial">note the special syntax for interface extensions.</font></li>
+  <li><font face="Arial">only one interface extension can be defined per file;
+    there can be no other declarations.</font></li>
+</ul>
+<h3><font face="Arial" color="#0000FF">Rules of Composition</font></h3>
+<p><font face="Arial">Composition of a base interface with an extension (or an
+extension interface with another extension interface) follows simple rules:</font></p>
+<ul>
+  <li><font face="Arial">base (or initial extension) must have the same name as
+    interface that is to extend it.</font></li>
+  <li><font face="Arial">modifiers of the base and extension are merged (without
+    duplication).</font></li>
+  <li><font face="Arial">extends clause lists are merged (without duplication).</font></li>
+  <li><font face="Arial">bodies are merged (without duplication)</font></li>
+  <li><font face="Arial">with option -t, list of field declarations are <a href="#typeSorting">type
+    sorted</a> (constants first, methods second).</font></li>
+</ul>
+<p><font face="Arial">An example of a base interface file and an extension
+interface file are:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package IBase1;
+
+import x.y.z.*;
+import java.io.Serializable;
+
+interface MyInt extends FooInterface {
+    int Silent = 0;
+    void foo() throws AFit;
+    SomeType bar( int x );
+}</font></pre>
+  <hr>
+  <pre><font face="Courier New">package Iext1;
+
+<span style="background-color: #FFFF00">import java.io.Serializable;</span>
+
+<span style="background-color: #FFFF00">public transient</span> extends interface MyInt extends <span style="background-color: #FFFF00">yyy, java.io.Serializable</span> {
+   <span style="background-color: #FFFF00">int Terse = 2;</span>
+   void foo() throws <span style="background-color: #FFFF00">SomeException</span>;
+   <span style="background-color: #FFFF00">int increment( int i );</span>
+}</font></pre>
+</blockquote>
+<p><font face="Arial">The result of their composition is shown below.&nbsp;
+Highlighted in <span style="background-color: #FFFF00"> yellow</span> are additions made by the MyInt extension.</font></p>
+<blockquote>
+  <pre>package IBase1;
+
+import x.y.z.*;
+<span style="background-color: #FFFF00">import java.io.Serializable;</span>
+
+<span style="background-color: #FFFF00">public transient</span> interface MyInt extends FooInterface, <span style="background-color: #FFFF00">yyy, java.io.Serializable</span> {
+    int Silent = 0;
+    <span style="background-color: #FFFF00">int Terse = 2;</span>
+    void foo() throws AFit<span style="background-color: #FFFF00">, SomeException</span>;
+    SomeType bar( int x );
+    <span style="background-color: #FFFF00">int increment( int i );</span>
+}</pre>
+</blockquote>
+<p><b><a name="typeSorting"></a>Type sorting</b> is a linear
+algorithm (which is invoked by the -t option to PJ) that sorts the declarations
+within an interface.&nbsp; To understand the motivation for type sorting,
+consider the result of the above composition if type sorting is not used (see
+below): it is a jungle of definitions that are hard to understand.&nbsp; Type
+sorting collects all variable definitions together in one spot and method
+definitions in another, and makes a small contribution to generated code
+beautification.</p>
+<blockquote>
+<pre><font face="Courier New">public transient interface MyInt extends FooInterface, yyy, java.io.Serializable {
+    int Silent = 0;
+    void foo() throws AFit, SomeException;
+    SomeType bar( int x );
+    int Terse = 2;
+    int increment( int i );
+}</font></pre>
+</blockquote>
+<p><font face="Arial">Again, it is possible to compose two interface extension
+files to produce a composite extension file.&nbsp; Remember: a base file is a
+&quot;constant&quot; and an extension file is a &quot;function&quot; in GenBorg.&nbsp;
+So composing a constant with a function (e.g., f(a)) produces a constant --
+i.e., composing a base interface with an extension produces a composite base interface.&nbsp; Similarly, composing a function in GenBorg
+with another function yields a function.&nbsp; That is, composing an interface
+extension with another interface extension yields a composite interface
+extension.</font></p>
+<h3><font face="Arial" color="#0000FF">The New and Overrides Modifiers</font></h3>
+<p><font face="Arial">A convenient and optional feature is to designate methods
+of an extension by the modifiers &quot;new&quot; or &quot;overrides&quot;.&nbsp;
+&quot;new&quot; means that the extension is defining a new method whose name
+should not be used by a method in the base interface.&nbsp;
+&quot;overrides&quot; means that the extension is defining an extension to a
+previously defined method. PJ generates an error if it detects that the
+conditions for &quot;new&quot; or &quot;overrides&quot; are not satisfied.&nbsp;
+As an example:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package Iext0;
+
+extends interface MyInt extends java.io.Serializable {
+    <span style="background-color: #FFFF00">overrides</span> void foo() throws SomeException;
+    <span style="background-color: #FFFF00">new</span> void barrr();
+}</font></pre>
+</blockquote>
+<p><font face="Arial">The above interface defines a new method (barrr) that and
+overrides a previously defined method (foo)</font></p>
+<p><font face="Arial">The use of &quot;new&quot; and &quot;overrides&quot; makes
+a useful contribution to avoiding inadvertent capture; these modifiers should be
+used to guarentee that a method being defined by an extension is in fact a new
+method or does override an existing method.</font></p>
+<h2><font face="Arial" color="#0000FF"><a name="Specifying Classes and Class Extensions">Specifying Classes and Class Extensions</a></font></h2>
+<p><font face="Arial">PJ expects a file containing a base class to have the
+following format:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package &lt;package-name&gt;;</font></pre>
+  <pre><font face="Courier New">[&lt;import-statements&gt;]</font></pre>
+  <pre><font face="Courier New">&lt;java-class-declaration&gt;</font></pre>
+</blockquote>
+<p><font face="Arial">Note:</font></p>
+<ul>
+  <li><font face="Arial">a package name is required.&nbsp; It is the
+    layer name to which this class belongs.</font></li>
+  <li><font face="Arial">import statements are optional.</font></li>
+  <li><font face="Arial">a standard Java class specification is expected with no
+    nested interfaces, nested class declarations.</font></li>
+  <li><font face="Arial">only one class can be defined per file.&nbsp; Unlike
+    Java which allows more than one class declaration per file, PJ assumes only one class definition per file.</font></li>
+</ul>
+<p><font face="Arial">An class extension file has the following format:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package &lt;package-name&gt;;</font></pre>
+  <pre><font face="Courier New">[&lt;import-statements&gt;]</font></pre>
+  <pre><font face="Courier New">[&lt;modifiers&gt;] extends class &lt;name&gt; [ implements &lt;interface-list&gt; ] { [body] }</font></pre>
+</blockquote>
+<p><font face="Arial">Note:</font></p>
+<ul>
+  <li><font face="Arial">a package name is required.&nbsp; It is the
+    layer name to which this class belongs.</font></li>
+  <li><font face="Arial">import statements are optional.</font></li>
+  <li><font face="Arial">note the special syntax used for class extensions.</font></li>
+  <li><font face="Arial">only one class extension can be defined per file; there
+    can be no other declarations.</font></li>
+</ul>
+<h3><font face="Arial" color="#0000FF">Rules of Composition</font></h3>
+<p><font face="Arial">Again, rules of composition are simple:</font></p>
+<ul>
+  <li><font face="Arial">base (or initial extension) must have the same name as
+    the class it extends.</font></li>
+  <li><font face="Arial">modifiers of the base and extension are merged (without
+    duplication).</font></li>
+  <li><font face="Arial">implements clause lists are merged (without
+    duplication).</font></li>
+  <li><font face="Arial">bodies are merged.</font></li>
+  <li><font face="Arial">with option -k, list of field declarations are key
+    sorted (discussed later).</font></li>
+</ul>
+<p><font face="Arial">An example of a base class file and an extension class
+file are:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package Ctop;
+
+import jakarta.util.*;
+
+class top {
+   static int i,j;
+   int ii,jj;
+
+   static { i = 4; }
+
+   top() {  ii = 5; }
+   top(int rj) { jj = rj; }
+
+   void foo(float x, float y) { /* do something */ }
+
+   float bar( float x ) { /* do something more */ }
+}</font></pre>
+  <hr>
+  <pre><font face="Courier New">package Cmid;
+
+<span style="background-color: #FFFF00">import AnotherPackage;</span>
+
+extends class top <span style="background-color: #FFFF00">implements java.io.Serializable, xxx</span> {
+   <span style="background-color: #FFFF00">static int k;</span>
+   <span style="background-color: #FFFF00">static { j = 5; }</span>
+
+   <span style="background-color: #FFFF00">top(float x) { /* do something */ }</span>
+
+   <span style="background-color: #FFFF00">float foobar() { Base(float).bar(4.0);</span>
+                    <span style="background-color: #FFFF00">Base(float,float).foo(0, 0); }</span>
+
+   <span style="background-color: #FFFF00">public void foo( float x, float y ) { /* something more */ }</span>
+}</font></pre>
+</blockquote>
+<p><font face="Arial">The result of their composition is shown below.&nbsp;
+Highlighted in <span style="background-color: #FFFF00"> yellow</span> are additions made by the top extension and
+highlighted in <span style="background-color: #00FFFF"> blue</span> are additions triggered by the extension:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package Ctop;
+
+import jakarta.util.*;
+<span style="background-color: #FFFF00">import AnotherPackage;</span>
+
+class top <span style="background-color: #FFFF00">implements java.io.Serializable, xxx</span> {
+
+   static { i = 4; }
+   <span style="background-color: #FFFF00">static { j = 5; }</span>
+   static int i,j;
+   int ii,jj;
+  <span style="background-color: #FFFF00"> static int k;</span>
+
+   top() {  ii = 5; }
+   top(int rj) { jj = rj; }
+
+   <span style="background-color: #FFFF00">top(float x) { /* do something */ }</span>
+
+   float bar(  float x ){ return <span style="background-color: #FFFF00">bar$$Ctop</span>( x ); } 
+   <span style="background-color: #FFFF00">final float bar</span><span style="background-color: #00FFFF">$$Ctop</span><span style="background-color: #FFFF00">( float x ) { /* do something more */ } </span>
+</font>   <font face="Courier New"><span style="background-color: #FFFF00">final void foo</span><span style="background-color: #00FFFF">$$Ctop</span><span style="background-color: #FFFF00">(float x, float y) { /* do something */ }</span>
+   <span style="background-color: #FFFF00">public void foo( float x, float y ) { /* something more */ }</span>
+</font>   float foobar() { <span style="background-color: #00FFFF">bar$$Ctop</span>(4.0);
+                    <span style="background-color: #00FFFF">foo$$Ctop</span>(0, 0); }
+}</pre>
+</blockquote>
+<p><font face="Arial"><b><a name="keySorting"></a>Key sorting</b> is a technique
+much like type sorting.&nbsp; The body of a class has different kinds of
+entities -- variable declarations, method declarations, etc. Key sorting is
+similar to type sorting in that all entities of a single type (initialization
+blocks, variable declarations, methods) are grouped together.&nbsp; Key sorting
+goes beyond this to sort methods.&nbsp; In particular, we expect that there will
+be many &quot;variations&quot; of a single method, such as bar, bar$$Ctop,
+etc.&nbsp; Key sorting groups all of these related methods together, as shown
+above.&nbsp; (It does this by assigning a key to each method and sorting the
+methods in key order.&nbsp; Hence the name &quot;key sort&quot;). If key sorting
+is not used, an unintelligible jungle of declarations is produce (see below):</font></p>
+<blockquote>
+<pre><font face="Courier New">class top implements java.io.Serializable, xxx {
+   static int i,j;
+   int ii,jj;
+
+   static { i = 4; }
+
+   top() {  ii = 5; }
+   top(int rj) { jj = rj; } final
+
+   void foo$$Ctop(float x, float y) { /* do something */ }
+
+
+   float bar(  float x ){ return bar$$Ctop( x ); } final
+
+   float bar$$Ctop( float x ) { /* do something more */ }
+   static int k;
+   static { j = 5; }
+
+   top(float x) { /* do something */ }
+
+   float foobar() { bar$$Ctop(4.0);
+                    foo$$Ctop(0, 0); }
+
+   public void foo( float x, float y ) { /* something more */ }
+}</font></pre>
+</blockquote>
+<p><font face="Arial">We explain later how methods are composed and where all
+the additional methods come from.&nbsp; For now, remember it is possible to
+compose two class extension files to produce a composite extension file.&nbsp;
+As in the case of interfaces, a base file is a &quot;constant&quot; and an
+extension file is a &quot;function&quot; in GenBorg.&nbsp; So composing a
+constant with a function (e.g., f(a)) produces a constant, and composing a pair
+of functions yields a composite function.</font></p>
+<p><font face="Arial">In the following sections, rules for extending variables,
+methods, and constructors are reviews.</font></p>
+<h3><font face="Arial" color="#0000FF">Rules for Composing Variables</font></h3>
+<p><font face="Arial">There is no notion of variable extension in GenBorg.&nbsp;
+It is one thing to override a method; it makes no sense to override a
+variable.&nbsp; Whenever the base class defines a variable and an extension
+class attempts to define the same variable, an error is reported by PJ.&nbsp;</font></p>
+<p><font face="Arial"><a name="inadvertentcaptuer"></a>This begs the question of
+<b>
+inadvertent capture</b>.&nbsp; What if a temporary variable x is defined in the base
+class and a different variable, also named x, is defined in the extension
+class?&nbsp; As mentioned above, PJ will complain.&nbsp; The clashing of names for temporary variables should be handled
+automatically.&nbsp; In a future version of PJ, we plan to add the capability of
+defining local variables whose names are mangled so that inadvertent capture is
+not possible.</font></p>
+<h3><font face="Arial" color="#0000FF">Rules for Composing Methods</font></h3>
+<p><font face="Arial">You may have noticed that composing classes is a lot more
+complicated than composing interfaces.&nbsp; The difficulty rests on the ability
+of methods of an extension class to call arbitrary methods of their &quot;superclass&quot; or rather,
+&quot;super extension&quot;.&nbsp; And part of the difficulty arises because PJ
+is a preprocessor which doesn't really understand type information.&nbsp; </font></p>
+<p><font face="Arial">You know that a subclass can call method foo() of its
+superclass by invoking super.foo().&nbsp; By analogy, a class extension can call
+method foo() of its super extension by&nbsp; invoking Base().foo().&nbsp;
+Because PJ is a preprocessor that does not type check programs, if an extension
+calls method of its super extension with signature foo(int, float, String), it
+does so by invoking Base(int,float,String).foo(5, 3.4, &quot;me&quot;).&nbsp;
+The token Base is a reserved keyword of PJ.&nbsp; Base is always followed by the
+type signature of the method that is to be invoked.&nbsp; Again, PJ is a
+preprocessor that doesn't understand type information.&nbsp; Base is the
+way the type signature of a &quot;base-class&quot; method is conveyed to PJ.</font></p>
+<p><font face="Arial">There are 4 rules that are specific to extending base-class methods.
+The actions taken depend on the following conditions:</font></p>
+<ul>
+  <li><font face="Arial">A method of the base class (or <i>base method</i>) is <b><i>overridden</i></b>
+    if there exists a method of the extension class (or extension method) with
+    an identical signature.&nbsp; (This is the usual notion of overriding).</font></li>
+  <li><font face="Arial">A base method is <i>referenced</i> if the method is
+    invoked in the extension class.</font></li>
+</ul>
+<p><font face="Arial">If a base method is:</font></p>
+<ul>
+  <li><font face="Arial">overridden and referenced -- The original method name
+    is mangled (&quot;uniquified&quot;) by appending the name of the layer from
+    which it came onto the name itself, and making the method local.&nbsp; This
+    is useful as programmers will know from which layer the method arose.&nbsp;
+    The extension method is rewritten to reference this local method.</font></li>
+</ul>
+<div align="center">
+  <center>
+  <table border="2" cellpadding="2" width="673">
+    <tr>
+      <td width="92">&nbsp;</td>
+      <td width="224"><font face="Arial"><b>Before Composition</b></font></td>
+      <td width="332"><font face="Arial"><b>After Composition in Composite Class</b></font></td>
+    </tr>
+    <tr>
+      <td width="92"><font face="Arial"><b>Base class</b></font></td>
+      <td width="224">
+        <pre><font face="Courier New">void foo( ) { 
+   /* do something */ 
+}</font></pre>
+      </td>
+      <td width="332" rowspan="2">
+        <pre><font face="Courier New">final void foo$$baseLayer() { 
+   /* do something */ 
+}</font></pre>
+        <pre><font face="Courier New">void foo( ) { 
+</font>   <font face="Courier New">foo$$baseLayer();
+   // something more
+</font>}</pre>
+      </td>
+    </tr>
+    <tr>
+      <td width="92"><font face="Arial"><b>Extension class</b></font></td>
+      <td width="224">
+        <pre><font face="Courier New">void foo( ) { 
+</font>   <font face="Courier New">Base( ).foo();
+   // something more
+</font>}</pre>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+<ul>
+  <li><font face="Arial">overridden and not referenced -- Base method is
+    discarded, as it is not referenced and is replaced by a extension method.</font></li>
+</ul>
+<div align="center">
+  <center>
+  <table border="2" cellpadding="2" width="673">
+    <tr>
+      <td width="92">&nbsp;</td>
+      <td width="224"><font face="Arial"><b>Before Composition</b></font></td>
+      <td width="332"><font face="Arial"><b>After Composition in Composite Class</b></font></td>
+    </tr>
+    <tr>
+      <td width="92"><font face="Arial"><b>Base class</b></font></td>
+      <td width="224">
+        <pre><font face="Courier New">void foo( ) { 
+   /* do something */ 
+}</font></pre>
+      </td>
+      <td width="332" rowspan="2">
+        <pre>&nbsp;</pre>
+        <pre><font face="Courier New">void foo( ) { 
+   // something more
+</font>}</pre>
+      </td>
+    </tr>
+    <tr>
+      <td width="92"><font face="Arial"><b>Extension class</b></font></td>
+      <td width="224">
+        <pre><font face="Courier New">void foo( ) { 
+   // something else
+</font>}</pre>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+<ul>
+  <li><font face="Arial">not overridden and referenced -- This is the most
+    complicated of rewrites.&nbsp; First, because the base method was
+    referenced, a local copy of it (with a layer-mangled name) is created.&nbsp;
+    Second, a new base method is created to refer to the local method (thereby
+    preserving the original base method's semantics).&nbsp; Lastly, all
+    references in the extension are made to the local method.</font></li>
+</ul>
+<div align="center">
+  <center>
+  <table border="2" cellpadding="2" width="673">
+    <tr>
+      <td width="92">&nbsp;</td>
+      <td width="224"><font face="Arial"><b>Before Composition</b></font></td>
+      <td width="332"><font face="Arial"><b>After Composition in Composite Class</b></font></td>
+    </tr>
+    <tr>
+      <td width="92"><font face="Arial"><b>Base class</b></font></td>
+      <td width="224">
+        <pre><font face="Courier New">void foo( ) { 
+   /* do something */ 
+}</font></pre>
+      </td>
+      <td width="332" rowspan="2">
+        <pre>final void foo$$baseLayer( ) {
+   /* do something */
+}</pre>
+        <pre>void foo( ) {
+   foo$$baseLayer();
+}</pre>
+        <pre><font face="Courier New">void bar( ) { 
+   </font>foo$$baseLayer();<font face="Courier New">
+   // something more
+</font>}</pre>
+      </td>
+    </tr>
+    <tr>
+      <td width="92"><font face="Arial"><b>Extension class</b></font></td>
+      <td width="224">
+        <pre><font face="Courier New">void bar( ) { 
+   Base().foo();
+   // something more 
+</font>}</pre>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+<ul>
+  <li><font face="Arial">not overridden and not referenced -- leave base method
+    as is.</font></li>
+</ul>
+<p><font face="Arial">There is an additional rule for extension methods: any
+extension method that does not override a base method is added to the composite
+class.</font></p>
+<h3><font face="Arial" color="#0000FF">Rules for Composing Constructors</font></h3>
+<p><font face="Arial">There are all sorts of problems with constructors.&nbsp;
+There are so many that it is much safer NOT to allow constructors to be
+extended.&nbsp; This is the position taken in PJ.&nbsp; New constructors can be
+added by an extension, but no existing constructor can be refined.&nbsp;&nbsp;</font></p>
+<p><font face="Arial">Constructors can be extended using the concepts already
+presented. The body of a
+constructor is moved into a method, which can be extended.&nbsp; Thus, instead
+of creating a superclass with a constructor and later extending the constructor
+via inheritance (left-hand- side of the table below), we rely on a design and coding technique to accomplish the same effect (right-hand-side of the table
+below):</font></p>
+<div align="center">
+  <center>
+  <table border="2" cellpadding="2" width="523">
+    <tr>
+      <td width="242"><font face="Arial"><b>Inheritance Hierarchy</b></font></td>
+      <td width="274"><font face="Arial"><b>Extension Hierarchy Equivalent</b></font></td>
+    </tr>
+    <tr>
+      <td width="242">
+        <pre><font face="Courier New">class foo {
+   int a;
+   foo(int a) {
+      this.a = a;
+   }
+}</font></pre>
+      </td>
+      <td width="274">
+        <pre><font face="Courier New">class foo {
+   int a;
+   void fooConstructor(int a) {
+      this.a = a;
+   }
+   foo(int a) {
+      fooConstructor(a);
+   }
+}</font></pre>
+      </td>
+    </tr>
+    <tr>
+      <td width="242">
+        <pre><font face="Courier New">class subfoo extends foo {
+   int b;
+   foo(int a) {
+      super(a);
+      b = 0;
+   }
+}</font></pre>
+      </td>
+      <td width="274">
+        <pre><font face="Courier New">extends foo {
+   int b;
+   void fooConstructor(int a) {
+      Base(int).fooConstructor(a);
+      b = 0;
+   }
+}</font></pre>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+<h3><font face="Arial" color="#0000FF">The New and Overrides Modifiers</font></h3>
+<p><font face="Arial">A convenient and optional feature is to designate methods
+of an extension by the modifiers &quot;new&quot; or &quot;overrides&quot;.&nbsp;
+&quot;new&quot; means that the extension is defining a new method whose name
+should not be used by a method in the base interface.&nbsp;
+&quot;overrides&quot; means that the extension is defining an extension to a
+previously defined method. PJ generates an error if it detects that the
+conditions for &quot;new&quot; or &quot;overrides&quot; are not satisfied.&nbsp;
+As an example,</font></p>
+<blockquote>
+  <pre><font face="Courier New">package mid;
+
+extends class c {
+   new void d() { }
+   overrides void b() { /* new code */ }
+}</font></pre>
+</blockquote>
+<p><font face="Arial">The above class&nbsp;extension defines a new method (d)
+and a method (b) that overrides a method in the base class of c.</font></p>
+<p><font face="Arial">The use of &quot;new&quot; and &quot;overrides&quot; makes
+a useful contribution to avoiding inadvertent capture; these modifiers should be
+used to guarentee that a method being defined by an extension is in fact a new
+method or does override an existing method.</font></p>
+<h2><font face="Arial" color="#0000FF"><a name="Specifying State Diagrams and State Diagram Extensions">Specifying
+State Diagrams and State Diagram Extensions</a></font></h2>
+<p><font face="Arial"><b>PJ</b> expects a file containing a base state diagram
+to have the following format:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package &lt;package-name&gt;;</font></pre>
+  <pre><font face="Courier New">[&lt;import-statements&gt;]</font></pre>
+  <pre><font face="Courier New">&lt;state-diagram-declaration&gt;</font></pre>
+</blockquote>
+<p><font face="Arial">Note:</font></p>
+<ul>
+  <li><font face="Arial">a package name is required.&nbsp; It is the
+    layer name to which the state diagram belongs.</font></li>
+  <li><font face="Arial">import statements are optional.</font></li>
+  <li><font face="Arial">a state diagram specification is expected with no
+    nested interfaces, nested class declarations.</font></li>
+  <li><font face="Arial">only one state diagram can be defined per file.</font></li>
+</ul>
+<p><font face="Arial">The syntax of a state diagram specification (which
+incidentally is slightly different than the version used to develop the FSATS
+prototype) is discussed later.</font></p>
+<p><font face="Arial">A state diagram extension file has the following format:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package &lt;package-name&gt;;</font></pre>
+  <pre><font face="Courier New">[&lt;import-statements&gt;]</font></pre>
+  <pre><font face="Courier New">&lt;state-digram-extension-declaration&gt;</font></pre>
+</blockquote>
+<p><font face="Arial">Note:</font></p>
+<ul>
+  <li><font face="Arial">a package name is required.&nbsp; It is the
+    layer name to which this class belongs.</font></li>
+  <li><font face="Arial">import statements are optional.</font></li>
+  <li><font face="Arial">note the special syntax used for class extensions.</font></li>
+  <li><font face="Arial">only one class extension can be defined per file; there
+    can be no other declarations.</font></li>
+</ul>
+<p><font face="Arial">The syntax of a state diagram extension specification is
+discussed later.</font></p>
+<h3><font face="Arial"><font color="#0000FF">Syntax of State Diagrams</font>&nbsp;</font></h3>
+<p><font face="Arial">A state diagram can be:</font></p>
+<ul>
+  <li><font face="Arial">stand alone</font></li>
+  <li><font face="Arial">extend a previously defined state diagram</font></li>
+  <li><font face="Arial">extend a previously defined class -- this is useful if
+    there are methods that many different state diagrams can share; define these
+    methods in a single class and derive state machines as
+    &quot;subclasses&quot;.&nbsp;</font></li>
+</ul>
+<p><font face="Arial">Each is specified in the following way, where bold phrases
+are parameters and [bracketed] phrases are optional:</font></p>
+<blockquote>
+  <pre><font face="Courier New">[modifiers] state_diagram <b>name</b> [implementsClause] SDClassBody</font></pre>
+  <pre><font face="Courier New">[modifiers] state_diagram <b>name</b> extends <b>supername</b> [implementsClause] SDClassBody</font></pre>
+  <pre><font face="Courier New">[modifiers] state_diagram <b>name</b> extends class <b>supername</b> [implementsClause] SDClassBody</font></pre>
+</blockquote>
+<p><font face="Arial">The body of a state diagram (SDClassBody above) has the
+following syntax:</font></p>
+<blockquote>
+  <pre><font face="Courier New">{
+   event_delivery methodname ( &lt;parameter-list&gt; );	(1)</font></pre>
+  <pre><font face="Courier New">   no_transition &lt;block&gt;				(2)</font></pre>
+  <pre><font face="Courier New">   [ otherwise_default &lt;block&gt; ]			(3)</font></pre>
+  <pre><font face="Courier New">   [ &lt;states-list&gt; ]					(4)</font></pre>
+  <pre><font face="Courier New">   [ &lt;ES-list&gt; ]					(5)</font></pre>
+  <pre><font face="Courier New">   [ &lt;field-and-method-declarations&gt; ]			(6)
+}</font></pre>
+</blockquote>
+<p><font face="Arial">The meaning of these concepts is specified in a separate <a href="StateMachine.html">document</a>;
+here we talk only about the syntax of state diagram specifications. Observe the
+following notes:</font></p>
+<ul>
+  <li><font face="Arial">(1) and (2) above are specified for all state
+    diagrams.&nbsp; In the case that a state diagram is extending a previously
+    defined state diagram, (1) and (2) cannot be included in an SDClassBody.&nbsp;
+    (Stated another way, once an event_delivery and no_transition block is
+    defined, they cannot be redefined.</font></li>
+  <li><font face="Arial">There can be only one otherwise_default (3)
+    specification in a state diagram.</font></li>
+  <li><font face="Arial">There can be any number of state-declaration statements
+    (4) of the form:</font></li>
+</ul>
+<blockquote>
+  <blockquote>
+    <pre><font face="Courier New">states a, b, c;
+states e, f, g, h;  // and so on</font></pre>
+  </blockquote>
+</blockquote>
+<ul>
+  <li><font face="Arial">The ES-list stands for state enter, exit, and otherwise
+    blocks, and edge declarations (5).&nbsp; There can be at most one enter
+    declaration, one exit declaration, and one otherwise declaration per state
+    in a state diagram.&nbsp; Further, all edge declarations are unique and are
+    distinguished by their name (i.e., no two edges can have the same names).</font></li>
+  <li><font face="Arial">The field-and-method-declarations are variable and
+    method declarations (6).</font></li>
+</ul>
+<p><font face="Arial">An example of a state diagram specification is:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package root1;
+
+import firstPackage.*;
+
+state_diagram root extends class common  {
+   event_delivery mymessage( M m );
+   no_transition { ignore(m); }
+
+   // in root
+   states a, b;
+   states c;
+
+   // in root
+   edge e1 : a -&gt; b 
+   conditions m!=null
+   do { /* action 1 */ }
+
+   Exit a { /* action a */ }
+}</font></pre>
+</blockquote>
+<h2><font face="Arial" color="#0000FF">Syntax of State Diagram Extension</font></h2>
+<p><font face="Arial">An extension to a state diagram is expressed in the
+following syntax:</font></p>
+<blockquote>
+  <pre><font face="Courier New">[modifiers] extends state_diagram <b>name</b> [implementsClause] SDExtBody</font></pre>
+</blockquote>
+<p><font face="Arial">The body of a state diagram extension (SDExtBody above)
+has the following syntax:</font></p>
+<blockquote>
+  <pre><font face="Courier New">{
+</font><font face="Courier New">   [ otherwise_default &lt;block&gt; ]			(3)</font></pre>
+  <pre><font face="Courier New">   [ &lt;states-list&gt; ]					(4)</font></pre>
+  <pre><font face="Courier New">   [ &lt;ES-list&gt; ]					(5)</font></pre>
+  <pre><font face="Courier New">   [ &lt;field-and-method-declarations&gt; ]			(6)
+}</font></pre>
+</blockquote>
+<p><font face="Arial">Again, the meaning of these concepts is specified in a
+separate <a href="StateMachine.html">document</a>; here we talk only about the
+syntax.&nbsp; The meanings of these concepts is the same as above.&nbsp; Keep
+the following in mind:</font></p>
+<ul>
+  <li><font face="Arial">States are unique and can be declared only once.&nbsp;
+    (So if a base or extension diagram defines state &quot;A&quot;, no other
+    extension can define &quot;A&quot;).</font></li>
+  <li><font face="Arial">All state enter, exit, and otherwise blocks and edge
+    declarations are unique. Once defined, they cannot be redefined by an
+    extension.</font></li>
+</ul>
+<p><font face="Arial">An issue that can arise in the design of state diagrams is
+that an edge predicate or block of code associated with the actions of a state
+or edge can be modified by an extension.&nbsp; Since there are <b>no</b> <b>capabilities</b>
+to extend predicates or code blocks, the way this can be done is to define a
+boolean method for a predicate and a void method to encapsulate a code
+block.&nbsp; Methods can be extended using the normal mechanisms.&nbsp; So the
+way to understand ES-list declarations is that they are one-time-specifications
+that cannot be modified.&nbsp; These specifications can refer to methods which
+can be modified by extensions.&nbsp; So the scheme described here is general and
+simple.&nbsp;</font></p>
+<p><font face="Arial">Admittedly, this is a bit different from the original
+state diagram specification used in the FSATS prototype, it is marginally
+so.&nbsp; Further, there is no capability now for &quot;refines edge&quot;
+(i.e., the refinement/extension of edges).&nbsp; This too can be handled by
+defining predicates and edge transitions as methods which can be modified by
+extensions.</font></p>
+<p><font face="Arial">An example of a state diagram extension is:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package ext1;
+
+import firstPackage.*;
+
+extends state_diagram root {
+
+   // from ext 1
+   states d;
+   states e;
+
+   // from ext1
+   edge e2 : d -&gt; e 
+   conditions m!=null
+   do { /* action 2 */ }
+
+   edge e3 : c -&gt; d
+   conditions true
+   do { /* action 3 */ }
+
+   Exit b { /* action a */ }
+}
+</font></pre>
+</blockquote>
+<p><font face="Arial">The result of composing the base state diagram defined
+earlier with the above extension is (defined to be the) union of these
+specifications, with the proviso that no state or edge is defined twice.&nbsp;
+The statements in <span style="background-color: #FFFF00">yellow</span> were
+added by the above extension.</font></p>
+<blockquote>
+  <pre>package root1;
+
+import firstPackage.*;
+
+state_diagram root extends class common  {
+   event_delivery mymessage( M m );
+   no_transition { ignore(m); }
+
+   // in root
+   states a, b;
+   states c;
+
+   <span style="background-color: #FFFF00">// from ext 1
+   states d;
+   states e;</span>
+
+   // in root
+   edge e1 : a -&gt; b 
+   conditions m!=null
+   do { /* action 1 */ }
+
+   Exit a { /* action a */ }
+
+   <span style="background-color: #FFFF00">// from ext1
+   edge e2 : d -&gt; e 
+   conditions m!=null
+   do { /* action 2 */ }
+
+   edge e3 : c -&gt; d
+   conditions true
+   do { /* action 3 */ }
+
+   Exit b { /* action a */ }</span>
+}</pre>
+</blockquote>
+<h2><font face="Arial" color="#0000FF">Grammar for State Diagram Specifications</font></h2>
+<p><font face="Arial">The complete grammar for state diagram specifications is
+listed below:</font></p>
+<blockquote>
+  <pre>// &quot;state diagram&quot; adds constructs to define state machines
+
+
+&quot;state_diagram&quot; STATE_DIAGRAM
+&quot;states&quot;	STATES
+&quot;event_delivery&quot; EVENT_DELIVERY
+&quot;edge&quot;		EDGE
+&quot;conditions&quot;	CONDITIONS
+&quot;-&gt;&quot; 		ARROW
+&quot;Exit&quot;		EXIT
+&quot;Enter&quot;		ENTER
+&quot;otherwise&quot;     OTHERWISE
+&quot;otherwise_default&quot; OTHERWISE_DEFAULT 
+&quot;no_transition&quot; NO_TRANSITION
+
+// the following hooks SDDeclaration with class, interface declarations
+
+UnmodifiedTypeDeclaration
+	: SDDeclaration				:: SDDecl
+	;
+
+SDDeclaration
+	: STATE_DIAGRAM QName [ SMExtendsClause ]
+          [ ImplementsClause ] SDClassBody 	:: UmodSdDecl
+	;
+
+SMExtendsClause
+	: LOOKAHEAD(2) ExtendsClause                           :: SMExtends
+	| LOOKAHEAD(2) &quot;extends&quot; &quot;class&quot; AST_QualifiedName     :: SMClsExtends
+	;
+
+SDClassBody
+	: &quot;{&quot; [ RootClause ] [ OtherwiseClause ] [ StatesList ] [ ESList ] 
+  	  [ AST_FieldDecl ] &quot;}&quot; 		:: SdClassDecl
+	;
+
+StatesList
+	: (StatesClause)+
+	;
+
+StatesClause
+	: STATES AST_TypeNameList &quot;;&quot;		:: StatesDecl
+	;
+
+RootClause
+	: DelivClause NoTransitionClause	:: RootDecl
+	;
+
+NoTransitionClause
+	: NO_TRANSITION Block			:: NoTransDecl
+	;
+
+DelivClause
+	: EVENT_DELIVERY QName &quot;(&quot; AST_ParList &quot;)&quot; &quot;;&quot;
+						:: DelivDecl
+	;
+
+OtherwiseClause
+        : OTHERWISE_DEFAULT Block               :: ODefaultDecl
+        ;
+
+ESList	: ( Es )+
+	;
+
+Es	
+	: EXIT QName Block			:: ExitDecl
+	| ENTER QName Block			:: EnterDecl
+	| EDGE QName &quot;:&quot; StartName ARROW QName
+	  CONDITIONS AST_Exp DO Block 		:: EdgeDecl
+        | OTHERWISE QName Block                 :: OtherDecl
+	;
+
+StartName 
+	: QName					:: SdSName
+	| &quot;*&quot;					:: StarName
+	;
+
+
+// the following is used to allow SD declarations to be nested within
+// class declarations; this is useful if we want to include SD specifications
+// within layers
+
+NestedSDDeclaration
+	: [ AST_Modifiers ] SDDeclaration	:: NSDDecl
+	;
+
+ClassBodyDeclaration
+	: LOOKAHEAD( [ AST_Modifiers() ] &quot;state_diagram&quot; )
+            NestedSDDeclaration	
+        ;
+
+// the following is used to define extensions to state machines
+
+UnmodifiedTypeExtension
+        : STATE_DIAGRAM QName [ ImplementsClause ] SDClassBody :: UmodSmExt
+	;</pre>
+</blockquote>
+<p><font face="Arial"><b>PJ</b> is still undergoing changes.&nbsp; Known problems
+include:</font></p>
+<ul>
+  <li><font face="Arial">identifying terminal (unextended) methods with the name
+    of the layer that introduced that method is unsupported.&nbsp; This is
+    useful for programmers who examine code of squashed extension hierarchies
+    and that want to know from which layer a particular method or variable has
+    been defined. (Basically, I
+    don't have a good solution for this).</font></li>
+  <li><font face="Arial">retaining comments associated with extended methods and
+    classes.</font></li>
+</ul>
+
+<h2><font face="Arial" color="#0000FF"><a name="LocalIds">Local
+Identifiers and the Problem of Inadvertent Capture</a></font></h2>
+
+<P><font face="Arial">PJ is a tool that is designed to compose different
+specifications (i.e., hierarchies of classes, interfaces, etc.) by macro
+expansion.</font> <font face="Arial">A standard problem of macro-expansion is <b>inadvertent
+capture</b>.&nbsp; It arises when variables in different classes are given the
+same names, and ambiguity arises when the classes are composed.&nbsp; Consider
+the following class hierarchy:</font>
+<blockquote>
+  <pre><font face="Courier New">class top {
+   int i;
+</font>   ... System.out.println(i); ...<font face="Courier New">
+}
+
+class bottom extends top {
+   double i;
+   </font>... System.out.println(i); ...<font face="Courier New">
+}</font></pre>
+</blockquote>
+<P><font face="Arial">The above is a legal Java program; the reason is that variable
+scoping differentiates the variable named &quot;i&quot; in class bottom from the
+variable named &quot;i&quot; in class top.&nbsp; Now, look what happens when top
+and bottom are blindly merged into a single class:</font>
+<blockquote>
+  <pre><font face="Courier New">class top {
+   int i;
+</font>   double i;  // illegal<font face="Courier New">
+   </font>... System.out.println(i); ... // ambiguous
+   ... System.out.println(i); ...<font face="Courier New"> 
+}</font></pre>
+</blockquote>
+<P><font face="Arial">That is, there are two variables named &quot;i&quot;
+and now references to variable &quot;i&quot; are ambiguous -- it is not obvious
+which variable is being referenced.&nbsp; This is
+typical of inadvertent capture.&nbsp; We will encounter such problems in PJ because of the way inheritance
+hierarchies are collapsed.&nbsp; The ambiguous (and
+incorrect) code above will be produced by PJ if class top were composed with the
+following extension:</font>
+<blockquote>
+  <pre><font face="Courier New">extends class top {
+   double i;
+   </font>... System.out.println(i); ...<font face="Courier New">
+}</font></pre>
+</blockquote>
+<h2><font face="Arial" color="#0000FF">The LocalID Declaration</font></h2>
+<P><font face="Arial">A way to avoid inadvertent capture is to declare
+identifiers &quot;local&quot; to a particular class, and have them &quot;mangled&quot; so that they are forever unique.&nbsp; In GenBorg,
+inadvertent capture is a bit more difficult because identifiers are local to a <b>layer</b>,
+and a layer encapsulates many classes (or class extensions).&nbsp; Each class
+can reference variables and methods that are local to other classes of that
+layer. So assigning a mangled name to an identifier must be done consistently
+across all classes of a layer.&nbsp;&nbsp;</font>
+<P><font face="Arial">The solution used in PJ is to introduce a <b>LocalId</b> declaration
+which simply lists the identifiers that are local to a layer and that are to be mangled.&nbsp; In
+effect, the translation of a <b>LocalId</b> declaration is a textual search and replace
+performed on the
+body of the PJ declaration (class, state machine, etc.) thereby yielding the
+correct specification.&nbsp; As an example, a way to declare class top above is:</font>
+<blockquote>
+  <pre><font face="Courier New"><span style="background-color: #FFFF00"><b>LocalId</b> i;   // list of names that are local to a layer, and are to be mangled</span>
+
+class top {
+   int i;
+</font>   ... System.out.println(i); ...<font face="Courier New">
+}</font></pre>
+</blockquote>
+<P><font face="Arial">When top is instantiated, the name &quot;i&quot; is mangled -- i.e., changed into
+a unique identifier.&nbsp; Assume the name mangling changes &quot;i&quot; to &quot;i$1&quot;, an instantiation of
+top yields:</font>
+<blockquote>
+  <pre><font face="Courier New">class top {
+   int i$1;
+</font>   ... System.out.println(i$1); ...<font face="Courier New">
+}</font></pre>
+</blockquote>
+<p><font face="Arial">The actual mangling used is &lt;variableName&gt;$$&lt;layerName&gt;.</font></p>
+<h3><font face="Arial" color="#0000FF">Examples</font></h3>
+<p><font face="Arial">Consider the following base class specification with local
+identifiers i, j, ii, jj, and foo.</font></p>
+<blockquote>
+  <pre><font face="Courier New">package Ctop; 
+
+import Jakarta.util.*;
+
+<span style="background-color: #FFFF00">LocalId i, j;
+LocalId ii, jj;
+LocalId foo;</span>
+
+class top {
+   static int <span style="background-color: #FFFF00">i,j</span>;
+   int <span style="background-color: #FFFF00">ii,jj</span>;
+
+   static { <span style="background-color: #FFFF00">i</span> = 4; }
+
+   top() {  <span style="background-color: #FFFF00">ii</span> = 5; }
+   top(int rj) { <span style="background-color: #FFFF00">jj</span> = rj; }
+
+   void foo(float x, float y) { <span style="background-color: #FFFF00">i</span> = <span style="background-color: #FFFF00">j</span> = x+y; }
+}</font></pre>
+</blockquote>
+<p><font face="Arial">Now consider an extension to top that uses exactly the
+same identifiers locally:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package Cmid;
+
+import java.util.*;
+
+<span style="background-color: #00FFFF">LocalId i, j, ii, jj, foo;</span>
+
+extends class top implements java.io.Serializable {
+
+   static int <span style="background-color: #00FFFF">i,j</span>;
+   int <span style="background-color: #00FFFF">ii,jj</span>;
+
+   static { <span style="background-color: #00FFFF">i</span> = 4; }
+
+   void foo(float x, float y) { <span style="background-color: #00FFFF">i = j</span> = x*y; }
+}</font></pre>
+</blockquote>
+<p><font face="Arial">PJ composes these two specifications to yield:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package Ctop; 
+
+import Jakarta.util.*;
+
+import java.util.*;
+
+class top implements java.io.Serializable {
+   static int <span style="background-color: #FFFF00">i$$Ctop,j$$Ctop</span>;
+
+   static int <span style="background-color: #00FFFF">i$$Cmid,j$$Cmid</span>;
+
+   static { <span style="background-color: #FFFF00">i$$Ctop</span> = 4; }
+   static { <span style="background-color: #00FFFF">i$$Cmid</span> = 4; }
+
+   int <span style="background-color: #FFFF00">ii$$Ctop,jj$$Ctop</span>;
+   int <span style="background-color: #00FFFF">ii$$Cmid,jj$$Cmid</span>;
+
+   top() {  <span style="background-color: #FFFF00">ii$$Ctop</span> = 5; }
+   top(int rj) { <span style="background-color: #FFFF00">jj$$Ctop</span> = rj; }
+
+   void foo$$Ctop(float x, float y) { <span style="background-color: #FFFF00">i$$Ctop</span> = <span style="background-color: #FFFF00">j$$Ctop</span> = x+y; }
+
+   void <span style="background-color: #00FFFF">foo$$Cmid</span>(float x, float y) { <span style="background-color: #00FFFF">i$$Cmid</span> = <span style="background-color: #00FFFF">j$$Cmid</span> = x*y; }
+}</font></pre>
+</blockquote>
+<p><font face="Arial">Note that PJ first assigns unique (mangled) names to local
+identifiers before composing specifications.&nbsp; It doesn't matter if PJ is
+composing classes, interfaces, state machines or whatever.&nbsp; The <b>LocalId</b>
+feature works for them all.&nbsp; </font></p>
+<p><font face="Arial">Finally, note that the <b>LocalId</b> declaration(s) list
+all of the identifiers that are local to a layer.&nbsp; Not all identifiers
+listed need be present in the body of a base or extension specification.</font></p>
+<call chapters >
+<h2><font face="Arial" color="#0000FF"><a name="commandLine">How to call PJ from
+the Command Line</a></font></h2>
+<p><font face="Arial">Use the following to invoke PJ from the command line:</font></p>
+<blockquote>
+  <pre><font face="Courier New">&gt; java PJ.Main -tk Basefile Extension1file Extension2file ... &gt; output</font></pre>
+</blockquote>
+<p><font face="Arial">The option -t selects <a href="#typeSorting">type sorting</a>,
+-k selects <a href="#keySorting">key sorting</a>.&nbsp; The resulting output
+(error messages and all) are sent to standard out.</font></p>
+<h2><font face="Arial" color="#0000FF"><a name="Program">How to call PJ from a
+Program</a></font></h2>
+<p><font face="Arial">PJ is a package that can be called from another program (i.e.,
+tool) in the following way.</font></p>
+<blockquote>
+  <p><font face="Arial">(a) set PJ flags, clear error and warning counters, and
+  specify the destination of error and warning messages:</font></p>
+  <blockquote>
+    <pre><font face="Courier New">PJ.JTSParseTree.setFlags( true, true );
+PJ.JTSParseTree.resetCounters();
+JTSParseTree.setReportStream( new PrintWriter( System.out ) );</font></pre>
+  </blockquote>
+  <p><font face="Arial">(b) create a JTSParseTree for each file, such as below:</font></p>
+  <blockquote>
+    <pre><font face="Courier New">try {
+</font>   <font face="Courier New">PJ.JTSParseTree base = new PJ.JTSParseTree( &quot;base-file-name&quot; );
+   PJ.JTSParseTree ext  = new PJ.JTSParseTree( &quot;extn-file-name&quot; );
+}
+catch (Exception e) {
+   System.err.println( &quot;can't parse or open base or extension files&quot; 
+                       + e.getMessage() );
+}</font></pre>
+  </blockquote>
+  <p><font face="Arial">(c) compose the trees, as below:</font></p>
+  <blockquote>
+    <pre><font face="Courier New">try {
+   base.compose( ext );
+   if (PJ.JTSParseTree.errorCount() == 0) {
+</font>      // composition succeeded
+   } else {
+      // composition failed -- error string appears in reportStream PrintWriter
+   }<font face="Courier New">
+}
+catch (Exception e) {
+   System.err.println( e.getMessage() );
+   // fatal error occurred in composition; something is likely wrong with PJ
+}</font></pre>
+    <p><font face="Arial">note: compose can throw a RuntimeException if there
+    are fatal errors; do not try to perform further compositions beyond this
+    point.&nbsp; Composition errors can result, but exceptions will not be
+    thrown.</font></p>
+  </blockquote>
+  <p><font face="Arial">(d) after all required files have been composed, set the
+  name of the package for the generated class.</font></p>
+  <blockquote>
+    <pre><font face="Courier New">base.setPackageName( &quot;name-of-package&quot; );</font></pre>
+  </blockquote>
+  <p><font face="Arial">(e) output the resulting file.&nbsp; This can be done by
+  any one of several methods:</font></p>
+  <ul>
+    <li><font face="Arial">print() -- to standard out</font></li>
+    <li><font face="Arial">print2file( Writer w ) -- to the given writer</font></li>
+    <li><font face="Arial">print2file( File f ) -- to the given file</font></li>
+    <li><font face="Arial">print2file( String name ) -- to a file with the given
+      name</font></li>
+  </ul>
+  <p><font face="Arial">As an example:</font></p>
+  <blockquote>
+    <pre><font face="Courier New">base.print();</font></pre>
+  </blockquote>
+</blockquote>
+<h2><font face="Arial" color="#0000FF"><a name="regression">Regression Tests</a></font></h2>
+<p><font face="Arial">In regression/PJ you will find regression tests for
+interfaces and classes.&nbsp; To run the entire suite of tests type:</font></p>
+<blockquote>
+<pre><font face="Courier New">&gt; bash regress</font></pre>
+</blockquote>
+<h2><font face="Arial" color="#0000FF">Limitations, <a name="Future Versions and Known Problems">Future Versions and Known Problems</a></font></h2>
+<p><font face="Arial"><b>PJ</b> currently understands extensions to Java classes,
+interfaces, and state diagrams. It does not yet understand other extensions that
+have been added to Java, such as AST constructors.&nbsp; Extending PJ to support
+most of these features should be very simple.</font></p>
+<p><font face="Arial">To extend PJ, every AST_FieldDecl and TypeDeclaration
+production of the Java grammar must support a compose method. See the
+preprocess, CompInt, CompClass, and CompSm layers
+for details.</font></p>
+<p><font face="Arial">Another limitation variable
+capture.&nbsp; For now, this means that programmers must
+be very careful in selecting the names of variables and methods so that there is
+no name collision.&nbsp; More on this <a href="#inadvertentcaptuer">later</a>.</font></p>
+<p><font face="Arial"><b>PJ</b> is still undergoing changes.&nbsp; Known problems
+include:</font></p>
+<ul>
+  <li><font face="Arial">identifying terminal (unextended) methods with the name
+    of the layer that introduced that method is unsupported.&nbsp; This is
+    useful for programmers who examine code of squashed extension hierarchies
+    and that want to know from which layer a particular method or variable has
+    been defined. (Basically, I
+    don't have a good solution for this).</font></li>
+  <li><font face="Arial">retaining comments associated with extended methods and
+    classes.</font></li>
+</ul>

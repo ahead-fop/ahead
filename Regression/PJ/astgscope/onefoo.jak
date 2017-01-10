@@ -1,0 +1,5 @@
+layer nullfoo;
+
+refines class foo {
+   int onemethod() { return 1; }
+}

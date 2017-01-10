@@ -1,0 +1,520 @@
+layer JavaTagHandlers;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+ // of SinceTag
+
+// **********************************************************************
+// **********************************************************************
+// **********************************************************************
+/** The Tag Jedi for see Tags 
+ * @layer<JavaTagHandlers>
+ */
+
+public class SeeTagJedi extends AbstractTagJedi {
+
+    // ********* Interface methods that have to be implemented ********
+
+     /** Returns name of referencedClass.   
+      * @layer<JavaTagHandlers>
+      */
+    public String referencedClassName() {
+        //@pending, patch -> if they are null return the empty string
+        if ( referencedClass == null ) {
+            return "";
+        }
+        else
+            return referencedClass.name();
+    }
+
+    /** Returns a refence to the package the reference belongs to. 
+     * @layer<JavaTagHandlers>
+     */
+    public  PackageDocJTS referencedPackage() 
+    {
+        return referencedPackage;
+    }
+
+    /** Returns a references to the class the refence points to. 
+     * @layer<JavaTagHandlers>
+     */
+    public  ClassDocJTS referencedClass() 
+    {
+        return referencedClass;
+    }
+
+    /** Returns name of referencedMember. 
+     * @layer<JavaTagHandlers>
+     */
+    public String referencedMemberName() {
+        // @pending, patch -> if the member if null, return the empty string
+        if ( referencedMember == null ) {
+            return "";
+        }
+        else
+            return referencedMember.name();
+    }
+
+    /** Returns the variable referencedMember. 
+     * @layer<JavaTagHandlers>
+     */
+    public  MemberDocJTS referencedMember() {
+        return referencedMember;
+    }
+
+    /** Returns label string. 
+     * @layer<JavaTagHandlers>
+     */
+    public String label() {
+        return label;
+    }
+
+    /**************** Implementation members *************************
+     * @layer<JavaTagHandlers>
+     */
+
+    /** Contains the path to access a linked document.  */
+    String where ="";
+
+    /** Name of the linked document. 
+     * @layer<JavaTagHandlers>
+     */
+    String what ="";
+
+    /** Package reference of the see tag. 
+     * @layer<JavaTagHandlers>
+     */
+    PackageDocJTS referencedPackage = null;
+
+    /** Variable that points to the ClassDoc object that holds the
+     * reference of the see tag. 
+     * @pending -> note that references could be also to states, etc.
+     * @layer<JavaTagHandlers>
+     */
+    ClassDocJTS referencedClass = null;
+
+    /** Variable that points to the member object that holds the reference
+     * of the see tag. 
+     * @layer<JavaTagHandlers>
+     */
+    MemberDocJTS referencedMember =null;
+
+    /** Label of the see tag. Initialized to empty null. 
+     * @layer<JavaTagHandlers>
+     */
+    String label = "";
+
+    /** The name of the referenced class. 
+     * @layer<JavaTagHandlers>
+     */
+    String referenceClass = "";
+
+    /** The name of the referenced member. 
+     * @layer<JavaTagHandlers>
+     */
+    String referenceMember = "";
+
+    /** Constructor.    
+     * @layer<JavaTagHandlers>
+     */
+    public SeeTagJedi( DocJTS _holder, String _text, String _name )
+    {
+        holder = _holder;
+        text = _text;
+        name = _name;
+    }
+
+    /** Default Constructor.    
+     * @layer<JavaTagHandlers>
+     */
+    public SeeTagJedi() {
+        // @dummy code to prevent erasing it
+        int x=3;
+    }
+
+    /** Sets the label value.  
+     * @layer<JavaTagHandlers>
+     */
+    public void setLabel( String _label ) {
+        label = _label;
+    }
+
+    /** Sets the referencedClass. 
+     * @layer<JavaTagHandlers>
+     */
+    public void setReferencedClass( ClassDocJTS _referencedClass )
+    {
+        referencedClass = _referencedClass;
+    }
+
+    /** Sets the referenced Class name in the first pass. 
+     * @layer<JavaTagHandlers>
+     */
+    public void setReferencedClassName( String referenceClassName )
+    {
+        referencedClass = 
+                 ClassDocJTS.ClassDocJTSFactory();
+        referencedClass.ClassDocJTSConstructor( referenceClassName );
+    }
+
+    /** Sets the referenced Member. 
+     * @layer<JavaTagHandlers>
+     */
+    public void setReferencedMember( MemberDocJTS _referencedMember )
+    {
+        referencedMember = _referencedMember;
+    }
+
+    /** Sets the referenced Member name in the first pass.  
+     * @layer<JavaTagHandlers>
+     */
+    public void setReferencedMemberName( String referenceMemberName )
+    {
+        referenceMember = referenceMemberName;
+    }
+
+    /** Returns the reference member. 
+     * @layer<JavaTagHandlers>
+     */
+    public String getReferencedMemberName()
+    {
+        return referenceMember;
+    }
+
+    /** Sets the referencedPackage  
+     * @layer<JavaTagHandlers>
+     */
+    public void setReferencedPackage( PackageDocJTS _referencedPackage, 
+                     String packageName )
+    {
+        referencedPackage = new  PackageDocJTS( packageName );
+    }
+
+    /** Sets the what variable that contains the actual HTML output
+     * desired. 
+     * @layer<JavaTagHandlers>
+     */
+    public void setWhat( String _what )
+    {
+        what = _what;
+    }
+
+    /** Gets the what variable. 
+     * @layer<JavaTagHandlers>
+     */
+    public String what()
+    {
+        return what;
+    }
+
+    /** Gets the where variable. 
+     * @layer<JavaTagHandlers>
+     */
+    public String where()
+    {
+        return where;
+    }
+    
+    // **********************************************************************   
+    /** Method that parses and builds a SeeTag.
+     *  SeeTag -> "@see" Reference
+     *  Reference -> \" String \"
+     *            -> "<a href=" \" URL[#Member] ">" label "</a>"
+     *            -> [package][class]#Member[ArgumentList]
+     * @layer<JavaTagHandlers>
+     */
+    public void parse( DocJTS Document,  CommentJedi comment, 
+    String stringTag )
+   {
+        SeeTagJedi seeTag = 
+            new  SeeTagJedi( Document,"","" );
+
+        String token = "";
+        StringTokenizer tokens= new StringTokenizer( stringTag," \"</>", true );
+
+        // Eats @param and following white space.
+        if ( tokens.hasMoreTokens() )
+            token = tokens.nextToken();
+        if ( tokens.hasMoreTokens() )
+            token = tokens.nextToken();
+
+        // --- start new version
+        // Creates Patterns and Matchers to identify string and URL 
+
+        // Test first to see if this is an string
+        String stringPattern = "(^@see)( *)(\")(.*)";
+        Pattern sp = Pattern.compile( stringPattern );
+        Matcher sm = sp.matcher( stringTag );
+           
+        // If a match is found, then it is an string see tag
+        // send the entire match, group(0) to ParseString
+        if ( sm.find() ) {
+            seeTag = ParseString( Document, 
+                                                  sm.group( 2 )+sm.group( 3 )+sm.group( 4 ) );
+        }
+        else {
+            // Test to see if it is an URL
+            String urlPattern = "(^@see)( *)(<)(.*)";
+            Pattern up = Pattern.compile( urlPattern );
+            Matcher um = up.matcher( stringTag );
+                 
+            // If a match is found, then it is an URL tag
+            // sent the entire match, group(0) to ParseURL
+            if ( um.find() ) {
+                seeTag = ParseURL( Document, 
+                                                          um.group( 2 )+um.group( 3 )+um.group( 4 ) );
+            }
+            else {
+                // System.out.println("Package tag => " + stringTag);
+                seeTag = ParseMember( Document, stringTag );
+            }
+        } // of if identify see type
+
+        // @pending
+        // Formely, it created new tags and param arrays everytime a new
+        // tag was added, now, it directly adds them in the linked list
+        LinkedList seeList = comment.seeTags();
+        seeList.add( seeTag );
+        comment.setSeeTag( seeList ); // @redundant?
+
+        LinkedList tagsList = comment.getTags();
+        tagsList.add( seeTag );
+        comment.setTags( tagsList ); // @redundant?
+
+    }
+    // of parse
+   
+      /** Parses a String for a see tag, and returns the corresponding object.
+       * @layer<JavaTagHandlers>
+       */
+    public static  SeeTagJedi ParseString( DocJTS Document, 
+                           String stringTag )
+   {
+        SeeTagJedi seeTag;
+  
+        // Creates the SeeTag object
+        seeTag = new  SeeTagJedi( Document, stringTag, "@see" );
+        seeTag.setKind( "@see" );
+           
+        // Sets the First Sentence tags array to be the text of the string.
+        DefaultTagJedi tempTag = 
+                new  DefaultTagJedi( Document, stringTag, "Text" );
+        tempTag.setFirstSentenceTags( new LinkedList() );
+        tempTag.setInlineTags( new LinkedList() );
+        seeTag.addFirstSentenceTag( tempTag );
+           
+        // Sets the Inline tags array to be the text of the string
+        DefaultTagJedi inTag = new  DefaultTagJedi( Document, 
+                        stringTag, "Text" );
+        inTag.setFirstSentenceTags( new LinkedList() );
+        inTag.setInlineTags( new LinkedList() );
+        seeTag.addInlineTag( inTag );
+       
+        // Returns the see tag.
+        return seeTag;
+    }
+
+    /** Parses a URL for a see tag, and returns the corresponding object.
+     * @layer<JavaTagHandlers>
+     */
+    public static  SeeTagJedi ParseURL( DocJTS Document, 
+                         String anchor )
+   {
+        // Creates the SeeTag object
+        SeeTagJedi seeTag =new  SeeTagJedi( Document, anchor, "@see" );
+        seeTag.setKind( "@see" );
+           
+        // Sets the First sentence array to be the text of the string.
+        DefaultTagJedi tempTag = 
+                new  DefaultTagJedi( Document, anchor, "Text" );
+        tempTag.setFirstSentenceTags( new LinkedList() );
+        tempTag.setInlineTags( new LinkedList() );
+        seeTag.addFirstSentenceTag( tempTag );
+          
+        // Sets the inline tags to be an empty string
+        DefaultTagJedi inTag = new  DefaultTagJedi( Document, 
+                anchor, "Text" );
+        inTag.setFirstSentenceTags( new LinkedList() );
+        inTag.setInlineTags( new LinkedList() );
+        seeTag.addInlineTag( inTag );
+           
+        // Returns the see tag.
+        return seeTag;
+    }
+
+    /** Parses a reference member of a see tag.
+     *   -> package.class#member label
+     *  Current Class Member
+     *   #field
+     *   #method(Type, Type, ...)
+     *   #method(Type argname, Type argname, ...)
+     * 
+     *  Another Class in the current or imported packages
+     *   Class#field
+     *   Class#method(Type, Type, ...)
+     *   Class#method(Type argname, Type argname, ...)
+     *   Class
+     *  
+     *  Referencing another package (fully qualified)
+     *   package.Class#field 
+     *   package.Class#method(Type, Type, ...)
+     *   package.Class#method(Type argname, Type argname, ...)
+     *   package.Class
+     *   package
+     * @layer<JavaTagHandlers>
+     */
+    public static  SeeTagJedi ParseMember( DocJTS Document, 
+                            String stringTag )
+   { // Auxiliary variables
+        String token = "";
+        SeeTagJedi seeTag;
+        String packageClass = ""; // Everything before #
+        String[] memberName = new String[3]; // member &signature & label
+        String signature = ""; // signature method/const
+        String label ="";
+        String name = "";
+           
+        // Variable initialization
+        memberName[0] = "";
+        memberName[1] = "";
+        memberName[2] = "";
+           
+        // Trims of leading white spaces
+        stringTag = stringTag.trim();
+       
+        // Creates the StringTokenizer
+        String delims = " #(),";
+        StringTokenizer tokens = new StringTokenizer( stringTag,delims, true );
+       
+        // Eats the @see tag and the following white space
+        if ( tokens.hasMoreTokens() )
+            token = tokens.nextToken();
+        if ( tokens.hasMoreTokens() )
+            token = tokens.nextToken();
+           
+        // Reads the packageClass name
+        if ( tokens.hasMoreTokens() )
+            packageClass = tokens.nextToken();
+        if ( packageClass.equals( "#" ) )
+            packageClass = "";
+       
+        // Reads the member name, signature, label
+        memberName = ParseMemberDescription( tokens );
+       
+        packageClass = packageClass.trim();
+        name = memberName[0];
+        signature = memberName[1];
+        label = memberName[2];
+           
+        // Creates the SeeTag object
+        // The URL has to be smartly generated based to the relative paths
+        // Implementation pending
+        String memberString =  packageClass + "." + name + "." + signature;
+        String URL = "<a href = /usr/..." + memberString + ">";
+
+        // Text field for the tag        
+        String wholeLine = URL + memberString + "</a>" + label;
+
+        // Instead of wholeLine it was packageClass -> old version to be revised
+        seeTag = new  SeeTagJedi( Document, wholeLine, "@see" );
+        seeTag.setKind( "@see" );
+
+        // Sets the First sentence array to be the text of the string.
+        DefaultTagJedi tempTag =  new  DefaultTagJedi( Document, 
+                wholeLine, "Text" );
+        tempTag.setFirstSentenceTags( new LinkedList() );
+        tempTag.setInlineTags( new LinkedList() );
+        seeTag.addFirstSentenceTag( tempTag );
+                    
+        // Sets the inline tags to be an empty string
+        DefaultTagJedi inTag = new  DefaultTagJedi( Document, 
+                wholeLine, "Text" );
+        inTag.setFirstSentenceTags( new LinkedList() );
+        inTag.setInlineTags( new LinkedList() );
+        seeTag.addInlineTag( inTag );
+           
+        // Sets the label
+        seeTag.setLabel( label );
+           
+        // Sets the class name
+        seeTag.setReferencedClassName( packageClass );
+           
+        // Sets the member name
+        seeTag.setReferencedMemberName( name + signature );
+           
+        // MemberDoc, Package, ClassDoc are going to be set
+        // on the second pass of the document generation
+           
+        return seeTag;
+    }
+
+    /** Parses the Member description, that is, returns the member name     
+     * , signature, and the label.
+     * @layer<JavaTagHandlers>
+     */
+    public static String[] ParseMemberDescription( StringTokenizer tokens )
+   {
+        String label = "";
+        String signature = "";
+        String[] member = new String[3];
+        String token = "";
+        boolean parenFound = false;
+          
+        // Variable initialization
+        member[0] = ""; // member name
+        member[1] = ""; // signature
+        member[2] = ""; // label
+           
+        // Parser the member name if any which is the first word
+        if ( tokens.hasMoreTokens() )
+          {
+            token = tokens.nextToken();
+            if ( token.equals( "#" ) )
+                        {
+                if ( tokens.hasMoreTokens() )
+                    token = tokens.nextToken();
+            }
+                        
+            member[0] = token;
+        }
+          
+        // Parsers the signature and possibly the label
+        while( tokens.hasMoreTokens() ) {
+            token = tokens.nextToken();
+                          
+            // if the open parenthesis is found read until close
+            // parenthesis is found
+            if ( token.equals( "(" ) )
+                          {
+                parenFound = true;
+                while( tokens.hasMoreTokens() )
+                                                {
+                    token = tokens.nextToken();
+                    if ( token.equals( ")" ) )
+                        break;
+                    signature = signature + token;
+                }
+            }
+                          
+            if ( !token.equals( ")" ) )
+                label = label + token;
+        }
+        ;
+           
+        // Sets the parenthesis in the signature if method/constructor/layer 
+        if ( parenFound )
+            signature = "(" + signature + ")";
+          
+        // Sets the signature and label string
+        member[1] = signature;
+        member[2] = label;
+          
+        return member;
+    }
+  
+}

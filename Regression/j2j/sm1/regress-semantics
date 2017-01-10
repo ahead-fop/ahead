@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+echo -n "jampack and mixin star-semantics test ... "
+
+cp M.jjava M.java
+javac M.java
+
+java jak2java.Main jp.jak \
+&& javac -classpath "." jp.java \
+&& java -cp "." root > junk \
+&& diff -b junk semantics.correct \
+|| exit 1
+
+java jak2java.Main mx.jak \
+&& javac -classpath "." mx.java \
+&& java -cp "." root > junk \
+&& diff -b junk semantics.correct \
+|| exit 1
+
+rm junk
+
+echo "succeeded"

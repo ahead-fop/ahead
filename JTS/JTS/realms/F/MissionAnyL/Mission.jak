@@ -1,0 +1,14 @@
+package MissionAnyL;
+
+import  
+    java.util.*;
+import  
+    F.Libraries.laydown.*;
+import  
+    F.Libraries.log.Log;
+
+
+    /** Add state machine related primitives to mission. */
+    public extends interface Mission {
+        /** Is this a duplicate of mission? */
+        boolean isDuplicate( Mission mission);}

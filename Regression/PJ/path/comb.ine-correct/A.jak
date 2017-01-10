@@ -1,0 +1,15 @@
+layer comb.ine;
+public class A {
+    public static int a = 12;
+    public void print() { System.out.println("It works!"); }
+    public static final void main$$one( String args[] ) {
+        $pack.left.B l = new $pack.left.B();
+        l.print();
+        $pack.right.B r = new $pack.right.B();
+        r.print();
+        top.tryit();
+   }
+    public static void main( String args[] )
+    { main$$one(args);
+      System.out.println("extensions of main works"); }
+}

@@ -1,0 +1,44 @@
+layer SourceHarvest;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+/** TypeDeclaration
+*: SOURCE [ROOT] AST_QualifiedName STRING_LITERAL ";"   :: SourceDecl
+*  
+*  Note: there is one to one correspondance between Source and ModTypDecl
+*        that is, whenever there is a Source there is a ModTypDecl that
+*        follows, that's why this trick works otherwise we would need a more
+*        sophisticated way to fill in the Source attributes
+* @layer<SourceHarvest>
+*/
+   
+public refines class SourceDecl {
+    public void execute() {
+
+        // Sets the value of the String Literal
+        GlobalWrapper.string_literal = 
+                ( ( AstToken )tok[2] ).tokenName();
+        
+        // Gets the value of the QualifiedName
+        // @pending, remove the call here to the general method call
+        GlobalWrapper.rootQualifiedName = 
+              GlobalWrapper.getAST_QualifiedName( ( AST_QualifiedName )arg[0] );
+
+        // Depending on the value of ROOT set the value
+        String rootstring = tok[1].toString();
+        if ( rootstring.length()==0 )
+          {
+            GlobalWrapper.hasRoot = false;
+        }
+        else
+            GlobalWrapper.hasRoot = true;
+        
+        // Executes the supe
+        Super().execute();
+
+    } // of execute
+
+}

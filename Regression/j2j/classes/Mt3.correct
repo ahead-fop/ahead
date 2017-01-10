@@ -1,0 +1,29 @@
+jak2java: Mt3.jak:19: Error multiple constructors have the same signature: (String)
+
+// example that catches error of multiple constructors with the same signature
+
+
+
+abstract class MessageType$$FsatsL extends EventType implements MessageTypeInterface {
+        protected MessageType$$FsatsL(String name ) {
+           super(name);
+        }
+     }
+
+
+
+
+public abstract  class MessageType extends MessageType$$FsatsL
+        implements MessageTypeInterface
+    {
+
+        protected MessageType(String name)
+        {
+          MessageTypeConstructor(name);
+        }
+      // inherited constructors
+
+
+        protected MessageType ( String name ) { super(name); }
+    }
+jak2java: Summary 1 error

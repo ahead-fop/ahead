@@ -1,0 +1,27 @@
+layer JavaHarvest;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+
+/**  FormalParameter
+ *   : [ "final" ] AST_TypeName VariableDeclaratorId::FormParDecl
+ *   ;
+ * @layer<JavaHarvest>
+ */  
+    
+public refines class FormParDecl {
+    public  ParameterJTS _harvest_parameter;
+
+    public void execute() {
+        String typeName = arg[0].toString();
+        String paramName = arg[1].toString();
+
+        _harvest_parameter = 
+                new  ParameterJTS( new  TypeJTS( typeName, typeName ), paramName );
+                                  
+        Super().execute();
+    }
+}

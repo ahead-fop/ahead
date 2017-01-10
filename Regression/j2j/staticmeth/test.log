@@ -1,0 +1,18 @@
++ '[' -z /usr/bin/bash ']'
++ echo '****************jak2java Static Method Refinement Regression Test***********'
+****************jak2java Static Method Refinement Regression Test***********
++ rm '*.java' '*.class'
+rm: cannot remove `*.java': No such file or directory
+rm: cannot remove `*.class': No such file or directory
++ cp EventType.jjava EventType.java
++ javac EventType.java
++ bash regress-one three
+translating three ... succeeded
++ bash regress-one one
+translating one ... succeeded
++ bash regress-one two
+translating two ... succeeded
++ echo -e '\nj2j Static Method Refinement succeeded.'
+
+j2j Static Method Refinement succeeded.
++ rm -f current correct out junk EventType.java one.java three.java two.java EventType.class 'one$$L1.class' 'one$$L2.class' 'one$$L3.class' one.class three.class 'two$$L1.class' 'two$$L2.class' 'two$$L3.class' two.class

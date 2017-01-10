@@ -1,0 +1,7 @@
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+rm -rf foo
+rm -rf base 
+rm *.class *.java

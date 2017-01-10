@@ -1,0 +1,14 @@
+// Test for predindx layer
+
+interface empty { };
+
+container<emp> empcont;
+
+cursor<empcont> empcursor;
+
+container empcont1 extends empcont implements empty
+   using predindx( age() > 40, dlist( delflag( malloc( ))));
+
+cursor old(empcont1 e) where age() > 40 && age() < 50;
+
+cursor all(empcont1 e);

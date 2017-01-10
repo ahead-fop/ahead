@@ -1,0 +1,57 @@
+layer SmGen;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.util.*;
+import java.io.*;
+
+// _________________________________________________________________
+
+/** StateMachineSummTemplate.java
+ * JEDI Project
+ * Department of Computer Sciences
+ * University of Texas at Austin
+ * Defines the contents of a Class document.
+ * @author Roberto E. Lopez-Herrejon
+ * Last Update: November 30, 2002
+ * @layer<SmGen>
+ */
+
+public class StateMachineSummTemplate extends DocumentDescriptor {
+
+    // Adds the bindings to the class
+    public VelocityContext 
+        addBindings( ProgramElementDocJTS parsedProgramElement, 
+                VelocityContext context ) {
+
+        // Gets the states reference
+        StateMachineDocJTS _state = 
+                ( StateMachineDocJTS ) parsedProgramElement;
+
+        // Methods
+        LinkedList theMethods = _state.methods();
+        String methodFlag = "false";
+        if ( theMethods.size()> 0 )
+            methodFlag = "true";
+        context.put( "methods", methodFlag );
+        context.put( "listMethods", theMethods );
+      
+        // Constructors
+        LinkedList theConstructors = _state.constructors();
+        String constructorFlag = "false";
+        if ( theConstructors.size() > 0 )
+            constructorFlag = "true";
+        context.put( "constructors", constructorFlag );
+        context.put( "listConstructors", theConstructors );
+            
+        // Fields       
+        LinkedList theFields = _state.fields();
+        String fieldFlag = "false";
+        if ( theFields.size() > 0 )
+            fieldFlag = "true";
+        context.put( "fields", fieldFlag );
+        context.put( "listFields", theFields );
+
+        return context;
+    }
+}

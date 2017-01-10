@@ -1,0 +1,145 @@
+//                              -*- Mode: JTS -*-
+// Version         :
+// Author          : Robert S. MacDonald
+// Last Modified By: Bryan D. Hopkins
+// Last Modified On: Thu May 25 11:21:00 2000
+
+layer MissionWrffeArtyL( F lower )
+realm F
+extends lower
+imports
+    Jakarta.util.Util,
+    java.io.*,
+    F.Libraries.log.Log
+{
+    public static state_diagram MissionImpl 
+        refines lower.MissionImpl 
+    {
+        states wrffeArtyAccepted, wrffeArtyEnding;
+        
+        // Proceed with this branch if a gun accepted the mission.
+        edge wrffeAcceptedArty : wrffeAccepted -> wrffeArtyAccepted
+            conditions (getWeaponType().equals("DS_FA_PLT")
+                || getWeaponType().equals("GS_FA_PLT")
+                || getWeaponType().equals("R_FA_PLT"))
+            do {}
+
+        // Relay EOM to gun and wait for MFR.
+        edge wrffeArtyAccepted1 : wrffeArtyAccepted -> wrffeArtyEnding
+            conditions (message instanceof $TEqn.EomMessage)
+            do { sendUp(($TEqn.Message)message.clone()); }
+        
+        // Relay Shot and RoundsComplete to observer.
+        edge wrffeArtyAccepted2 : wrffeArtyAccepted -> wrffeArtyAccepted
+            conditions (message instanceof $TEqn.ShotMessage)
+                || (message instanceof $TEqn.RoundsCompleteMessage)
+            do { sendDown(($TEqn.Message)message.clone()); }
+        
+        // Relay MFR to BN_FSE and stop.
+        edge wrffeArtyEnding1 : wrffeArtyEnding -> stop
+            conditions (message instanceof $TEqn.MfrMessage)
+            do { sendDown(($TEqn.Message)message.clone()); }
+    } // MissionImpl
+
+ 
+    public static state_diagram BnFseMission
+        refines lower.BnFseMission
+    {
+        // Don't relay MFR to FIST.
+        refines edge wrffeArtyEnding1 : wrffeArtyEnding -> stop
+            conditions (message instanceof $TEqn.MfrMessage)
+            do { }
+    } // BnFseMission
+
+
+    public static state_diagram FistMission 
+        refines lower.FistMission
+    {
+        // Don't wait for MFR on EOM.
+        refines edge wrffeArtyAccepted1 : wrffeArtyAccepted -> wrffeArtyEnding
+            conditions false do {}
+        
+        // Relay EOM to gun and stop.
+        edge wrffeArtyAccepted3 : wrffeArtyAccepted -> stop
+            conditions (message instanceof $TEqn.EomMessage)
+            do { sendUp(($TEqn.Message)message.clone()); }
+    } // FistMission
+
+ 
+    public static state_diagram FoMission
+        refines lower.FoMission
+    {
+        // Don't wait for MFR on EOM.
+        refines edge wrffeArtyAccepted1 : wrffeArtyAccepted -> wrffeArtyEnding
+            conditions false do {}
+        
+        // Ignore shot message.
+        refines edge wrffeArtyAccepted2 : wrffeArtyAccepted -> wrffeArtyAccepted
+            conditions (message instanceof $TEqn.ShotMessage)
+            do {}
+        
+        // On RoundsComplete send EOM to gun and stop.
+        edge wrffeArtyAccepted3 : wrffeArtyAccepted -> stop
+            conditions (message instanceof $TEqn.RoundsCompleteMessage)
+            do
+	    {
+		$TEqn.EomMessage eomMessage = new $TEqn.EomMessage(getId());
+		if (initiatingUnit != null)
+		    eomMessage.setInitiatingUnitId(initiatingUnit.intValue());
+		sendUp(eomMessage);
+	    }
+    } // FoMission
+
+
+    public static state_diagram FaPltMission 
+        refines lower.FaPltMission
+    {
+        states wrffeLoading, wrffeShot, wrffeComplete;
+
+        // If mission is accepted then wait for exclusive control of the gun.
+        Enter wrffeArtyAccepted { getOpfac().missionLock(this); }
+
+        // When its this missions turn, aim and load.
+        edge wrffeArtyAccepted3 : wrffeArtyAccepted -> wrffeLoading
+            conditions (message instanceof $TEqn.LockGranted)
+            do { getOpfac().timeout(30F, new $TEqn.LoadTime(getId())); }
+
+        // When loading complete, shoot.
+        edge wrffeLoading1 : wrffeLoading -> wrffeShot
+            conditions (message instanceof $TEqn.LoadTime)
+            do 
+            { 
+                getOpfac().timeout(10F, new $TEqn.CompleteTime(getId()));
+		$TEqn.ShotMessage shotMessage = new $TEqn.ShotMessage(getId());
+		if (initiatingUnit != null)
+		    shotMessage.setInitiatingUnitId(initiatingUnit.intValue());
+                sendDown(shotMessage);
+            }
+    
+        // When done shooting notify observer.
+        edge wrffeShot1 : wrffeShot -> wrffeComplete
+            conditions (message instanceof $TEqn.CompleteTime)
+            do 
+	    {
+		$TEqn.RoundsCompleteMessage roundsCompleteMessage = new $TEqn.RoundsCompleteMessage(getId());
+		if (initiatingUnit != null)
+		    roundsCompleteMessage.setInitiatingUnitId(initiatingUnit.intValue());
+		sendDown(roundsCompleteMessage);
+	    }
+        
+        // Allow other missions to proceed.
+        Enter wrffeComplete { getOpfac().missionFree(this); }
+
+        // When EOM received, send MFR and stop.
+        edge wrffeComplete1 : wrffeComplete -> stop
+            conditions (message instanceof $TEqn.EomMessage)
+            do
+	    {
+		$TEqn.MfrMessage mfrMessage = new $TEqn.MfrMessage(getId());
+		if (initiatingUnit != null)
+		    mfrMessage.setInitiatingUnitId(initiatingUnit.intValue());
+		sendDown(mfrMessage);
+	    }
+    } // FaPltMission
+}   
+

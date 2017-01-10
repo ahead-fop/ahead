@@ -1,0 +1,317 @@
+/** 
+ * @address
+  <address>
+  Graph Algorithms Product Line (GPL) <br>
+  University of Texas at Austin <br>
+  Department of Computer Sciences <br>
+  Product-Line Architectures Research Group <br>
+  Edge-Neighbor Representation 
+  </address>
+ * @name Undirected : undirected graph layer.
+ * @author Roberto E. Lopez-Herrejon (rlopez@cs.utexas.edu)
+ * @since August 24, 2001
+ * @description 
+   <p>This layer is the bottom of any application that requires an undirected
+graph.
+   </p>
+   <p> In GEN domain a graph consists of:</p>
+
+  <ol>
+  <li> A Graph class that contains:
+    <ul>
+      <li> A list of&nbsp; Vertex objects</li>
+    </ul>
+  </li>
+  <li> A Vertex class that contains:
+    <ul>
+      <li> A list of adjacent Neighbor objects</li>
+    </ul>
+  </li>
+  <li> A Neighbor class contains :
+    <ul>
+      <li>&nbsp;the end Vertex</li>
+    </ul>
+  </li>
+  <li> A Edge class contains:
+    <ul>
+      <li> The start Vertex.</li>
+    </ul>
+  </li>
+ </ol>
+
+ <p>Adding an edge requires start vertex and a Neighbor object.<br>
+ </p>
+ * @constraints None
+ * @exports Graph layer required by any GPL application.
+ * @grammar       
+     <p> <span style="font-family:Tahoma;font-size:83%">
+         Gtp := Directed | Undirected
+         </span>
+     </p>
+*/
+layer Undirected()
+realm GEN
+imports java.util.LinkedList
+{
+    /** Graph class constitutes the representation of a graph for the graph 
+      * algorithms. Graph class has a list of vertices and a list of edges.
+      * @author Roberto E. Lopez-Herrejon
+      * @since August 27, 2001
+      * @version 0.9
+      * @role The Graph role of this layer provides a list for 
+      * Vertices and a list for the Edges to represent a graph. 
+      * It also supports the addition of new vertices and edges, 
+      * display of their field values, find vertices and edges methods.
+     */
+     static public class Graph {
+ 
+      /** The list of Vertex objects.
+        * @see #edges the list that contains the edges
+        * @see #run($TEqn.Vertex) a link to the run method.  
+       */
+      public LinkedList vertices;
+
+      /** The list of edge objects.
+        * @since the beginning of time.
+        * @see #vertices the list that contains the vertices.
+       */
+      public LinkedList edges;
+
+      /** Flag that signals a directed graph.
+      */
+      public static final boolean isDirected = false;
+
+      /** Default constructor creates a new vertex list and 
+        * a new edges list.
+        * @see #run($TEqn.Vertex) a link to the run method.
+        */	  
+      public Graph() { 
+         vertices = new LinkedList();
+         edges = new LinkedList();
+      }
+   
+      /** Fall back method that stops the execution of programs.
+        * @param s is the initial vertex.
+        * @see #Graph() a link to the default constructor. 
+        */
+      public void run($TEqn.Vertex s)
+      { 
+      }  
+
+      /** Adds an edge without weights if Weighted layer is not present.
+        * @param start is the start of the edge.
+        * @param end is the end of the edge.
+        * @param weight is the non-negative weight of the edge.
+        * @see #addEdge($TEqn.Edge) is used by this method.
+       */
+      public void addAnEdge($TEqn.Vertex start, $TEqn.Vertex end, int weight)
+      {
+         addEdge(new $TEqn.Edge(start,end));
+      }
+
+      /** Adds a vertex to the vertices list.
+       */ 
+      public void addVertex( $TEqn.Vertex v ) { 
+         vertices.add( v );
+      }
+   
+      /** Adds an edge to the edges list.
+       */
+      public void addEdge($TEqn.Edge the_edge) {
+          $TEqn.Vertex start = the_edge.start;
+	  $TEqn.Vertex end = the_edge.end;
+	  edges.add(the_edge);		 
+          start.addNeighbor(new $TEqn.Neighbor(end,the_edge));  
+          end.addNeighbor(new $TEqn.Neighbor(start,the_edge));         
+      }
+
+      /** This method adds only the edge and not the neighbor.
+        * Used in transposed layer.
+        */
+      public void addOnlyEdge($TEqn.Edge the_edge) {
+	 edges.add(the_edge);		 
+      }
+      
+      /** Finds a vertex given its name in the vertices list.
+       */
+      public $TEqn.Vertex  findsVertex(String theName)
+      {
+	int i=0;
+	$TEqn.Vertex theVertex;
+	
+	// if we are dealing with the root
+	if (theName==null) return null;
+	    
+	for(i=0; i<vertices.size(); i++)
+	{
+	 theVertex = ($TEqn.Vertex)vertices.get(i);
+	 if (theName.equals(theVertex.name))
+		return theVertex;
+	}
+	return null;
+       }
+	  
+       /** Finds an Edge given both of its vertices.
+        */
+       public $TEqn.Edge findsEdge($TEqn.Vertex theSource, $TEqn.Vertex theTarget)
+       {
+	 int i=0;
+	 $TEqn.Edge theEdge;
+	
+	 for(i=0; i<edges.size(); i++)
+	 {
+	  theEdge = ($TEqn.Edge)edges.get(i);
+	  if ((theEdge.start.name.equals(theSource.name) && 
+	      theEdge.end.name.equals(theTarget.name)) ||
+	     (theEdge.start.name.equals(theTarget.name) && 
+	      theEdge.end.name.equals(theSource.name)) )
+		return theEdge;
+	 }   
+	 return null;	   
+	}
+      
+      /** Displays the contents of the vertices and edges lists.
+       */	       
+      public void display() {
+         int i;
+		
+	 System.out.println("******************************************");
+	 System.out.println("Vertices ");
+         for (i=0; i<vertices.size(); i++) 
+            (($TEqn.Vertex) vertices.get(i)).display();
+         
+         System.out.println("******************************************");
+         System.out.println("Edges ");
+         for (i=0; i<edges.size(); i++)
+			(($TEqn.Edge) edges.get(i)).display();
+		
+	 System.out.println("******************************************");
+     
+      }
+   }
+
+   /** @role The Vertex role of this layer provides the basic definitions of a 
+     * Vertex object, namely, the name and the list of neighbor vertices
+     * of a vertex. It provides the methods to add neighbor vertices, 
+     * and display them.
+    */
+   static public class Vertex {
+
+      /** List of the adjacent neighborobjects.
+       */
+      public LinkedList neighbors;
+
+      /** Vertex name, example v1.
+       */
+      public String name;
+	 
+      /** Default constructor creates a new list of adjacent neighbors.
+       */ 
+      public Vertex() {
+         name      = null;
+         neighbors = new LinkedList();
+      }
+
+
+      /** Gives a name to a vertex, i.e. changes name field.
+       */
+      public $TEqn.Vertex assignName( String name ) {
+         this.name = name;
+         return ($TEqn.Vertex) this;
+      }
+   
+      /** Adds an adjacent neighbor to vertex.
+       */
+      public void addNeighbor( $TEqn.Neighbor n ) {
+         neighbors.add(n);
+      }
+
+      /** Displays the names of the neighbor vertices.
+       */
+      public void display() {
+         int s = neighbors.size();
+         int i;
+
+         System.out.print(" Node " + name + " connected to: ");
+
+         for (i=0; i<s; i++) 
+         {
+	    $TEqn.Neighbor theNeighbor = ($TEqn.Neighbor) neighbors.get(i);
+            System.out.print( theNeighbor.end.name + ", ");
+         }     
+         System.out.println();
+      }    
+   }
+   
+   /** @role The Neighbor role is only played in this layer. 
+     * It consists of a reference to the End vertex of an Edge and 
+     * a reference to the Edge it forms.
+    */   
+   static public class Neighbor {
+
+         /** End of an edge.
+          */
+ 	 public $TEqn.Vertex end;
+
+         /** Pointer to an edge object.
+          */		
+	 public $TEqn.Edge   edge;
+
+         /** Default constructor sets the fields to null.
+         */		
+	 public Neighbor()
+	 {
+	  end = null;
+	  edge = null;
+	 }
+	
+         /** Constructor used to create a graph.
+         */	
+	 public Neighbor($TEqn.Vertex v, $TEqn.Edge e)
+	 {
+	  end = v;
+	  edge = e;
+	 }
+		
+	}
+
+   /** @role The Edge role consists of the reference to the 
+     * Start vertex of an Edge. It contains the constructor of 
+     * the object, and display contents method.
+    */ 
+   static public class Edge extends Neighbor{
+
+         /** The start vertex of an edge.
+          */
+ 	 public $TEqn.Vertex start;
+	
+     /** Sets the start and end vertices of an edge. 
+      * @param the_start is the start vertex of the edge.
+      * @param the_end is the end vertex of the edge.
+      * @see Neighbor 
+      * @see Vertex#run($TEqn.Vertex) Run method of vertex Class
+      */	
+	 public Edge($TEqn.Vertex the_start, $TEqn.Vertex the_end)
+	 {
+	  start = the_start;
+	  end = the_end;
+	 }
+	
+         /** Fall back method for adjustment of adorns.
+           * @see <a href="http://www.cs.utexas.edu/users/rlopez/Publications.html">
+                  GPL Paper </a> for further information
+          */	
+	 public void adjustAdorns($TEqn.Edge the_edge)
+	 {
+	 }		
+          
+	 /** Displays the names of the start and edge vertices.
+          * @see "The javadoc manual for your convenience"
+         */	
+	 public void display()
+	 {
+	  System.out.println(" start=" + start.name + " end=" + end.name);
+	 }
+     }
+	    
+}

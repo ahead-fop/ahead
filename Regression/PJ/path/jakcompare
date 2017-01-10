@@ -1,0 +1,10 @@
+#!/bin/bash
+
+cat $1/$2 | sed -f updates | tr -s '\n\r' '\n' > current
+cat $1-correct/$2 | sed -f updates | tr -s '\n\r' '\n' > correct
+
+if ! diff -w -b current correct ; then
+    echo failed
+    exit 1
+fi
+rm current correct

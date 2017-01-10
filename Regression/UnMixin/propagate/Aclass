@@ -1,0 +1,3 @@
+layer one;
+
+class x extends z implements y  { }

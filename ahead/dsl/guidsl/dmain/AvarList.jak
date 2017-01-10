@@ -1,0 +1,10 @@
+layer dmain;
+
+refines class AvarList {
+
+    public void visit( Visitor v ) {
+        
+        v.action( this );
+    }
+
+}

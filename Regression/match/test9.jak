@@ -1,0 +1,110 @@
+
+import jak.Lang;
+
+public class test9 {
+    static public void main(String[] args) {
+	Lang.AstCursor csr = new Lang.AstCursor();
+	Lang.AstCursor patStart = new Lang.AstCursor();
+
+	Lang.AST_Stmt instance = stm{
+	    x = 1;
+	    x = 2;
+	    x = 3;
+	    x = 2;
+	}stm;
+
+	Lang.AstNode pattern1 = stm{
+	    x = 3;
+	    x = 2;
+	}stm;
+
+	Lang.AstNode pattern2 = stm{
+	    x = 1;
+	    x = 2;
+	}stm;
+
+	Lang.AstNode pattern3 = stm{
+	    x = 2;
+	}stm;
+
+	//**************************************************
+	// pattern1 tests
+	//**************************************************
+	
+	// is pattern1 a prefix of the instance? Should be NO.
+	csr.First(instance);
+	if (pattern1.prefixMatch(csr))
+	    System.out.println("pattern1 is a prefix");
+	else
+	    System.out.println("pattern1 is not a prefix");
+
+	// is pattern1 contained in the instance? Should be YES.
+	csr.First(instance);
+	patStart.First(instance);
+	if (pattern1.findPattern(csr, patStart)) {
+	    System.out.println("pattern1 contained in instance");
+	    System.out.print("\tpatStart bound to:");
+	    patStart.node.print();
+	    System.out.println();
+	}
+	else
+	    System.out.println("pattern1 not contained in instance");
+
+
+	//**************************************************
+	// pattern2 tests
+	//**************************************************
+
+	// is pattern2 a prefix of the instance? Should be YES.
+	System.out.println();
+	csr.Position(instance);
+	if (pattern2.prefixMatch(csr))
+	    System.out.println("pattern2 is a prefix");
+	else
+	    System.out.println("pattern2 is not a prefix");
+
+	// is pattern2 contained in the instance? Should be YES.
+	csr.Position(instance);
+	if (pattern2.findPattern(csr, patStart)) {
+	    System.out.println("pattern2 contained in instance");
+	    System.out.print("\tpatStart bound to:");
+	    patStart.node.print();
+	    System.out.println();
+	}
+	else
+	    System.out.println("pattern2 not contained in instance");
+
+
+	//**************************************************
+	// pattern3 tests
+	//**************************************************
+
+	// is pattern3 a prefix of the instance? Should be NO.
+	System.out.println();
+	csr.Position(instance);
+	if (pattern3.prefixMatch(csr))
+	    System.out.println("pattern3 is a prefix");
+	else
+	    System.out.println("pattern3 is not a prefix");
+
+	// is pattern3 contained in the instance? Should be YES.
+	csr.Position(instance);
+	if (pattern3.findPattern(csr, patStart)) {
+	    System.out.println("pattern3 contained in instance");
+	    System.out.print("\tpatStart bound to:");
+	    patStart.node.print();
+	    System.out.println();
+	}
+	else
+	    System.out.println("pattern3 not contained in instance");
+
+	// Find all occurances of pattern3 in instance
+	System.out.println();
+	instance.PrettyDump();
+	csr.Position(instance);
+	while (pattern3.findPattern(csr, patStart)) {
+	    System.out.println("pattern3 found at node " +
+			       patStart.node);
+	}
+    }
+}

@@ -1,0 +1,19 @@
+layer core;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+//*** part of core layer
+
+public abstract refines class AstNode {
+    public void reduce() {
+        int i;
+        if ( arg == null )
+            return;
+        for ( i=0; i<arg.length; i++ )
+            if ( arg[i]!=null )
+                arg[i].reduce();
+    }
+}

@@ -1,0 +1,18 @@
+// tests the correctness of array definitions in method and 
+// variable typing
+
+public interface i4 {
+    static final int constant1 = 3;
+
+    void c1( String e[], String[] oi, String[] bc[], int a, int b[], int[] c, int[] d[] );
+
+    void c2( String e[], String[] oi, String[] bc[], int a, int b[], int[] c, int[] d[] );
+    public void run();
+
+    public void main( String[] args );
+
+    String[][] method();
+    String method2() [][];
+
+	 String[] method3() [];
+}

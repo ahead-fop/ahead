@@ -1,0 +1,26 @@
+S D MissionImpl 
+Line range (-1, -1)
+public  endMods 
+ beginKeys
+Interfaces :(  Mission ):
+ endKeys
+ beginNest
+        K D MissionImpl() __
+        Line range (19, 19)
+        public  endMods 
+         beginKeys
+        Throws :(  x y ):
+         endKeys
+        K D MissionImpl(int) __
+        Line range (25, 25)
+         endMods 
+         beginKeys
+        Throws :(  z ):
+         endKeys
+        M D foo() void 
+        Line range (7, 7)
+         endMods 
+         beginKeys
+        Throws :(  a b ):
+         endKeys
+ endNest

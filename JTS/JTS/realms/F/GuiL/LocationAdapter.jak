@@ -1,0 +1,28 @@
+package GuiL;
+
+import 
+    F.Libraries.laydown.*;
+import 
+    java.util.*;
+
+
+
+    class LocationAdapter
+        implements fsats.guiIf.Location
+    {
+        private float latitude;
+        private float longitude;
+
+        public LocationAdapter( Location location)
+        {
+          LocationAdapterConstructor(location);
+        }
+
+        public void LocationAdapterConstructor( Location location) {
+            this.latitude = location.getLatitude();
+            this.longitude = location.getLongitude();
+      }
+
+        public float getLatitude() { return latitude; }
+        public float getLongitude() { return longitude; }
+    }

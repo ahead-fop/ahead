@@ -1,0 +1,33 @@
+layer OpfacL;
+
+import  
+    laydown.OpfacDataWrapper;
+import 
+    log.Log;
+import 
+    java.util.*;
+import 
+    fsats.util.*;
+
+
+
+    // added unnested class
+
+    public class OpfacThreadXXX extends fooXXX implements YYY, ZZZ 
+    { OpfacImpl oi;
+
+        public OpfacThread( OpfacImpl oi ) throws x, y, z {
+          OpfacThreadConstructor(oi);
+        }
+
+        public void OpfacThreadConstructor( OpfacImpl oi) throws q, r, s {
+           this.oi = oi;
+      }
+           
+        public void run() {
+           while (true)
+              { Event event = ( Event)oi.deliveryQueue.get();
+                 oi.receive(event);
+              }
+        } // end run
+    }

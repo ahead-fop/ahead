@@ -1,0 +1,14 @@
++ '[' -z /usr/bin/bash ']'
++ echo '****************Local Regression Test***********'
+****************Local Regression Test***********
++ bash regress-one Ctop Cmid resultCtopCmid
+uncomposing resultCtopCmid into Ctop & Cmid ...succeeded
++ bash regress-one Ctop Cmid5 resultCtopCmid5
+uncomposing resultCtopCmid5 into Ctop & Cmid5 ...succeeded
++ bash regress-one Cmid Cmid2 resultCmidCmid2
+uncomposing resultCmidCmid2 into Cmid & Cmid2 ...succeeded
++ bash regress-one Ctop1 Cmid1 result12
+uncomposing result12 into Ctop1 & Cmid1 ...succeeded
++ echo -e '\nLocal Regression Test succeeded.'
+
+Local Regression Test succeeded.

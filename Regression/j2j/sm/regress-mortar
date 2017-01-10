@@ -1,0 +1,10 @@
+#!/bin/bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+echo "************ WRFFE MORTAR *************"
+java jak2java.Main wrffe_mortar.spec \
+&& javac wrffe_mortar.java \
+&& java wrffe_mortar > junk \
+&& diff -b junk correct_mortar \
+|| exit 1

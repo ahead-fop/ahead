@@ -1,0 +1,185 @@
+
+<h1><font face="Arial" color="#0000FF">PJ</font></h1>
+<p><font face="Arial">PJ is a new tool for JTS specifically written to
+support the GenBorg model.&nbsp;PJ compacts extension
+chains for classes, interfaces., and state diagrams To call PJ:</font></p>
+<blockquote>
+  <pre><font face="Courier New">&gt; java PJ.Main [-tk] &lt;base-file-name&gt; &lt;extension-file-name&gt;</font></pre>
+</blockquote>
+<p><font face="Arial">where:</font></p>
+<ul>
+  <li><font face="Arial">option -t performs typesorting (<a href="#typeSorting">discussed
+    below</a>)</font></li>
+  <li><font face="Arial">option -k performs key sorting of field declarations (<a href="#keySorting">discussed
+    below</a>)</font></li>
+  <li><font face="Arial">&lt;base-file-name&gt; may be a base class or an
+    extension</font></li>
+  <li><font face="Arial">&lt;extension-file-name&gt; must always be an extension</font></li>
+</ul>
+<p><font face="Arial">The Bali command to build PJ is:</font></p>
+<blockquote>
+  <pre><font face="Courier New">&gt; java Bali.Main PJ</font></pre>
+</blockquote>
+<p><font face="Arial">The layers that are included in PJ, along with a
+description of their semantics, is briefly below:</font></p>
+<ul>
+<call layers > insert layers here
+  <li><font face="Arial">preprocess -- code common to the above layers and
+    generally any layers that compress extension hierarchies</font></li>
+  <li><font face="Arial">StringAST -- a utility with methods to
+    convert strings into parse trees</font></li>
+  <li><font face="Arial">sortfd -- a utility that performs key sorting of
+    AST_FieldDecls (<a href="#keySorting">described below</a>)</font></li>
+  <li><font face="Arial">Java -- the Java 1.3.1 grammar</font></li>
+</ul>
+<p><font face="Arial">The following topics are covered in this document:</font></p>
+<ul>
+<call chapterLinks > insert chapter links here
+  <li><font face="Arial"><a href="#commandLine">How to call PJ from the Command
+    Line</a></font></li>
+  <li><font face="Arial"><a href="#Program">How to call PJ from a Program</a></font></li>
+  <li><font face="Arial"><a href="#Future Versions and Known Problems">Regression Tests</a></font></li>
+  <li><font face="Arial"><a href="#Future Versions and Known Problems">Future
+    Versions and Known Problems</a></font></li>
+</ul>
+<h3><font face="Arial" color="#0000FF">Purpose</font></h3>
+<p><font face="Arial">The GenBorg model produces a set of equations that define
+the extension chains or extension hierarchies of generated files. An equation r =
+a(b(c)) means compose base class or interface c with
+extension b, and that with extension a to produce r. PJ flattens this extension
+chain to produce a single file.&nbsp; If this composition were to be performed via a command-line, you would write:</font></p>
+<blockquote>
+  <pre><font face="Courier New">&gt; java PJ.Main -tk c.java b.java &gt; tmp.java
+&gt; java PJ.Main -tk tmp.java a.java &gt; result.java</font></pre>
+</blockquote>
+<p><font face="Arial">This isn't the preferred way to do this composition, for
+several reasons.&nbsp; First, PJ annotates parse trees with information that is
+lost when outputting intermediate results to files.&nbsp; This information isn't
+critical for running the current stable of <a href="#regression"> regression
+tests</a>, but will be very
+important later on.&nbsp; Second, the above runs slowly.</font></p>
+<p><font face="Arial">The preferred way is via a programmatic means:</font></p>
+<blockquote>
+  <pre><font face="Courier New">import PJ.*;</font></pre>
+  <pre><font face="Courier New">// Step 1: set the -t and -k flags in PJ</font></pre>
+  <pre><font face="Courier New">Lang.JTSParseTree.setFlags( true, true ); // set the -t and -k flags in PJ</font></pre>
+  <pre><font face="Courier New">// Step 2: create parse trees for files a, b, and c</font><font face="Courier New">
+
+Lang.JTSParseTree a = new Lang.JTSParseTree( &quot;a.java&quot; );
+Lang.JTSParseTree b = new Lang.JTSParseTree( &quot;b.java&quot; );
+Lang.JTSParseTree c = new Lang.JTSParseTree( &quot;c.java&quot; );</font></pre>
+  <pre><font face="Courier New">// Step 3: compose the trees, a.compose(b) merges b into a 
+//         so a is modified</font></pre>
+  <pre><font face="Courier New">a.compose(b);
+a.compose(c);</font></pre>
+  <pre><font face="Courier New">// Step 4: set package name. The produced file will be
+</font>//         in package &quot;foo&quot;, and output the file.<font face="Courier New">
+
+a.setPackageName(&quot;foo&quot;);
+a.print2file( &quot;abc.java&quot;);</font></pre>
+</blockquote>
+<p><font face="Arial">The above calling sequence will be used in GUI tools that take GenBorg equations, expand them, and invoke the corresponding
+extension-hierarchy compaction tools (of which PJ will be the tool for
+compacting code chains).</font></p>
+<call chapters >  insert chapters here
+<h2><font face="Arial" color="#0000FF"><a name="commandLine">How to call PJ from
+the Command Line</a></font></h2>
+<p><font face="Arial">Use the following to invoke PJ from the command line:</font></p>
+<blockquote>
+  <pre><font face="Courier New">&gt; java PJ.Main -tk Basefile Extension1file Extension2file ... &gt; output</font></pre>
+</blockquote>
+<p><font face="Arial">The option -t selects <a href="#typeSorting">type sorting</a>,
+-k selects <a href="#keySorting">key sorting</a>.&nbsp; The resulting output
+(error messages and all) are sent to standard out.</font></p>
+<h2><font face="Arial" color="#0000FF"><a name="Program">How to call PJ from a
+Program</a></font></h2>
+<p><font face="Arial">PJ is a package that can be called from another program (i.e.,
+tool) in the following way.</font></p>
+<blockquote>
+  <p><font face="Arial">(a) set PJ flags, clear error and warning counters, and
+  specify the destination of error and warning messages:</font></p>
+  <blockquote>
+    <pre><font face="Courier New">PJ.JTSParseTree.setFlags( true, true );
+PJ.JTSParseTree.resetCounters();
+JTSParseTree.setReportStream( new PrintWriter( System.out ) );</font></pre>
+  </blockquote>
+  <p><font face="Arial">(b) create a JTSParseTree for each file, such as below:</font></p>
+  <blockquote>
+    <pre><font face="Courier New">try {
+</font>   <font face="Courier New">PJ.JTSParseTree base = new PJ.JTSParseTree( &quot;base-file-name&quot; );
+   PJ.JTSParseTree ext  = new PJ.JTSParseTree( &quot;extn-file-name&quot; );
+}
+catch (Exception e) {
+   System.err.println( &quot;can't parse or open base or extension files&quot; 
+                       + e.getMessage() );
+}</font></pre>
+  </blockquote>
+  <p><font face="Arial">(c) compose the trees, as below:</font></p>
+  <blockquote>
+    <pre><font face="Courier New">try {
+   base.compose( ext );
+   if (PJ.JTSParseTree.errorCount() == 0) {
+</font>      // composition succeeded
+   } else {
+      // composition failed -- error string appears in reportStream PrintWriter
+   }<font face="Courier New">
+}
+catch (Exception e) {
+   System.err.println( e.getMessage() );
+   // fatal error occurred in composition; something is likely wrong with PJ
+}</font></pre>
+    <p><font face="Arial">note: compose can throw a RuntimeException if there
+    are fatal errors; do not try to perform further compositions beyond this
+    point.&nbsp; Composition errors can result, but exceptions will not be
+    thrown.</font></p>
+  </blockquote>
+  <p><font face="Arial">(d) after all required files have been composed, set the
+  name of the package for the generated class.</font></p>
+  <blockquote>
+    <pre><font face="Courier New">base.setPackageName( &quot;name-of-package&quot; );</font></pre>
+  </blockquote>
+  <p><font face="Arial">(e) output the resulting file.&nbsp; This can be done by
+  any one of several methods:</font></p>
+  <ul>
+    <li><font face="Arial">print() -- to standard out</font></li>
+    <li><font face="Arial">print2file( Writer w ) -- to the given writer</font></li>
+    <li><font face="Arial">print2file( File f ) -- to the given file</font></li>
+    <li><font face="Arial">print2file( String name ) -- to a file with the given
+      name</font></li>
+  </ul>
+  <p><font face="Arial">As an example:</font></p>
+  <blockquote>
+    <pre><font face="Courier New">base.print();</font></pre>
+  </blockquote>
+</blockquote>
+<h2><font face="Arial" color="#0000FF"><a name="regression">Regression Tests</a></font></h2>
+<p><font face="Arial">In regression/PJ you will find regression tests for
+interfaces and classes.&nbsp; To run the entire suite of tests type:</font></p>
+<blockquote>
+<pre><font face="Courier New">&gt; bash regress</font></pre>
+</blockquote>
+<h2><font face="Arial" color="#0000FF">Limitations, <a name="Future Versions and Known Problems">Future Versions and Known Problems</a></font></h2>
+<p><font face="Arial"><b>PJ</b> currently understands extensions to Java classes,
+interfaces, and state diagrams. It does not yet understand other extensions that
+have been added to Java, such as AST constructors.&nbsp; Extending PJ to support
+most of these features should be very simple.</font></p>
+<p><font face="Arial">To extend PJ, every AST_FieldDecl and TypeDeclaration
+production of the Java grammar must support a compose method. See the
+preprocess, CompInt, CompClass, and CompSm layers
+for details.</font></p>
+<p><font face="Arial">Another limitation variable
+capture.&nbsp; For now, this means that programmers must
+be very careful in selecting the names of variables and methods so that there is
+no name collision.&nbsp; More on this <a href="#inadvertentcaptuer">later</a>.</font></p>
+<p><font face="Arial"><b>PJ</b> is still undergoing changes.&nbsp; Known problems
+include:</font></p>
+<ul>
+  <li><font face="Arial">identifying terminal (unextended) methods with the name
+    of the layer that introduced that method is unsupported.&nbsp; This is
+    useful for programmers who examine code of squashed extension hierarchies
+    and that want to know from which layer a particular method or variable has
+    been defined. (Basically, I
+    don't have a good solution for this).</font></li>
+  <li><font face="Arial">retaining comments associated with extended methods and
+    classes.</font></li>
+</ul>

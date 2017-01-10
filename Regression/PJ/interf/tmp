@@ -1,0 +1,15 @@
+layer TOP;
+
+import java.util.*;
+
+import anotherPackage;
+
+public static
+
+interface top extends java.io.Serializable, F {
+   int Silent = 0;
+   int Loud = 1;
+
+   int run( int i ) throws Exception, AnotherException; 
+   int midmethod();
+}

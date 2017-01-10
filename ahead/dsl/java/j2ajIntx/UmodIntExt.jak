@@ -1,0 +1,40 @@
+layer j2ajIntx;
+
+import java.util.*;
+import java.io.*;
+
+public refines class UmodIntExt {
+
+  /** Reduce method */
+    public void reduce2java( AstProperties props ) {
+
+      // Gets the name of the class
+      String interfaceName = arg[0].tok[0].tokenName();
+
+      // Sets up a property to hold this name
+      // It keeps the property name ClassName so that in
+      // member declarations the name of the interface is automatically
+      // Added
+      props.setProperty( "InterfaceName", interfaceName );
+
+         // "class" in token[0] is omitted
+         // do not reduce Qname in arg[0].reduce2java(props);
+
+         // Aspect Name is LayerName$$InterfaceName
+         String layerName = (String)props.getProperty("LayerName");
+         props.print(" " + layerName +  interfaceName + " ");
+
+         // Adds the name of the file to the properties
+         props.setProperty( "RenameNewFileName",layerName + interfaceName);
+
+         arg[1].reduce2java(props);  // reduces extends
+         props.print("{ ");
+         arg[2].reduce2java(props);  // reduces interface member declarations
+         props.print("} ");
+
+         // Removes the ClassName property
+         props.removeProperty("InterfaceName");
+
+    } // of reduce2java
+
+}

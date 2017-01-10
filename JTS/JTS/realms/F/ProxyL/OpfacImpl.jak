@@ -1,0 +1,34 @@
+package ProxyL;
+
+import  
+    java.util.*;
+import  
+    F.Libraries.laydown.*;
+import  
+    F.Libraries.log.Log;
+
+
+
+
+    /** Add proxies for itself and its superior to an opfac. */
+    public extends class OpfacImpl 
+	implements Opfac
+    {
+	/** 
+	 * Proxies which missions can be delegated to.
+	 * Mapped by opfac name.
+	 */
+        protected Proxy selfProxy;
+        protected Proxy superProxy;
+
+        public Proxy getSelfProxy() { return selfProxy; }
+        public Proxy getSuperProxy() { return superProxy; }
+
+	/** Create a set of proxies of this opfac's subordinates **/
+	public void init( OpfacDataWrapper record, Network network ) 
+        {
+	    Base(OpfacDataWrapper,Network).init(record, network); // added
+            selfProxy = ProxyImpl.create(getName());
+            superProxy = ProxyImpl.create(getSuperior());
+	}
+    }

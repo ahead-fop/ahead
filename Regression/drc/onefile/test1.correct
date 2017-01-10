@@ -1,0 +1,19 @@
+Symbol table Contents
+         right2left Bool foo ()
+         left2right Bool isPresent ()
+         right2left Int range (range < 40)
+         right2left Bool search (search)
+
+single layer foo;
+
+// defined attributes
+
+left2right Bool isPresent;
+right2left Int range (range < 40);
+right2left Bool search (search);
+
+// externally defined attributes
+
+
+
+

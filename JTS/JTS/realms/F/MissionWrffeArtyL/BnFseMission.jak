@@ -1,0 +1,26 @@
+package MissionWrffeArtyL;
+
+import 
+    Jakarta.util.Util;
+import 
+    java.io.*;
+import 
+    F.Libraries.log.Log;
+
+ // MissionImpl
+
+ 
+    public extends state_machine BnFseMission
+    {
+        // Don't relay MFR to FIST.
+        /*REFINES EDGE no longer supported.  
+   Move predicate or body into method, and extend method.
+Refines edge wrffeArtyEnding1 : wrffeArtyEnding -> stop
+            conditions (message instanceof MfrMessage)
+            do { } */
+
+        // net effect of above is to override action of edge to do nothing
+
+        public void wrffeArtyEnding1Action(Message message) { }
+
+    }

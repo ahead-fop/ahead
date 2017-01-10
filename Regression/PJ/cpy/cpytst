@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+java jampack.Main -c -f junk CBase0.jak
+if diff -w junk CBase0.jak; then
+    echo succeeded
+	 rm junk
+else
+    echo failed
+    exit 1
+fi

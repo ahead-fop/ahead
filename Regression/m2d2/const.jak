@@ -1,0 +1,9 @@
+layer con;
+
+class foo {
+   foo() { /*nothing*/ }
+
+   foo(int x) { /*x nothing */ }
+
+   foo(String y, int b) { /*yb nothing*/ }
+}

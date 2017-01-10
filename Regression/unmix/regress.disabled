@@ -1,0 +1,15 @@
+#!/bin/bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+echo "**************** unmix Regression Test***********"
+
+bash regress-one base ref1 ref2 b12 \
+&& bash regress-one base ref3 ref1 b31 \
+&& bash regress-two base ref1 ref2 b12 \
+&& bash regress-two base ref3 ref1 b31 \
+|| exit 1
+
+rm current correct *.cpp
+
+echo -e "\nunmix Regression Test succeeded."

@@ -1,0 +1,9 @@
+layer FS;
+
+SoUrCe RooT ArtilleryL "C:!Java!FeatureOrientedProgramming!fsats!ArtilleryL!FaPltProxy.jak";
+
+public class FaPltProxy extends WeaponProxy {
+    public int typePrecedence() {
+        return 3;
+    }
+}

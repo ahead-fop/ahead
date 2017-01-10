@@ -1,0 +1,31 @@
+#!/bin/bash
+
+echo "*********** Interface Composition regression test ************"
+
+bash regress-one Iext0mod Iext1moderror resultimod4 \
+&& bash regress-one Iext0mod Iext1mod resultimod3 \
+&& bash regress-one IBase0 Iext0moderror resultimod2 \
+&& bash regress-one IBase0 Iext0mod resultimod1 \
+&& bash regress-one IBase0 Iext0 result00 \
+&& bash regress-one IBase0 Iext1 result01 \
+&& bash regress-one IBase1 Iext0 result10 \
+&& bash regress-one IBase1 Iext1 result11 \
+&& bash regress-one Iext0 Iext1 resultI01 \
+&& bash regress-one Iext4 Iext5 resultI45 \
+|| exit 1
+
+echo -n "comp1 test ... "
+java jampack.Main -t top.java mid.java > tmp
+(echo ; java jampack.Main -t tmp bot.java) | tr -s '\n\r' '\n' > current
+(echo ; cat comp1.result) | tr -s '\n\r' '\n' > correct
+
+if diff -b correct current ; then
+    rm -f -r correct current || :
+    echo succeeded
+else
+    rm -f -r correct current || :
+    echo failed
+    exit 1
+fi
+
+echo "************** interface composition succeeded ***********"

@@ -1,0 +1,101 @@
+#!/bin/bash
+#
+# Runs the test scripts (named "regress") in a specified set of directories.
+# The directories may be specified on the command line.  If no directories are
+# given on the command line, then a default set of directories is used.
+#
+# Usage: driver [ <directory> ... ]
+#=============================================================================#
+
+#=============================================================================#
+# Which regression tests to run?  If command-line arguments are given, they
+# are assumed to be a list of directories in which to run regression tests.
+# If no command line arguments are given, then a default set of tests are run.
+#
+if [[ $# > 0 ]]; then
+    TOPDIR=($@)
+else
+    # Use a line like the one below to test an explicit list of directories:
+    # TOPDIR=(Java ast gscope match symbols p3 p3-second dreck macroLayer)
+
+    # Use the line below if *all* directories are to be tested:
+    TOPDIR=( $(find * -maxdepth 0 -type d \( -name CVS -prune -o -print \)) )
+fi
+
+#=============================================================================#
+# Define error-handling functions:
+#
+PROG="regress"
+PROGRAM="$(basename "${0:-${PROG}}")"
+
+function stderr() { echo 1>&2 -n "${PROGRAM}: " ; echo 1>&2 "$@" ; }
+function fatal()  { stderr "$@" ; exit 1 ; }
+
+#=============================================================================#
+# Build CLASSPATH from JTS directories:
+# (find JTS directories by ascending from current directory)
+#
+if [ -n "${CLASSPATH}" ]; then
+
+    stderr "using existing CLASSPATH"
+
+else
+
+    DIR=~+
+    while [[ ${#DIR} > 1 ]] ; do
+	JTS="${DIR}/JTS"
+	CMD="${JTS}/classpath"
+	[ -x "${CMD}" ] && eval $(cd "${JTS}" ; "${CMD}") && break
+	DIR="${DIR%/*}"
+    done
+
+    if [[ -n "${CLASSPATH}" ]]; then
+	stderr "JTS directories found in ${JTS}"
+    else
+	fatal "no JTS directories found"
+    fi
+
+fi
+
+#=============================================================================#
+# Add JTS/bin directory to PATH:
+# (find JTS directories by ascending from current directory)
+#
+DIR=~+
+while [[ ${#DIR} > 1 ]] ; do
+    BIN="${DIR}/JTS/bin"
+    if [ -d "${BIN}" ] ; then
+	case ":${PATH}:" in
+	    *:${BIN}:*) ;;
+	    *) PATH="${BIN}:${PATH}" ;;
+	esac
+	break
+    fi
+    DIR="${DIR%/*}"
+done
+
+#=============================================================================#
+# Loop through all top-level directories, looking for regression tests.
+# CVS directories are pruned during the search.
+#
+if [[ ${#TOPDIR} < 1 ]]; then
+    fatal "no test directories specified"
+fi
+
+stderr "starting regression tests:" ${TOPDIR[@]}
+
+for DIR in ${TOPDIR[@]} ; do
+    DIR="${DIR%/}"
+    if [ -f "${DIR}/build.xml" ]; then
+	(cd "${DIR}" ; ant test) || fatal "errors in ${DIR}/build.xml"
+    elif [ -f "${DIR}/driver" ]; then
+	(cd "${DIR}" ; ./driver) || fatal "errors in ${DIR}/driver"
+    elif [ -f "${DIR}/regress" ]; then
+	(cd "${DIR}" ; ./regress) || fatal "errors in ${DIR}/regress"
+    else
+	stderr "no tests found in ${DIR}"
+    fi
+    stderr "test ${DIR} done"
+done
+
+stderr -e "\nAll regression tests succeeded!"

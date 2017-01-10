@@ -1,0 +1,131 @@
+$(Options)
+
+PARSER_BEGIN(BaliParser)
+
+package $(LanguageName);
+
+public class BaliParser {
+
+    /**
+     * Returns the current parse tree, if any, or <code>null</code>, if none.
+     **/
+    public static Lang.$(StartSymbol) getStartRoot () {
+	return parseRoot ;
+    }
+
+    /**
+     * Returns a newly built parse tree from a given {@link BaliParser}.
+     * This assumes that the parser was initialized with an input source.
+     **/
+    public static Lang.$(StartSymbol) getStartRoot (BaliParser parser)
+    throws ParseException {
+        try {
+	    parseRoot = parser.$(StartSymbol) () ;
+	    parser.requireEOF () ;
+	    return parseRoot ;
+        } catch (TokenMgrError error) {
+            ParseException e = new ParseException ("token error") ;
+            e.initCause (error) ;
+            throw e ;
+        }
+    }
+
+    /**
+     * Forces an end-of-file check in the token stream.
+     *
+     * @throws ParseException if token stream is not at end-of-file.
+     **/
+    public void requireEOF () throws ParseException {
+        try {
+            jj_consume_token (BaliParserConstants.EOF) ;
+        } catch (TokenMgrError error) {
+            ParseException e = new ParseException ("EOF error") ;
+            e.initCause (error) ;
+            throw e ;
+        }
+    }
+
+    /**
+     * Builds an {@link AstToken} from a {@link Token}.
+     **/
+    private static Lang.AstToken t2at(Token tok) {
+	Token special;
+	String bstr;
+
+        // This special case happens if an optional token is involved.
+        if (tok == null)
+            return(null);
+
+	StringBuffer buffer = new StringBuffer () ;
+	special = tok.specialToken;
+	while (special != null) {
+	    buffer.insert(0, special.toString());
+	    special = special.specialToken;
+	}
+
+	bstr = buffer.substring(0, buffer.length());
+	buffer.setLength(0);
+	return new Lang.AstToken().setParms (bstr, tok.image, tok.endLine) ;
+    }
+
+    /**
+     * Holds the most recent parse tree, if any.
+     **/
+    private static Lang.$(StartSymbol) parseRoot = null ;
+
+$(ParserCode)
+}
+
+PARSER_END(BaliParser)
+
+SPECIAL_TOKEN :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+| "\f"
+}
+
+/* COMMENTS */
+
+MORE :
+{
+  "//" : IN_SINGLE_LINE_COMMENT
+|
+  <"/**" ~["/"]> { input_stream.backup(1); } : IN_FORMAL_COMMENT
+|
+  "/*" : IN_MULTI_LINE_COMMENT
+}
+
+<IN_SINGLE_LINE_COMMENT>
+SPECIAL_TOKEN :
+{
+  <SINGLE_LINE_COMMENT: "\n" | "\r" | "\r\n" > : DEFAULT
+}
+
+<IN_FORMAL_COMMENT>
+SPECIAL_TOKEN :
+{
+  <FORMAL_COMMENT: "*/" > : DEFAULT
+}
+
+<IN_MULTI_LINE_COMMENT>
+SPECIAL_TOKEN :
+{
+  <MULTI_LINE_COMMENT: "*/" > : DEFAULT
+}
+
+<IN_SINGLE_LINE_COMMENT,IN_FORMAL_COMMENT,IN_MULTI_LINE_COMMENT>
+MORE :
+{
+  < ~[] >
+}
+
+
+TOKEN :
+{
+	<#LETTER: ["a"-"z", "A"-"Z", "_", "$"]>
+|
+	<#DIGIT: ["0"-"9"]>
+}

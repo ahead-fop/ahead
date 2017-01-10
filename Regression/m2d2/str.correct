@@ -1,0 +1,20 @@
+
+#! JavaM => metamodels/JavaM.ecore 
+
+
+layer = JavaM::Layer.new(:name => 'test', :identifier => 'layer') 
+package_used = JavaM::Package.new(:name => 'used', :identifier => 'used', :ownerLayer => layer)
+package_feature = JavaM::Package.new(:name => 'test', :identifier => 'feature', , :ownerLayer => layer)
+
+# str.jak
+
+feature_str = JavaM::Class.new(:name => 'str', :identifier => 'feature.str', :visibility => 'package', :isRefinement => false, :owner => package_feature)
+
+#  implicitly imported files
+
+primitiveType_void = JavaM::PrimitiveType.new(:name =>'void', :identifier =>'void', :owner => package_used)
+
+# str.jak
+
+method_feature_str_foo12 = JavaM::Method.new(:name => 'feature.str.foo()', :identifier => 'feature.str.foo()', :type => primitiveType_void, :nesting => 0, :visibility => 'package', :body => " { char a = \'x\';  String q = \"abc\"; String xy = \"\'x\'\"; }", :ownerClass => feature_str)
+

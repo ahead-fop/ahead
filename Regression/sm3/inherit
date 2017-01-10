@@ -1,0 +1,8 @@
+echo "******************* otherwise-inherit test ***************"
+java jak2java.Main inherit.spec
+javac inherit.java
+java test2 > junk
+if ! diff -b junk correct-inherited ; then
+   echo failed
+   exit 1
+fi

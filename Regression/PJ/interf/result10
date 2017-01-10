@@ -1,0 +1,14 @@
+
+layer IBase1;
+
+import x.y.z.*;
+import java.io.Serializable;
+
+public static
+
+interface MyInt extends FooInterface, java.io.Serializable { 
+    int Silent = 0;
+    void foo() throws AFit, SomeException;
+    SomeType bar( int x );
+    int increment( int i );
+}

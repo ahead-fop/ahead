@@ -1,0 +1,161 @@
+layer JavaWriter;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+/** Auxiliary function for file management.
+* @layer<JavaWriter>
+*/
+  
+public class fileManager {
+
+    /** Pattern to match in the filter.
+     * @layer<JavaWriter>
+     */
+    String pattern;
+
+    /** Directory name.
+     * @layer<JavaWriter>
+     */
+    String directory;
+
+    /** Constructor that receives the ending used to filter.
+     * @layer<JavaWriter>
+     */
+    public fileManager( String _directory, String _pattern )
+    {
+        directory = _directory;
+        pattern = _pattern;
+    }
+
+    /** List the directories in a given directory.
+     * @layer<JavaWriter>
+     */
+    public String[] listDirectories( boolean silent )
+    {
+        // Creates a File object for the directory 
+        File dir = new File( directory );
+   
+        // If the directory does not exits simply return
+        if ( !dir.exists() )
+            return null;
+
+        //Applies the filter to the directory
+        String[] files = dir.list( new dirFilter() );
+
+        // If no output is desired return the files
+        if ( silent )
+            return files;
+
+        // If there are files list them
+        if ( files != null )
+        {
+            System.out.println( files.length + " Files that end with(s):" 
+                                          + pattern );
+            for ( int i=0; i < files.length; i++ )
+                System.out.println( "\t" + files[i] );
+        }
+
+        return files;
+    }
+
+    /** List the files of the directory that match the pattern.
+     * @layer<JavaWriter>
+     */
+    public String[] listFiles( boolean silent )
+    {
+        // Creates a File object for the directory 
+        File dir = new File( directory );
+   
+        // If the directory does not exits simply return
+        if ( !dir.exists() )
+            return null;
+
+        //Applies the filter to the directory
+        String[] files = dir.list( new filesFilter( pattern ) );
+
+        // If no output is desired return the files
+        if ( silent )
+            return files;
+
+        // If there are files list them
+        if ( files != null )
+        {
+            System.out.println( files.length + " Files that end with(s):" 
+                                          + pattern );
+            for ( int i=0; i < files.length; i++ )
+                System.out.println( "\t" + files[i] );
+        }
+
+        return files;
+    }
+    // of listFiles
+  
+       /** Deletes the files that match the pattern.
+        * @layer<JavaWriter>
+        */
+    public void deleteFiles( boolean silent )
+    {
+        // Creates a File object for the directory 
+        File dir = new File( directory );
+   
+        // If the directory does not exits simply return
+        if ( !dir.exists() )
+            return;
+
+        //Applies the filter to the directory
+        String[] files = dir.list( new filesFilter( pattern ) );
+
+        // If there are files delete them
+        if ( files != null )
+        {
+            for ( int i=0; i < files.length; i++ )
+                 {
+                File file = new File( directory, files[i] );
+                boolean result = file.delete();
+                                 
+                // if not output is desired continue the loop
+                if ( silent )
+                    continue;
+
+                System.out.print( "\t" + files[i] );
+                if ( result )
+                    System.out.println( " Deleted " );
+                else
+                    System.out.println( " NOT deleted " );
+            } // for all the files to delete
+        } // if there are files that match
+
+    }
+    // of delete files
+
+       /** Deletes a particular file.
+        * @layer<JavaWriter>
+        */
+    public void deleteAFile( boolean silent )
+    {
+        // Creates a File object for the directory 
+        File file = new File( directory, pattern );
+   
+        // If the directory does not exits simply return
+        if ( !file.exists() )
+            return;
+
+        // Deletes the file
+        boolean result = file.delete();
+
+        // if silent option chosen nothing is displayed
+        if ( silent )
+            return;
+
+        if ( result )
+            System.out.println( file.getName() + " Deleted " );
+        else
+            System.out.println( file.getName() + " NOT deleted " );
+    
+    } // of delete a file
+
+}

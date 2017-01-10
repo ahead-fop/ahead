@@ -1,0 +1,10 @@
+layer rootc;
+
+import firstPackage.*;
+
+// this is a comment on root
+
+State_machine root extends class common  {
+   Delivery_parameters( M m );
+   Unrecognizable_state { ignore(m); }
+}

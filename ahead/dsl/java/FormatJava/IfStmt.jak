@@ -1,0 +1,26 @@
+layer FormatJava;
+
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public refines class IfStmt {
+    public void format( int position ) {
+        newline_routins( position );
+        arg[0].setComment( " " );
+        arg[0].format( position );
+        ( ( AstToken ) tok[2] ).white_space = " ";
+        if ( arg[1] instanceof  BlockC ) {
+            arg[1].format( position );
+            arg[2].format( position );
+        }
+        else {
+            arg[0].format( position );
+            position += CommentUtil.TabSpace;
+            arg[1].format( position );
+            position -= CommentUtil.TabSpace;
+            arg[2].format( position );
+        }
+    }
+}

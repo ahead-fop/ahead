@@ -1,0 +1,106 @@
+
+import Jakarta.symtab.*;
+import Jakarta.util.Util;
+import jak.Lang;
+import java.io.PrintWriter;
+
+public class test4 {
+    private static PrintWriter pw = new PrintWriter(System.out);
+
+    public static void main(String[] args) {
+	Lang.AST_Program prg = prg{
+	    package MyPackage;
+
+	    import Build;
+
+	    public class outerRefined extends outer {
+		int bar;
+
+		static public class nestedTopLevel {
+		    String string;
+		}
+
+		public class memberClass {
+		    public void myFunc(double bar) {}
+		}
+	    }
+
+	    class outer {
+		float bar;
+		double baz;
+	    }
+	}prg;
+
+	Symtab st = Lang.Symtab.instance();
+
+	// Build symbol table
+	prg.buildSymbolTable();
+
+	// Perform lookup's from within the scope of the function myFunc
+	ClassInfo memberClass = 
+	    (ClassInfo) st.lookup("MyPackage.outerRefined.memberClass");
+
+	Scope function;
+	try {
+	    function = memberClass.findMethod("myFunc", "D");
+	}
+	catch (BadSymbolNameException e) {
+	    Util.fatalError(e);
+	    function = null;
+	}
+
+	show((Declaration) function, "myFunc", "program");
+
+
+	// Test import from default package
+	final String mf = "myFunc";
+	Declaration dcl = st.lookup("Build", function);
+	show(dcl, "Build", mf);
+
+	// Should bind to local (double)
+	dcl = st.lookup("bar", function);
+	show(dcl, "bar", mf);
+
+	// Should bind to object's 'bar' variable (int)
+	dcl = st.lookup("this.bar", function);
+	show(dcl, "this.bar", mf);
+
+	// Should bind to memberClass
+	dcl = st.lookup("this", function);
+	show(dcl, "this", mf);
+
+	// Should bind to 'boolean' in Symtab
+	dcl = st.lookup("true", function);
+	show(dcl, "true", mf);
+
+	// Should bind to 'float' in Symtab
+	dcl = st.lookup("5.35", function);
+	show(dcl, "5.35", mf);
+
+	// Should bind to int bar
+	Scope outerRefined =
+	    (Scope) st.lookup("MyPackage.outerRefined");
+	dcl = st.lookup("bar", outerRefined);
+	show(dcl, "bar", "outerRefined class");
+
+	// Should bind to float bar
+	dcl = st.lookup("super.bar", outerRefined);
+	show(dcl, "super.bar", "outerRefined class");
+
+	// Dump symbol table
+	pw.println("*** SymbolTable ***");
+	st.dump(pw);
+	pw.println("*** End SymbolTable ***");
+
+	pw.close();
+    }
+
+    private static void show(Declaration dcl, String phrase, String whereAt) {
+	if (dcl == null)
+	    pw.println("Binding of " + phrase + " in " + whereAt + " failed");
+	else {
+	    pw.print("Binding of " + phrase + " in " + whereAt + " : ");
+	    dcl.dump(pw, 0);
+	}
+    }
+}

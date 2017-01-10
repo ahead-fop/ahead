@@ -1,0 +1,111 @@
+//                              -*- Mode: JTS -*-
+// Version         :
+// Author          : Robert S. MacDonald
+// Last Modified By: 
+// Last Modified On: Thu Jan 11 07:28:56 2001
+
+layer LocalL ( F lower )
+realm F
+    extends lower
+    imports 
+        java.io.*,
+        java.util.*,
+	F.Libraries.laydown.*,
+	F.Libraries.log.Log
+{
+    /** Refinement of Main application class **/
+    public static class Main 
+    {
+	protected Network  _network = null;
+        protected Collection _scripts = new HashSet();
+
+	/** Parse and validate the command lin arguments **/
+	protected void validateArguments( String args[] ) 
+        {
+	    // Step 1: make sure calling sequence is correct
+	    if (args.length != 0 && args.length != 1) 
+            {
+		Log.log("Usage: java FS.Main");
+		System.exit(1);
+	    }
+	}
+   
+        protected void makeNetwork(NetworkDataWrapper record)
+        {
+            if (_network!=null)
+            {
+                Log.error("More than one network defined in laydown.");
+            }
+            else
+            {
+		_network = new $TEqn.NetworkImpl(record);
+		Log.log("Network object " + record.getName() + " created.");
+            }
+        }
+
+	/** Create this simulation's network objects **/
+	protected void makeNetworks() 
+        {
+	    // Iterator over all network objects
+	    Iterator i = LayDown.getSelf().getAllNetworks().iterator();
+	    while( i.hasNext() )
+                makeNetwork((NetworkDataWrapper)i.next());
+	}
+    
+
+        protected void makeOpfac(OpfacDataWrapper record)
+        {
+            Opfac opfac = $TEqn.OpfacImpl.create(record, _network);
+            if (opfac!=null)
+            {
+                Log.log("Opfac " + opfac.getName() + " created.");
+   
+                // Create a script object if script file is not null
+                //String scriptfile = record.getScriptFile();
+                //if( scriptfile != null ) 
+                   //_scripts.add(new $TEqn.Script(scriptfile, opfac));
+            }
+        }
+
+	/** Create the opfac objects **/
+	protected void makeOpfacs() 
+	{
+	    // Iterator over all opfacs 
+	    Iterator i = LayDown.getSelf().getAllOpfacs().iterator();
+	    while( i.hasNext() ) 
+                makeOpfac((OpfacDataWrapper)i.next());
+	}
+
+        public void run(String[] args)
+        {
+            validateArguments(args);
+
+            try 
+            { 
+                String laydownFileName = 
+                    fsats.util.FsatsProperties.get("fsats.jts.laydown");
+                LayDown.read(new File(laydownFileName)); 
+            }
+            catch (Exception e) 
+            {
+		e.printStackTrace();
+                Log.error("Error: Failed read of laydown file.");
+                System.exit(1);
+            }
+
+            makeNetworks();
+
+            makeOpfacs();
+
+            Iterator i = _scripts.iterator();
+            while (i.hasNext())
+                (($TEqn.Script)i.next()).start();
+        }
+
+        public static void main(String[] args)
+        {
+            Main m = new $TEqn.Main();
+            m.run(args);
+        }
+    } // class Main
+}

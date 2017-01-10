@@ -1,0 +1,2363 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns:st1="urn:schemas-microsoft-com:office:smarttags"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 11">
+<meta name=Originator content="Microsoft Word 11">
+<link rel=File-List href="ModelExplorer_files/filelist.xml">
+<link rel=Edit-Time-Data href="ModelExplorer_files/editdata.mso">
+<!--[if !mso]>
+<style>
+v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style>
+<![endif]-->
+<title>Model Explorer Tool User Guide</title>
+<o:SmartTagType namespaceuri="urn:schemas-microsoft-com:office:smarttags"
+ name="State"/>
+<o:SmartTagType namespaceuri="urn:schemas-microsoft-com:office:smarttags"
+ name="place"/>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Yancong Zhou</o:Author>
+  <o:LastAuthor>Don Batory</o:LastAuthor>
+  <o:Revision>22</o:Revision>
+  <o:TotalTime>442</o:TotalTime>
+  <o:Created>2005-12-06T16:05:00Z</o:Created>
+  <o:LastSaved>2006-01-25T14:25:00Z</o:LastSaved>
+  <o:Pages>2</o:Pages>
+  <o:Words>4293</o:Words>
+  <o:Characters>24476</o:Characters>
+  <o:Company> UT at Austin</o:Company>
+  <o:Lines>203</o:Lines>
+  <o:Paragraphs>57</o:Paragraphs>
+  <o:CharactersWithSpaces>28712</o:CharactersWithSpaces>
+  <o:Version>11.6360</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:Zoom>120</w:Zoom>
+  <w:ValidateAgainstSchemas/>
+  <w:SaveIfXMLInvalid>false</w:SaveIfXMLInvalid>
+  <w:IgnoreMixedContent>false</w:IgnoreMixedContent>
+  <w:AlwaysShowPlaceholderText>false</w:AlwaysShowPlaceholderText>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:LatentStyles DefLockedState="false" LatentStyleCount="156">
+ </w:LatentStyles>
+</xml><![endif]--><!--[if !mso]><object
+ classid="clsid:38481807-CA0E-42D2-BF39-B33AF135CC4D" id=ieooui></object>
+<style>
+st1\:*{behavior:url(#ieooui) }
+</style>
+<![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:2;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:0 268435456 0 0 -2147483648 0;}
+@font-face
+	{font-family:SimSun;
+	panose-1:2 1 6 0 3 1 1 1 1 1;
+	mso-font-alt:\5B8B\4F53;
+	mso-font-charset:134;
+	mso-generic-font-family:auto;
+	mso-font-format:other;
+	mso-font-pitch:variable;
+	mso-font-signature:1 135135232 16 0 262144 0;}
+@font-face
+	{font-family:"\@SimSun";
+	mso-font-charset:134;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:3 135135232 16 0 262145 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:SimSun;}
+h1
+	{mso-margin-top-alt:auto;
+	margin-right:0in;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:1;
+	font-size:24.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	font-weight:bold;}
+h3
+	{mso-margin-top-alt:auto;
+	margin-right:0in;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:3;
+	font-size:13.5pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	font-weight:bold;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+p
+	{mso-margin-top-alt:auto;
+	margin-right:0in;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:SimSun;}
+pre
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:SimSun;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ @list l0
+	{mso-list-id:233659637;
+	mso-list-template-ids:-316789366;}
+@list l0:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l0:level2
+	{mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level3
+	{mso-level-tab-stop:1.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level4
+	{mso-level-tab-stop:2.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level5
+	{mso-level-tab-stop:2.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level6
+	{mso-level-tab-stop:3.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level7
+	{mso-level-tab-stop:3.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level8
+	{mso-level-tab-stop:4.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level9
+	{mso-level-tab-stop:4.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l1
+	{mso-list-id:339241257;
+	mso-list-template-ids:1218087962;}
+@list l1:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l1:level2
+	{mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l1:level3
+	{mso-level-tab-stop:1.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l1:level4
+	{mso-level-tab-stop:2.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l1:level5
+	{mso-level-tab-stop:2.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l1:level6
+	{mso-level-tab-stop:3.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l1:level7
+	{mso-level-tab-stop:3.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l1:level8
+	{mso-level-tab-stop:4.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l1:level9
+	{mso-level-tab-stop:4.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l2
+	{mso-list-id:1074279097;
+	mso-list-template-ids:776909680;}
+@list l2:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l2:level2
+	{mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l2:level3
+	{mso-level-tab-stop:1.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l2:level4
+	{mso-level-tab-stop:2.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l2:level5
+	{mso-level-tab-stop:2.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l2:level6
+	{mso-level-tab-stop:3.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l2:level7
+	{mso-level-tab-stop:3.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l2:level8
+	{mso-level-tab-stop:4.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l2:level9
+	{mso-level-tab-stop:4.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l3
+	{mso-list-id:1134835255;
+	mso-list-template-ids:1198042562;}
+@list l3:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l3:level2
+	{mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l3:level3
+	{mso-level-tab-stop:1.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l3:level4
+	{mso-level-tab-stop:2.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l3:level5
+	{mso-level-tab-stop:2.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l3:level6
+	{mso-level-tab-stop:3.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l3:level7
+	{mso-level-tab-stop:3.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l3:level8
+	{mso-level-tab-stop:4.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l3:level9
+	{mso-level-tab-stop:4.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l4
+	{mso-list-id:1185939730;
+	mso-list-template-ids:-1598384218;}
+@list l4:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l4:level2
+	{mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l4:level3
+	{mso-level-tab-stop:1.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l4:level4
+	{mso-level-tab-stop:2.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l4:level5
+	{mso-level-tab-stop:2.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l4:level6
+	{mso-level-tab-stop:3.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l4:level7
+	{mso-level-tab-stop:3.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l4:level8
+	{mso-level-tab-stop:4.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l4:level9
+	{mso-level-tab-stop:4.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l5
+	{mso-list-id:1542784836;
+	mso-list-template-ids:-1132006428;}
+@list l5:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l5:level2
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	mso-ansi-font-size:10.0pt;
+	font-family:"Courier New";
+	mso-bidi-font-family:"Times New Roman";}
+@list l5:level3
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0A7;
+	mso-level-tab-stop:1.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	mso-ansi-font-size:10.0pt;
+	font-family:Wingdings;}
+@list l5:level4
+	{mso-level-tab-stop:2.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l5:level5
+	{mso-level-tab-stop:2.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l5:level6
+	{mso-level-tab-stop:3.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l5:level7
+	{mso-level-tab-stop:3.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l5:level8
+	{mso-level-tab-stop:4.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l5:level9
+	{mso-level-tab-stop:4.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l6
+	{mso-list-id:1739209261;
+	mso-list-template-ids:460615820;}
+@list l6:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l6:level2
+	{mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l6:level3
+	{mso-level-tab-stop:1.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l6:level4
+	{mso-level-tab-stop:2.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l6:level5
+	{mso-level-tab-stop:2.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l6:level6
+	{mso-level-tab-stop:3.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l6:level7
+	{mso-level-tab-stop:3.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l6:level8
+	{mso-level-tab-stop:4.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l6:level9
+	{mso-level-tab-stop:4.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l7
+	{mso-list-id:1780877375;
+	mso-list-template-ids:76810564;}
+@list l7:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l7:level2
+	{mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l7:level3
+	{mso-level-tab-stop:1.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l7:level4
+	{mso-level-tab-stop:2.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l7:level5
+	{mso-level-tab-stop:2.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l7:level6
+	{mso-level-tab-stop:3.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l7:level7
+	{mso-level-tab-stop:3.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l7:level8
+	{mso-level-tab-stop:4.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l7:level9
+	{mso-level-tab-stop:4.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l8
+	{mso-list-id:1845824661;
+	mso-list-template-ids:-1391803532;}
+@list l8:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l8:level2
+	{mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l8:level3
+	{mso-level-tab-stop:1.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l8:level4
+	{mso-level-tab-stop:2.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l8:level5
+	{mso-level-tab-stop:2.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l8:level6
+	{mso-level-tab-stop:3.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l8:level7
+	{mso-level-tab-stop:3.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l8:level8
+	{mso-level-tab-stop:4.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l8:level9
+	{mso-level-tab-stop:4.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l9
+	{mso-list-id:2071226208;
+	mso-list-template-ids:566929704;}
+@list l9:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l9:level2
+	{mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l9:level3
+	{mso-level-tab-stop:1.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l9:level4
+	{mso-level-tab-stop:2.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l9:level5
+	{mso-level-tab-stop:2.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l9:level6
+	{mso-level-tab-stop:3.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l9:level7
+	{mso-level-tab-stop:3.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l9:level8
+	{mso-level-tab-stop:4.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l9:level9
+	{mso-level-tab-stop:4.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-ansi-language:#0400;
+	mso-fareast-language:#0400;
+	mso-bidi-language:#0400;}
+</style>
+<![endif]--><!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="4098"/>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+ </o:shapelayout></xml><![endif]-->
+</head>
+
+<body bgcolor=white lang=EN-US link=blue vlink=blue style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<h1><span style='font-family:Arial'><img width=80 height=64 id="_x0000_i1070"
+src="images/FopButton3.jpg" border=0>The Model Explorer Tool</span></h1>
+
+<div class=MsoNormal align=center style='text-align:center'>
+
+<hr size=2 width="100%" align=center>
+
+</div>
+
+<p class=MsoNormal><span style='font-family:Arial'>Model Explorer is a visual
+tool to perform and visualize composition of an AHEAD model and its instances.
+This document explains how to use the model explorer and to compose features of
+models. </span></p>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l3 level1 lfo1;tab-stops:list .5in'><span style='font-family:
+     Arial'><a href="#Setting_Up_and_Starting_the_Model">Starting the Model
+     Explorer</a></span></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l3 level1 lfo1;tab-stops:list .5in'><span style='font-family:
+     Arial'><a href="#Opening_a_New_Model_and_Resetting_the">Opening a new
+     model and resetting the model</a></span></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l3 level1 lfo1;tab-stops:list .5in'><span style='font-family:
+     Arial'><a href="#Tree_Browsing">Tree browsing</a></span></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l3 level1 lfo1;tab-stops:list .5in'><span style='font-family:
+     Arial'><a href="#Query_Browsing">Query browsing</a></span></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l3 level1 lfo1;tab-stops:list .5in'><span style='font-family:
+     Arial'><a href="#Matrix_Navigator">Matrix navigator</a></span></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l3 level1 lfo1;tab-stops:list .5in'><span style='font-family:
+     Arial'><a href="#Source_Code_Editor">Source code editor</a></span></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l3 level1 lfo1;tab-stops:list .5in'><span style='font-family:
+     Arial'><a href="#Equation_Editor">Equation editor</a></span></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l3 level1 lfo1;tab-stops:list .5in'><span style='font-family:
+     Arial'><a href="#_Tools_panel">Tools panel</a></span></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l3 level1 lfo1;tab-stops:list .5in'><span style='font-family:
+     Arial'><a href="#_GuiDsl_panel">GuiDsl Panel</a></span></li>
+</ul>
+
+<h3><span style='font-family:Arial'>&nbsp;<a
+name="Setting_Up_and_Starting_the_Model"></a>Starting the Model Explorer</span></h3>
+
+<p class=MsoNormal><span style='font-family:Arial'>To run ModelExplorer, type:</span></p>
+
+<pre><b>&gt; ModelExplorer</b> </pre><pre>or </pre><pre><b>&gt; java ModelExplorer.Main</b> </pre>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>ModelExplorer is packaged as a JAR file and should be
+in your CLASSPATH.</span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>The Model Explorer’s window comes up (Figure 1).
+Since no argument was given to specify the model directory, the current
+directory is used. The window is split in halves: The <b>left</b> side is used
+for browsing and provides three methods for selecting units (as indicated by
+the tabs on top): A tree view of model (tab <b>Tree</b>) or a relational view
+that can be queried as explained in section 4 (tab <b>Query</b>) or a matrix
+navigator which can navigate the model as hierarchal matrix (tab <b>Navigator</b>).
+The editor in the right side displays a selected unit in two different modes:
+one can view the content of a unit, or one can edit it (tab <b>Editor</b>). On
+the <b>right</b> side, there are three other panels: the equation editor (tab <b>Equation</b>),
+the composer panel (tab <b>Composer</b>) which is an interface to run the <b><a
+href="composer.html">composer</a></b> tool to build a new project, and the
+output panel, which is a watch window to show running results. <o:p></o:p></span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><!--[if gte vml 1]><v:shapetype
+ id="_x0000_t75" coordsize="21600,21600" o:spt="75" o:preferrelative="t"
+ path="m@4@5l@4@11@9@11@9@5xe" filled="f" stroked="f">
+ <v:stroke joinstyle="miter"/>
+ <v:formulas>
+  <v:f eqn="if lineDrawn pixelLineWidth 0"/>
+  <v:f eqn="sum @0 1 0"/>
+  <v:f eqn="sum 0 0 @1"/>
+  <v:f eqn="prod @2 1 2"/>
+  <v:f eqn="prod @3 21600 pixelWidth"/>
+  <v:f eqn="prod @3 21600 pixelHeight"/>
+  <v:f eqn="sum @0 0 1"/>
+  <v:f eqn="prod @6 1 2"/>
+  <v:f eqn="prod @7 21600 pixelWidth"/>
+  <v:f eqn="sum @8 21600 0"/>
+  <v:f eqn="prod @7 21600 pixelHeight"/>
+  <v:f eqn="sum @10 21600 0"/>
+ </v:formulas>
+ <v:path o:extrusionok="f" gradientshapeok="t" o:connecttype="rect"/>
+ <o:lock v:ext="edit" aspectratio="t"/>
+</v:shapetype><v:shape id="_x0000_i1025" type="#_x0000_t75" style='width:452.25pt;
+ height:386.25pt'>
+ <v:imagedata src="ModelExplorer_files/image001.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=603 height=515
+src="ModelExplorer_files/image002.jpg" v:shapes="_x0000_i1025"><![endif]></p>
+
+</blockquote>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Figure 1: Model Explorer Starts up and shows the model </span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>When closing the <b>ModelExplorer</b>, the state of
+the <b>ModelExplorer</b> tool will be storied into a properties file named
+_MEState.properties&nbsp; So when opening the <b>ModelExplorer</b> , only if
+this property file exists, it will get its state from this file and restore it.
+Currently, the state includes: last opened model, active equation and its
+composition dir, a list of file extensions (matrix filter). </span></p>
+
+<h3 style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;<a name="Opening_a_New_Model_and_Resetting_the"></a>Opening
+a New Model and Resetting the Model</span></h3>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+style='font-family:Arial;color:black'>Opening a new model</span></b><span
+style='font-family:Arial'> <br>
+After the model explorer starts, the user can open any model from the menu <b>Model.Open</b>
+or by clicking open icon&nbsp;<img border=0 width=29 height=30 id="_x0000_i1072"
+src="MEimages/Open.gif"> on the toolbar. The file chooser dialog will pop up.
+It allows the user to browse directories and choose the model directory to
+open. Only Directories are shown in the dialog. Figure 2 shows the model
+directory GEN is opened.&nbsp; </span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>When opening a model, if there is a property file named
+<i>_Filter.properties</i> in the model directory, all the files and directories
+specified in that property file will be ignored. If there is no such property
+file in the model directory, the default file in the tool will be used, which
+ignores only the file <i>.cvsignore</i> and the directory <i>CVS</i> in the
+model. That means, the <b>ModelExplorer</b> uses the user specified file
+together with the default one to generate a global filter to remove unwanted
+files from the view. An example of such a properties file is <a
+href="#_Filter.properties">given shortly</a>.</span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1026" type="#_x0000_t75" style='width:486.75pt;height:341.25pt'>
+ <v:imagedata src="ModelExplorer_files/image003.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=649 height=455
+src="ModelExplorer_files/image004.jpg" v:shapes="_x0000_i1026"><![endif]></p>
+
+</blockquote>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+style='mso-spacerun:yes'>          </span>Figure 2a:&nbsp; Opening the GEN
+model directory </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='margin-left:.5in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1027" type="#_x0000_t75" style='width:489.75pt;height:334.5pt'>
+ <v:imagedata src="ModelExplorer_files/image005.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=653 height=446
+src="ModelExplorer_files/image006.jpg" v:shapes="_x0000_i1027"><![endif]></p>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+style='mso-spacerun:yes'>               </span>Figure 2b: The GEN model was
+opened <br>
+&nbsp; </span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>There is a list of MRU models in the
+&quot;Model&quot; menu. By default, it provides at most four most recent
+models' links to allow user to open them quickly. Using the menu <b>Options-&gt;Perferences-&gt;Others</b>,
+users can change the number of the most recent models. </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1028" type="#_x0000_t75" style='width:488.25pt;height:307.5pt'>
+ <v:imagedata src="ModelExplorer_files/image007.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=651 height=410
+src="ModelExplorer_files/image008.jpg" v:shapes="_x0000_i1028"><![endif]></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'><span style='mso-spacerun:yes'>            
+</span>Figure 2c: The &quot;MRU&quot; list in the &quot;Model&quot; menu</span></p>
+
+</blockquote>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>Figure 2d shows the format of a file <i>_Filter.properties<a
+name="_Filter.properties"></a> </i>is. This file is a global filter to apply to
+all the three types of browsing in the model explorer: tree browsing, query
+browsing and matrix navigator. </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='margin-left:.5in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1029" type="#_x0000_t75" style='width:494.25pt;height:240pt'>
+ <v:imagedata src="ModelExplorer_files/image009.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=659 height=320
+src="ModelExplorer_files/image010.jpg" v:shapes="_x0000_i1029"><![endif]></p>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+style='mso-spacerun:yes'>                   </span><span
+style='mso-spacerun:yes'> </span>Figure 2d: The default file <i>_Filter.properties
+</i>in the Model Explorer tool. </span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>Basically, the prefix property name
+&quot;filterfiles&quot; represents the properties which specify the unwanted
+files. The prefix property name &quot;filterdirs&quot; represents the
+properties which specify the unwanted directories. The values in the properties
+are separated by space. The number after the prefix property name should start
+from 1 and then to 2 and so on, without skipping. That means, if filterfilter2
+is not defined, then there are no filterfilter3, filterfilter4 ... properties
+defined in the file.&nbsp;&nbsp; This &quot;feature&quot; allows filter
+definitions to be spread across multiple lines.</span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+style='font-family:Arial'>Resetting the model</span></b><span style='font-family:
+Arial'> </span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>The user can use the menu <b>Model.Reset</b> or the
+short cut <b>Reset icon&nbsp;<img border=0 width=16 height=20 id="_x0000_i1073"
+src="MEimages/Reset.gif"></b> on the toolbar to refresh the displayed model at
+any time. Any changes in the model directory, like newly added files, will
+become visible. For example, if we add a new directory <b>jtsdocs</b> inside
+the GEN model, then after clicking the reset icon, the jtsdocs will be
+displayed (<b>Figure</b> 3). </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1030" type="#_x0000_t75" style='width:498.75pt;height:303pt'>
+ <v:imagedata src="ModelExplorer_files/image011.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=665 height=404
+src="ModelExplorer_files/image012.jpg" v:shapes="_x0000_i1030"><![endif]></p>
+
+</blockquote>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+style='mso-spacerun:yes'>                 </span>Figure 3: Resetting the GEN
+model , the newly added layer (directory) is displayed </span></p>
+
+<h3 style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;<a name="Tree_Browsing"></a>Tree Browsing</span></h3>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>The <b>Tree</b> displays the model in its natural
+format, as a hierarchy. A first glance shows us that all the subdirectories of
+the model directory are there, as layers. Exploring layer Benchmark confirms
+that the Java and Layer files in its directory have been turned into units, as
+well. If we click Benchmark/Graph.jak, the unit pane on the right displays its
+code (extended java code) in a syntax-highlighted style (Figure 4). The content
+of fopdocs/ASTConstructors.html is shown as rendered HTML (Figure 5). Right now,
+<b>ModelExplorer</b> can display<b> .Java, .Layer, .Jak, .html, .xml </b>source
+code in syntax-highlighted style. It also can display the HTML file and <b>.gif
+</b>and <b>.jpg</b> files (Figure 6).</span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>The source code can be modified using <b>EDIT</b>
+pane under the &quot;write mode&quot; of the editor. The detail of the editor
+is in the section <a href="#Source_Code_Editor">Source Code Editor</a>. </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1031" type="#_x0000_t75" style='width:487.5pt;height:309.75pt'>
+ <v:imagedata src="ModelExplorer_files/image013.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=650 height=413
+src="ModelExplorer_files/image014.jpg" v:shapes="_x0000_i1031"><![endif]></p>
+
+</blockquote>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+style='mso-spacerun:yes'>          </span>Figure 4: The Graph.jak is displayed
+in the viewer by clicking Benchmark/Graph.jak on the tree view </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='margin-left:.5in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1032" type="#_x0000_t75" style='width:490.5pt;height:296.25pt'>
+ <v:imagedata src="ModelExplorer_files/image015.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=654 height=395
+src="ModelExplorer_files/image016.jpg" v:shapes="_x0000_i1032"><![endif]></p>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+style='mso-spacerun:yes'>                 </span>Figure 5: The
+ASTConstructors.html is selected and displayed in the unit pane </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='margin-left:.5in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1033" type="#_x0000_t75" style='width:490.5pt;height:294.75pt'>
+ <v:imagedata src="ModelExplorer_files/image017.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=654 height=393
+src="ModelExplorer_files/image018.jpg" v:shapes="_x0000_i1033"><![endif]></p>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+style='mso-spacerun:yes'>              </span>Figure 6: The Backward.gif is
+selected and displayed in the unit pane <br>
+&nbsp; </span></p>
+
+<h3 style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;<a name="Query_Browsing"></a>Query Browsing</span></h3>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>Apart from the obvious presentation as a tree, <b>ModelExplorer</b>
+also displays a model as a database relation. Browsing a model then means to
+query the relation in a database language. The following rules turn the model
+tree into a relation: </span></p>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l4 level1 lfo2;tab-stops:list .5in'><span style='font-family:
+     Arial'>The relation holds all units of the model with the exception of the
+     root unit. The key of a tuple is the path (excluding root) to the unit as
+     an array of roles. When we display a tuple, we omit the unit field.</span></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l4 level1 lfo2;tab-stops:list .5in'><span style='font-family:
+     Arial'>If a model tree has n levels, the maximum length of a path is n-1.
+     A key that is shorter than n-1 contains null roles to fill the empty
+     columns. Null roles are displayed as <b>&lt;-&gt;</b>. If the unit is
+     primitive, null roles are inserted before the last role in its path. Null
+     roles in the paths of collectives are inserted at the end.</span></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l4 level1 lfo2;tab-stops:list .5in'><span style='font-family:
+     Arial'>The roles in the i-th column are all from level i of the unit tree
+     (the level of root is 0). Accordingly, the title of that column is “Level
+     i”. (We also call the last column “Artifact”).</span></li>
+</ul>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'><br>
+The <b>Query</b> tab in the top left corner provides us with more sophisticated
+means for browsing: The model tree is displayed as a relation and can be
+queried through a column of select lists ( Figure 7). At first, the whole model
+is displayed in the query result table. Notice that the unit that was last
+selected under the Tree tab is selected here, too. The selections of the two
+tabs are always synchronized. The equivalent of the tree gadget is only the
+right half of the tab, the query result; the select lists narrow the results,
+but are not used for activating units. Therefore, specifying a query has no
+effect on what unit is currently displayed. </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1034" type="#_x0000_t75" style='width:484.5pt;height:368.25pt'>
+ <v:imagedata src="ModelExplorer_files/image019.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=646 height=491
+src="ModelExplorer_files/image020.jpg" v:shapes="_x0000_i1034"><![endif]></p>
+
+</blockquote>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp; Figure 7:&nbsp; The Query tab
+shows the model as a relation that can be queried. The parameters of the query
+are given <br>
+&nbsp;&nbsp;&nbsp; in the select lists. </span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>By selecting the row in the result table, the
+artifact will be displayed in the unit pane (if it&#8217;s a displayable
+artifact). The rows in the result table can be sorted according to a specified
+column by clicking the column header (Figure 8). </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1035" type="#_x0000_t75" style='width:486.75pt;height:296.25pt'>
+ <v:imagedata src="ModelExplorer_files/image021.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=649 height=395
+src="ModelExplorer_files/image022.jpg" v:shapes="_x0000_i1035"><![endif]></p>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>Figure 8: The rows in the result table are sorted
+according the column layer by clicking the layer column
+header.&nbsp;&nbsp;&nbsp; The selected Vertex.jak is displayed in the unit pane</span></p>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>Now, we perform two queries to show how the query
+browsing works. First, we want to find out what’s in layer <b><i>Connected. </i></b>Listing
+the content of Layer <b><i>Connected</i></b> is achieved by the SQL statement: <br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i> select * from Rel where
+Layer=&quot;Connected&quot;</i>&nbsp; (where &quot;Rel&quot; represents the
+name of example relation in the fig 7 &amp; 8) <br>
+<br>
+This query can be sent to the <b>ModelExplorer</b> by clicking on the <b><i>Connected</i></b>
+item in the list <b><i>Layer</i></b>. The query results change and display an
+answer to our question (Figure 9 left). </span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>Before we execute the second query, we clear our
+selections by clicking the <b><i>Deselect all</i></b> button. (We also could
+click on the title of the list <b><i>Layer</i></b>, which deselects just this
+one list). The second query is that we want to find out what layers <b><i>Edge.java</i></b>
+is part of. The following statement retrieves all the layers that contain a
+artifact <b><i>Edge.java:</i></b> <br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <i>select * from Rel where
+Artifact=&quot;Edge.java&quot;</i> <br>
+<br>
+This query can be sent to the <b>ModelExplorer</b> by clicking on artifact <b><i>Edge.java</i></b><i>
+</i>in the list <b><i>Artifact</i></b> which shows us what layers <b><i>Edge.java</i></b>
+is part of. (Figure 9 right). </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'><img border=0 width=600 height=330 id="_x0000_i1074"
+src="MEimages/fig09.JPG"></span></p>
+
+</blockquote>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Figure 9: Example queries.&nbsp; Left:&nbsp;&nbsp; What are the contents
+of&nbsp; layer <b><i>Connected</i></b>? (Connected, *, * ). <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Right: What layer is <b><i>Edge.java</i></b> a part of? (*, *, Edge.java). </span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>Generally, for visual browsing, we want to get rid of
+SQL and represent a query as a tuple. </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'><img border=0 width=505 height=22 id="_x0000_i1075"
+src="MEimages/query1.JPG"></span></p>
+
+</blockquote>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>(where&nbsp;<img border=0 width=33 height=21
+id="_x0000_i1076" src="MEimages/query5.JPG"> is the title of column j ,&nbsp;<img
+border=0 width=51 height=21 id="_x0000_i1077" src="MEimages/query6.JPG"> is any
+of the values in that column and&nbsp;<img border=0 width=95 height=18
+id="_x0000_i1078" src="MEimages/query7.JPG">) <br>
+Any query can be converted to a tuple&nbsp;<img border=0 width=304 height=19
+id="_x0000_i1079" src="MEimages/query2.JPG"> as follows. The projection
+function&nbsp;<img border=0 width=35 height=15 id="_x0000_i1080"
+src="MEimages/query3.JPG"> returns the set of values of column j of relation s.
+</span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'><img border=0 width=264 height=50 id="_x0000_i1081"
+src="MEimages/query4.JPG"></span></p>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>The tuples for example queries (1) and (2) are
+(Connected, *,*) and (*,*, Edge.java). The graphical user interface for
+specifying t is a set of n - 1 select lists&nbsp;<img border=0 width=22
+height=21 id="_x0000_i1082" src="MEimages/query8.JPG"> that display&nbsp;<img
+border=0 width=55 height=21 id="_x0000_i1083" src="MEimages/query9.JPG"> . That
+way, select list&nbsp;<img border=0 width=22 height=21 id="_x0000_i1084"
+src="MEimages/query8.JPG"> presents all possible values for component&nbsp;<img
+border=0 width=17 height=21 id="_x0000_i1085" src="MEimages/query10.JPG"> of the
+query tuple. </span></p>
+
+<h3 style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;<a name="Matrix_Navigator"></a>Matrix Navigator</span></h3>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>The matrix navigator allows a programmer to navigate
+the model in two dimensions: </span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'><img border=0 width=552 height=93 id="_x0000_i1086"
+src="MEimages/navigate.JPG"></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>First, it allows to navigate the containment
+hierarchy of collectives.&nbsp; This is a one-dimensional navigation – up and
+down collective hierarchies. Second, it allows to navigate across <i>inheritance</i>
+hierarchies. This is a second dimension navigation – up and down the
+inheritance chain. That mean, in a navigation matrix, it not only shows the
+list of data members, methods, etc. of the current class/ interface/ and state
+machine.&nbsp; If this class/etc. extends another class, then it will show the
+set of methods, members, etc. that this class inherits. </span></p>
+
+<p style='tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'>To
+make this more concrete, we open a new model <i>&#8220;fsats&#8221;</i>. When
+the &#8220;Navigator&#8221; tab is clicked, the matrix navigator is
+loaded.&nbsp; The combo box in the toolbar allows the user to choose the
+equation file. The matrix navigator is created according to the specified
+equation file. By default, the navigator will include all the layers in the
+model. (The query browser will be reloaded according to the specified equation
+file simultaneously.) <span style='mso-tab-count:1'>         </span></p>
+
+<p style='tab-stops:1.0in 91.6pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-tab-count:1'>                        </span><!--[if gte vml 1]><v:shape
+ id="_x0000_i1036" type="#_x0000_t75" style='width:489.75pt;height:301.5pt'>
+ <v:imagedata src="ModelExplorer_files/image023.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=653 height=402
+src="ModelExplorer_files/image024.jpg" v:shapes="_x0000_i1036"><![endif]></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+style='mso-spacerun:yes'>                        </span>Figure 10. Loading the
+navigator matrix <o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-tab-count:1'>            </span><!--[if gte vml 1]><v:shape id="_x0000_i1037"
+ type="#_x0000_t75" style='width:494.25pt;height:285.75pt'>
+ <v:imagedata src="ModelExplorer_files/image025.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=659 height=381
+src="ModelExplorer_files/image026.jpg" v:shapes="_x0000_i1037"><![endif]></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'><span style='mso-spacerun:yes'>                     
+</span>Figure 11a. The navigator matrix was loaded</span></p>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>During loading the navigator matrix, each artifact is
+parsed by the <b>mmatrix</b> tool in the JTS to get its &#8220;Artifact
+type&#8221; and other information. In the navigator matrix, the first column is
+&#8220;Artifact Type&#8221;, the second column is &#8220;Artifact&#8221;. The
+other columns are the layers. (The first layer column &#8220;.&#8221;
+represents the root directory of the model.) The letters in the matrix
+represent: </span></p>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l1 level1 lfo3;tab-stops:list .5in'><span style='font-family:
+     Arial'>Compound Artifact:<o:p></o:p></span></li>
+</ul>
+
+<p class=MsoNormal style='margin-left:.5in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&quot;C&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Class <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&quot;I&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Interface <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&quot;S&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+StateMachine or State <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&quot;+&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+SubDirectory </span></p>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l1 level1 lfo3;tab-stops:list .5in'><span style='font-family:
+     Arial'>Primitive Artifact:<o:p></o:p></span></li>
+</ul>
+
+<p class=MsoNormal style='margin-left:.5in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&quot;T&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Transition <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&quot;K&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Constructor <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&quot;M&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Method <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&quot;F&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Field </span></p>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l1 level1 lfo3;tab-stops:list .5in'><span style='font-family:
+     Arial'>Refined States:<o:p></o:p></span></li>
+</ul>
+
+<p class=MsoNormal style='margin-left:.5in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&quot;D&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Defines&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Artifact is defined in this file. <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&quot;E&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Extends&nbsp;&nbsp;&nbsp;&nbsp; - Artifact (class, interface, state methods)
+extends a previous defined artifact. <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&quot;R&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Refines&nbsp;&nbsp;&nbsp;&nbsp; - Artifact is refined in this file.</span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>If the cell is empty, that means the artifact in the
+corresponding row doesn’t exist as a layer in the corresponding column. <br>
+If the cell if filled by &quot;1&quot;, that means the artifact exists in the
+corresponding layer but the detailed type is unknown. </span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>By using &quot;<b>Options-&gt;Preferences...-&gt;Matrix
+Filter</b>&quot;, users can specify a list of file extensions for which to apply
+mmatrix. (&quot;jak&quot; is the only default value). If the list is changed,
+the &quot;apply&quot; button will be enabled. Clicking &quot;apply&quot; or
+&quot;ok&quot; button, the matrix navigator will be reloaded according to the
+new specified matrix filter. </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1038" type="#_x0000_t75" style='width:486.75pt;height:312.75pt'>
+ <v:imagedata src="ModelExplorer_files/image027.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=649 height=417
+src="ModelExplorer_files/image028.jpg" v:shapes="_x0000_i1038"><![endif]></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'><span style='mso-spacerun:yes'>       </span>Figure
+11b: The &quot;Matrix Filter&quot; panel to specify a list of file extensions</span></p>
+
+</blockquote>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>Basically, there are at least four level navigators
+to switch. Their order is: </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'><img border=0 width=598 height=89 id="_x0000_i1087"
+src="MEimages/fig22_1.JPG"></span></p>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><i><span
+style='font-size:13.5pt;font-family:Arial'>Followings are the common events for
+the navigator:</span></i><span style='font-family:Arial'> </span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+style='font-family:Arial'>Event01</span></b><span style='font-family:Arial'>:
+Clicking the column header, the navigator matrix is sorted according to the value
+in that column. (When the navigator is loaded, it is sorted by the “Artifact”
+column.) </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1039" type="#_x0000_t75" style='width:486pt;height:288.75pt'>
+ <v:imagedata src="ModelExplorer_files/image029.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=648 height=385
+src="ModelExplorer_files/image030.jpg" v:shapes="_x0000_i1039"><![endif]></p>
+
+</blockquote>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Figure 12.
+The&nbsp; &#8220;BasicL&#8221; header was clicked, so the rows in the matrix
+were sorted by the values in that column. <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Here, the empty cell has biggest
+value so all empty cells in that column are in the bottom of the matrix </span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+style='font-family:Arial'>Event02</span></b><span style='font-family:Arial'>:
+By left clicking the cells in the layer&#8217;s columns, the corresponding
+artifact is shown in the viewer pane. </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1040" type="#_x0000_t75" style='width:489.75pt;height:309.75pt'>
+ <v:imagedata src="ModelExplorer_files/image031.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=653 height=413
+src="ModelExplorer_files/image032.jpg" v:shapes="_x0000_i1040"><![endif]></p>
+
+</blockquote>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+style='mso-spacerun:yes'>        </span>Figure 13. When left clicking the cell,
+the corresponding row and column are highlighted in a different color, <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+style='mso-spacerun:yes'>        </span>and the corresponding artifact is shown
+in the viewer pane </span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+style='font-family:Arial'>Event03</span></b><span style='font-family:Arial'>: By
+right clicking the cells in the layer&#8217;s columns, a popup menu appears
+which contains all the super classes/interfaces/state-machines/etc of this
+artifact as its items. By clicking each item in the popup menu, it will
+navigate you to the corresponding super classes/etc. if that super class exists
+in this model. </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1041" type="#_x0000_t75" style='width:485.25pt;height:297.75pt'>
+ <v:imagedata src="ModelExplorer_files/image033.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=647 height=397
+src="ModelExplorer_files/image034.jpg" v:shapes="_x0000_i1041"><![endif]></p>
+
+</blockquote>
+
+</blockquote>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='margin-left:1.0in;tab-stops:63.0pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Figure 14. The popup menu.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:1.0in 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'><span style='mso-tab-count:1'>            </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:1.0in 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'><span style='mso-tab-count:1'>            </span></span><!--[if gte vml 1]><v:shape
+ id="_x0000_i1042" type="#_x0000_t75" style='width:484.5pt;height:309.75pt'>
+ <v:imagedata src="ModelExplorer_files/image035.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=646 height=413
+src="ModelExplorer_files/image036.jpg" v:shapes="_x0000_i1042"><![endif]><span
+style='font-family:Arial'><o:p></o:p></span></p>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;<span
+style='mso-spacerun:yes'>         </span>Figure 15. After clicking the menu
+item &#8220;Target&#8221; in the above popup menu, the artifact
+&#8220;Tartet.jak&#8221; row is <br>
+&nbsp;&nbsp;&nbsp;<span style='mso-spacerun:yes'>         </span>selected and
+shown up. </span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b>Event04</b>:
+Clicking each cell in the &#8220;Artifact&#8221; column, the composition
+artifact file is shown in the viewer pane only if there is a specified equation
+file for that navigator. If not, a dialog will be popped up to remind you. Or
+if the composition directory isn’t in the current model directory, a dialog
+will be popped up to allow you to give the composition directory the first
+time. </p>
+
+<p style='tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-tab-count:1'>                        </span><!--[if gte vml 1]><v:shape
+ id="_x0000_i1043" type="#_x0000_t75" style='width:485.25pt;height:294.75pt'>
+ <v:imagedata src="ModelExplorer_files/image037.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=647 height=393
+src="ModelExplorer_files/image038.jpg" v:shapes="_x0000_i1043"><![endif]></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;<span
+style='mso-spacerun:yes'>       </span>Figure 16. When clicking the cell
+&#8220;BnFseMission.jak&#8221; in the artifact column, one dialog is popped up
+since there&#8217;s no <br>
+&nbsp;&nbsp;&nbsp;<span style='mso-spacerun:yes'>       </span>active equation.
+</span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:1.0in 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-tab-count:1'>            </span><!--[if gte vml 1]><v:shape id="_x0000_i1044"
+ type="#_x0000_t75" style='width:487.5pt;height:302.25pt'>
+ <v:imagedata src="ModelExplorer_files/image039.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=650 height=403
+src="ModelExplorer_files/image040.jpg" v:shapes="_x0000_i1044"><![endif]></p>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+style='mso-spacerun:yes'>        </span>Figure 17: Reloading the navigator by
+choosing one equation file in the combo box on the toolbar<o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'><span style='mso-tab-count:1'>                        </span></span><!--[if gte vml 1]><v:shape
+ id="_x0000_i1045" type="#_x0000_t75" style='width:489pt;height:301.5pt'>
+ <v:imagedata src="ModelExplorer_files/image041.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=652 height=402
+src="ModelExplorer_files/image042.jpg" v:shapes="_x0000_i1045"><![endif]></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;<span
+style='mso-spacerun:yes'>          </span>Figure 18: After reloading the navigator,
+click the artifact &#8220;FlightTime&#8221; again, one dialog popped up to <br>
+&nbsp;&nbsp;&nbsp;<span style='mso-spacerun:yes'>          </span>allow you
+give the composition directory since the composition directory is not in the
+current model directory </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-tab-count:1'>            </span><!--[if gte vml 1]><v:shape id="_x0000_i1046"
+ type="#_x0000_t75" style='width:488.25pt;height:292.5pt'>
+ <v:imagedata src="ModelExplorer_files/image043.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=651 height=390
+src="ModelExplorer_files/image044.jpg" v:shapes="_x0000_i1046"><![endif]></p>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;<span
+style='mso-spacerun:yes'>        </span>Figure 19: After give the composition
+directory, the corresponding composite file is shown on the viewer pane </span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+style='font-family:Arial'>Event05</span></b><span style='font-family:Arial'>:
+Clicking each cell in the &#8220;Artifact Type&#8221; column expands to the
+corresponding containment hierarchy navigator matrix (named second level
+navigator). There are two cases in this event:</span></p>
+
+<p style='margin-left:1.0in;text-indent:12.0pt;tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b>CASE1:
+</b>The corresponding artifact is a subdirectory, not a file. (represented by
+&quot;+&quot;).&nbsp; In this case,&nbsp; by clicking this &quot;+&quot;, <br>
+&nbsp;&nbsp;&nbsp; the matrix navigator expands to another matrix which
+represents the corresponding subdirectory. If there are <br>
+&nbsp;&nbsp;&nbsp; more subdirectories in the subdirectory, the matrix
+navigator can be expanded further, until no more subdirectories. </p>
+
+<p style='margin-left:1.0in;text-indent:12.0pt;tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><img
+border=0 width=643 height=369 id="_x0000_i1088" src="MEimages/fig20_1.JPG"></p>
+
+<p class=MsoNormal style='text-indent:12.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>Figure 20a The subdirectories show up in the matrix
+after sorting the matrix by &quot;Artifact Type&quot;. Note that this <br>
+&nbsp;&nbsp;&nbsp; subdirectory was copied into the layers &quot;ProxyL&quot;
+and &quot;OpfacL&quot; just for demonstrating this case. (Currently there is no
+<br>
+&nbsp;&nbsp;&nbsp; actual model which has subdirectories in its layers). </span></p>
+
+<p class=MsoNormal style='text-indent:12.0pt;tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-tab-count:1'>                    </span><span style='font-family:
+Arial'><img border=0 width=635 height=372 id="_x0000_i1089"
+src="MEimages/fig20_2.JPG"></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;<span style='mso-tab-count:1'>            </span>
+Figure 20b Click the &quot;+&quot;, The subdirectory matrix shows up and the up
+button in the toolbar becomes enabled. </span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp; CASE2: </span></b><span
+style='font-family:Arial'>The corresponding artifact is a file. In this
+case,&nbsp; the matrix extends to the jak matrix. </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1047" type="#_x0000_t75" style='width:479.25pt;height:294pt'>
+ <v:imagedata src="ModelExplorer_files/image045.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=639 height=392
+src="ModelExplorer_files/image046.jpg" v:shapes="_x0000_i1047"><![endif]></p>
+
+</blockquote>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp; Figure 20c: clicking the artifact
+&#8220;MissionImpl&#8221;, the second level navigator pops up.&nbsp; In the
+second level navigator, <br>
+&nbsp;&nbsp;&nbsp; there is a &#8220;Super&#8221; column next to &#8220;Artifact&#8221;
+column, which represents the corresponding methods/fields/etc. coming <br>
+&nbsp;&nbsp;&nbsp; from the hierarchical chain. </span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+style='font-family:Arial'>Event06</span></b><span style='font-family:Arial'>:
+By left clicking the cells in the layer&#8217;s columns, the artifact that
+includes the corresponding method/field/etc is shown in the viewer pane with
+the corresponding method/field/etc highlighted. </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1048" type="#_x0000_t75" style='width:483pt;height:294.75pt'>
+ <v:imagedata src="ModelExplorer_files/image047.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=644 height=393
+src="ModelExplorer_files/image048.jpg" v:shapes="_x0000_i1048"><![endif]></p>
+
+</blockquote>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+style='mso-spacerun:yes'>                    </span>Figure 21: The method “canElevate()
+Boolean” was highlighted in the viewer pane. </span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+style='font-family:Arial'>Event07</span></b><span style='font-family:Arial'>:
+The &#8220;Forward&#8221; and &#8220;Back&#8221; arrows in the toolbar allow
+you to switch between the different level navigators. The &quot;Up&quot; arrow
+in the toolbar allows you back to the upper lever matrix from the subdirectory
+matrix. </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1049" type="#_x0000_t75" style='width:485.25pt;height:309.75pt'>
+ <v:imagedata src="ModelExplorer_files/image049.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=647 height=413
+src="ModelExplorer_files/image050.jpg" v:shapes="_x0000_i1049"><![endif]></p>
+
+</blockquote>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Figure 22:
+Clicking &#8220;back&#8221; button in the Figure 20, The navigator was switched
+to the model navigator from the <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; jak navigator. </span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+style='font-family:Arial'>Event08</span></b><span style='font-family:Arial'>:
+The &#8220;Error check&#8221; button in the toolbar provides function to check
+the current navigator according to the order of the artifact in the different
+layers. If there are errors in the current navigator, the errors list will be
+given in the “tools” panel. Clicking each item in the error list will navigate
+you to the error artifact in the navigator matrix. Currently, the idea of error
+check is to make sure that artifacts is not defined before they are refined. So
+in one row of the navigator, &quot;R&quot;s can't appear before any of
+&quot;D&quot;s or &quot;E&quot;s. This is a useful &quot;feature&quot; to
+validate a composition prior to composing it.</span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1050" type="#_x0000_t75" style='width:487.5pt;height:296.25pt'>
+ <v:imagedata src="ModelExplorer_files/image051.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=650 height=395
+src="ModelExplorer_files/image052.jpg" v:shapes="_x0000_i1050"><![endif]></p>
+
+</blockquote>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>           </span>Figure
+23: By clicking &#8220;Error Checking&#8221; icon on the toolbar, the current
+navigator is checked. The result <br>
+&nbsp;&nbsp;&nbsp;<span style='mso-tab-count:1'>            </span> is given in
+the tool panel if there is no error in the current navigator. </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-tab-count:1'>            </span><!--[if gte vml 1]><v:shape id="_x0000_i1051"
+ type="#_x0000_t75" style='width:486.75pt;height:268.5pt'>
+ <v:imagedata src="ModelExplorer_files/image053.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=649 height=358
+src="ModelExplorer_files/image054.jpg" v:shapes="_x0000_i1051"><![endif]></p>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+style='mso-tab-count:1'>        </span> Figure 24: If there are errors in the
+current directory, the errors list is shown in the output window. </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-tab-count:1'>            </span><!--[if gte vml 1]><v:shape id="_x0000_i1052"
+ type="#_x0000_t75" style='width:486.75pt;height:294pt'>
+ <v:imagedata src="ModelExplorer_files/image055.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=649 height=392
+src="ModelExplorer_files/image056.jpg" v:shapes="_x0000_i1052"><![endif]></p>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+style='mso-tab-count:1'>       </span>Figure 25: By clicking on the item on the
+errors list, the corresponding artifact in the navigator is selected. </span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+style='font-family:Arial'>Event09</span></b><span style='font-family:Arial'>:
+The &#8220;Reducing size&#8221; button in the toolbar provides function to use
+the regular expression to specify the row or column pattern and therefore
+reduce the first level navigator matrix to view. </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1053" type="#_x0000_t75" style='width:487.5pt;height:293.25pt'>
+ <v:imagedata src="ModelExplorer_files/image057.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=650 height=391
+src="ModelExplorer_files/image058.jpg" v:shapes="_x0000_i1053"><![endif]></p>
+
+</blockquote>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp; Figure 26: By clicking the
+&#8220;Reducing size&#8221; icon in the toolbar, a dialog pops up and allow you
+to input the regular <br>
+&nbsp;&nbsp;&nbsp; expressions for the rows and columns. &#8220;.*&#8221; means
+any possible string. &#8220;.*L&#8221; means any possible string which ends with
+<br>
+&nbsp;&nbsp;&nbsp; &#8220;L&#8221;. The expression for rows specifies the
+pattern for artifacts. the expression for columns specifies the pattern for <br>
+&nbsp;&nbsp;&nbsp; layers. Only the artifact that matches the above two
+patterns is shown in the matrix. </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-tab-count:1'>            </span><!--[if gte vml 1]><v:shape id="_x0000_i1054"
+ type="#_x0000_t75" style='width:487.5pt;height:292.5pt'>
+ <v:imagedata src="ModelExplorer_files/image059.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=650 height=390
+src="ModelExplorer_files/image060.jpg" v:shapes="_x0000_i1054"><![endif]></p>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;<span style='mso-tab-count:1'>            </span>
+Figure 27: The result navigator only shows the layers in the model whose name
+ends with &#8220;L&#8221;. </span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>For semantics of regular expression, refer to <a
+href="http://javaregex.com/cgi-bin/pat/tutorial.asp">Regular Expressions in
+Java Tutorial</a>. <br>
+&nbsp; </span></p>
+
+<h3 style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;<a name="Source_Code_Editor"></a>Source Code
+Editor</span></h3>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>The source code is shown in the viewer/editor pane.
+By using &quot;<b>Options-&gt;Read Only</b>&quot; or the icon in the toolbar,
+user can switch between the two modes: read only or editable. There are several
+functions for editting. </span></p>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l5 level1 lfo4;tab-stops:list .5in'><span style='font-family:
+     Arial'>General file operations: new, open, close, save, save as, print.
+     These functions can be accessed by the menu &quot;File&quot; in the
+     menubar. Some of them also can be accessed by using the icons in the
+     toolbar.</span></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l5 level1 lfo4;tab-stops:list .5in'><span style='font-family:
+     Arial'>General editting operations:<o:p></o:p></span></li>
+ <ul type=circle>
+  <ul type=square>
+   <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+       auto;mso-list:l5 level3 lfo4;tab-stops:list 1.5in'><span
+       style='font-family:Arial'>cut, copy paste</span></li>
+   <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+       auto;mso-list:l5 level3 lfo4;tab-stops:list 1.5in'><span
+       style='font-family:Arial'>undo, redo</span></li>
+   <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+       auto;mso-list:l5 level3 lfo4;tab-stops:list 1.5in'><span
+       style='font-family:Arial'>find, find again, replace</span></li>
+  </ul>
+ </ul>
+</ul>
+
+<p class=MsoNormal style='margin-left:.5in;tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-tab-count:1'>            </span><!--[if gte vml 1]><v:shape id="_x0000_i1055"
+ type="#_x0000_t75" style='width:471pt;height:338.25pt'>
+ <v:imagedata src="ModelExplorer_files/image061.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=628 height=451
+src="ModelExplorer_files/image062.jpg" v:shapes="_x0000_i1055"><![endif]></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Figure 28:&nbsp; The editor pane. </span></p>
+
+<h3 style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;<a name="Equation_Editor"></a>Equation Editor</span></h3>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>Equation editor is a pane that allows you to edit the
+equation files easily. Actually, the equation editor is a Jlist. </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-tab-count:1'>            </span><!--[if gte vml 1]><v:shape id="_x0000_i1056"
+ type="#_x0000_t75" style='width:486pt;height:281.25pt'>
+ <v:imagedata src="ModelExplorer_files/image063.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=648 height=375
+src="ModelExplorer_files/image064.jpg" v:shapes="_x0000_i1056"><![endif]></p>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Figure 29: The equation editor. </span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><i><span
+style='font-size:13.5pt;font-family:Arial'>The operations are available in the
+equation editor:</span></i><span style='font-family:Arial'> </span></p>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l7 level1 lfo5;tab-stops:list .5in'><span style='font-family:
+     Arial'>By clicking the “Existing Equations” button in the equation editor
+     pane, the equation file list in the combo box will be updated to show all
+     the existing equation files in the current model directory.</span></li>
+</ul>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1057" type="#_x0000_t75" style='width:486pt;height:292.5pt'>
+ <v:imagedata src="ModelExplorer_files/image065.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=648 height=390
+src="ModelExplorer_files/image066.jpg" v:shapes="_x0000_i1057"><![endif]></p>
+
+</blockquote>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>           </span>Figure30:
+The existing equation files was updated into the combo box by clicking the left
+button &#8220;Existing Equation&#8221;. </span></p>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l6 level1 lfo6;tab-stops:list .5in'><span style='font-family:
+     Arial'>By choosing one of the equation files in the drop down list, the
+     corresponding equation file will be opened in the equation editor.</span></li>
+</ul>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1058" type="#_x0000_t75" style='width:486pt;height:289.5pt'>
+ <v:imagedata src="ModelExplorer_files/image067.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=648 height=386
+src="ModelExplorer_files/image068.jpg" v:shapes="_x0000_i1058"><![endif]></p>
+
+</blockquote>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style='mso-tab-count:1'>       </span>Figure 31: The
+&#8220;FS.equation&#8221; file was opened. <br>
+&nbsp; </span></p>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l0 level1 lfo7;tab-stops:list .5in'><span style='font-family:
+     Arial'>Using &#8220;<st1:State w:st="on"><st1:place w:st="on">Del</st1:place></st1:State>&#8221;
+     button can delete the items selected in the equation editor.</span></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l0 level1 lfo7;tab-stops:list .5in'><span style='font-family:
+     Arial'>Using &#8220;Del All&#8221; button can delete all the items in the
+     opened equation file.</span></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l0 level1 lfo7;tab-stops:list .5in'><span style='font-family:
+     Arial'>Using &#8220;New&#8221; button can create a new equation file.<o:p></o:p></span></li>
+</ul>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='margin-left:.5in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1059" type="#_x0000_t75" style='width:485.25pt;height:271.5pt'>
+ <v:imagedata src="ModelExplorer_files/image069.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=647 height=362
+src="ModelExplorer_files/image070.jpg" v:shapes="_x0000_i1059"><![endif]></p>
+
+<p class=MsoNormal style='margin-left:.5in;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:14.0pt'>Figure 32: After clicking the &#8220;New&#8221;
+button, a new empty equation file is ready to be edited.</span> </p>
+
+</blockquote>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l8 level1 lfo8;tab-stops:list .5in'><span style='font-family:
+     Arial'>Clicking the item in the tree view, the corresponding layer or
+     artifact will be added into the equation editor in order.</span></li>
+</ul>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1060" type="#_x0000_t75" style='width:484.5pt;height:255.75pt'>
+ <v:imagedata src="ModelExplorer_files/image071.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=646 height=341
+src="ModelExplorer_files/image072.jpg" v:shapes="_x0000_i1060"><![endif]></p>
+
+</blockquote>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>           </span>Figure
+33: First click the item &#8220;AddRmiL&#8221; and then
+&#8220;ArtilleryL&#8221; in the tree view, these two items were added into <br>
+&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>           </span>the equation
+editor in the order of clicking. </span></p>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l2 level1 lfo9;tab-stops:list .5in'><span style='font-family:
+     Arial'>Inserting. First select the item in the equation editor after which
+     you want to insert the new item, then click the item you want to insert in
+     the tree view, the new item will be inserted after the selected item in
+     the equation editor. After inserting, the selected item in the editor will
+     be the new inserted item.</span></li>
+</ul>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;For example, we want to insert the layer
+&#8220;BasicL&#8221; after &#8220;AddRmiL&#8221;: </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-tab-count:1'>            </span><!--[if gte vml 1]><v:shape id="_x0000_i1061"
+ type="#_x0000_t75" style='width:489pt;height:267pt'>
+ <v:imagedata src="ModelExplorer_files/image073.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=652 height=356
+src="ModelExplorer_files/image074.jpg" v:shapes="_x0000_i1061"><![endif]></p>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+style='mso-tab-count:1'>                </span> Figure 34: First select the
+item &#8220;AddRmil&#8221; in the editor. </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-tab-count:1'>            </span><!--[if gte vml 1]><v:shape id="_x0000_i1062"
+ type="#_x0000_t75" style='width:489pt;height:273.75pt'>
+ <v:imagedata src="ModelExplorer_files/image075.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=652 height=365
+src="ModelExplorer_files/image076.jpg" v:shapes="_x0000_i1062"><![endif]></p>
+
+</blockquote>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+style='mso-tab-count:1'>       </span>Figure 35: Then click the item
+&#8220;BasicL&#8221; in the tree view, the &#8220;BasicL&#8221; will be
+inserted into the editor after the <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='mso-tab-count:1'>        </span>
+item &#8220;AddRmiL&#8221;. </span></p>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l9 level1 lfo10;tab-stops:list .5in'><span style='font-family:
+     Arial'>At last, the editing equation file can be saved by using
+     &#8220;Save&#8221; or &#8220;SaveAs&#8221; button.</span></li>
+</ul>
+
+<h3 style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><a
+name="_Tools_panel"></a><span style='font-family:Arial'>&nbsp;<a
+name="Composing_a_New_Project"></a>Tools panel</span></h3>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>The tools panel is an interface to allow the user to
+run the tools in AHEAD suite. By integrating the ant1.6.5, ModelExplorer
+generates an ant project object from a given ant script file. This ant project
+object provides all targets which can be invoked at run time. Each target
+corresponds to each tool in AHEAD suite that we want to invoke by the tools
+panel. Each target name (also the corresponding tool name) is put on the tools
+panel as a button. The parameters of each tools are parsed out from the ant
+target and put in the options panel.<span style='mso-spacerun:yes'> 
+</span>Currently, the tools available in the tools panel are: composer,
+jak2java, java2calss, reform, unmixin and checker. <o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-tab-count:1'>            </span><!--[if gte vml 1]><v:shape id="_x0000_i1063"
+ type="#_x0000_t75" style='width:486.75pt;height:286.5pt'>
+ <v:imagedata src="ModelExplorer_files/image077.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=649 height=382
+src="ModelExplorer_files/image078.jpg" v:shapes="_x0000_i1063"><![endif]></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'><span style='mso-tab-count:1'>   </span><span
+style='mso-tab-count:2'>                               </span>Figure 36: The
+tools panel.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-tab-count:1'>            </span><!--[if gte vml 1]><v:shape id="_x0000_i1064"
+ type="#_x0000_t75" style='width:488.25pt;height:297.75pt'>
+ <v:imagedata src="ModelExplorer_files/image079.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=651 height=397
+src="ModelExplorer_files/image080.jpg" v:shapes="_x0000_i1064"><![endif]></p>
+
+<p class=MsoNormal style='tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-tab-count:3'>                                  </span><span
+style='font-size:14.0pt'>Figure 37: The tool options panel for each tool<o:p></o:p></span></p>
+
+</blockquote>
+
+<h3 style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>Add or remove tools from the tools panel<o:p></o:p></span></h3>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>Since the ant project gets all targets by parsing the
+specified ant script file, ModelExplorer.xml, it&#8217;s easy to add or remove
+tools from the tools panel by simply add or remove the targets in the script
+file ModelExplorer.xml. We don&#8217;t need to change any code of
+ModelExplorer. Following is a segment of text for composer tool in
+ModelExplorer.xml:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'>&lt;target<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span
+style='mso-spacerun:yes'>        </span>name=&quot;composer&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span style='mso-spacerun:yes'>   
+</span><span
+style='mso-spacerun:yes'>    </span>depends=&quot;use.jts.lib&quot; <o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span style='mso-tab-count:1'>      </span>description=&quot;Composes
+the layers specified in equation file.&quot;&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span style='mso-tab-count:1'>      </span>&lt;property
+name=&quot;composer.jar&quot;<span style='mso-spacerun:yes'>  
+</span>location=&quot;${jts.lib}/composer.jar&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span style='mso-tab-count:1'>      </span>&lt;property
+name=&quot;unit.file.jak&quot;<span style='mso-spacerun:yes'> 
+</span>value=&quot;MixinFileUnit&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span style='mso-tab-count:1'>      </span>&lt;property
+name=&quot;unit.file.jak@more&quot; value=&quot;JamPackFileUnit&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span style='mso-tab-count:1'>      </span>&lt;property
+name=&quot;logging&quot;<span style='mso-spacerun:yes'>       
+</span>value=&quot;warning&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span style='mso-tab-count:1'>      </span>&lt;property
+name=&quot;logging@more&quot;<span style='mso-spacerun:yes'>  
+</span>value=&quot;all;fine;info;severe;off&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span style='mso-tab-count:1'>      </span>&lt;delete
+dir=&quot;${layer}&quot; /&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span
+style='mso-spacerun:yes'>        </span>&lt;java<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span
+style='mso-spacerun:yes'>            </span>jar=&quot;${composer.jar}&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span
+style='mso-spacerun:yes'>            </span>failonerror=&quot;true&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span style='mso-spacerun:yes'>  
+</span><span style='mso-spacerun:yes'>         </span>fork=&quot;true&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span
+style='mso-spacerun:yes'>            </span>taskname=&quot;compose&quot;&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span
+style='mso-spacerun:yes'>            </span>&lt;jvmarg
+value=&quot;-Dtool.ant=&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span style='mso-tab-count:1'>      </span><span
+style='mso-spacerun:yes'>    </span>&lt;jvmarg
+value=&quot;-Dunit.file.jak=${unit.file.jak}&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span style='mso-tab-count:1'>      </span><span
+style='mso-spacerun:yes'>    </span>&lt;arg
+value=&quot;--logging=${logging}&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span style='mso-tab-count:1'>      </span><span
+style='mso-spacerun:yes'>    </span>&lt;arg
+value=&quot;--equation=${layer}.equation&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span
+style='mso-spacerun:yes'>        </span>&lt;/java&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span style='mso-tab-count:1'>      </span>&lt;antcall
+target=&quot;reform&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span style='mso-spacerun:yes'>   
+</span>&lt;/target&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>To remove the composer tool from the tools panel, we
+just need to remove this segment of text from the ModelExplorer.xml file and
+then copy this file into the AHEAD &#8220;lib&#8221; directory. When you
+restart the ModelExplorer, the composer tool in the tools panel will disappear.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>To add a new tool into the tools panel, say the added
+bcmixin tool in AHEAD suite, we just need to add a target in the
+ModelExplorer.xml:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'>&lt;target<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span
+style='mso-spacerun:yes'>        </span>name=&quot;bcmixin&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span
+style='mso-spacerun:yes'>        </span>depends=&quot;use.jts.lib&quot; <o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span style='mso-tab-count:1'>      </span>description=&quot;A
+byte code composer, composing the layers specified in equation file.&quot;&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span style='mso-tab-count:1'>      </span>&lt;property
+name=&quot;bcmixin.jar&quot;<span style='mso-spacerun:yes'>  
+</span>location=&quot;${jts.lib}/bcmixin.jar&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span style='mso-tab-count:1'>      </span>&lt;delete
+dir=&quot;${layer}&quot; /&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span
+style='mso-spacerun:yes'>        </span>&lt;java<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span
+style='mso-spacerun:yes'>            </span>jar=&quot;${bcmixin.jar}&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span
+style='mso-spacerun:yes'>            </span>failonerror=&quot;true&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span
+style='mso-spacerun:yes'>            </span>fork=&quot;true&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span
+style='mso-spacerun:yes'>            </span>taskname=&quot;bcmixin&quot;&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span
+style='mso-spacerun:yes'>            </span>&lt;jvmarg
+value=&quot;-Dtool.ant=&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span style='mso-tab-count:1'>      </span><span
+style='mso-spacerun:yes'>    </span>&lt;arg
+value=&quot;--equation=${layer}.equation&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span style='mso-tab-count:1'>      </span><span
+style='mso-spacerun:yes'>    </span>&lt;arg
+value=&#8221;--modelname=currentmodel&#8221;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span
+style='mso-spacerun:yes'>        </span>&lt;/java&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:10.0pt;font-family:Arial'><span
+style='mso-spacerun:yes'> </span>&lt;/target&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>After modify the ModelExplorer.xml file to add in the
+bcmixin target, we need to copy it into AHEAD build/lib directory (suppose you
+will not rebuild the AHEAD). Then we restart the ModelExplorer, the bcmixin
+tool shows in the tools panel.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'><span style='mso-tab-count:1'>               </span><!--[if gte vml 1]><v:shape
+ id="_x0000_i1065" type="#_x0000_t75" style='width:481.5pt;height:297pt'>
+ <v:imagedata src="ModelExplorer_files/image081.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=642 height=396
+src="ModelExplorer_files/image082.jpg" v:shapes="_x0000_i1065"><![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:27.0pt;tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'><span style='mso-tab-count:2'>                      </span>Figure
+38:<span style='mso-spacerun:yes'>  </span>The new added tool bcmixin appears
+in the tools panel<o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'>To run the composer tool, we first need to choose an
+equation from the drop down list in the equations box. Then we need to change
+its options in the options panel if needed. You could go into the options panel
+by clicking the &#8220;options&#8230;&#8221; button in the tools panel. Then
+you can start the composer driver by clicking the &#8220;composer&#8221;
+button.&nbsp; The running output will show in the &#8220;Running Output&#8221;
+text area simultaneously. </span></p>
+
+<blockquote style='margin-top:5.0pt;margin-bottom:5.0pt'>
+
+<p class=MsoNormal style='tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-tab-count:1'>            </span><!--[if gte vml 1]><v:shape id="_x0000_i1066"
+ type="#_x0000_t75" style='width:482.25pt;height:298.5pt'>
+ <v:imagedata src="ModelExplorer_files/image083.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=643 height=398
+src="ModelExplorer_files/image084.jpg" v:shapes="_x0000_i1066"><![endif]></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='mso-tab-count:2'>                   </span><span style='font-size:14.0pt'>Figure
+39: Running the composer to compose a new project.<o:p></o:p></span></p>
+
+</blockquote>
+
+<h3 style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><a
+name="_GuiDsl_panel"></a><span style='font-family:Arial'>&nbsp;GuiDsl panel<o:p></o:p></span></h3>
+
+<h3 style='margin-bottom:0in;margin-bottom:.0001pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:12.0pt;font-family:Arial;font-weight:normal'>GuiDsl panel is
+an interface to run the <a href="guidsl.html">GuiDsl application</a>. In the
+GuiDsl panel, you can specify an existing model file in your computer and give
+some input options by the checkboxes.<o:p></o:p></span></h3>
+
+<h3 style='tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:12.0pt;font-family:Arial;font-weight:normal'><span
+style='mso-tab-count:1'>                        </span><!--[if gte vml 1]><v:shape
+ id="_x0000_i1067" type="#_x0000_t75" style='width:483pt;height:290.25pt'>
+ <v:imagedata src="ModelExplorer_files/image085.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=644 height=387
+src="ModelExplorer_files/image086.jpg" v:shapes="_x0000_i1067"><![endif]><o:p></o:p></span></h3>
+
+<h3 style='tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:12.0pt;font-family:Arial;font-weight:normal'><span
+style='mso-tab-count:3'>                                              </span>Figure
+40: The GuiDsl panel to start the GuiDsl application<o:p></o:p></span></h3>
+
+<h3 style='tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:12.0pt;font-family:Arial;font-weight:normal'><span
+style='mso-tab-count:1'>                        </span><!--[if gte vml 1]><v:shape
+ id="_x0000_i1068" type="#_x0000_t75" style='width:486pt;height:294.75pt'>
+ <v:imagedata src="ModelExplorer_files/image087.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=648 height=393
+src="ModelExplorer_files/image088.jpg" v:shapes="_x0000_i1068"><![endif]><o:p></o:p></span></h3>
+
+<h3 style='tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:12.0pt;font-family:Arial;font-weight:normal'><span
+style='mso-tab-count:3'>                                              </span>Figure
+41: Choosing the model file model.m for GPL model<o:p></o:p></span></h3>
+
+<h3 style='tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:12.0pt;font-family:Arial;font-weight:normal'>After choosing
+the model file and giving the options, the graphical user interface of GuiDsl
+application will show up in another window.<span style='mso-spacerun:yes'> 
+</span><o:p></o:p></span></h3>
+
+<h3 style='tab-stops:1.0in 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:12.0pt;font-family:Arial;font-weight:normal'><span
+style='mso-tab-count:1'>                        </span><!--[if gte vml 1]><v:shape
+ id="_x0000_i1069" type="#_x0000_t75" style='width:487.5pt;height:297pt'>
+ <v:imagedata src="ModelExplorer_files/image089.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=650 height=396
+src="ModelExplorer_files/image090.jpg" v:shapes="_x0000_i1069"><![endif]><o:p></o:p></span></h3>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-family:Arial'><o:p>&nbsp;</o:p></span></p>
+
+<div class=MsoNormal align=center style='text-align:center;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'>
+
+<hr size=2 width="100%" align=center>
+
+</div>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+style='font-family:Arial'><a href="index.html">ATS Home Page</a></span></b></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+style='font-family:Arial'>Copyright © Software Systems Generator Research
+Group. All rights reserved.</span></b><span style='font-family:Arial'> <br>
+<b>Revised:&nbsp;<!--webbot bot="TimeStamp" s-format="%B %d, %Y" s-type="EDITED" startspan -->April 17, 2003<!--webbot bot="TimeStamp" endspan i-checksum="17605" -->.</b>
+</span></p>
+
+</div>
+
+</body>
+
+</html>

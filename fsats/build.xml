@@ -1,0 +1,261 @@
+<?xml version="1.0"?>
+
+<project name="FSATS" default="build">
+
+ <description>
+ FSATS Layered-Design Prototype
+ (C) 2002-2003 Jacob Neal Sarvela and The University of Texas at Austin
+
+ Options:
+
+ -Ddir.build=&lt;new-directory-name&gt; (optional, default is "build")
+  Specifies the target directory for the build.  The output of the equation
+  composition is put here.
+
+ -Ddir.tools=&lt;directory&gt; (optional, default is "..")
+  Specifies the installation directory of the AHEAD tools.  By default,
+  the FSATS model is assumed to be installed as a sub-directory of the
+  tools directory.  If this is -not- true, the caller should specify a
+  different value for this option. 
+
+ -Dfile.equation=&lt;equation-file&gt; (optional, default is "FS.equation")
+  Specifies the model equation to compose.
+ </description>
+
+    <!-- ================================================================= -->
+    <!-- PROJECT-LEVEL STATIC DEFINITIONS:                                 -->
+    <!-- ================================================================= -->
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- Project name, title, version, etc., for generating messages:      -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <property name="project.name"       value="fsats"/>
+    <property name="project.Name"       value="FSATS"/>
+
+    <property name="project.author"	value="Jacob Neal Sarvela"/>
+
+    <property
+        name="project.owner"
+        value="The University of Texas at Austin"/>
+
+    <property
+        name="project.title"
+        value="FSATS Layered-Design Prototype"/>
+
+    <property name="project.version"	value="v2003.04.23"/>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- Build parameters:                                                 -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <property name="dir.build"	   location="${basedir}/build"/>
+
+    <property name="file.equation" location="${basedir}/FS.equation"/>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- External tools:                                                   -->
+    <!-- By default, the FSATS model is in tools sub-directory of tools.   --> 
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <property name="dir.tools"	   location="${basedir}/.."/>
+    <property name="dir.tools.lib" location="${dir.tools}/lib"/>
+
+    <property name="jar.composer"  location="${dir.tools.lib}/composer.jar"/>
+    <property name="jar.reform"    location="${dir.tools.lib}/reform.jar"/>
+
+    <!-- ================================================================= -->
+    <!-- TARGET DEFINITIONS:                                               -->
+    <!-- ================================================================= -->
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "build" target builds the composed FSATS code.                -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target
+        name="build"
+        depends="reform"
+        description="Composes equation, re-formats and compiles result">
+
+	<ant dir="${dir.build}" inheritall="false">
+	    <property name="dir.tools" location="${dir.tools}"/>
+	</ant>
+
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "clean" target deletes junk  and top-level generated files.   -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target
+        name="clean"
+        depends="initialize"
+        description="Deletes generated files and log files">
+
+        <patternset id="clean.patterns">
+            <exclude name="**/CVS/**"/>
+
+            <include name="**/*~"/>
+            <include name="**/%*%"/>
+            <include name="**/*.bak"/>
+            <include name="**/*.BAK"/>
+            <include name="**/*.pyc"/>
+            <include name="**/*.pyo"/>
+            <include name="**/core"/>
+        </patternset>
+
+        <delete includeEmptyDirs="true" quiet="true">
+
+            <fileset defaultexcludes="no" dir="${basedir}">
+                <patternset refid="clean.patterns"/>
+            </fileset>
+
+            <fileset dir="${dir.build}"/>
+
+	    <fileset dir="${basedir}" includes="*.log"/>
+
+        </delete>
+
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "compose" target composes the layers in the given equation.   -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target
+        name="compose"
+        depends="initialize"
+        description="Composes the model equation into the build directory">
+
+	<java
+	    jar="${jar.composer}"
+	    failonerror="true"
+	    fork="true"
+	    taskname="compose">
+
+	    <jvmarg value="-Dtool.ant="/>
+
+	    <arg value="-equation"/>
+	    <arg file="${file.equation}"/>
+
+	    <arg value="-target"/>
+	    <arg file="${dir.build}"/>
+
+	</java>
+
+	<echo message="${dir.build}" taskname="===>"/>
+
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "initialize" target calculates a set of initial dynamic build -->
+    <!-- properties such as timestamps and copyrights.  It also prints an  -->
+    <!-- informative message about the build.                              -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="initialize">
+
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <!-- Define timestamps about the current time:                 -->
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <tstamp>
+            <format property="initialize.date" pattern="yyyy-MM-dd"/>
+            <format property="initialize.time" pattern="HH:mm:ss"/>
+            <format property="initialize.year" pattern="yyyy"/>
+        </tstamp>
+
+	<property
+            name="timestamp"
+            value="${initialize.date} ${initialize.time}"/>
+
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <!-- Calculate range of years to put into copyright notice:    -->
+        <!-- * cr.alpha ....... first year source was created;         -->
+        <!-- * cr.omega ....... last year source was modified;         -->
+        <!-- * cr.range ....... range of years for copyright.          -->
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <property name="cr.alpha" value="2002"/>
+
+        <condition property="cr.range" value="${cr.alpha}">
+            <equals arg1="${cr.alpha}" arg2="${initialize.year}"/>
+        </condition>
+
+        <condition property="cr.range" value="${cr.alpha}-${initialize.year}">
+            <not>
+                <equals arg1="${cr.alpha}" arg2="${initialize.year}"/>
+            </not>
+        </condition>
+
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <!-- Create copyright messages:                                -->
+        <!-- * copyright.base ... text with year(s) and owner;         -->
+        <!-- * copyright.html ... for inclusion into HTML documents;   -->
+        <!-- * copyright.text ... for inclusion into text documents.   -->
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <property
+            name="copyright.base"
+            value="${cr.range} ${project.author} and ${project.owner}"/>
+
+        <property name="copyright.html" value="&#169; ${copyright.base}"/>
+        <property name="copyright.text" value="(C) ${copyright.base}"/>
+
+        <echo message="${project.title}; build.xml ${project.version}"/>
+        <echo message="${copyright.text}"/>
+        <echo message=""/>
+        <echo message="Build begins ${timestamp}"/>
+	<echo message="dir.tools=${dir.tools}"/>
+	<echo message="dir.tools.lib=${dir.tools.lib}"/>
+	<echo message="jar.composer=${jar.composer}"/>
+	<echo message="jar.reform=${jar.reform}"/>
+
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "reform" target reformats the composed Jak code.              -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target
+        name="reform"
+        depends="compose"
+        description="Composes model equation and re-formats generated code">
+
+	<java
+	    jar="${jar.reform}"
+	    failonerror="true"
+	    fork="true"
+	    taskname="reform">
+
+	    <arg value="-d"/>
+	    <arg value="${dir.build}"/>
+	    <arg value="-e"/>
+	    <arg value="jak"/>
+	</java>
+
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "run" target reminds the caller to invoke it in subdirectory. -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="run" depends="build">
+
+	<ant dir="${dir.build}" inheritall="false" target="run">
+	    <property name="dir.tools" location="${dir.tools}"/>
+	</ant>
+
+    </target>
+
+</project>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Local Variables:                    -->
+<!-- mode:                           XML -->
+<!-- fill-column:                     79 -->
+<!-- sgml-ignore-undefined-elements: nil -->
+<!-- sgml-indent-data:                 t -->
+<!-- sgml-indent-step:                 4 -->
+<!-- End:                                -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->

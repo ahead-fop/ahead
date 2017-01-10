@@ -1,0 +1,41 @@
+single constant layer FsatsL;
+
+// used to test that component x sits above y
+
+outside Bool fsatsPresent;
+outside Bool initPresent;
+outside Bool proxyPresent;
+outside Bool opfacPresent;
+outside Bool scriptPresent;
+outside Bool messagePresent;
+outside Bool networkPresent;
+outside Bool targetPresent;
+outside Bool factoryPresent;
+outside Bool wrffeCommonPresent;
+outside Bool missionanyPresent;
+outside Bool basicPresent;
+outside Bool mlrsPresent;
+outside Bool artilleryPresent;
+outside Bool mortarPresent;
+outside Bool weaponPresent;
+outside Bool missionPresent;
+inside  Bool main;
+inside  Bool libraries;
+outside Bool localOrRemotePresent;
+inside  Bool configurationPresent;
+
+// these attributes make sure that if a weapon system is
+// included, it is actually used.
+// inherited attributes test component y sits above x
+
+inside Bool  uses_mlrs;
+inside Bool  uses_artillery;
+inside Bool  uses_mortars;
+outside Int  fsatsRank;
+
+// finally, here are the design rules: a proper FSATS equation
+// will have a main.  the inside-most layer will set fsatsRank.
+
+requires inside main and libraries and configurationPresent;
+provides outside fsatsRank == 0 and fsatsPresent and !localOrRemotePresent;
+

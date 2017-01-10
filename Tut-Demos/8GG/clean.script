@@ -1,0 +1,6 @@
+list=`equations.script`
+list2=`ls *.equation | sed -e s/.equation//`
+for i in $list  $list2 ;
+do rm -r -f $i
+done
+rm -f junk _* *~ */*~ out warnings

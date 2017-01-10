@@ -1,0 +1,55 @@
++ '[' -z /usr/bin/bash ']'
++ case "$(command -p uname)" in
+++ command -p uname
+++ uname
+++ cygpath --windows --path -- 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.'
++ CP='C;C:\java\fop\ahead\build\lib\bali2jak.jar;C;C:\java\fop\ahead\build\lib\bali2javacc.jar;C;C:\java\fop\ahead\build\lib\balicomposer.jar;C;C:\java\fop\ahead\build\lib\bcjak2java.jar;C;C:\java\fop\ahead\build\lib\jak2java.jar;C;C:\java\fop\ahead\build\lib\jakarta.jar;C;C:\java\fop\ahead\build\lib\jampack.jar;C;C:\java\fop\ahead\build\lib\jrename.jar;C;C:\java\fop\ahead\build\lib\mixin.jar;C;C:\java\fop\ahead\build\lib\mmatrix.jar;C;C:\java\fop\ahead\build\lib\unmixin.jar;C;C:\java\fop\ahead\build\lib\xak.jar;.'
++ echo -e '\nGenEnv regression test'
+
+GenEnv regression test
++ echo '****************************************'
+****************************************
++ echo -n 'Testing AliasTest ... '
+Testing AliasTest ... + java jak2java.Main AliasTest.jak
++ javac -J-mx32m -classpath 'C;C:\java\fop\ahead\build\lib\bali2jak.jar;C;C:\java\fop\ahead\build\lib\bali2javacc.jar;C;C:\java\fop\ahead\build\lib\balicomposer.jar;C;C:\java\fop\ahead\build\lib\bcjak2java.jar;C;C:\java\fop\ahead\build\lib\jak2java.jar;C;C:\java\fop\ahead\build\lib\jakarta.jar;C;C:\java\fop\ahead\build\lib\jampack.jar;C;C:\java\fop\ahead\build\lib\jrename.jar;C;C:\java\fop\ahead\build\lib\mixin.jar;C;C:\java\fop\ahead\build\lib\mmatrix.jar;C;C:\java\fop\ahead\build\lib\unmixin.jar;C;C:\java\fop\ahead\build\lib\xak.jar;.' AliasTest.java
++ java -cp 'C;C:\java\fop\ahead\build\lib\bali2jak.jar;C;C:\java\fop\ahead\build\lib\bali2javacc.jar;C;C:\java\fop\ahead\build\lib\balicomposer.jar;C;C:\java\fop\ahead\build\lib\bcjak2java.jar;C;C:\java\fop\ahead\build\lib\jak2java.jar;C;C:\java\fop\ahead\build\lib\jakarta.jar;C;C:\java\fop\ahead\build\lib\jampack.jar;C;C:\java\fop\ahead\build\lib\jrename.jar;C;C:\java\fop\ahead\build\lib\mixin.jar;C;C:\java\fop\ahead\build\lib\mmatrix.jar;C;C:\java\fop\ahead\build\lib\unmixin.jar;C;C:\java\fop\ahead\build\lib\xak.jar;.' AliasTest
++ diff -w AliasTest.output AliasTest.result
++ echo succeeded
+succeeded
++ echo -n 'Testing AliasTest2 ... '
+Testing AliasTest2 ... + java jak2java.Main -s AliasTest2.jak
++ javac -J-mx32m -classpath 'C;C:\java\fop\ahead\build\lib\bali2jak.jar;C;C:\java\fop\ahead\build\lib\bali2javacc.jar;C;C:\java\fop\ahead\build\lib\balicomposer.jar;C;C:\java\fop\ahead\build\lib\bcjak2java.jar;C;C:\java\fop\ahead\build\lib\jak2java.jar;C;C:\java\fop\ahead\build\lib\jakarta.jar;C;C:\java\fop\ahead\build\lib\jampack.jar;C;C:\java\fop\ahead\build\lib\jrename.jar;C;C:\java\fop\ahead\build\lib\mixin.jar;C;C:\java\fop\ahead\build\lib\mmatrix.jar;C;C:\java\fop\ahead\build\lib\unmixin.jar;C;C:\java\fop\ahead\build\lib\xak.jar;.' alias_test.java
++ java -cp 'C;C:\java\fop\ahead\build\lib\bali2jak.jar;C;C:\java\fop\ahead\build\lib\bali2javacc.jar;C;C:\java\fop\ahead\build\lib\balicomposer.jar;C;C:\java\fop\ahead\build\lib\bcjak2java.jar;C;C:\java\fop\ahead\build\lib\jak2java.jar;C;C:\java\fop\ahead\build\lib\jakarta.jar;C;C:\java\fop\ahead\build\lib\jampack.jar;C;C:\java\fop\ahead\build\lib\jrename.jar;C;C:\java\fop\ahead\build\lib\mixin.jar;C;C:\java\fop\ahead\build\lib\mmatrix.jar;C;C:\java\fop\ahead\build\lib\unmixin.jar;C;C:\java\fop\ahead\build\lib\xak.jar;.' alias_test
++ diff -w AliasTest2.output AliasTest2.result
++ echo succeeded
+succeeded
++ echo -n 'Testing AliasTest2b ... '
+Testing AliasTest2b ... + java jak2java.Main -s AliasTest2b.jak
++ javac -J-mx32m -classpath 'C;C:\java\fop\ahead\build\lib\bali2jak.jar;C;C:\java\fop\ahead\build\lib\bali2javacc.jar;C;C:\java\fop\ahead\build\lib\balicomposer.jar;C;C:\java\fop\ahead\build\lib\bcjak2java.jar;C;C:\java\fop\ahead\build\lib\jak2java.jar;C;C:\java\fop\ahead\build\lib\jakarta.jar;C;C:\java\fop\ahead\build\lib\jampack.jar;C;C:\java\fop\ahead\build\lib\jrename.jar;C;C:\java\fop\ahead\build\lib\mixin.jar;C;C:\java\fop\ahead\build\lib\mmatrix.jar;C;C:\java\fop\ahead\build\lib\unmixin.jar;C;C:\java\fop\ahead\build\lib\xak.jar;.' alias_test.java
++ java -cp 'C;C:\java\fop\ahead\build\lib\bali2jak.jar;C;C:\java\fop\ahead\build\lib\bali2javacc.jar;C;C:\java\fop\ahead\build\lib\balicomposer.jar;C;C:\java\fop\ahead\build\lib\bcjak2java.jar;C;C:\java\fop\ahead\build\lib\jak2java.jar;C;C:\java\fop\ahead\build\lib\jakarta.jar;C;C:\java\fop\ahead\build\lib\jampack.jar;C;C:\java\fop\ahead\build\lib\jrename.jar;C;C:\java\fop\ahead\build\lib\mixin.jar;C;C:\java\fop\ahead\build\lib\mmatrix.jar;C;C:\java\fop\ahead\build\lib\unmixin.jar;C;C:\java\fop\ahead\build\lib\xak.jar;.' alias_test
++ diff -w AliasTest2b.output AliasTest2b.result
++ echo succeeded
+succeeded
++ echo -n 'Testing AliasTest3 ... '
+Testing AliasTest3 ... + java jak2java.Main AliasTest3.jak
++ javac -J-mx32m -classpath 'C;C:\java\fop\ahead\build\lib\bali2jak.jar;C;C:\java\fop\ahead\build\lib\bali2javacc.jar;C;C:\java\fop\ahead\build\lib\balicomposer.jar;C;C:\java\fop\ahead\build\lib\bcjak2java.jar;C;C:\java\fop\ahead\build\lib\jak2java.jar;C;C:\java\fop\ahead\build\lib\jakarta.jar;C;C:\java\fop\ahead\build\lib\jampack.jar;C;C:\java\fop\ahead\build\lib\jrename.jar;C;C:\java\fop\ahead\build\lib\mixin.jar;C;C:\java\fop\ahead\build\lib\mmatrix.jar;C;C:\java\fop\ahead\build\lib\unmixin.jar;C;C:\java\fop\ahead\build\lib\xak.jar;.' AliasTest3.java
++ java -cp 'C;C:\java\fop\ahead\build\lib\bali2jak.jar;C;C:\java\fop\ahead\build\lib\bali2javacc.jar;C;C:\java\fop\ahead\build\lib\balicomposer.jar;C;C:\java\fop\ahead\build\lib\bcjak2java.jar;C;C:\java\fop\ahead\build\lib\jak2java.jar;C;C:\java\fop\ahead\build\lib\jakarta.jar;C;C:\java\fop\ahead\build\lib\jampack.jar;C;C:\java\fop\ahead\build\lib\jrename.jar;C;C:\java\fop\ahead\build\lib\mixin.jar;C;C:\java\fop\ahead\build\lib\mmatrix.jar;C;C:\java\fop\ahead\build\lib\unmixin.jar;C;C:\java\fop\ahead\build\lib\xak.jar;.' AliasTest3
++ diff -w AliasTest3.output AliasTest3.result
++ echo succeeded
+succeeded
++ echo -n 'Testing AliasTest4 ... '
+Testing AliasTest4 ... + java jak2java.Main -s AliasTest4.jak
++ javac -J-mx32m -classpath 'C;C:\java\fop\ahead\build\lib\bali2jak.jar;C;C:\java\fop\ahead\build\lib\bali2javacc.jar;C;C:\java\fop\ahead\build\lib\balicomposer.jar;C;C:\java\fop\ahead\build\lib\bcjak2java.jar;C;C:\java\fop\ahead\build\lib\jak2java.jar;C;C:\java\fop\ahead\build\lib\jakarta.jar;C;C:\java\fop\ahead\build\lib\jampack.jar;C;C:\java\fop\ahead\build\lib\jrename.jar;C;C:\java\fop\ahead\build\lib\mixin.jar;C;C:\java\fop\ahead\build\lib\mmatrix.jar;C;C:\java\fop\ahead\build\lib\unmixin.jar;C;C:\java\fop\ahead\build\lib\xak.jar;.' alias_test.java
++ java -cp 'C;C:\java\fop\ahead\build\lib\bali2jak.jar;C;C:\java\fop\ahead\build\lib\bali2javacc.jar;C;C:\java\fop\ahead\build\lib\balicomposer.jar;C;C:\java\fop\ahead\build\lib\bcjak2java.jar;C;C:\java\fop\ahead\build\lib\jak2java.jar;C;C:\java\fop\ahead\build\lib\jakarta.jar;C;C:\java\fop\ahead\build\lib\jampack.jar;C;C:\java\fop\ahead\build\lib\jrename.jar;C;C:\java\fop\ahead\build\lib\mixin.jar;C;C:\java\fop\ahead\build\lib\mmatrix.jar;C;C:\java\fop\ahead\build\lib\unmixin.jar;C;C:\java\fop\ahead\build\lib\xak.jar;.' alias_test
++ diff -w AliasTest4.output AliasTest4.result
++ echo succeeded
+succeeded
++ echo -n 'Testing AliasTest4b ... '
+Testing AliasTest4b ... + java jak2java.Main -s AliasTest4b.jak
++ javac -J-mx32m -classpath 'C;C:\java\fop\ahead\build\lib\bali2jak.jar;C;C:\java\fop\ahead\build\lib\bali2javacc.jar;C;C:\java\fop\ahead\build\lib\balicomposer.jar;C;C:\java\fop\ahead\build\lib\bcjak2java.jar;C;C:\java\fop\ahead\build\lib\jak2java.jar;C;C:\java\fop\ahead\build\lib\jakarta.jar;C;C:\java\fop\ahead\build\lib\jampack.jar;C;C:\java\fop\ahead\build\lib\jrename.jar;C;C:\java\fop\ahead\build\lib\mixin.jar;C;C:\java\fop\ahead\build\lib\mmatrix.jar;C;C:\java\fop\ahead\build\lib\unmixin.jar;C;C:\java\fop\ahead\build\lib\xak.jar;.' alias_test.java
++ java -cp 'C;C:\java\fop\ahead\build\lib\bali2jak.jar;C;C:\java\fop\ahead\build\lib\bali2javacc.jar;C;C:\java\fop\ahead\build\lib\balicomposer.jar;C;C:\java\fop\ahead\build\lib\bcjak2java.jar;C;C:\java\fop\ahead\build\lib\jak2java.jar;C;C:\java\fop\ahead\build\lib\jakarta.jar;C;C:\java\fop\ahead\build\lib\jampack.jar;C;C:\java\fop\ahead\build\lib\jrename.jar;C;C:\java\fop\ahead\build\lib\mixin.jar;C;C:\java\fop\ahead\build\lib\mmatrix.jar;C;C:\java\fop\ahead\build\lib\unmixin.jar;C;C:\java\fop\ahead\build\lib\xak.jar;.' alias_test
++ diff -w AliasTest4b.output AliasTest4b.result
++ echo succeeded
+succeeded
++ echo 'All GenEnv tests succeeded.'
+All GenEnv tests succeeded.

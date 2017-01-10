@@ -1,0 +1,4 @@
+/SoUrCe/s/".*//
+/class/s/abstract/public/
+/ .*.jak/s///
+/^[ \t]*$/d

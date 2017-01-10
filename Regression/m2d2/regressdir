@@ -1,0 +1,21 @@
+rm -rf rubyfiles/*
+mkdir rubyfiles
+cd $1
+
+for i in * ; do
+#   echo $i
+   java m2d2.Main -d $i > ../rubyfiles/$i.rb
+done
+
+cd ../mgpl.correct
+
+for i in *.rb ; do
+    if diff -q -w $i ../rubyfiles/$i ; then
+    echo $i ... succeeded
+    else
+       diff -w $i ../rubyfiles/$i
+       exit 1
+
+    fi
+done 
+

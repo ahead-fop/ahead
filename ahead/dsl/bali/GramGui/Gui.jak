@@ -1,0 +1,409 @@
+layer GramGui;
+
+import Jakarta.SwingUtils.*;
+import Jakarta.util.Find;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.event.*;
+import java.util.LinkedList;
+import java.util.Collections;
+import java.util.Comparator;
+import javax.swing.JFileChooser;
+import java.lang.Integer;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+import java.lang.*;
+
+   
+  
+   
+ public class Gui extends JPanel {
+   // initialize constants used in the application
+   // REMEMBER -- make constants static!
+
+    public  void initConstants() {
+
+    }
+
+    // declare and initialize atomic components here
+
+     JButton    generate;
+     JTextField layerName;
+     JTextField productionName;
+     JTextField fileName;
+     JCheckBox  kernelClasses;
+     JCheckBox  fileInput;
+     JCheckBox  stdInput;
+     JTextField methodSignature;
+     JButton    addMethodButton;
+     JButton    removeMethodButton;
+     JButton    openFileButton;
+     JList      methodList;
+     JFileChooser  fileChooser;
+     JScrollPane   scrollPane;
+     JPanel textInput;
+     JPanel optionInput;
+     JPanel methodInput;
+
+     JTable parameterTable;
+     JScrollPane pane;
+
+     int nargs = 4;
+     String currentFileName;
+     String DefaultFileName = " ";
+     JPanel parentPanel;
+     DefaultListModel model;
+
+
+    public Gui() {
+
+      generate            = new JButton("Generate!");
+      addMethodButton     = new JButton("Add       ");
+      addMethodButton.setEnabled(false);
+      removeMethodButton = new JButton("Remove  ");
+      removeMethodButton.setEnabled(false);
+      openFileButton = new JButton("Browse");
+      openFileButton.setToolTipText("open a file");
+
+      parentPanel = this;
+
+      this.setLayout(new BorderLayout());
+      layerName = new JTextField(10);
+      layerName.setText(Find.currentDirectory());
+      layerName.setBorder( BorderFactory.createTitledBorder("Layer Name") );
+
+      
+      productionName = new JTextField(10);
+      productionName.setText("AST_Program");
+      productionName.setBorder( BorderFactory.createTitledBorder(
+                                "Name of start Production") );
+
+      methodSignature = new JTextField(10);
+      methodSignature.setText("execute()");
+      methodSignature.setBorder(BorderFactory.createTitledBorder(
+                                "Method Signature") );
+      methodSignature.setEditable(false);
+
+      fileName = new JTextField(20);
+      fileName.setText("grammar.b");
+      fileName.setBorder( BorderFactory.createTitledBorder(
+				"Name of Class list or Grammar File") );
+
+      kernelClasses = new JCheckBox("include kernel classes");
+      kernelClasses.setSelected(false);
+
+      fileInput = new JCheckBox("include main that uses file input");
+      fileInput.setSelected(false);
+
+      stdInput = new JCheckBox("include main that uses std input");
+      stdInput.setSelected(false);
+
+      JPanel fileInputPanel = new JPanel();
+      fileInputPanel.setBorder(BorderFactory.createEtchedBorder());
+      fileInputPanel.setLayout( new BoxLayout(fileInputPanel, BoxLayout.X_AXIS) );
+      fileInputPanel.add(fileName);
+      fileInputPanel.add(openFileButton);
+
+     
+      fileChooser = new JFileChooser((new File(".")).getPath());
+      fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+
+      model = new DefaultListModel();
+      methodList = new JList(model);
+      scrollPane = new JScrollPane(methodList);
+      methodList.setEnabled(false);
+
+      textInput = new JPanel();
+      textInput.setLayout(new BoxLayout(textInput, BoxLayout.X_AXIS));
+      textInput.add(layerName);  
+      textInput.add(productionName);
+
+      optionInput = new JPanel();
+      optionInput.setBorder(BorderFactory.createEtchedBorder());
+      optionInput.setLayout( new BoxLayout(optionInput, BoxLayout.Y_AXIS) );      
+      optionInput.add(fileInput);
+      optionInput.add(stdInput);
+      optionInput.add(kernelClasses);
+
+      JPanel buttonPanel = new JPanel();
+      buttonPanel.setLayout( new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));      
+      buttonPanel.add(addMethodButton);
+      buttonPanel.add(removeMethodButton);
+
+      JPanel north = new JPanel();
+      north.setLayout( new BoxLayout(north, BoxLayout.Y_AXIS) );
+      north.add(textInput);
+      north.add(optionInput);
+
+      JPanel methodPanel = new JPanel();
+      methodPanel.setLayout( new BorderLayout() );
+      methodPanel.add(optionInput, BorderLayout.NORTH);
+      methodPanel.add(methodSignature, BorderLayout.CENTER);
+      methodPanel.add(scrollPane, BorderLayout.SOUTH);
+
+      JPanel p = new JPanel();
+      p.setLayout( new BoxLayout(p, BoxLayout.X_AXIS) );
+      p.add(methodPanel);
+      p.add(buttonPanel);
+
+      JPanel gPanel = new JPanel();
+      gPanel.setLayout( new BorderLayout() );
+      gPanel.add(p, BorderLayout.CENTER);
+      gPanel.add(generate, BorderLayout.SOUTH);
+
+      this.add(north, BorderLayout.NORTH);
+      this.add(fileInputPanel, BorderLayout.CENTER);
+      this.add(gPanel, BorderLayout.SOUTH);
+
+      initListeners();
+   }
+
+    /**
+     *Check to see if a method signature is syntactly correct
+     */
+    private boolean validMethod(String method) {
+
+  	String methodRegex = "[$_a-zA-Z][$_a-zA-Z0-9]*\\s*"          //method name 
+			     + "\\(\\s*([a-zA-Z][.a-zA-Z]*\\s+"      //type
+			     +"[$_a-zA-Z][$_a-zA-Z0-9]*\\s*"	     // variable
+			     +"(\\s*,\\s*[a-zA-Z][.a-zA-Z]*\\s+[$_a-zA-Z][$_a-zA-Z0-9]*)*){0,1}\\s*\\)\\s*";
+	java.util.regex.Pattern p = java.util.regex.Pattern.compile(methodRegex);
+	Matcher m = p.matcher(method);
+	if(m.matches()) return true;
+	else return false;	
+    }
+
+
+   // initialize listeners here
+
+
+
+   public void initListeners() {
+      generate.addActionListener( new ActionListener() {
+      public void actionPerformed( ActionEvent e ) {
+         boolean errors = false;
+         boolean isClassFile;
+
+         String lname = layerName.getText();
+         String prname = productionName.getText();
+         String mname = methodSignature.getText();
+         String cname = " ";
+         String gname = " ";
+
+	 nargs = 4;         
+         String s = fileName.getText();
+         File checkFile = new File(s);
+         if(!checkFile.exists()){
+               JOptionPane.showMessageDialog( null, "Error: " + s
+                    + " can not be found" );
+               return;
+         }
+         nargs += 2;
+         if( s.endsWith(".b")) {
+            isClassFile = false;
+            gname = s;
+         }else {
+            isClassFile = true;
+            cname = s;
+         }
+
+         if (kernelClasses.isSelected()){
+            nargs = nargs + 2 + model.getSize();
+         }
+         if (fileInput.isSelected()) nargs++;
+         if (stdInput.isSelected()) nargs++;
+
+         String args[] = new String[nargs];
+
+         nargs = 0;
+         if (kernelClasses.isSelected()){
+            args[nargs++] = "-k";
+            Integer I = new Integer(model.getSize());
+            args[nargs++] =  I.toString();
+            int index = methodList.getSelectedIndex();
+            if(model.getSize() == 0){
+               JOptionPane.showMessageDialog( null, "Error: Please add method to the list" );
+               return;
+            }
+            
+            for(int i = 0; i < model.getSize(); i++){
+                args[nargs++] = (String)(methodList.getModel().getElementAt(i));
+            }
+         }
+         if (!isClassFile){
+            args[nargs++] = "-g";
+            args[nargs++] = gname;
+         }else{
+            args[nargs++] = "-l";
+            args[nargs++] = cname;
+         }
+         if (fileInput.isSelected()) args[nargs++] = "-f";
+         if (stdInput.isSelected()) args[nargs++] = "-s";
+	 args[nargs++] = "-start";
+         args[nargs++] = prname;
+	 args[nargs++] = "-layer";
+         args[nargs++] = lname;
+         
+         
+         try {
+                //for(int i = 0; i < args.length; i++) System.out.println(args[i]);
+		Main instance = new Main () ;
+		instance.generateObject (args) ;
+	 } catch (Throwable thrown) {
+		thrown.printStackTrace () ;
+		System.exit (1) ;
+	 }
+
+         JOptionPane.showMessageDialog( null, "code templates generated" );
+         System.exit(1);
+
+      }
+     });
+
+      addMethodButton.addActionListener( new ActionListener() {
+        public void actionPerformed( ActionEvent e ) {
+           String s = methodSignature.getText().trim();
+           boolean duplicate = false;
+
+	   if(!validMethod(s)) {
+		JOptionPane.showMessageDialog( null, "Incorrect syntax for method: " + s );
+		return;
+	   }
+           if (s.equals("")) {
+                Toolkit.getDefaultToolkit().beep();
+                return;
+            }
+
+            int index = methodList.getSelectedIndex();
+            int size = model.getSize();
+            if(size == 0){
+               removeMethodButton.setEnabled(true);
+            }
+
+            for(int i = 0; i < model.getSize(); i++){	       
+                if(s.equals(methodList.getModel().getElementAt(i)))
+                   duplicate = true;
+            }
+            if(!duplicate){
+               if (index == -1 || (index+1 == size)) {
+                   model.addElement(s);
+               } else {
+                   model.insertElementAt(s, index+1);
+               }
+               methodSignature.setText(null);
+            }
+         }
+
+       });
+
+
+      removeMethodButton.addActionListener( new ActionListener() {
+        public void actionPerformed( ActionEvent e ) {
+
+           int index = methodList.getSelectedIndex();
+            model.remove(index);
+
+            int size = model.getSize();
+
+            if (size == 0) {
+
+                removeMethodButton.setEnabled(false);
+
+            } else {
+                if (index == model.getSize())//removed item in last position
+                    index--;
+            }
+
+        }
+      });
+     
+
+      kernelClasses.addActionListener( new ActionListener() {
+        public void actionPerformed( ActionEvent e ) {
+
+           if(kernelClasses.isSelected()){
+              methodSignature.setEditable(true);
+              addMethodButton.setEnabled(true);
+              removeMethodButton.setEnabled(true);
+              methodList.setEnabled(true);
+           }else{
+              methodSignature.setEditable(false);
+              addMethodButton.setEnabled(false);
+              removeMethodButton.setEnabled(false);
+              methodList.setEnabled(false);
+           }
+       }
+
+      });
+
+      
+
+       openFileButton.addActionListener( new ActionListener ()
+        {
+	   public void actionPerformed(ActionEvent e)
+		{
+		  int returnVal=0;
+                  returnVal = fileChooser.showOpenDialog(parentPanel);
+
+		  if (returnVal == JFileChooser.APPROVE_OPTION)
+		  {
+		      File Inputfile = fileChooser.getSelectedFile();
+		      String Name = Inputfile.getName();
+
+	              if (Name.equals(DefaultFileName) || Name.equals("")){
+                         // if the chosen name is the default you have to change it
+		         JOptionPane.showMessageDialog(null, "Wrong File Name ","Error!",
+					JOptionPane.ERROR_MESSAGE);
+			 };
+
+			 currentFileName = Inputfile.getPath();
+		         fileName.setText(currentFileName);
+		      };
+		 } // of action Performed
+       });
+
+	fileInput.addActionListener( new ActionListener () {
+	   public void actionPerformed(ActionEvent e){
+		if(fileInput.isSelected()) {
+		    stdInput.setSelected(false);
+		    stdInput.setEnabled(false);
+		}
+		else {
+		    stdInput.setEnabled(true);
+		}
+	}});
+
+	stdInput.addActionListener( new ActionListener () {
+	   public void actionPerformed(ActionEvent e){
+		if(stdInput.isSelected()) {
+		    fileInput.setSelected(false);
+		    fileInput.setEnabled(false);
+		}
+		else {
+		    fileInput.setEnabled(true);
+		}
+	}});
+	
+    }
+
+
+
+   public void valueChanged(ListSelectionEvent e) {
+        if (e.getValueIsAdjusting() == false) {
+
+            if (methodList.getSelectedIndex() == -1) {
+            //No selection, disable fire button.
+                removeMethodButton.setEnabled(false);
+                methodSignature.setText("");
+
+            } else {
+            //Selection, update text field.
+                removeMethodButton.setEnabled(true);
+                String name = methodList.getSelectedValue().toString();
+                methodSignature.setText(name);
+            }
+        }
+     }
+   }

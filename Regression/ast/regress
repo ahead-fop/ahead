@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+case "$(command -p uname)" in
+    CYGWIN*) CP="$(cygpath --windows --path -- "${CLASSPATH};.")" ;;
+    *)       CP="${CLASSPATH}:." ;;
+esac
+
+echo -e "\nAST regression test"
+echo "****************************************"
+
+echo -e "\nGenerating base case ..."
+cp g0.jjava g0.java
+javac g0.java
+
+rm -rf foo
+java -cp "${CP}" g0 foo
+rm -rf base *.class *.java
+mv foo base
+
+for f in g?.jak g??.jak ; do
+	root=${f%.jak}
+	echo -e "\nTesting" $f "..."
+
+	rm -rf g0gen* g0.class foo
+
+	echo -e "\tconverting" $f "to" $root.java "..."
+	java jak2java.Main $f
+
+	echo -e "\tcompiling" $root.java "..."
+	javac $root.java
+
+	echo -e "\tcreating g0gen.java"
+	java -cp "${CP}" $root >g0gen.java
+
+	echo -e "\tcompiling g0gen.java"
+	javac g0gen.java
+
+	echo -e "\trunning g0gen"
+	java -cp "${CP}" g0 foo
+
+	if diff -w base/makefile foo/makefile ; then
+		echo "Test succeeded for" $f
+	else
+		echo "Test failed for" $f
+		exit 1
+	fi
+done
+
+echo -e "\nAST regression tests succeeded."

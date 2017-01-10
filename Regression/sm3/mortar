@@ -1,0 +1,8 @@
+echo "************ WRFFE MORTAR *************"
+java jak2java.Main wrffe_mortar.spec
+javac wrffe_mortar.java
+java wrffe_mortar > junk
+if ! diff -b junk correct_mortar ; then
+   echo failed
+   exit 1
+fi

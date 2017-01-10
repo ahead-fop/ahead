@@ -1,0 +1,19 @@
+layer FormatJava;
+
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public abstract refines class AstListNode {
+    public void format( int position ) {
+        if ( arg[0] != null )
+            arg[0].format( position );
+    }
+      
+    // for debugging use only
+    public void display() {
+        if ( arg[0] != null )
+            arg[0].display();
+    }
+}

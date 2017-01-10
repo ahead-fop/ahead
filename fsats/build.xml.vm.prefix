@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+#**
+ * ========================================================================= **
+ * VELOCITY TEMPLATE TO GENERATE ANT BUILD FILES:
+ *
+ * First, some background ...
+ *
+ * Velocity is a Java-based macroprocessor available from jakarta.apache.org.
+ * It processes input files (Velocity "templates", usually identified with a
+ * ".vm" extension) by replacing macro references with textual values.  This is
+ * like any other macro-processor, but Velocity macros are represented as Java
+ * "bean" objects and arbitrary Java objects may be passed to Velocity via an
+ * evaluation "context", allowing other Java tools to invoke Velocity
+ * for application-specific text-processing.
+ *
+ * More specifically, the composer supports composition of Velocity templates.
+ * They are "composed" by simply concatenating them into the target file.  For
+ * example, suppose C is a layer composition formed by extending layer A with
+ * layer B.  If layers A and B both contain a file named "basename.vm", then C
+ * will contain a file of the same name formed by concatenating A/basename.vm
+ * with B/basename.vm, in that order.
+ *
+ * Next, the composer forms another concatenation by placing an optional
+ * "prefix" file before C/basename.vm and an optional "suffix" file after
+ * C/basename.vm.  The prefix file, if present, is named "basename.vm.prefix"
+ * and is found in the model search path.  Similarly, the suffix file, if
+ * present, is named "basename.vm.suffix" and is found in the model path.
+ *
+ * Finally, the last concatenation is passed to Velocity for evaluation.  The
+ * resulting output is written to a file named "basename" in C.  This type of
+ * composition may not be as straightforward as that of inheritance since
+ * Velocity is not object-oriented, but properly written Velocity template
+ * files can achieve the same effect.  When Probe calls Velocity, it passes a
+ * "context" containing useful definitions about the composition -- see the
+ * file named "build.xml.vm.suffix" for more information about the context.
+ *
+ * In the procedure outlined above, "basename" can be replaced by any proper
+ * filename.  When this is done, the composer will use Velocity to generate a
+ * file by that name into the target project directory.  This is a powerful
+ * technique that can be used to generate project files of many different
+ * types.
+ *
+ * Now, about Ant build files ...
+ *
+ * If "basename" in the procedure above is replaced by "build.xml", the
+ * composer will generate a file named "build.xml".  These are Ant build files
+ * that can be used to build the rest of the project directory (if you don't
+ * know what an Ant build file is, you should probably read the documentation
+ * about Ant at http://jakarta.apache.org/ant/).
+ *
+ * The file that you're reading now, in fact, is the "build.xml.vm.prefix" file
+ * used in the above procedure description.  This file contains the initial
+ * definitions of Velocity variables used to generate an Ant build file.  The
+ * "build.xml.vm" files in the model layers extend the Velocity variables to by
+ * computing layer-specific values to satisfy the given composition.  Finally,
+ * the suffix file (named "build.xml.vm.suffix" contains the hard-working
+ * Velocity code that generates the target Ant build file.  Refer to
+ * "build.xml.vm.suffix" for more information.
+ * ========================================================================= **
+*#
+#set( $status = true )			## Tracks method call results.
+##
+#set( $jarManifestFile = "" )		## Jar manifest filename, if non-empty.
+##
+#set( $mainName = "" )			## Relative class name for main class.
+##
+#set( $isConfigured = false )		## Runtime config files provided?
+##
+#set( $javaDirectoriesList = [] )	## Names of Java directories included.
+#*
+ * ========================================================================= **
+ * Emacs Editor Set-Up:
+ *
+ * Local Variables:
+ * mode: text
+ * fill-column: 79
+ * End:
+ * ========================================================================= **
+*#

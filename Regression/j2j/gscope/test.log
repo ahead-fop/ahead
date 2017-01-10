@@ -1,0 +1,108 @@
++ '[' -z /usr/bin/bash ']'
++ case "$(command -p uname)" in
+++ command -p uname
+++ uname
++ CP='C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.'
++ java jak2java.Main -v something
++ rm -f -r -- copy
++ mkdir copy
++ cp AliasTest.jak AliasTest.result AliasTest2.jak AliasTest2.result AliasTest2b.jak AliasTest2b.result AliasTest3.jak AliasTest3.result AliasTest4.jak AliasTest4.result AliasTest4b.jak AliasTest4b.result altst.jak altst.result copy
++ cd copy
++ for i in '*'
++ sed '-es/jak2java.Lang/jak2java.*/' AliasTest.jak
++ sed -es/Lang.//g tmp
++ for i in '*'
++ sed '-es/jak2java.Lang/jak2java.*/' AliasTest.result
++ sed -es/Lang.//g tmp
++ for i in '*'
++ sed '-es/jak2java.Lang/jak2java.*/' AliasTest2.jak
++ sed -es/Lang.//g tmp
++ for i in '*'
++ sed '-es/jak2java.Lang/jak2java.*/' AliasTest2.result
++ sed -es/Lang.//g tmp
++ for i in '*'
++ sed '-es/jak2java.Lang/jak2java.*/' AliasTest2b.jak
++ sed -es/Lang.//g tmp
++ for i in '*'
++ sed '-es/jak2java.Lang/jak2java.*/' AliasTest2b.result
++ sed -es/Lang.//g tmp
++ for i in '*'
++ sed '-es/jak2java.Lang/jak2java.*/' AliasTest3.jak
++ sed -es/Lang.//g tmp
++ for i in '*'
++ sed '-es/jak2java.Lang/jak2java.*/' AliasTest3.result
++ sed -es/Lang.//g tmp
++ for i in '*'
++ sed '-es/jak2java.Lang/jak2java.*/' AliasTest4.jak
++ sed -es/Lang.//g tmp
++ for i in '*'
++ sed '-es/jak2java.Lang/jak2java.*/' AliasTest4.result
++ sed -es/Lang.//g tmp
++ for i in '*'
++ sed '-es/jak2java.Lang/jak2java.*/' AliasTest4b.jak
++ sed -es/Lang.//g tmp
++ for i in '*'
++ sed '-es/jak2java.Lang/jak2java.*/' AliasTest4b.result
++ sed -es/Lang.//g tmp
++ for i in '*'
++ sed '-es/jak2java.Lang/jak2java.*/' altst.jak
++ sed -es/Lang.//g tmp
++ for i in '*'
++ sed '-es/jak2java.Lang/jak2java.*/' altst.result
++ sed -es/Lang.//g tmp
++ echo -e '\nGenEnv regression test'
+
+GenEnv regression test
++ echo '****************************************'
+****************************************
++ echo -n 'Testing AliasTest ... '
+Testing AliasTest ... + java jak2java.Main AliasTest.jak
++ javac AliasTest.java
++ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' AliasTest
++ diff -w AliasTest.output AliasTest.result
++ echo succeeded
+succeeded
++ echo -n 'Testing AliasTest2 ... '
+Testing AliasTest2 ... + java jak2java.Main -s AliasTest2.jak
++ javac alias_test.java
++ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' alias_test
++ diff -w AliasTest2.output AliasTest2.result
++ echo succeeded
+succeeded
++ echo -n 'Testing AliasTest2b ... '
+Testing AliasTest2b ... + java jak2java.Main -s AliasTest2b.jak
++ javac alias_test.java
++ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' alias_test
++ diff -w AliasTest2b.output AliasTest2b.result
++ echo succeeded
+succeeded
++ echo -n 'Testing AliasTest3 ... '
+Testing AliasTest3 ... + java jak2java.Main AliasTest3.jak
++ javac AliasTest3.java
++ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' AliasTest3
++ diff -w AliasTest3.output AliasTest3.result
++ echo succeeded
+succeeded
++ echo -n 'Testing AliasTest4 ... '
+Testing AliasTest4 ... + java jak2java.Main -s AliasTest4.jak
++ javac alias_test.java
++ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' alias_test
++ diff -w AliasTest4.output AliasTest4.result
++ echo succeeded
+succeeded
++ echo -n 'Testing AliasTest4b ... '
+Testing AliasTest4b ... + java jak2java.Main -s AliasTest4b.jak
++ javac alias_test.java
++ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' alias_test
++ diff -w AliasTest4b.output AliasTest4b.result
++ echo succeeded
+succeeded
++ echo -n 'Testing altst ... '
+Testing altst ... + java jak2java.Main altst.jak
++ javac altst.java
++ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' altst
++ diff -w altst.output altst.result
++ echo succeeded
+succeeded
++ echo 'All GenEnv tests succeeded.'
+All GenEnv tests succeeded.

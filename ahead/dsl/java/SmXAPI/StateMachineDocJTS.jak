@@ -1,0 +1,61 @@
+layer SmXAPI;
+
+import java.io.*;
+import java.util.*;
+
+  /** JEDI 
+ * StateMachineDocJTS.java
+ * University of Texas at Austin
+ * Department of Computer Sciences
+ * Product-line Architecture Research Group
+ * @rationale This class contains the information of an state machine.
+ * @author Roberto E. Lopez-Herrejon
+ * @version 1.0
+ * @since November 8, 2002
+* @layer<SmXAPI>
+*/
+
+public refines class StateMachineDocJTS {
+ 
+    /** If the state is UnmodifiedTypeExtension 
+     * @pending, move to state extensions 
+     * @layer<SmXAPI>
+     */
+    boolean isExtended = false;
+
+    /** Gets the value of isExtended 
+     * @layer<SmXAPI>
+     */
+    public boolean isExtended() {
+        return isExtended;
+    }
+
+    /** Set the value of the isExtended variable 
+     * @layer<SmXAPI>
+     */
+    public void setIsExtended( boolean _isExtended )
+    {
+        isExtended = _isExtended;
+    }
+
+    /** If the state is class extension SMClsExtends 
+     * @layer<SmXAPI>
+     */
+    boolean isClassExtended = false;
+
+    /** Gets the balue of isClassExteded variable 
+     * @layer<SmXAPI>
+     */
+    public boolean isClassExtended() {
+        return isClassExtended;
+    }
+
+    /** Set the value of isClassExtended variable 
+     * @layer<SmXAPI>
+     */
+    public void setIsClassExtended( boolean _isClassExtended )
+    {
+        isClassExtended = _isClassExtended;
+    }
+ 
+}

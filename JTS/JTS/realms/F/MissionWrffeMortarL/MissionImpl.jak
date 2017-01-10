@@ -1,0 +1,47 @@
+package MissionWrffeMortarL;
+
+import 
+    Jakarta.util.Util;
+import 
+    java.io.*;
+import 
+    F.Libraries.log.Log;
+
+
+    public extends state_machine MissionImpl
+    {
+        states wrffeMortarAccepted;
+
+        // Take this branch if accepting weapon is a mortar.
+        edge wrffeAcceptedMortar : wrffeAccepted -> wrffeMortarAccepted
+            conditions getWeaponType().equals("MTR_PLT") do { }
+
+        // Relay EOM to gun and stop.
+        edge wrffeMortarAccepted1 : wrffeMortarAccepted -> stop
+            conditions wrffeMortarAccepted1Test(message)
+            do { wrffeMortarAccepted1Action(message); }
+
+        // Relay Shot and RoundsComplete to observer.
+        edge wrffeMortarAccepted2 : wrffeMortarAccepted -> wrffeMortarAccepted
+            conditions wrffeMortarAccepted2Test(message)
+            do { wrffeMortarAccepted2Action(message); }
+
+
+         // added
+         public void wrffeMortarAccepted1Action(Event message) {
+            sendUp(( Message)message.clone());
+         }
+
+         public boolean wrffeMortarAccepted1Test(Event message) {
+            return (message instanceof EomMessage);
+         }
+
+         public void wrffeMortarAccepted2Action(Event message) {
+            sendDown(( Message)message.clone());
+         }
+
+         public boolean wrffeMortarAccepted2Test(Event message) {
+            return (message instanceof ShotMessage)
+                || (message instanceof RoundsCompleteMessage);
+         }
+    }

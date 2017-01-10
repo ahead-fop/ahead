@@ -1,0 +1,17 @@
+## DeprecatedTags.vm
+## JEDI Project 
+## HTML Template for Deprecated Tags
+## Author: Roberto E. Lopez-Herrejon
+## Last update: November 6, 2002
+
+
+#set($deprecatedText=$generator.fullTextComment($doc,"@deprecated"))
+#if ($deprecatedText != "")
+      <DT>
+      <B> Deprecated  </B> &nbsp;
+      <DD> $deprecatedText </DD>
+      <BR>
+#end
+
+
+

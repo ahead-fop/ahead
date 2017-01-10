@@ -1,0 +1,6 @@
+layer one.left;
+
+public class B {
+   public void print() { System.out.println("left.B works! "
+       + $pack.A.a ); }
+}

@@ -1,0 +1,79 @@
+
+import Jakarta.symtab.*;
+import jak.Lang;
+import java.io.PrintWriter;
+
+public class test6 {
+    private static PrintWriter pw = new PrintWriter(System.out);
+
+    public static void main(String[] args) {
+	Lang.AST_Program prg = prg{
+	    import Build;
+
+	    public class foo {
+		int[] iarray;
+
+		public foo[] getFoo()[] {
+		    boolean[][] barray;
+
+		    {
+			int barray;
+
+			x = 5;
+		    }
+		}
+	    }
+	}prg;
+
+	Lang.AST_Stmt assnStmPat = match stm{ x = 5; }stm;
+	Lang.AstCursor program = new Lang.AstCursor();
+	Lang.AstCursor stmt = new Lang.AstCursor();
+
+	// Locate statement inside getFoo() method
+	program.First(prg);
+	assnStmPat.findPattern(program, stmt);
+
+	Symtab st = Lang.Symtab.instance();
+
+	// Build symbol table
+	prg.buildSymbolTable();
+
+	// Bind to getFoo()
+	MethodInfo method = (MethodInfo) st.lookup("foo.getFoo()");
+
+	// Test getFoo's return type
+	Type type = method.getReturnType();
+
+	pw.println("Return type of method getFoo() is " +
+		   type.getFullName());
+	pw.println("Method signature: " + method.getMethodSignature());
+	pw.println("Dim: " + type.getDim());
+
+	// lookup barray in context of getFoo() method
+	FieldInfo field = (FieldInfo) st.lookup("barray", method);
+	type = field.getType();
+	pw.println("\nbarray signature: " + field.getFieldSignature());
+	pw.println("barray type: " + type.getFullName());
+	pw.println("Dim: " + type.getDim());
+
+	// lookup barray in context of nested block
+	Scope scope = (Scope) stmt.node.locateScope();
+	field = (FieldInfo) st.lookup("barray", scope);
+	type = field.getType();
+	pw.println("\nbarray in nested block:");
+	pw.println("barray signature: " + field.getFieldSignature());
+	pw.println("barray type: " + type.getFullName());
+	pw.println("Dim: " + type.getDim());
+
+	field = (FieldInfo) st.lookup("iarray", method);
+	type = field.getType();
+	pw.println("\niarray signature: " + field.getFieldSignature());
+	pw.println("iarray type: " + type.getFullName());
+	pw.println("Dim: " + type.getDim());
+
+	
+	// Dump symbol table
+	st.dump(pw);
+	pw.flush();
+    }
+}

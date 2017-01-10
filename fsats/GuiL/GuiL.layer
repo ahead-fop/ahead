@@ -1,0 +1,160 @@
+//                              -*- Mode: JTS -*-
+// Version         :
+// Author          : Robert S. MacDonald
+// Last Modified By: Bryan D. Hopkins
+// Last Modified On: Mon May  8 10:27:00 2000
+
+layer GuiL ( F lower )
+realm F
+extends lower 
+imports
+    F.Libraries.laydown.*,
+    java.util.*
+{
+    public static class guiClass {
+       static fsats.guiIf.UIModel gui = new fsats.gui.GUI();
+    }
+
+    /** Modify opfacs to notify the GUI of relevant events to display. */
+    public static class OpfacImpl 
+        extends lower.OpfacImpl
+    {
+        /** Notify GUI after an opfac is created. */
+        public void init(OpfacDataWrapper opfac, Network network)
+        {
+            super.init(opfac, network);
+            guiClass.gui.stateChanged(new OpfacAdapter(this));
+        }
+
+        /** Notify GUI when an opfac is sent a message. */
+        public void deliver($TEqn.Event message)
+        {
+            super.deliver(message);
+            if (message instanceof $TEqn.Message)
+                guiClass.gui.messageSent(new MessageAdapter(($TEqn.Message)message));
+        }
+
+        /** Notify GUI after an opfac processes an event. */
+        protected void receive($TEqn.Event event)
+        {
+            super.receive(event);
+            guiClass.gui.stateChanged(new OpfacAdapter(this));
+        }
+    }
+    
+    private static class OpfacAdapter
+        implements fsats.guiIf.Opfac
+    {
+        private String id;
+        private String type;
+        private fsats.guiIf.Location location;
+        private fsats.guiIf.Mission[] missions;
+
+        private $TEqn.Opfac opfac;
+
+        public OpfacAdapter($TEqn.Opfac opfac)
+        {
+            this.opfac=opfac;
+            id = opfac.getName();
+            type = opfac.getType().toString();
+            location = new LocationAdapter(opfac.getLocation());
+
+            Collection c = opfac.getActiveMissions();
+            missions = new fsats.guiIf.Mission[c.size()];
+            Iterator ci = c.iterator();
+            for (int i=0; i<missions.length; ++i)
+                missions[i] = new MissionAdapter(($TEqn.Mission)ci.next());
+        }
+
+        public String getId() { return id; }
+        public String getType() { return type; }
+        public fsats.guiIf.Location getLocation() { return location; }
+        public fsats.guiIf.Mission[] getActiveMissions() { return missions; }
+
+        public void putTarget(String id, fsats.guiIf.Target target)
+        {
+            $TEqn.Location location =
+                new $TEqn.LocationLatLong(
+                    target.getLocation().getLatitude(),
+                    target.getLocation().getLongitude());
+            $TEqn.Target targetData =
+                new $TEqn.TargetImpl(target.getType(), location);
+            $TEqn.MissionData mission =
+                new $TEqn.MissionDataImpl($TEqn.MissionType.wrffe, targetData);
+            $TEqn.TargetEvent message = 
+                new $TEqn.TargetEvent(id, mission);
+            opfac.deliver(message);
+        }
+    }
+
+    private static class LocationAdapter
+        implements fsats.guiIf.Location
+    {
+        private float latitude;
+        private float longitude;
+
+        public LocationAdapter($TEqn.Location location)
+        {
+            this.latitude = location.getLatitude();
+            this.longitude = location.getLongitude();
+        }
+
+        public float getLatitude() { return latitude; }
+        public float getLongitude() { return longitude; }
+    }
+
+    private static class MissionAdapter
+        implements fsats.guiIf.Mission
+    {
+        private String id;
+        private String state;
+        private String stringValue;
+        private fsats.guiIf.Location targetLocation;
+
+        public MissionAdapter($TEqn.Mission mission)
+        {
+            id = mission.getId();
+            state = mission.getState();
+            targetLocation = 
+                new LocationAdapter(mission.getTarget().getLocation());
+            stringValue = mission.toString();
+        }
+        
+        public String getId() { return id; }
+
+        public String getState() { return state; }
+
+        public fsats.guiIf.Location getTargetLocation() 
+        { 
+            return targetLocation; 
+        }
+        
+        public String toString() { return stringValue; }
+    }
+    
+    private static class MessageAdapter
+        implements fsats.guiIf.Message
+    {
+        String type;
+        String source;
+        String destination;
+        String missionId;
+        String specific;
+
+        public MessageAdapter($TEqn.Message message)
+        {
+            type = message.getType().toString();
+            source = message.getSource();
+            destination = message.getDestination();
+            missionId = message.getMissionId();
+            specific = message.getSpecific(); 
+        }
+
+        public String getType() { return type; }
+        public String getSource() { return source; }
+        public String getDestination() { return destination; }
+        public String getMissionId() { return missionId; }
+        public String getSpecific() { return specific; }
+    }
+}
+

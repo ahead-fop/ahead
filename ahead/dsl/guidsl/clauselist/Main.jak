@@ -1,0 +1,32 @@
+// generate cnfClauses for each formula
+
+import Jakarta.util.*;
+
+refines class Main  {
+   static boolean outputModelPredicate = false;
+
+   static boolean processOptions( char o ) {
+        if (Super(char).processOptions(o)) return true;
+        if ( o == 'o' )
+            outputModelPredicate = true;
+        return (o == 'o');
+   }
+
+   static void marqueeAdditions() {
+        System.out.println( "                -o output model predicate" );
+        Super().marqueeAdditions();
+   }
+
+   static public void process( Model m ) throws SemanticException {
+      Super(Model).process(m);
+      production.makeClauses();
+      pattern.makeClauses();
+      ESList.makeClauses();
+      grammar.makeClauses();
+      if (Util.errorCount() != 0)
+         throw new SemanticException( "Errors in making conjunctive normal formulas" );
+      // now exit if we set the -o option
+      if (outputModelPredicate)
+         System.exit(0);
+   }
+}

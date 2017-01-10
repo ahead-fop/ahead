@@ -1,0 +1,15 @@
+// this test evaluates the signature methods and in particular
+// the Dims productions
+
+// it should report errors
+
+SoUrCe RooT aaa "ccc";
+
+class foo {
+   foo( int a, int[] b, int[] c[]) {}
+	foo( int a, int b[], int c[][]) {}
+	foo( int a, int b, int c) {}
+	foo( int a, int b, int c) {}
+
+}
+

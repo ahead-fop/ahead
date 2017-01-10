@@ -1,0 +1,45 @@
+/** Args.jak
+  * @author Roberto E. Lopez-Herrejon
+*/
+
+layer j2ajClassx;
+
+/** This class is executed whenever the is a method call (constructor call?)
+ * In here, verify that it is a call to super then append an extra parameter
+ * at the end of the list.
+*/
+public refines class BlockC {
+
+    /** Reduce method */
+    public void reduce2java( AstProperties props ) {
+
+        // Tests whether the blocks is inside an aspect
+        String isAspect = (String) props.getProperty("Aspect");
+
+        // If we are dealing with an aspect
+        if (isAspect!=null) {
+            props.print(" {");
+
+            // Puts a marker on the context
+            VarContext context=(VarContext)props.getProperty("VariableContext");
+            context.pushMarker();
+
+            // Reduces AST_Stmt
+            arg[0].reduce2java(props);
+
+            // @debug
+            System.out.println("Context before poping block " + context);
+
+            // Pops the context
+            context.popContext();
+
+            // @debug
+            System.out.println("Context after block " + context);
+
+            props.print(" }");
+        } else {  // It is the default implementation of block
+            Super(AstProperties).reduce2java(props);
+        }
+
+    } // of reduce2java
+}

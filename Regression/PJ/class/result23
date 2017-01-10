@@ -1,0 +1,14 @@
+// tests refinement of constructors
+
+layer mid;
+
+refines class one {
+   String barf;
+   String biff;
+
+   refines one(int i) { { barf = ""; } { biff= ""; } }
+
+   refines one(float j) { { barf= "float"; } { biff= "float"; } }
+
+   refines one() { { barf= "biff"; } { biff= "biff"; } }
+}

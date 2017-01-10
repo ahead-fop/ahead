@@ -1,0 +1,54 @@
+#!/bin/sh
+
+[ -z "$BASH" ] && exec bash "$0" "$@"
+
+case "$(command -p uname)" in
+    CYGWIN*) CP="${CLASSPATH};." ;;
+    *)       CP="${CLASSPATH}:." ;;
+esac
+
+function usage() {
+    echo 1>&2 "regress:" "$@"
+    echo 1>&2 "Usage: regress [ --pizza ] [ <test> ... ]"
+    exit 1
+}
+
+TESTS=()
+for ARG in "$@" ; do
+    case "${ARG}" in
+	--pizza | -p) compiler="java -ms16m pizza.compiler.Main" ;;
+	-*) usage "invalid option (${ARG})" ;;
+	?*) TESTS=( ${TESTS[@]} "${ARG}" ) ;;
+    esac
+done
+
+compiler="${compiler:-javac -J-mx32m}"
+
+echo "*********** symtab regression test **********"
+
+case "$(uname)" in
+    CYGWIN*) export CLASSPATH="${CLASSPATH};member/m.jar" ;;
+    *)       export CLASSPATH="${CLASSPATH}:member/m.jar" ;;
+esac
+
+[[ "${#TESTS[@]}" > 0 ]] || TESTS=(test8.jak)
+
+for f in ${TESTS[@]} ; do
+    root="${f%.jak}"
+    root="test${root#test}"
+    JAK="${root}.jak"
+
+    echo -e -n "${root}" ".."
+    java jak2java.Main "${JAK}"
+    $compiler $root.java
+    java -cp "${CP}" $root >$root.output
+
+    if diff -b -B $root.output{.correct,} ; then
+	echo "." "succeeded"
+    else
+	echo "." "failed"
+	exit 1
+    fi
+done
+
+echo -e "************ Symbols regression tests succeeded ************"

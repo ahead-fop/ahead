@@ -1,0 +1,23 @@
+layer M2D2Base;
+
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+// used to filter file names that have a particular suffix 
+
+class filterPattern implements FilenameFilter {
+   
+    String suffix;
+   
+    filterPattern( String suffix ) {
+        this.suffix = suffix;
+    }
+   
+    public boolean accept( File dir, String filename ) {
+        return filename.endsWith( suffix );
+    }
+}

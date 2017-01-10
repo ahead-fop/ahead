@@ -1,0 +1,14 @@
+layer Tagging;
+
+refines class AstNode {
+
+      void annotate() {
+         // we add comment tags only if the tagging (-l) option
+         // was selected
+
+         if (Main.tagging) {
+            // now prepend in comments the name of the layer
+            prependComment("\n/*@(" + _source + ")*/\n ");
+         }
+     }
+}

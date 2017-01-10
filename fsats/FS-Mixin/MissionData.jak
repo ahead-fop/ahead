@@ -1,0 +1,23 @@
+layer FS;
+
+import laydown.*;
+
+import java.util.*;
+
+SoUrCe RooT FsatsL "C:!Java!FeatureOrientedProgramming!fsats!FsatsL!MissionData.jak";
+
+/** 
+ * Information about a mission thread.
+ */
+public interface MissionData
+        extends java.io.Serializable, Cloneable 
+    {
+    /** Two missions are equal if they have same id **/
+    public boolean equals( Object other );
+
+    public MissionType getType();
+    public Target getTarget();
+        
+    /** Standard String conversion **/
+    public String toString();
+}

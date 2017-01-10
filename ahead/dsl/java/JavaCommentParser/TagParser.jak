@@ -1,0 +1,482 @@
+layer JavaCommentParser;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+ // end of CommentParser
+
+// *******************************************************************
+// *******************************************************************
+// *******************************************************************
+// *******************************************************************
+
+/** TagParser.java
+ * This class contains auxiliary functions to parse comments
+ * using Java's regular expressions libraries
+ * Extensible Tag Parser for Jedi
+ * @author Roberto E. Lopez-Herrejon
+ * Product-Lines Architecture Research Lab
+ * Department of Computer Sciences
+ * University of Texas at Austin
+ * Last Update: November 5, 2002
+ * @layer<JavaCommentParser>
+ */
+
+public class TagParser {
+
+    // ***********************************************************************
+    // ******************** Let the magic begin ******************************
+    // ***********************************************************************
+
+        // Static constants for error and message handling
+    public static final int COMMENT_NOT_FOUND = -1;
+    public static final int TAGS_NOT_FOUND = -2;
+    public static final int BEGIN_NOT_FOUND = -3;
+    public static final int END_NOT_FOUND = -4;
+    public static final int HEADER_NOT_FOUND = -5;
+
+    // Static constants for pattern matching
+    
+    // The start is marked with /**, care should be taken to 
+    // special symbols for reg. expr. and scape characters for strings.
+    public static final String START_OF_COMMENT = "^/\\*\\*";
+
+    // This other pattern permits capturing tags with only the name
+    public static final String TAG = "(^\\**)( *)(@\\S+)( *)(.*)";
+
+    public static final String END_OF_COMMENT = "(.*\\*/)";
+    public static final String START_ASTERICS = "(^\\**)";
+    public static final String TAG_FIRST_LINE = 
+    "(^/\\*\\*)( +)(@\\S+)( +)(.*)";
+
+    public static final String 
+    ONLY_SLASH = "^/.*"; // removal of end comment
+    public static final String 
+    TEXT_AFTER_SLASH = "(\\*+/.*)"; // remove text after comment closed
+    public static final String 
+    START_WITH_TAG = "(^@\\S+)( *)(.*)";
+    // collapse tag lines 
+
+       // ************************************************************
+       // **************** Auxiliary formatting functions ************
+
+       /** trimComment receives a raw string comment. First splits it 
+        * in lines and removes any leading or traling spaces in those lines.
+        * @return Array of string with the lines of the comment.
+        * @layer<JavaCommentParser>
+        */
+    public static String[] trimComment( String rawComment ) {
+        // Matches by new lines
+        Pattern p = Pattern.compile( "[\n]" );
+
+        // Split input with the pattern lines
+        String[] result = p.split( rawComment );
+
+        // Trims the lines
+        for ( int i=0; i< result.length; i++ )
+            result[i] = result[i].trim();
+        
+        // Returns the array trimmed
+        return result;
+
+    }
+    // of trimComment
+    
+       /** Removes *'s and white spaces of the elements in that part of the
+        * array and returns a new array with only those elements
+        * @layer<JavaCommentParser>
+        */
+    public static String[] cleanComment( String[] lines, int start, 
+                    int end ) {
+        // If start > end then return and empty array
+        if ( ( start < 0 ) || ( end < 0 ) )
+            return new String[0];
+
+        // Creates the new array
+        int size = end - start + 1;
+        String[] newLines = new String[size];
+        String aux = "";
+
+        // Removes the starting asterics and leading and trailing spaces
+        // Arguments source string and pattern to remove
+        for( int i=0; i< size; i++ ) {
+            aux = removePattern( lines[start + i]+" ",START_ASTERICS );
+            //                System.out.println("Aux " + i + " => " + aux);
+            newLines[i] = aux.trim();
+        }
+ 
+        // Returns the result
+        return newLines;
+    }
+
+    /** Removes a substring that matches a pattern and returns that string
+     * with such part removed.
+     * @layer<JavaCommentParser>
+     */
+    public static String removePattern( String source, String pattern ) {
+        // Pattern to replace
+        Pattern p = Pattern.compile( pattern );
+        
+        // Create a matcher with the source string
+        Matcher m = p.matcher( source );
+
+        // Replaces with empty strings the pattern
+        String result = m.replaceFirst( "" ); // the result string
+
+        // System.out.println("RESULT -> " + result + "," + source + "," +
+        //                   pattern);
+ 
+        // Returns the final result
+        return result;
+    }
+
+    /** Removes the / ** of the start of a comment
+     * Used in findHeaderLines and findTagLines
+     * @layer<JavaCommentParser>
+     */
+    public static String removeStartComment( String source ) {
+        return removePattern( source, START_OF_COMMENT );
+    }
+
+    /** Removes the * / at the end of a comment
+     * Used in findHeaderLines and findTagLines    
+     * @layer<JavaCommentParser>
+     */
+    public static String removeEndComment( String source ) {
+        // First case: the only thing left is the /
+        // after removing leading asterisks and spaces and this is the
+        // last one of the headers or tags
+        Pattern p = Pattern.compile( ONLY_SLASH );
+        Matcher m;
+        
+        // if it was found simply return an empty string
+        m = p.matcher( source );
+        if ( m.find() )
+            return "";
+            
+        // Second case: of the form  text1 * / text2
+        // Returns only text1, ignores the rest of the comment         
+        return removePattern( source, TEXT_AFTER_SLASH );
+    }
+
+    // ***************************************************************
+    // **************  PARSING FUNCTIONS  ****************************
+    // ***************************************************************
+    
+    /** findBegin returns the index of the array where the beginning 
+     *  of the comment is. That is, where /** is 
+     *  If there is no comment it returns BEGIN_NOT_FOUND
+     * @layer<JavaCommentParser>
+     */ 
+    public static int findBegin( String[] lines ) {
+        // Auxiliary variables
+        boolean found = false;
+        int index = BEGIN_NOT_FOUND;
+
+        // Creates the pattern and matcher for  /**
+        Pattern p = Pattern.compile( START_OF_COMMENT );
+        Matcher m;
+ 
+        for( int i=0; i< lines.length && !found; i++ ) {
+            m = p.matcher( lines[i] );
+            found = m.find();
+            if ( found ) {
+                index = i;
+                break;
+            }
+        }
+           
+        // Returns the index of the start of comment 
+        return index;
+    }
+
+    /** Finds the end of a comment, indicated by asterisk /  
+     * If there is no end then it returns END_NOT_FOUND
+     * To save search time begins at start position.
+     * @layer<JavaCommentParser>
+     */
+    public static int findEnd( String[] lines, int start ) {
+
+        // Auxiliaty variables
+        boolean found = false;
+        int index = END_NOT_FOUND;
+
+        // If no begin was found the no end can be found
+        if ( start < 0 )
+            return index;
+
+        // Creates the pattern and matcher for  asterisk /
+        Pattern p = Pattern.compile( END_OF_COMMENT );
+        Matcher m;
+ 
+        for( int i = start; i< lines.length && !found; i++ ) {
+            m = p.matcher( lines[i] );
+            found = m.find();
+            if ( found ) {
+                index = i;
+                break;
+            }
+        }
+           
+        // Returns the index of the start of comment 
+        return index;
+    
+    }
+
+    /** Finds the first tag in the comment, and returns the index in the
+     * text lines that contains it. If none found returns flag 
+     * TAGS_NOT_FOUND
+     * @param lines contains the text lines of the comment
+     * @return TAGS_NOT_FOUND or index of the first tag in text lines    
+     * @layer<JavaCommentParser>
+     */
+    public static int findFirstTag( String[] lines, int start, int end ) {
+        // The first tag can be in one of two cases: 
+        // a) first tag is in first line, so the line contains the slash **
+        // b) otherwise, to the line contains asteriks white spaces and the
+        //    tag drescription
+ 
+        // First case: first tag is in the first line of the comment
+        // If so, there is no header so return empty string
+        Pattern pTagFirstLine = Pattern.compile( TAG_FIRST_LINE );
+        Matcher mTagFirstLine = pTagFirstLine.matcher( lines[start] );
+        boolean foundFirstLine = mTagFirstLine.find();
+
+        // If it was found in the start line 
+        // the first of comment header of the first tag if no header given
+        if ( foundFirstLine )
+            return start;
+
+        // Second case: first appearance of a tag
+        int i = start;
+        boolean found = false;
+        int first_tag = TAGS_NOT_FOUND;
+        
+        // Patterns and Matches for asterisks@sometag
+        Pattern pTag = Pattern.compile( TAG );
+        Matcher mTag;
+
+        // Loops through the comment lines searching for a tag @
+        for( ; i <= end && !found; i++ ) {
+            // Searches match of @
+            mTag = pTag.matcher( lines[i] );
+            found = mTag.find();
+            if ( found ) {
+                first_tag = i;
+                break;
+            }
+        }
+        
+        return first_tag;
+    }
+
+    /** Finds the bounds of the header if any, and returns the cleaned
+     * lines, without asteriks and leading or trailing whitespaces
+     * @param start is the start of the comment / **
+     * @param end is the end of the comment * /
+     * @param firstTag is the index of the first tag in the comment
+     * @layer<JavaCommentParser>
+     */
+    public static String[] findHeaderLines( String[] lines, int start, 
+                    int end, int firstTag ) {
+        // The way to determine the boundaries of the header is to look
+        // for the first @tag appearance in the text starting in start
+        // There are two cases: 
+        // a) first tag is in first line, so the line contains the slash **
+        // b) otherwise, to the line contains asteriks white spaces and the
+        //    tag drescription
+ 
+        // First case: first tag is in the first line of the comment
+        // then there is no header so an empty string array is returned
+        if ( firstTag == start )
+            return new String[0];
+
+        // Second case: first appearance of a tag is not first 
+        // line of comment
+
+        // Boundaries of the header
+        int bottom_bound = HEADER_NOT_FOUND;
+        int upper_bound = HEADER_NOT_FOUND;
+
+        // if a tag was found then the header goes from start to 
+        // first_tag-1
+        if ( firstTag != TAGS_NOT_FOUND ) { // a tag was found
+            bottom_bound = start;
+            upper_bound = firstTag - 1;
+        }
+        else         // no tag found, the header goes from start to end
+            {
+            bottom_bound = start;
+            upper_bound = end;
+        }
+        
+        // cleans the header of starting asterics and white spaces
+        String[] HeaderLines = cleanComment( lines, bottom_bound,
+                                            upper_bound );
+        
+        // if there is a header it should contain the start of 
+        // the comment / **
+        if ( HeaderLines.length != 0 ) {
+            HeaderLines[0] = removeStartComment( HeaderLines[0] );
+
+            // if there were no tags but there was a header
+            // remove also the end of comment character
+            int lastHeader = HeaderLines.length - 1;
+            if ( upper_bound == end )
+                HeaderLines[lastHeader] = 
+                                    removeEndComment( HeaderLines[lastHeader] );
+        }
+
+        // returns result
+        return HeaderLines;
+    }
+
+    /** Merges all the Strings into one big String chunk
+     *  @param lines are the header or tags trimmed lines
+     *  @return a big String that concatenates all the lines    
+     * @layer<JavaCommentParser>
+     */
+    public static String collapseArray( String[] lines ) {
+        String result = "";
+        
+        for ( int i = 0; i < lines.length; i++ )
+            result = result + " " + lines[i];
+
+        return result ;
+    }
+
+    /** Computes the lines of the tags.
+     * @param lines are the comment lines
+     * @param start is the start of the comment / **
+     * @param end is the end of the comment
+     * @param firstTag is the index of the first tag in the comment
+     * @return the array of lines that belong to the tag 
+     * @layer<JavaCommentParser>
+     */
+    public static String[] findTagLines( String[] lines, int start, 
+                int end, int firstTag ) {
+        // Boundaries of the tags
+        int bottom_bound = TAGS_NOT_FOUND;
+        int upper_bound = TAGS_NOT_FOUND;
+
+        if ( firstTag == start ) {
+            // remove the first character / of the tag
+            // so that it can be clean of asteriscs
+            lines[start] = lines[start].substring( 1 );
+        }
+
+        // if a tag was found then the TagLines go from there 
+        // to the end of the comment
+        if ( firstTag != TAGS_NOT_FOUND ) {
+            bottom_bound = firstTag;
+            upper_bound = end;
+        }
+        else  // no tags assign boundaries to TAGS_NOT_FOUND  
+            {
+            bottom_bound = upper_bound = TAGS_NOT_FOUND;
+        }
+
+        // cleans the tags of starting asterics and whitespaces
+        String[] TagLines = 
+                   cleanComment( lines, bottom_bound, upper_bound );
+        
+        // if there is a tag section it should contain the end 
+        // of the comment / **
+        int tagsSize = TagLines.length;
+
+        if ( tagsSize != 0 ) {
+            TagLines[tagsSize-1] = removeEndComment( TagLines[tagsSize-1] );
+                
+            // if there was no header but there was a tag section
+            // remove also the start of comment character
+            if ( bottom_bound == start )
+                TagLines[bottom_bound] = 
+                                    removeStartComment( TagLines[bottom_bound] );
+        }
+        
+        // returns the result
+        return TagLines;
+
+    }
+    // end of findTagLines
+
+       /** Computes the lines of the tags, collapsing into one those
+        * tag lines that do not signal the start of another tag line
+        * @param lines are the raw tag lines
+        * @return the array of tag lines where each line is a tag 
+        * @layer<JavaCommentParser>
+        */
+    public static String[] collapseTags( String[] tagLines ) {
+        // Checks to see if there are tags at all, if not
+        // dont bother and return it
+        if ( tagLines.length == 0 )
+            return tagLines;
+
+        // Auxiliary vars to collapse the tags
+        LinkedList tagList =  new LinkedList();
+        String singleTag = "";
+ 
+        // Pattern and Matcher for @sometag
+        Pattern pTag = Pattern.compile( START_WITH_TAG );
+        Matcher mTag;
+       
+        for( int i=0; i< tagLines.length; i++ ) {
+            // Tries to match current indexed element with a tag
+            // if succeeds then keep adding elements to singleTag until
+            // another is found
+            mTag = pTag.matcher( tagLines[i] );
+            if ( mTag.find() ) {
+                // If it is not the first tag, then there is a tag
+                // already there so add it to the list 
+                if ( singleTag != "" )
+                    tagList.add( singleTag );
+                                
+                // Resets the single tag
+                singleTag = tagLines[i];
+            }
+            else // keeps accumulating lines that belong to a tag
+                singleTag = singleTag + " " + tagLines[i];
+        } // for all tagLines
+
+        // It is always required to insert the last tag element
+        // in case it reaches the end of the array and it is either
+        // a multi-line tag or is the last single-line tag
+        tagList.add( singleTag );
+
+        // Converts the list to an array
+        String[] cTags = new String[tagList.size()];
+        for( int i=0; i< tagList.size(); i++ )
+            cTags[i] = ( String ) tagList.get( i );
+
+        // Returns the resulting array
+        return cTags;
+
+    }
+    // of collapseTags
+
+       /** Replaces the first apperance of a String by a second String
+        * @layer<JavaCommentParser>
+        */  
+    public static String firstReplace( String patternString, // pattern to match
+                String targetString,  // where to change
+                String replaceString ) // what to insert
+    {
+          
+        Pattern p = Pattern.compile( patternString );
+        
+        // Create a matcher with the target string
+        Matcher m = p.matcher( targetString );
+
+        // Replaces with empty strings the pattern
+        String result = m.replaceFirst( replaceString ); // the result string
+
+        // Returns the new string
+        return result;
+
+    } // of FirstReplace
+
+}

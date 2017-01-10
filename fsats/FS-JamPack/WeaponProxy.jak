@@ -1,0 +1,35 @@
+layer FS;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+public class WeaponProxy extends ProxyImpl {
+    protected float range;
+
+    public void init( OpfacDataWrapper record )
+        {
+        Super( OpfacDataWrapper ).init( record );
+        range=record.getRange();
+    }
+
+    public boolean canShoot( Mission mission )
+        {
+        return 
+                Super( Mission ).canShoot( mission ) && 
+                    distanceTo( mission.getTarget().getLocation() )<=range;
+    }
+
+    /** Any weapon is better than not a weapon. */
+    public int typePrecedence() {
+        return 1;
+    }
+
+    /** Best (only) weapon is this, unless can't shoot mission at all. */
+    public SelectedProxy getBestWeapon( Mission mission )
+        {
+        return canShoot( mission ) ? new SelectedProxy( this, this ) : null;
+    }
+}

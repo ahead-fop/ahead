@@ -1,0 +1,273 @@
+domain FSATS;
+
+realm F;
+
+// DRC attributes
+
+// used to test that component x sits above y
+
+Synth       initPresent          "the InitL (Main) layer";
+Synth       proxyPresent         "the ProxyL layer";
+Synth       missionPresent       "the MissionL layer";
+Synth       opfacPresent         "the OpfacL layer";
+Synth       scriptPresent        "the ScriptL layer";
+Synth       messagePresent       "the MessageL layer";
+Synth       networkobjectPresent "the NetworkObjectL layer";
+Synth       targetPresent        "the TargetL layer";
+Synth       factoryPresent       "the FactoryL layer";
+Synth       wrffeCommonPresent   "the wrffe_commonL layer";
+Synth       commonMissionPresent "the CommonMissionL layer";
+Synth       basicPresent         "the BasicL layer";
+Synth       mlrsPresent          "the MLRS layer";
+Synth       artilleryPresent     "the artillery layer";
+Synth       mortarPresent        "the mortar layer";
+
+// only one copy of each component permitted
+
+Single      init;
+Single      local;
+Single      gui;
+Single      wrffe_mlrs;
+Single      wrffe_artillery;
+Single      wrffe_mortar;
+Single      wrffe_common;
+Single      commonMission;
+Single      mlrs;
+Single      mortar;
+Single      artillery;
+Single      basic;
+Single      proxy;
+Single      mission;
+Single      opfac;
+Single      script;
+Single      message;
+Single      networkObject;
+Single      target;
+Single      factory;
+
+// these attributes make sure that if a weapon system is
+// included, it is actually used.
+// inherited attributes test component y sits above x
+
+Inherit   uses_mlrs            "uses MLRS";
+Inherit   uses_artillery       "uses artillery";
+Inherit   uses_mortars         "uses mortars";
+
+RankInherit fsatsRank            "FSATS layer ranking";
+
+// initial conditions
+
+conditions() {
+   initPresent.negate();
+   proxyPresent.negate();
+   missionPresent.negate();
+   opfacPresent.negate();
+   scriptPresent.negate();
+   messagePresent.negate();
+   networkobjectPresent.negate();
+   targetPresent.negate();
+   factoryPresent.negate();
+   wrffeCommonPresent.negate();
+   commonMissionPresent.negate();
+   basicPresent.negate();
+   mlrsPresent.negate();
+   artilleryPresent.negate();
+   mortarPresent.negate();
+   fsatsRank.set(10);
+   uses_mlrs.negate();
+   uses_artillery.negate();
+   uses_mortars.negate();
+}
+
+// layer definitions
+
+LocalL[x:F]:F {
+  requires above fsatsRank.geq(4) && local.Pnegate();
+  exports below x { fsatsRank.set(4); local.affirm(); }
+  and_expr ", and "
+  explain_expr Child[0].explain() + Child[0].and() + "threads executed locally within a single process";
+}
+
+InitL[x:F]:F {
+  requires above fsatsRank.geq(4) && init.Pnegate();
+  exports below x { fsatsRank.set(4); init.affirm(); }
+  requires below x proxyPresent.Paffirm() &&
+                   missionPresent.Paffirm() && opfacPresent.Paffirm() && 
+                   opfacPresent.Paffirm() && scriptPresent.Paffirm() &&
+                   messagePresent.Paffirm() && networkobjectPresent.Paffirm() &&
+                   targetPresent.Paffirm() && factoryPresent.Paffirm();
+  exports above { initPresent.affirm(); }
+  and_expr ""
+  explain_expr Child[0].explain() + "\nwith ";
+}
+
+GuiL[x:F]:F { 
+  requires below x opfacPresent.Paffirm() && gui.Pnegate() && initPresent.Paffirm();
+  exports below x { gui.affirm(); }
+  and_expr ", and "
+  explain_expr Child[0].explain() + Child[0].and() + 
+               "a Gui interface for display";
+}
+
+// Mission declarations
+
+wrffe_mlrsL[x:F]:F { 
+  requires above fsatsRank.geq(3) && wrffe_mlrs.Pnegate();
+  exports below x { fsatsRank.set(3); wrffe_mlrs.affirm(); uses_mlrs.affirm(); }
+  requires below x wrffeCommonPresent.Paffirm() && mlrsPresent.Paffirm();
+  and_expr ",\n    "
+  explain_expr Child[0].explain() + Child[0].and() + "wrffe MLRS";
+}
+
+wrffe_artilleryL[x:F]:F { 
+  requires above fsatsRank.geq(3) && wrffe_artillery.Pnegate();
+  exports below x { fsatsRank.set(3); wrffe_artillery.affirm(); uses_artillery.affirm(); }
+  requires below x wrffeCommonPresent.Paffirm() && artilleryPresent.Paffirm();
+  and_expr ",\n    "
+  explain_expr Child[0].explain() + Child[0].and() + "wrffe artillery";
+}
+
+wrffe_mortarL[x:F]:F { 
+  requires above fsatsRank.geq(3) && wrffe_mortar.Pnegate();
+  exports below x { fsatsRank.set(3); wrffe_mortar.affirm(); uses_mortars.affirm(); }
+  requires below x wrffeCommonPresent.Paffirm() && mortarPresent.Paffirm();
+  and_expr ",\n    "
+  explain_expr Child[0].explain() + Child[0].and() + "wrffe mortar";
+}
+
+wrffe_commonL[x:F]:F { 
+  requires above fsatsRank.geq(3) && wrffe_common.Pnegate();
+  exports below x { fsatsRank.set(3); wrffe_common.affirm(); }
+  requires below x commonMissionPresent.Paffirm();
+  exports above { wrffeCommonPresent.affirm(); }
+  and_expr "    "
+  explain_expr Child[0].explain();
+}
+
+CommonMissionL[x:F]:F { 
+  requires above fsatsRank.geq(3) && commonMission.Pnegate();
+  exports below x { fsatsRank.set(3); commonMission.affirm(); }
+  exports above { commonMissionPresent.affirm(); }
+  requires below x missionPresent.Paffirm();
+  and_expr ""
+  explain_expr Child[0].explain() + "\nin the following missions:\n";
+}
+
+// Opfac declarations.
+
+MlrsL[x:F]:F { 
+  requires above fsatsRank.geq(2) && mlrs.Pnegate() && uses_mlrs.Paffirm();
+  exports below x { fsatsRank.set(2); mlrs.affirm(); }
+  exports above { mlrsPresent.affirm(); }
+  requires below x basicPresent.Paffirm();
+  and_expr ",\n   "
+  explain_expr Child[0].explain() + Child[0].and()+ "multi-launch rockets";
+}
+
+MortarL[x:F]:F { 
+  requires above fsatsRank.geq(2) && mortar.Pnegate() && uses_mortars.Paffirm();
+  exports below x { fsatsRank.set(2);  mortar.affirm(); }
+  exports above { mortarPresent.affirm(); }
+  requires below x basicPresent.Paffirm();
+  and_expr ",\n   "
+  explain_expr Child[0].explain() + Child[0].and() + "mortars";
+}
+
+ArtilleryL[x:F]:F { 
+  requires above fsatsRank.geq(2) && artillery.Pnegate() && uses_artillery.Paffirm();
+  exports below x { fsatsRank.set(2); artillery.affirm(); }
+  exports above { artilleryPresent.affirm(); }
+  requires below x basicPresent.Paffirm();
+  and_expr ",\n   "
+  explain_expr Child[0].explain() + Child[0].and() + "artillery";
+}
+
+BasicL[x:F]:F {
+  requires above fsatsRank.geq(2) && basic.Pnegate();
+  requires below x mlrsPresent.Pnegate() && artilleryPresent.Pnegate() &&
+                   mortarPresent.Pnegate();
+  exports below x { fsatsRank.set(2); basic.affirm(); }
+  exports above { basicPresent.affirm(); mlrsPresent.negate();
+                  artilleryPresent.negate(); mortarPresent.negate();
+                }
+  and_expr "   "
+  explain_expr Child[0].explain();
+}
+
+// Basic definitions.
+
+ProxyL[x:F]:F {
+  requires above fsatsRank.geq(1) && proxy.Pnegate();
+  exports below x { fsatsRank.set(1);  proxy.affirm(); }
+  requires below x  opfacPresent.Paffirm() && missionPresent.Paffirm();
+  exports above { proxyPresent.affirm(); }
+  and_expr ""
+  explain_expr Child[0].explain();
+}
+
+MissionL[x:F]:F {
+  requires above fsatsRank.geq(1) && mission.Pnegate();
+  exports below x { fsatsRank.set(1); mission.affirm(); }
+  requires below x  opfacPresent.Paffirm();
+  exports above { missionPresent.affirm(); }
+  and_expr ""
+  explain_expr Child[0].explain();
+}
+
+OpfacL[x:F]:F { 
+  requires above fsatsRank.geq(1) && opfac.Pnegate();
+  exports below x { fsatsRank.set(1); opfac.affirm(); }
+  requires below x targetPresent.Paffirm();
+  exports above { opfacPresent.affirm(); }
+  and_expr ""
+  explain_expr Child[0].explain();
+}
+
+ScriptL[x:F]:F {
+  requires above fsatsRank.geq(1) && script.Pnegate();
+  exports below x { fsatsRank.set(1); script.affirm(); }
+  requires below x messagePresent.Paffirm();
+  exports above { scriptPresent.affirm(); }
+  and_expr ""
+  explain_expr Child[0].explain();
+}
+
+MessageL[x:F]:F {
+  requires above fsatsRank.geq(1) && message.Pnegate();
+  exports below x { fsatsRank.set(1); message.affirm(); }
+  requires below x targetPresent.Paffirm() && networkobjectPresent.Paffirm();
+  exports above { messagePresent.affirm(); }
+  and_expr ""
+  explain_expr Child[0].explain();
+}
+
+NetworkObjectL[x:F]:F {
+  requires above fsatsRank.geq(1) && networkObject.Pnegate();
+  exports below x { fsatsRank.set(1); networkObject.affirm(); }
+  exports above { networkobjectPresent.affirm(); }
+  and_expr ""
+  explain_expr Child[0].explain();
+}
+
+TargetL[x:F]:F { 
+  requires above fsatsRank.geq(1) && target.Pnegate();
+  exports below x { fsatsRank.set(1); target.affirm(); targetPresent.affirm(); }
+  exports above { targetPresent.affirm(); }
+  and_expr ""
+  explain_expr Child[0].explain();
+}
+
+FactoryL[x:F]:F { 
+  requires above fsatsRank.geq(1) && factory.Pnegate();
+  exports below x { fsatsRank.set(0); factory.affirm(); }
+  exports above { factoryPresent.affirm(); }
+  and_expr ""
+  explain_expr Child[0].explain();
+}
+
+FsatsL[]:F { 
+  requires above fsatsRank.geq(0);
+  and_expr ""
+  explain_expr "A Fire Support Automated Test System (FSATS) that supports the weapons systems:\n";
+}
+

@@ -1,0 +1,6 @@
+/SoUrCe/s/".*//
+/ .*.jak/s///
+/jampack: Summary/d
+/Jakarta\.util/d
+/jampack\./d
+/Exception in thread/d

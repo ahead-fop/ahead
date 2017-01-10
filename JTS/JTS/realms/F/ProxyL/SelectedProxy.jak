@@ -1,0 +1,32 @@
+package ProxyL;
+
+import  
+    java.util.*;
+import  
+    F.Libraries.laydown.*;
+import  
+    F.Libraries.log.Log;
+
+
+
+    /** A pair of the best weapon found and 
+     *  to which opfac to send the mission.
+     */
+    public class SelectedProxy
+    {
+        private Proxy via;
+        private Proxy weapon;
+
+        public SelectedProxy( Proxy via, Proxy weapon)
+        {
+          SelectedProxyConstructor(via, weapon);
+        }
+
+        public void SelectedProxyConstructor( Proxy via, Proxy weapon) {
+            this.via=via;
+            this.weapon=weapon;
+      }
+
+        public Proxy getVia() { return via; }
+        public Proxy getWeapon() { return weapon; }
+    }

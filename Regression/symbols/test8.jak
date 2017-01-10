@@ -1,0 +1,87 @@
+
+import Jakarta.symtab.*;
+import jak2java.* ;
+import java.io.PrintWriter;
+
+public class test8 {
+    private static PrintWriter pw = new PrintWriter(System.out);
+    private static MethodInfo method;
+    private static Symtab st = Symtab.instance();
+
+    private static void bind(String expr) {
+	Declaration dcl = st.lookup(expr, method);
+	if (dcl != null) {
+	    pw.println(expr + " binds to:");
+	    dcl.dump(pw, 0);
+	}
+	else
+	    pw.println(expr + " has no binding.");
+    }
+
+    public static void main(String[] args) {
+	AST_Program prg = prg{
+	    public class foo {
+		public void func(foo x) {}
+		public foo func(bar b, int a) {}
+		public void func(char a, float b[]) {}
+		public void func(int a, String b) {}
+		public int func() {
+		    char c;
+		    float f;
+		    float[] fa;
+		    int i;
+		    int[] ia;
+		    String s;
+		    short sh;
+		    bar b;
+		    foo fo;
+		}
+	    }
+
+	    class bar extends foo { }
+	}prg;
+
+	// Build symbol table
+	prg.buildSymbolTable();
+
+	// Bind search context to last func()
+	method = (MethodInfo) st.lookup("foo.func()");
+
+	// Test that overloaded methods are resolved correctly
+	bind("func(c,fa)");
+	bind("func(i,s)");
+	bind("func()");
+
+	// Should fail - need float[] , not float for 2nd arg
+	bind("func(c,f)");
+
+	// Should fail - need int, not int[] for 1st arg
+	bind("func(ia,s)");
+
+	// This one should fail - too few args
+	bind("func(i)");
+
+	// This one should fail - too many args
+	bind("func(i, c, f)");
+
+	// This one should fail - no coersion possible
+	bind("func(f, f)");
+
+	// This one should succeed - coerce short to int
+	bind("func(sh, s)");
+
+	// This one should succeed since bar is a type of foo
+	bind("func(b)");
+
+	// Try some expressions and constants
+	bind("func(3+6, \"hello\")");
+
+	// Should fail since foo is not a type of bar
+	bind("func(fo, 5)");
+
+	// Complex
+	bind("func(func(b, 129))");
+
+	pw.close();
+    }
+}

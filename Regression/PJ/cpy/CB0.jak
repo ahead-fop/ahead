@@ -1,0 +1,13 @@
+// testing long layer names
+
+layer biz.bar.CRooT0;
+
+import x.y.z.*;
+import java.io.Serializable;
+
+public class MyClass extends anotherClass { 
+    int Silent = 0;
+    void foo() throws AFit {}
+    SomeType bar( int x ) { }
+}
+   

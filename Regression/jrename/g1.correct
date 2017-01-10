@@ -1,0 +1,21 @@
+jrename: g1.java:2: Error layer declarations not supported
+jrename: g1.java:12: Error AST Constructors not permitted in Java
+
+
+import java.io.FileInputStream;
+import java.io.PrintWriter;
+import jak2java.*;
+
+class g1$$ {
+
+   public static void main( String args[]) {
+
+   AST_Program prg =;
+
+      AstProperties props = new AstProperties();
+      PrintWriter pw = new PrintWriter(System.out);
+      props.setProperty("output", pw);
+      prg.reduce2java(props);
+      pw.flush();
+   }
+}

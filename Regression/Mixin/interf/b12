@@ -1,0 +1,35 @@
+layer IRooT1;
+
+import x.y.z.*;
+import java.io.Serializable;
+
+SoUrCe RooT IRooT1 "C:!Java!FeatureOrientedProgramming!Regression!Mixin!interf!Ibase1.jak";
+
+// first
+
+abstract interface MyInt$$IRooT1 extends FooInterface { 
+    int Silent = 0;
+    void foo() throws AFit;
+    SomeType bar( int x );
+}
+
+SoUrCe  Iext1 "C:!Java!FeatureOrientedProgramming!Regression!Mixin!interf!IExt1.jak";
+
+// second
+
+ abstract interface MyInt$$Iext1 extends yyy, java.io.Serializable, MyInt$$IRooT1 {
+    int Terse = 2;
+    void foo() throws SomeException;
+    int increment( int i );
+}
+
+SoUrCe  Iext2 "C:!Java!FeatureOrientedProgramming!Regression!Mixin!interf!Iext2.jak";
+
+// third
+
+ public interface MyInt extends java.io.Serializable, MyInt$$Iext1 {
+    overrides void foo() throws AnotherException;
+    overrides void barrr();
+    new int biff( int i );
+    overrides float biff();
+}

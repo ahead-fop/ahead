@@ -1,0 +1,45 @@
+
+jampack: ext1.java:16: Warning state c in transition e3 declaration has not yet been defined
+jampack: ext1.java:20: Warning state b in Exit declaration has not yet been defined
+jampack: ext11.java:15: Warning state d in transition e5 declaration has not yet been defined
+jampack: ext11.java:15: Warning state e in transition e5 declaration has not yet been defined
+jampack: ext11.java:19: Warning state c in transition e6 declaration has not yet been defined
+layer ext1;
+
+import firstPackage.*;
+
+refines State_machine root {
+
+   // from ext 1
+   States d;
+   States e;
+
+   // from ext 11
+   States g;
+   States h;
+
+   // from ext1
+   Transition e2 : d -> e 
+   condition m!=null
+   do { /* action 2 */ }
+
+   Transition e3 : c -> d
+   condition true
+   do { /* action 3 */ }
+
+   Exit b { /* action a */ }
+
+   // from ext11
+   Transition e5 : d -> e 
+   condition m!=null
+   do { /* action 2 */ }
+
+   Transition e6 : c -> d
+   condition true
+   do { /* action 3 */ }
+
+   Exit h { /* action a */ }
+
+   // from ext11
+   void fromext11() { as = 5; }
+}

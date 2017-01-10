@@ -1,0 +1,59 @@
+
+import java.io.PrintWriter;
+import jak.Lang;
+
+public class test6 {
+    public static void main(String[] args) {
+	Lang.AST_Class cls = cls{ public class foo { } }cls;
+	Lang.AstProperties props = new Lang.AstProperties();
+	Lang.AstCursor m = new Lang.AstCursor();
+	Lang.AstCursor n = new Lang.AstCursor();
+	Lang.AstCursor s = new Lang.AstCursor();
+	Lang.AstCursor k = new Lang.AstCursor();
+	PrintWriter pw = new PrintWriter(System.out);
+	Lang.AST_Class pattern = match cls{
+	    $mod(m) class $id(n) extends $id(s) { $mth(k) }
+	}cls;
+	Lang.AstCursor csr = new Lang.AstCursor();
+
+	props.setProperty("output", pw);
+	csr.First(cls);
+	if (pattern.prefixMatch(csr)) {
+	    pw.println("Match succeeded");
+	    if (m.node == null)
+		pw.println("cursor m is null.");
+	    else {
+		pw.print("m = ");
+		m.node.reduce2java(props);
+		pw.print("\n");
+	    }
+
+	    if (n.node == null)
+		pw.println("cursor n is null.");
+	    else {
+		pw.print("n = ");
+		n.node.reduce2java(props);
+		pw.print("\n");
+	    }
+
+	    if (s.node == null)
+		pw.println("cursor s is null.");
+	    else {
+		pw.print("s = ");
+		s.node.reduce2java(props);
+		pw.print("\n");
+	    }
+
+	    if (k.node == null)
+		pw.println("cursor k is null.");
+	    else {
+		pw.print("k = ");
+		k.node.reduce2java(props);
+		pw.print("\n");
+	    }
+	}
+	else
+	    pw.println("Match failed!");
+	pw.flush();
+    }
+}

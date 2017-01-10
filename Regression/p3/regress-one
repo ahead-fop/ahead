@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+if [ "$3" = "-p" ]; 
+then
+   compiler="java -ms16m pizza.compiler.Main"
+else
+   compiler="javac -J-mx32m"
+fi
+
+echo -n "test$2 ... "
+
+if [ ! -e emp.class ] ; then
+	$compiler emp.java
+fi
+
+if [ ! -e empdem.class ] ; then
+	$compiler empdem.java
+fi
+
+if [ ! -e empJBeans.class ] ; then
+	$compiler empJBeans.java
+fi
+
+java jak.Main test$2.jak
+$compiler test$2.java
+
+if [ ! -e $1.class ] ; then
+	$compiler $1.java
+fi
+
+java $1 > junk
+if diff -w junk correct$2 ; then
+	echo succeeded
+else
+	echo failed
+	exit 1
+fi

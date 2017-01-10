@@ -1,0 +1,280 @@
+/* Gang Chen's Version */
+
+/* atop - generator of abstract container and cursor classes */
+
+// package P3;
+
+package p3Lib;
+
+import JakBasic.Lang;
+
+// import Jak.*;
+// import P3.*;
+// import p3Lib.*;
+
+
+public class atop {
+
+   public TopParams     tp;
+   static atop          singleton;
+   static TOP           teqn;
+   public ContParams    cp;
+   
+   boolean html;
+
+   // Reserved words for software generation
+   environment AElemTyp,  // abstract element type
+               AContTyp,  // abstract container type
+               ACursTyp;  // abstract cursor type
+
+  
+  public atop( ) { 
+      singleton = this; 
+	  html      = false;
+   }
+  
+  //------------------------------------------------------------------
+     public void setHtml() {
+       html = true;
+  }
+
+   public Lang.AST_Class generate_Abs_Container_Type( 
+          Lang.AST_Modifiers m, String Cname, TopParams c ) {
+      Lang.AST_QualifiedName fname;
+      Lang.AST_QualifiedName ftype;
+      Lang.AST_ParList       pl;
+      Lang.AST_ArgList       al;
+      int               i;
+	
+      // Step 1: remember names of abstract container class and element type
+
+      c.AddContainerName( Cname );
+      tp           = c;
+      alias( AContTyp, tp.AST_AbstractContainerName );
+      alias( AElemTyp, tp.AST_ElementName );
+     
+      // Step 2: manufacture the parameter list of the insert method
+      //         that takes individual data values
+
+      pl = null;
+      for (i = 0; i < tp.NFields; i++ ) {
+         fname = (Lang.AST_QualifiedName) tp.AST_FieldName[i].clone();
+         ftype = (Lang.AST_QualifiedName) tp.AST_FieldType[i].clone();
+         pl = plst{ $plst(pl), $id(ftype) $id(fname) }plst;
+      }
+      tp.ParamLst = pl;
+
+      // Step 3: while we're at it, let's go and create an argument
+      //          list
+
+      al = null;
+      for (i = 0; i < tp.NFields; i++ ) {
+         fname = (Lang.AST_QualifiedName) tp.AST_FieldName[i].clone();
+         al = xlst{ $xlst(al), $id(fname) }xlst;
+      }
+      tp.ArgLst = al;
+        
+      // Step 4: generate the abstract container class
+
+      Lang.AST_Modifiers m1 = (Lang.AST_Modifiers) Lang.AstNode.copy(m);
+      Lang.AST_ParList   p1 = (Lang.AST_ParList) Lang.AstNode.copy(tp.ParamLst);
+
+      return cls{ 
+  //abstract class declaration
+
+  $mod(m1) abstract class AContTyp implements java.io.Serializable {
+ 
+   abstract public boolean is_full();
+   abstract public void insert( AElemTyp e );
+   abstract public void insert( $plst(p1) );
+   abstract public void checkin(int cardpers);
+   abstract public void close();
+   //abstract public static CContTyp open(String namefile); we need it to be CContTYp =>PB
+}
+     }cls;
+   }
+     
+
+   public Lang.AST_Class generate_Abs_Cursor_Type( Lang.AST_Modifiers m, String Kname ) {
+
+      // Step 1: remember names of abstract cursor class
+
+      tp.AddCursorName(Kname);
+      alias( ACursTyp, tp.AST_AbstractCursorName );
+   
+      // Step 2: generate the interface of top given the above information. 
+
+      Lang.AST_Modifiers m1 = (Lang.AST_Modifiers) Lang.AstNode.copy(m);
+      Lang.AST_ParList   p1 = (Lang.AST_ParList) Lang.AstNode.copy(tp.ParamLst);
+
+      return cls{ 
+   // abstract cursor declaration
+
+$mod(m1) abstract class ACursTyp implements java.util.Enumeration {
+   abstract public AElemTyp obj();
+   abstract public void insert( AElemTyp e );
+   abstract public void insert( $plst(p1) );
+   
+   abstract public AElemTyp first();
+   abstract public boolean more();
+   abstract public AElemTyp next();
+   abstract public void remove();
+   abstract public AElemTyp position(int pos);
+   
+   abstract public boolean hasMoreElements();
+   abstract public Object nextElement();
+}
+     }cls;
+   }
+/*** DELETE
+ public Lang.AST_FieldDecl generate_decl(int convent, String TypName, String EltName)
+     {
+       Lang. AST_Exp      vardeclaration,provardeclaration,decla;
+  	 String                 tempName = ""; 
+  	 String                 decl = "";
+  	 String                 decl2 = "";
+  	 String 				declbis = "";
+  	 String                 decl3 = "";
+  	 String 				declaa = "";
+  	 String 				declb = "";
+  	 
+  
+  	 tempName = EltName + "_1";
+  	 if (convent == TopParams.JBeansConvention) //JavaBeans
+  	   {declaa = TypName + "   get" + EltName;
+    	    declb = TypName + "   set" + EltName;}
+  	 else {
+  	      if (convent == TopParams.DemConvention) //demeter
+  	          {declaa = TypName + "   get_" + EltName;     
+  			  declb = TypName + "   set_" + EltName;}
+  		  else 	 
+  		      {declaa = TypName + "  " + EltName ;
+  			  declb = declaa;}
+  	      }
+  		  
+  		  
+  	 
+  	 declbis = TypName + "  " + EltName + ";\n" ;
+  	 decl2 = "public " + declaa + "()" + " {return " + EltName + "; }\n";
+  	 vardeclaration = Lang.Literal.Make(decl2);
+  	 decl3 = "public " + declb + "(" + TypName + "  " + tempName + ")" + "\n { return " + EltName + " = " + tempName + "; } \n";
+  	 decl = "\n protected " + declbis;
+  	 provardeclaration = Lang.Literal.Make(decl);
+  	 decla = Lang.Literal.Make(decl3);
+  	//add a test to know which convention!!!! 
+     
+      return mth{ 
+           $mth(provardeclaration)
+  		 $mth(vardeclaration) 
+  		 $mth(decla)
+  		 }mth;
+     
+     }
+  **** DELETE */
+ 
+ /***** DELETE ***
+     public Lang.AST_FieldDecl generate_cons(int convent, String nom, String[][] attributes,int num)
+     {
+       Lang. AST_Exp          vardeclaration,provardeclaration,decla;
+       Lang. AST_FieldDecl     cons1;
+  	 Lang. AST_Exp          construc1,construc2,construc3;
+     	 String                 tempName = ""; 
+     	 String                 decl     = "";
+     	 String                 decl2    = "";
+     	 String 				declbis  = "";
+     	 String                 decl3    = "";
+  	 String                 constr1  = "";
+  	 String                 constr2  = "";
+  	 String                 constr3  = "";
+  	 String                 declaa  = "";
+  	 String                 declb  = "";
+  	 String                 tempnom  = "";
+       String []              name     = new String [num];
+  	 String []              temp_name     = new String [num];
+     
+     
+       if (convent == TopParams.JBeansConvention) //JavaBeans
+  	   {declaa = attributes[num-1][0] + "   get" + attributes[num-1][1];
+    	    declb = attributes[num-1][0] + "   set" + attributes[num-1][1];}
+  	 else {
+  	      if (convent == TopParams.DemConvention) //demeter
+  	          {declaa = attributes[num-1][0] + "   get_" + attributes[num-1][1];     
+  			  declb = attributes[num-1][0] + "   set_" + attributes[num-1][1];}
+  		  else 	 
+  		      {declaa = attributes[num-1][0] + "  " + attributes[num-1][1] ;
+  			  declb = declaa;}
+  	      }   
+     	 tempName = attributes[num-1][1] + "_1";
+     	 declbis = attributes[num-1][0] + "  " + attributes[num-1][1] + ";\n" ;
+     	 decl2 = "public " + declaa + "()" + " {return " + attributes[num-1][1] + "; }\n";
+     	 vardeclaration = Lang.Literal.Make(decl2);
+     	 decl3 = "public " + declb + "(" + attributes[num-1][0] + "  " + tempName + ")" + " { return " + attributes[num-1][1] + " = " + tempName + "; } \n";
+     	 decl = "\n protected " + declbis;
+     	 provardeclaration = Lang.Literal.Make(decl);
+     	 decla = Lang.Literal.Make(decl3);
+  	 
+  	 
+  	 constr1 = "\n" + nom + " () {}\n" ;
+  	 constr2 = nom + " ( " ;
+  	 for (int j=0;j<num;j++)
+  	 {
+  	  name[j]=	attributes[j][1];
+  	  temp_name[j]=name[j]+"_1";
+  	  if (j==num-1)
+  	    constr2 = constr2 + attributes[j][0] + "  " + temp_name[j] + " ) { \n";
+  	  else 
+  	    constr2 = constr2 + attributes[j][0] + "  " + temp_name[j] + " ,"; 
+  	  
+  	  }
+  	  for (int j=0;j<num;j++){
+  	  if (j==num-1)
+  	  	    constr2 = constr2 + attributes[j][1] + " = " + temp_name[j] + " ; } \n\n ";
+  	  	  else 
+  	    constr2 = constr2 + attributes[j][1] + " = " + temp_name[j] + " ; \n"; 
+  	  }
+  	  tempnom = nom+"_1";
+  	  constr3= nom + " (" + nom + " " + tempnom + " ) {\n";
+  	  for (int j=0;j<num;j++){
+  	  	  if (j==num-1)
+  	  	  	    constr3 = constr3 + attributes[j][1] + " = " + tempnom + "." +  attributes[j][1] + " ; } \n\n ";
+  	  	  	  else 
+  	  	    constr3 = constr3 + attributes[j][1] + " = " + tempnom + "." +  attributes[j][1] + "; \n"; 
+  	  }
+  	 
+     	//add a test to know which convention!!!! 
+       construc1 = Lang.Literal.Make(constr1);
+  	 construc2 = Lang.Literal.Make(constr2);
+  	 construc3 = Lang.Literal.Make(constr3);
+       cons1= mth{ 
+                $mth(provardeclaration)
+     		      $mth(vardeclaration) 
+     		      $mth(decla)
+     		    }mth;
+  			
+  	 return	mth{
+  	        $mth(cons1)
+  			$mth(construc1)
+  			$mth(construc2)
+  			$mth(construc3)
+  	        }mth;	
+     
+     }
+  *** DELETE ***/ 
+    
+   public TopParams getTopParams() {
+      return tp;
+   } 
+
+   public static atop singleton() {
+      return singleton;
+   }
+
+   public void setTeqn( TOP t ) {
+      atop.teqn = t;
+   }
+
+   public TOP getTeqn() {
+      return atop.teqn;
+   }
+}
+

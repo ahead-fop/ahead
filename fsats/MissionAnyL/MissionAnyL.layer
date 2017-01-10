@@ -1,0 +1,430 @@
+//                              -*- Mode: JTS -*-
+// Version         :
+// Author          : Robert S. MacDonald
+// Last Modified By: Bryan D. Hopkins
+// Last Modified On: Thu May 25 11:27:00 2000
+
+layer MissionAnyL ( F lower )
+realm F
+extends lower 
+imports 
+    java.util.*, 
+    F.Libraries.laydown.*, 
+    F.Libraries.log.Log
+{
+    /** Add state machine related primitives to mission. */
+    public interface Mission
+        extends lower.Mission
+    {
+        /** Is this a duplicate of mission? */
+        boolean isDuplicate($TEqn.Mission mission);
+    }
+
+    /** Implementation of basic opfac state machine functionality */
+    public static state_diagram MissionImpl
+        refines lower.MissionImpl
+        implements Mission
+    {
+        // What to do if there is no transition for an event. 
+        otherwise_default
+        { 
+            if (message instanceof $TEqn.InitiateMessage)
+            {
+                // Mission is already initiated.
+		$TEqn.DenyMessage denyMessage = new $TEqn.DenyMessage(getId(), "Duplicate id");
+		if (initiatingUnit != null)
+		    denyMessage.setInitiatingUnitId(initiatingUnit.intValue());
+                getOpfac().sendTo(
+                    (($TEqn.Message)message).getSource(), 
+                    denyMessage);
+            }
+            else
+                Log.warn(""+this+" unexpected event: "+message);
+        }
+
+        states start, checkDuplicates, initiated, stop;
+
+        // On Initiate initiate a mission then check for duplicate targets.
+        edge start1 : start -> checkDuplicates
+            conditions (message instanceof $TEqn.InitiateMessage)
+            do
+            {
+                $TEqn.InitiateMessage m = ($TEqn.InitiateMessage)message;
+		if (m.getInitiatingUnitId() != null)
+                    initiated(m.getSource(), m.getMissionData(), m.getInitiatingUnitId());
+		else
+		    initiated(m.getSource(), m.getMissionData());
+            }
+
+        // On Target initiate a mission.
+        edge start2 : start -> initiated
+            conditions (message instanceof $TEqn.TargetEvent)
+            do
+            {
+                $TEqn.TargetEvent m = ($TEqn.TargetEvent)message;
+		if (getOpfac() instanceof $TEqn.FoOpfac)
+                    initiated("", m.getMissionData(), new Integer(getOpfac().getUnit()));
+		else if (initiatingUnit != null)
+		    initiated("", m.getMissionData(), initiatingUnit);
+		else
+		    initiated("", m.getMissionData());
+            }
+
+        // Immediately check for duplicates.
+        Enter checkDuplicates { event(null); }
+
+        Exit checkDuplicates 
+        { 
+            getOpfac().ponder(5F); 
+            isDuplicate=getOpfac().hasDuplicate(this);
+        }
+
+        // If duplicate then deny mission and stop.
+        edge checkDuplicates1 : checkDuplicates -> stop
+            conditions isDuplicate
+            do 
+            { 
+                sendDeny("Duplicate target");
+            }
+
+        // If not duplicate then initiate mission.
+        edge checkDuplicates2 : checkDuplicates -> initiated
+            conditions !isDuplicate 
+            do {}
+
+        // Proceed with mission type selection edges. 
+        Enter initiated { event(null); }
+
+        public MissionImpl() { current_state=start; }
+
+        protected boolean isDuplicate=false;
+
+        protected String downstream=null;
+        protected String upstream=null;
+        protected $TEqn.Proxy bestWeapon=null;
+        protected String weaponType;
+
+	protected Integer initiatingUnit;
+
+	protected void initiated(String from, $TEqn.MissionData missionData)
+	{
+	    this.missionData = missionData;
+	    downstream = from;
+	}
+
+        protected void initiated(String from, $TEqn.MissionData missionData,
+				 Integer initiatingUnit)
+        {
+            this.missionData = missionData;
+            downstream = from;
+	    this.initiatingUnit = initiatingUnit;
+        }
+
+        protected void sendInitiate()
+        {
+            $TEqn.InitiateMessage m = new $TEqn.InitiateMessage(missionId, missionData);
+
+	    if (initiatingUnit != null)
+		m.setInitiatingUnitId(initiatingUnit.intValue());
+
+            sendUp(m);
+        }
+
+        protected void sendAccept()
+        {
+            $TEqn.AcceptMessage m = new $TEqn.AcceptMessage(missionId, missionData.getType().toString());
+	    m.setWeaponType(getWeaponType());
+
+	    if (initiatingUnit != null)
+		m.setInitiatingUnitId(initiatingUnit.intValue());
+
+            sendDown(m);
+        }
+
+        protected void sendDeny(String reason)
+        {
+            $TEqn.DenyMessage m = new $TEqn.DenyMessage(missionId, reason);
+	    if (initiatingUnit != null)
+		m.setInitiatingUnitId(initiatingUnit.intValue());
+            sendDown(m);
+        }
+
+        protected void selectBestWeapon()
+        {
+            SelectedProxy p = 
+                getOpfac().getSelfProxy().getBestWeapon(($TEqn.Mission)this);
+            bestWeapon = p==null ? null : p.getVia();
+        }
+
+        protected boolean weaponSelected()
+        {
+            return bestWeapon!=null;
+        }
+
+        protected void assignWeapon()
+        {
+            upstream=bestWeapon.getName();
+            sendInitiate();
+        }
+
+        protected void weaponDenied()
+        {
+            proxyDeny(bestWeapon.getName());
+        }
+
+        protected void weaponAccepted($TEqn.AcceptMessage message)
+        {
+            weaponType = message.getWeaponType();
+        }
+
+        protected String getWeaponType() 
+        { 
+            return 
+                weaponType==null
+                    ? getOpfac().getSelfProxy().getType().toString()
+                    : weaponType;
+        }
+
+        protected boolean canElevate()
+        {
+            return getOpfac().canElevate(($TEqn.Mission)this);
+        }
+
+        protected void elevate()
+        {
+            upstream = getOpfac().getSuperProxy().getName();
+            sendInitiate();
+        }
+
+        protected void sendDown($TEqn.Message message)
+        {
+            getOpfac().sendTo(downstream, message);
+        }
+
+        protected void sendUp($TEqn.Message message)
+        {
+            getOpfac().sendTo(upstream, message);
+        }
+
+        public boolean isDuplicate($TEqn.Mission mission)
+        {
+            return 
+                getTarget().getType().equals(mission.getTarget().getType())
+                    && getTarget().getLocation().distanceTo(
+                            mission.getTarget().getLocation())<=100F;
+        }
+    } // MissionImpl
+
+    public interface Opfac
+        extends lower.Opfac
+    {
+        /** Can mission be eleveated to this opfacs superior? */
+        boolean canElevate($TEqn.Mission mission);
+
+        /** Can this opfac observe this location? */
+        boolean canSee($TEqn.Location location);
+
+        /** Is there any other mission which duplicates mission? */
+        boolean hasDuplicate($TEqn.Mission mission);
+
+        /** Prevent more than one mission at a time for guns. */
+        void missionLock($TEqn.Mission mission);
+
+        /** Allow other missions to proceed. */
+        void missionFree($TEqn.Mission mission);
+
+        /** Spend some time thinking. */
+        void ponder(float seconds);
+    }
+
+    /** Refinement of OPFAC to handle missions **/
+    public static class OpfacImpl 
+	extends lower.OpfacImpl 
+        implements Opfac
+    {
+	/** A collection of active missions **/
+	private HashMap allMissions = null;
+
+        //
+
+        public boolean canElevate($TEqn.Mission mission)
+        {
+            return false;
+        }
+
+        public boolean canSee($TEqn.Location location)
+        {
+            return false;
+        }
+
+        public boolean hasDuplicate($TEqn.Mission mission)
+        {
+            Iterator i = allMissions.values().iterator();
+            while (i.hasNext())
+            {
+                $TEqn.Mission duplicate=($TEqn.Mission)i.next();
+                if (mission!=duplicate && mission.isDuplicate(duplicate)) 
+                    return true;
+            }
+            return false;
+        }
+
+        // Mission id generation.
+
+        protected int nextMissionNumber = 0;
+        protected String baseMissionId;
+
+        protected String getMissionId()
+        {
+            String number = ""+nextMissionNumber;
+            ++nextMissionNumber;
+            return 
+                baseMissionId.substring(
+                    0, baseMissionId.length()-number.length()) + number;
+        }
+
+        public void init(OpfacDataWrapper opfac, Network network)
+        {
+            allMissions = new HashMap();
+            allMissions = new HashMap();
+            pendingMissions = new LinkedList();
+            super.init(opfac, network);
+            baseMissionId=opfac.getMinTargetNumber();
+            baseMissionId=
+                baseMissionId + "AA0000".substring(baseMissionId.length());
+        }
+
+        // Mission serialization.
+
+        protected LinkedList pendingMissions = null;
+        protected $TEqn.Mission currentMission = null;
+
+        public void missionLock($TEqn.Mission mission)
+        {
+            if (currentMission==null)
+            {
+                currentMission=mission;
+                mission.event(new $TEqn.LockGranted(mission.getId()));
+            }
+            else if (!pendingMissions.contains(mission))
+                pendingMissions.add(mission);
+            else
+                Log.error(""+mission+" requested lock twice.");
+                        
+        }
+
+        public void missionFree($TEqn.Mission mission)
+        {
+            String missionId = mission.getId();
+            if (mission==currentMission)
+            {
+                currentMission=null;
+                if (pendingMissions.size()>0)
+                {
+                    currentMission=($TEqn.Mission)pendingMissions.remove(0);
+                    currentMission.event(new $TEqn.LockGranted(missionId));
+                }
+            }
+            else
+                Log.warn(""+mission+" called free but doesn't hold lock.");
+        }
+
+        public void ponder(float seconds)
+        {
+            try 
+            { 
+                Thread.sleep((int)(seconds*1000)); 
+            } 
+            catch (Exception e) {}
+        }
+
+        // Mission creation and message dispatching.
+
+        protected $TEqn.Mission findMission(String id)
+        {
+            return ($TEqn.Mission)allMissions.get(id);
+        }
+
+        protected $TEqn.Mission createMission(String missionId)
+        {
+            $TEqn.Mission mission = 
+                newMission().init(($TEqn.Opfac)this, missionId);
+            allMissions.put(missionId, mission);
+            return mission;
+        }
+       
+	/** A list of currently active Missions. */
+	public Collection getActiveMissions() 
+        { 
+            return allMissions.values();
+        }
+
+       	protected void receive( $TEqn.Event message ) 
+        {
+            super.receive(message);
+
+	    String missionId = message.getMissionId();
+ 
+            if (message instanceof $TEqn.TargetEvent)
+            {
+                $TEqn.TargetEvent target = ($TEqn.TargetEvent)message;
+                if (canSee(target.getMissionData().getTarget().getLocation()))
+                {
+                    if (missionId.equals(""))
+                        missionId=getMissionId();
+                    $TEqn.Mission active = findMission(missionId);
+                    if (active!=null)
+                        Log.warn("Ignoring target with same id as "+active);
+                    else
+                    {
+                        active=createMission(missionId);
+                        active.event(message);
+                    }
+                }
+            }
+            else 
+            {
+                $TEqn.Mission active = findMission(missionId);
+                if (active==null)
+                    active=createMission(missionId);
+                active.event(message);
+            }
+	}
+    } // class OPFAC
+
+    public static class FseOpfac
+        extends lower.FseOpfac
+    {
+        public boolean canElevate($TEqn.Mission mission)
+        {
+            $TEqn.Proxy up = getSuperProxy();
+            return up!=null && up.canShoot(mission);
+        }
+    }
+
+    public static class FoOpfac
+        extends lower.FoOpfac
+    {
+        public float sightRange=0F;
+
+        public boolean canSee($TEqn.Location location)
+        {
+            return getLocation().distanceTo(location)<=sightRange;
+        }
+
+        public void init(OpfacDataWrapper opfac, Network network)
+        {
+            sightRange = opfac.getRange();
+
+            // As far as I know, sight range for FOs
+            // is not captured in the database,
+            // and for that reason is not in fsats.plan.TestPlan. -bhopkins
+            if(sightRange == -1)
+                sightRange=7000.0F;
+
+            super.init(opfac, network);
+        }
+    }
+
+}
+

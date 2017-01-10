@@ -1,0 +1,20 @@
+import java.lang.Exception;
+
+public class SemanticException extends Exception {
+
+    public SemanticException() {
+        Super(String)("Semantic Error");
+    }
+
+    public SemanticException(String message) {
+        Super(String)("Semantic Error: " + message);
+    }
+
+    public SemanticException(String message, Throwable cause) {
+        Super(String,Throwable)("Semantic Error: " + message, cause);
+    }
+
+    public SemanticException(Throwable cause) {
+        Super(Throwable)(cause);
+    }
+}

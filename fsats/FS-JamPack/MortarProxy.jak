@@ -1,0 +1,14 @@
+layer FS;
+
+public class MortarProxy extends WeaponProxy {
+    public int typePrecedence() {
+        return 4;
+    }
+
+    public boolean canShoot( Mission mission )
+        {
+        return 
+                !mission.getTarget().getType().equals( "ARMOR" )
+                    && Super( Mission ).canShoot( mission );
+    }
+}

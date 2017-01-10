@@ -1,0 +1,8 @@
+import javax.swing.*;
+
+refines class prim {
+    public JComponent draw (int several) {
+        // don't display primitives
+        return null;
+    }
+}

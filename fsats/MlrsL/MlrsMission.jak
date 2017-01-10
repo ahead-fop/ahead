@@ -1,0 +1,3 @@
+layer MlrsL;
+
+public State_machine MlrsMission extends WeaponMission {}

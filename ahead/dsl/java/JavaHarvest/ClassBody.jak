@@ -1,0 +1,111 @@
+layer JavaHarvest;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+
+/**
+   ClassBody
+   : "{" [ AST_FieldDecl ] "}"::ClsBody
+   ;
+       
+   AST_FieldDecl
+   : ( ClassBodyDeclaration )+
+   ;
+       
+   ClassBodyDeclaration
+   : LOOKAHEAD(2)
+   Initializer
+   |
+   LOOKAHEAD( [ AST_Modifiers() ] "class" )
+   NestedClassDeclaration
+   | LOOKAHEAD( [ AST_Modifiers() ] "interface" )
+   NestedInterfaceDeclaration
+   | LOOKAHEAD(["public"|"protected"|"private" ] AST_QualifiedName() "(" )
+   ConstructorDeclaration
+   | LOOKAHEAD( MethodDeclarationLookahead() )
+   MethodDeclaration
+   | FieldDeclaration
+   ;
+* @layer<JavaHarvest>
+*/
+    
+public refines class ClassBody {
+    public  ClassDocJTS _harvest_class;
+    public LinkedList listOfMethods = new LinkedList();
+    public LinkedList listOfInnerClasses = new LinkedList();
+    public LinkedList listOfConstructors = new LinkedList();
+    public LinkedList listOfFields = new LinkedList();
+    public LinkedList listOfInterfaces = new LinkedList();
+
+    public void execute() {
+        Super().execute();
+        _harvest_class =  ClassDocJTS.ClassDocJTSFactory();
+        _harvest_class.ClassDocJTSConstructor( "bodyclass" );
+                  
+        // Traverses tree AST_FieldDecl to get the methods, nestedclasses,
+        // interfaces, etc
+        AstCursor c = new AstCursor(); // c to traverse list
+                   
+        // arg[3] is ClassBody, arg[0] is OptNode, arg[0] first element
+        AstNode   e = arg[0].arg[0]; // e instanceOf Lang.AstList
+                   
+        if ( e != null ) {
+            for ( c.FirstElement( e ); c.MoreElement(); c.NextElement() ) {
+                                
+                if ( c.node instanceof MethodDcl ) {
+                    MethodDocJTS met = 
+                                            ( ( MthDector )c.node.arg[2] )._harvest_method;
+                    listOfMethods.add( met );
+                }
+                                                  
+                if ( c.node instanceof NestedClassDeclaration ) {
+                    ClassDocJTS cls =
+                                            ( ( UmodClassDecl )c.node.arg[1] )._harvest_class;
+                    GlobalWrapper.adjustNestedElements( cls, 
+                                                                                c.node.arg[0].arg[0] );
+                    listOfInnerClasses.add( cls );
+                }
+                                                  
+                if ( c.node instanceof NestedInterfaceDeclaration ) {
+                    ClassDocJTS cls = 
+                                            ( ( UmInterDecl )c.node.arg[1] )._harvest_class;
+                    GlobalWrapper.adjustNestedElements( cls, 
+                                                                                c.node.arg[0].arg[0] );
+                    listOfInnerClasses.add( cls );
+                }
+                                                  
+                if ( c.node instanceof ConDecl ) {
+                    ConstructorDocJTS cons =
+                                            ( ( ConDecl )c.node )._harvest_constructor;
+                    listOfConstructors.add( cons );
+                }
+                                                  
+                if ( c.node instanceof FldVarDec ) {
+                    LinkedList tempList = ( ( FldVarDec )c.node ).fieldsList;
+                    for( int i=0; i< tempList.size(); i++ ) {
+                        listOfFields.add( ( FieldDocJTS )
+                                                                                                      tempList.get( i ) );
+                    }
+                }
+                                      
+            } // end of for
+        } // if there members of the class
+                   
+        // Sets the methods for the class
+        _harvest_class.setMethods( listOfMethods );
+        _harvest_class.setInnerClasses( listOfInnerClasses );
+        _harvest_class.setInterfaces( listOfInterfaces );
+        ClassDocJTS Klass = 
+                         ClassDocJTS.ClassDocJTSFactory();
+        Klass.ClassDocJTSConstructor( "Object" );
+        _harvest_class.setSuperClass( Klass );
+        _harvest_class.setConstructors( listOfConstructors );
+        _harvest_class.setFields( listOfFields );
+        _harvest_class.setClass( true );
+        _harvest_class.setContainingPackage( GlobalWrapper.containingPackage );
+        _harvest_class.setInterfaces( new LinkedList() );
+    }
+}

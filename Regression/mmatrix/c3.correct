@@ -1,0 +1,14 @@
+C R FoOpfac 
+Line range (-1, -1)
+abstract  endMods 
+ beginNest
+        M D canSee(Location) boolean 
+        Line range (16, 19)
+        public  endMods 
+        M R init(OpfacDataWrapper,Network) void 
+        Line range (21, 32)
+        private  endMods 
+        F D sightRange float 
+        Line range (14, 14)
+        public transient  endMods 
+ endNest

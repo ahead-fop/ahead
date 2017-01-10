@@ -1,0 +1,9 @@
+// tests simplification and anonymous names
+
+layer;
+
+inside Int range;
+outside Int val;
+
+requires inside 8 < range and range > 30 and 10 < range;
+provides outside 4 <= val and 4 >= val;

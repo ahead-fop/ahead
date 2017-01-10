@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+echo "****************Copy Regression Test***********"
+
+bash cpytst \
+|| exit 1
+
+echo -e "\nCopy Regression Test succeeded."

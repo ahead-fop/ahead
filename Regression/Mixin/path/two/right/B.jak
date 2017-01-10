@@ -1,0 +1,6 @@
+layer two.right;
+
+refines class B {
+    public void print() { Super().print();
+                     System.out.println("right.B works"); }
+}

@@ -1,0 +1,24 @@
+/** @author Roberto E. Lopez-Herrejon */
+
+layer j2ajClassX;
+
+public refines class ConSSuper {
+
+    public void reduce2java( AstProperties props ) {
+
+     // Reduces Super (type list) to super
+     props.print (" proceed ");
+
+     // This property indicates the call, method or constructor, corresponds to
+     // a Super call so it must had the target object name at the end
+     props.setProperty("SuperCall","true");
+
+     // Reduces Arguments
+     arg[1].reduce2java(props);
+
+     // props.removeProperty("SuperCall");
+
+     props.print(" ; \n");
+
+    }
+}

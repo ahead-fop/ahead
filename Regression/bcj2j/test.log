@@ -1,0 +1,34 @@
++ '[' -z /usr/bin/bash ']'
++ echo '****************bcjak2java Tool Regression Test***********'
+****************bcjak2java Tool Regression Test***********
++ rm '*.class' '*.java'
+rm: cannot remove `*.class': No such file or directory
+rm: cannot remove `*.java': No such file or directory
++ bash regress-one c1
+translating c1 ... succeeded
++ bash regress-one c2
+translating c2 ... succeeded
++ bash regress-one c3
+translating c3 ... succeeded
++ bash regress-one c4
+translating c4 ... succeeded
++ bash regress-one c5
+translating c5 ... succeeded
++ bash regress-one i1
+translating i1 ... succeeded
++ bash regress-one i2
+translating i2 ... succeeded
++ bash regress-one s3
+translating s3 ... succeeded
++ echo -n running s1-s2 test ...
+running s1-s2 test ...+ cp M.jjava M.java
++ java bcjak2java.Main s1.jak s2.jak
++ javac M.java s1.java s2.java
++ java -cp . s2
++ diff -b junk correct-refined
++ echo succeeded
+succeeded
++ rm M.class 's1$1.class' 's1$2.class' 's1$3.class' 's1$4.class' 's1$5.class' 's1$6.class' 's1$disp.class' s1.class s2.class M.java s1.java s2.java junk
++ echo -e '\nbcjak2java tool Regression Test succeeded.'
+
+bcjak2java tool Regression Test succeeded.

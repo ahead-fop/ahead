@@ -1,0 +1,26 @@
+layer core;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+public refines class Predikate {
+    static public  predicate p;
+
+    public void reduce() {
+
+        // Step 1: create an empty predicate that is associated with 
+        //         this layer
+
+        p = new  predicate().setLayer( AST_Program.layr.name );
+
+        // Step 2: harvest the predicate
+
+        super.reduce();
+
+        // Step 3: typecheck the predicate
+
+        p.typecheck();
+    }
+}

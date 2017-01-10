@@ -1,0 +1,5 @@
+layer two;
+
+refines class c {
+   int mid;
+}

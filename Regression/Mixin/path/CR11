@@ -1,0 +1,14 @@
+layer Foo.Bar;
+
+SoUrCe RooT Mixin.path "../Mixin/path/Cons1.jak";// tests if layer can be optional
+
+abstract class MyClass$$Mixin$path extends AstNode {
+   int one;
+}
+
+SoUrCe  Mixin.path "../Mixin/path/Ref1.jak";// tests if layer can be optional
+
+ class MyClass extends  MyClass$$Mixin$path  {
+   int foobar;
+}
+

@@ -1,0 +1,72 @@
+original employee data
+
+empno = 10000 age = 60 dept = Biology name = Akers, Mark
+empno = 10070 age = 22 dept = CompSci name = Andrews, Kay
+empno = 10020 age = 21 dept = Biology name = Alexander, Joe
+empno = 10010 age = 40 dept = Physics name = Akin, Monica
+empno = 10050 age = 42 dept = Biology name = Akerson, Suzanne
+empno = 10040 age = 53 dept = Astrono name = Akerson, Mary
+empno = 10060 age = 61 dept = CompSci name = Andrews, John
+empno = 10030 age = 23 dept = Biology name = Akerson, Gwyn
+increment ages of all employees
+
+
+empno = 10030 age = 23 dept = Biology name = Akerson, Gwyn
+empno = 10060 age = 61 dept = CompSci name = Andrews, John
+empno = 10040 age = 53 dept = Astrono name = Akerson, Mary
+empno = 10050 age = 42 dept = Biology name = Akerson, Suzanne
+empno = 10010 age = 40 dept = Physics name = Akin, Monica
+empno = 10020 age = 21 dept = Biology name = Alexander, Joe
+empno = 10070 age = 22 dept = CompSci name = Andrews, Kay
+empno = 10000 age = 60 dept = Biology name = Akers, Mark
+read again
+empno = 10030 age = 24 dept = Biology name = Akerson, Gwyn
+empno = 10060 age = 62 dept = CompSci name = Andrews, John
+empno = 10040 age = 54 dept = Astrono name = Akerson, Mary
+empno = 10050 age = 43 dept = Biology name = Akerson, Suzanne
+empno = 10010 age = 41 dept = Physics name = Akin, Monica
+empno = 10020 age = 22 dept = Biology name = Alexander, Joe
+empno = 10070 age = 23 dept = CompSci name = Andrews, Kay
+empno = 10000 age = 61 dept = Biology name = Akers, Mark
+print old emps and delete
+
+
+empno = 10060 age = 62 dept = CompSci name = Andrews, John
+   empno = 10030 age = 24 dept = Biology name = Akerson, Gwyn
+   empno = 10040 age = 54 dept = Astrono name = Akerson, Mary
+   empno = 10050 age = 43 dept = Biology name = Akerson, Suzanne
+   empno = 10010 age = 41 dept = Physics name = Akin, Monica
+   empno = 10020 age = 22 dept = Biology name = Alexander, Joe
+   empno = 10070 age = 23 dept = CompSci name = Andrews, Kay
+   empno = 10000 age = 61 dept = Biology name = Akers, Mark
+empno = 10040 age = 54 dept = Astrono name = Akerson, Mary
+   empno = 10030 age = 24 dept = Biology name = Akerson, Gwyn
+   empno = 10050 age = 43 dept = Biology name = Akerson, Suzanne
+   empno = 10010 age = 41 dept = Physics name = Akin, Monica
+   empno = 10020 age = 22 dept = Biology name = Alexander, Joe
+   empno = 10070 age = 23 dept = CompSci name = Andrews, Kay
+   empno = 10000 age = 61 dept = Biology name = Akers, Mark
+empno = 10050 age = 43 dept = Biology name = Akerson, Suzanne
+   empno = 10030 age = 24 dept = Biology name = Akerson, Gwyn
+   empno = 10010 age = 41 dept = Physics name = Akin, Monica
+   empno = 10020 age = 22 dept = Biology name = Alexander, Joe
+   empno = 10070 age = 23 dept = CompSci name = Andrews, Kay
+   empno = 10000 age = 61 dept = Biology name = Akers, Mark
+empno = 10010 age = 41 dept = Physics name = Akin, Monica
+   empno = 10030 age = 24 dept = Biology name = Akerson, Gwyn
+   empno = 10020 age = 22 dept = Biology name = Alexander, Joe
+   empno = 10070 age = 23 dept = CompSci name = Andrews, Kay
+   empno = 10000 age = 61 dept = Biology name = Akers, Mark
+empno = 10000 age = 61 dept = Biology name = Akers, Mark
+   empno = 10030 age = 24 dept = Biology name = Akerson, Gwyn
+   empno = 10020 age = 22 dept = Biology name = Alexander, Joe
+   empno = 10070 age = 23 dept = CompSci name = Andrews, Kay
+print remaining emps
+
+
+empno = 10030 age = 24 dept = Biology name = Akerson, Gwyn
+empno = 10020 age = 22 dept = Biology name = Alexander, Joe
+empno = 10070 age = 23 dept = CompSci name = Andrews, Kay
+
+
+Done

@@ -1,0 +1,8 @@
+layer two;
+
+refines class A {
+
+    public static void main( String args[] )
+    { Super(String[]).main(args);
+      System.out.println("extensions of main works"); }
+}

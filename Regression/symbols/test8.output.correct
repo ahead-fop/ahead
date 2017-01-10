@@ -1,0 +1,39 @@
+func(c,fa) binds to:
+void func(char, float[])
+    char a;
+    float[] b;
+func(i,s) binds to:
+void func(int, java.lang.String)
+    String b;
+    int a;
+func() binds to:
+int func()
+    String s;
+    bar b;
+    char c;
+    float f;
+    float[] fa;
+    foo fo;
+    int i;
+    int[] ia;
+    short sh;
+func(c,f) has no binding.
+func(ia,s) has no binding.
+func(i) has no binding.
+func(i, c, f) has no binding.
+func(f, f) has no binding.
+func(sh, s) binds to:
+void func(int, java.lang.String)
+    String b;
+    int a;
+func(b) binds to:
+void func(foo)
+    foo x;
+func(3+6, "hello") binds to:
+void func(int, java.lang.String)
+    String b;
+    int a;
+func(fo, 5) has no binding.
+func(func(b, 129)) binds to:
+void func(foo)
+    foo x;

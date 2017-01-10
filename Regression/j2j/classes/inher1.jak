@@ -1,0 +1,47 @@
+
+// example that forces constructors DOWN the refinement chain
+
+SoUrCe RooT MissionL "C:!Java!FsatsPackages!Frealm!MissionL!MissionImpl.jak";
+
+ abstract class MissionImpl$$MissionL
+        implements Mission
+    {
+        MissionImpl$$MissionL() { /* something */ }
+    }
+
+SoUrCe  ProxyL "C:!Java!FsatsPackages!Frealm!ProxyL!MissionImpl.jak";
+
+ abstract  class MissionImpl$$ProxyL extends MissionImpl$$MissionL 
+        implements Mission
+    {
+    }
+
+SoUrCe  MissionAnyL "C:!Java!FsatsPackages!Frealm!MissionAnyL!MissionImpl.jak";
+
+ abstract  class MissionImpl$$MissionAnyL extends MissionImpl$$ProxyL
+        implements Mission
+    {
+
+       public MissionImpl$$MissionAnyL(int i) { /* something new */ }
+    }
+
+SoUrCe  MissionWrffeL "C:!Java!FsatsPackages!Frealm!MissionWrffeL!MissionImpl.jak";
+
+ abstract  class MissionImpl$$MissionWrffeL extends MissionImpl$$MissionAnyL
+    {
+    }
+
+SoUrCe  MissionWrffeArtyL "C:!Java!FsatsPackages!Frealm!MissionWrffeArtyL!MissionImpl.jak";
+
+ abstract  class MissionImpl$$MissionWrffeArtyL extends MissionImpl$$MissionWrffeL 
+    {
+       public MissionImpl$$MissionWrffeArtyL( double d ) {
+           /* something new */
+       }
+    }
+
+ class MissionImpl$$MissionWrffeMlrsL extends MissionImpl$$MissionWrffeArtyL
+    {
+
+    }
+

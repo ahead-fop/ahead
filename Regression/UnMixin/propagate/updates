@@ -1,0 +1,6 @@
+/.*Aclass/s//Aclass/
+/.*Bclass/s//Bclass/
+/.*Aint/s//Aint/
+/.*Bint/s//Bint/
+/.*Asm/s//Asm/
+/.*Bsm/s//Bsm/

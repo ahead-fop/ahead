@@ -1,0 +1,57 @@
+layer AheadHarvest;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+/** UnmodifiedTypeDeclaration
+ *: REFINES UnmodifiedTypeExtension :: Ute
+ * @layer<AheadHarvest>
+ */
+   
+public refines class Ute {
+
+    public void execute() {
+        Super().execute();
+        
+         // @pending, this is a bad design decision, but for the time
+         // being it will do a cast here, 
+         // in the meantime we'll what we could do
+
+        // Of it is a state      
+        if ( arg[0] instanceof  UmodSmExt ) {
+            StateMachineDocJTS state = 
+                        ( ( UmodSmExt )arg[0] ).getDocObject();
+            state.setRefines( true );
+
+            // Adds the state to the containing program
+            GlobalWrapper.containingProgram.addState( state );
+        } // of it is a state
+
+        // of it is a IntExt
+        if ( arg[0] instanceof  UmodIntExt ) {
+            ClassDocJTS hc = ( ( UmodIntExt )arg[0] )._harvest_class;
+
+            // @pending Sets the interface to be refine
+            hc.setRefines( true );
+       
+            // Adds the state to the containing program
+            GlobalWrapper.containingProgram.addClass( hc );
+        } // of Unmodified Interface extension
+
+        // of it is a ClassExt
+        if ( arg[0] instanceof  UmodClassExt ) {
+            ClassDocJTS hc = ( ( UmodClassExt )arg[0] )._harvest_class;
+
+            // Sets the interface to be refine
+            hc.setRefines( true );
+       
+            // Adds the state to the containing program
+            GlobalWrapper.containingProgram.addClass( hc );
+
+        } // of Unmodified Class extension
+
+    } // of execute
+
+}

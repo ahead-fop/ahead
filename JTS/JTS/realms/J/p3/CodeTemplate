@@ -1,0 +1,790 @@
+package $(LanguageName);
+
+import	$(LanguageName).p3Lib.*;
+import	Jakarta.symtab.*;
+import	Jakarta.util.Util;
+import  java.util.Stack;
+import  java.io.PrintWriter;
+
+public class p3 extends $(ParentComponent) {
+    static public String CursName1;
+    static public String ElementClassName1;
+
+    static public class P3UserData {
+
+	// used to generate abstract cursor, container for given element class
+	public Object P3atop = null;
+
+	// is class a P3 abstract element type?
+	public boolean P3AElemType = false;
+
+	// is class a P3 abstract cont type?
+	public boolean P3AContType = false;
+
+	// is class a P3 abstract cursor type?
+	public boolean P3ACursType = false;
+
+	// is class a P3 concrete cont type?
+	public boolean P3CContType = false;
+
+	// is class a P3 concrete cursor type?
+	public boolean P3CCursType = false;
+
+	// pointer to the element class if the current class is a container
+	// or cursor class
+	public ClassInfo P3AElemClass = null;
+
+	// pointer to the abstract container class if the current class is a
+	// cursor class
+	public ClassInfo P3AContClass = null;
+
+	// pointer to type equation, set only in concrete cursor class
+	public Object    P3TEqn       = null;
+    }
+
+    //**************************************************
+    // P3AContDecl extension class
+    //**************************************************
+    static public class P3AContDecl extends $(ParentComponent).P3AContDecl {
+    
+	public void Java_file_header(Lang.AstProperties prop)
+	    {
+		Lang.AstCursor c = new Lang.AstCursor();
+		
+		c.First(Base.getStartRoot());
+		c.PlusPlus();
+		while(c.More()){
+		    //reduce the package and import statements if present
+		    if (c.node instanceof Lang.PackageDeclaration || 
+			c.node instanceof Lang.AST_Imports )
+			{ 
+			    c.reduce2java(prop);  
+			}
+		    c.Sibling();	
+		    c.PlusPlus();
+		}		
+	    }
+	public void reduce2java(Lang.AstProperties props) {
+	    TopParams     tp;
+	    Lang.AST_Class     result;
+	    String        ContainerClassName;
+	    String        ElementClassName;
+	    ClassInfo     EleClass;
+	    P3UserData    userData;
+	    atop          t = new atop();
+	    PackageInfo   pi;
+	    ClassInfo     ContClass;
+	    Lang.AST_Modifiers mods;
+	    boolean       DemSeen, JBeansSeen,sepFiles;
+	    AstCursor     c = new AstCursor();
+	    int           NamingConvention;
+	    Lang.AstProperties p; 
+	    String        filename = " ";
+      
+	    // Step 1: extract parameters from parse tree
+      
+	    ElementClassName   = ((Lang.AstToken) arg[1].tok[0]).tokenName();
+	    ContainerClassName = ((Lang.AstToken) arg[2].tok[0]).tokenName();
+	    mods               = (Lang.AST_Modifiers) arg[0].arg[0];
+	    ElementClassName1   = ElementClassName;
+      
+	    // Step 2: determine the attribute get/set naming convention
+      
+	    DemSeen    = false;
+	    JBeansSeen = false;
+	    sepFiles   = false;
+	    NamingConvention = TopParams.P3Convention;
+      
+	    for (c.First(mods); c.More(); c.PlusPlus()) {
+		if (c.node instanceof ModDem) {
+		    DemSeen = true;
+		    NamingConvention = TopParams.DemConvention;
+		    c.node.Delete();
+		}
+		if (c.node instanceof ModJBeans) {
+		    JBeansSeen = true;
+		    NamingConvention = TopParams.JBeansConvention;
+		    c.node.Delete();
+		}
+		if ( c.node instanceof ModHtml) {
+		    t.setHtml(); c.node.Delete();
+		}
+		
+		if ( c.node instanceof ModPublic) 
+		    {
+			sepFiles = true;
+			filename = ContainerClassName + ".java"; 
+			// c.node.Delete();  *dsb*
+		    }
+	
+	    }
+      
+	    if (DemSeen && JBeansSeen) {
+		Util.warning("Both JBeans and Dem modifiers used in "+ ContainerClassName
+			     +" definition - Dem ignored");
+		DemSeen = false;
+		NamingConvention = TopParams.JBeansConvention;
+	    }
+      
+	    // Step 3: get TopParams object for the element class
+      
+	    tp = new TopParams( ElementClassName, NamingConvention );
+      
+	    // Step 4: check to see if the element has been defined.
+	    //         if not, error exit.  If so, add the atop object
+	    //         to the symbol table definition
+      
+	    EleClass = tp.ElementClass;
+	    if (EleClass == null) {
+		Util.fatalError("Error: no element class with name " +
+				ElementClassName);
+	    }
+	    userData = (P3UserData) EleClass.getUserData();
+	    if (userData == null) {
+		userData = new P3UserData();
+		EleClass.setUserData(userData);
+	    }
+	    userData.P3atop      = t;
+	    userData.P3AElemType = true;
+      
+	    // Step 5: add a new (container) class entry into the symbol table,
+	    //         and have it point back to the element entry
+      
+	    pi        = Symtab.instance().defaultPackage();
+	    ContClass = new ClassP(ContainerClassName, 0, null);
+	    pi.addDeclaration(ContClass);
+	    userData = new P3UserData();
+	    ContClass.setUserData(userData);
+	    userData.P3AElemClass = EleClass;
+	    userData.P3AContType  = true;
+      
+	    // Step 6: generate the abstract container classes
+      
+	    result = t.generate_Abs_Container_Type( mods, ContainerClassName, tp);
+      
+	    // Step 7: replace this node with result reduce
+	    if (sepFiles)
+		{
+		    p = AstProperties.open(filename);
+		    Java_file_header(p);
+		    result.reduce2java(p);
+		    p.close();
+		}
+	    else {
+	        this.Replace(result);
+	        result.reduce2java(props);
+	    }
+	}
+    }
+  
+  
+    //**************************************************
+    // P3ACursDecl extension class
+    //**************************************************
+    static public class P3ACursDecl extends $(ParentComponent).P3ACursDecl {
+	public void Java_file_header(Lang.AstProperties prop)
+	    {
+		Lang.AstCursor c = new Lang.AstCursor();
+		
+		c.First(Base.getStartRoot());
+		c.PlusPlus();
+		while(c.More()){
+		    //reduce the package and import statements if present
+		    if (c.node instanceof Lang.PackageDeclaration || 
+			c.node instanceof Lang.AST_Imports )
+			{ 
+			    c.reduce2java(prop);  
+			}
+		    c.Sibling();	
+		    c.PlusPlus();
+		}		
+	    }
+	public void reduce2java(Lang.AstProperties props) {
+	    TopParams     tp;
+	    boolean       single,sepFiles;
+	    Lang.AST_Class     result;
+	    ClassInfo     ContainerClass;
+	    P3UserData    contUserData;
+	    String        ContainerName;
+	    ClassInfo     CursorClass;
+	    P3UserData    cursUserData;
+	    P3UserData    tmpUD;
+	    String        CursorName;
+	    Lang.AST_Modifiers mods;
+	    atop          a;
+	    PackageInfo   pi;
+	    Symtab        st;
+	    AstCursor     c = new AstCursor();
+	    Lang.AstProperties p; 
+	    String        filename = " ";
+      
+      
+	    // Step 1: extract parameters from parse tree
+      
+	    ContainerName = ((Lang.AstToken) arg[1].tok[0]).tokenName();
+	    CursorName    = ((Lang.AstToken) arg[2].tok[0]).tokenName();
+	    CursName1     = CursorName + "_1"; 
+	    mods          = (Lang.AST_Modifiers) arg[0].arg[0];
+      
+	    // Step 1bis : check on modifiers
+	  
+	    sepFiles   = false;
+	    for (c.First(mods); c.More(); c.PlusPlus()) {
+		if ( c.node instanceof ModPublic) 
+	  	    {
+			sepFiles = true;
+			filename = CursorName + ".java"; 
+			// c.node.Delete();   *dsb*
+	  	    }	
+	    }
+	  
+	    // Step 2: Lookup the container class given its name
+	    //         and do some error checking...
+      
+	    st = (Lang.Symtab) Symtab.instance();
+	    ContainerClass = (ClassInfo) st.lookup(ContainerName);
+	    if (ContainerClass == null)
+		Util.fatalError("Class " + ContainerName  + " does not exist");
+	    contUserData = (P3UserData) ContainerClass.getUserData();
+	    if (contUserData == null) {
+		contUserData = new P3UserData();
+		ContainerClass.setUserData(contUserData);
+	    }
+	    if (! contUserData.P3AContType) {
+		Util.fatalError("Class " + ContainerName  + 
+				" is not an abstract container class");
+	    }
+
+	    tmpUD = (P3UserData) ContainerClass.getUserData();
+	    tmpUD = (P3UserData) tmpUD.P3AElemClass.getUserData();
+	    a = (atop) tmpUD.P3atop;
+
+	    // Step 3: Now enter the abstract cursor class into the 
+	    //         symbol table, and make appropriate linkages
+      
+	    pi = Symtab.instance().defaultPackage();
+	    CursorClass = new ClassP(CursorName, 0, null);
+	    pi.addDeclaration(CursorClass);
+	    cursUserData = new P3UserData();
+	    CursorClass.setUserData(cursUserData);
+	    cursUserData.P3AElemClass = contUserData.P3AElemClass;
+	    cursUserData.P3AContClass = ContainerClass;
+	    cursUserData.P3ACursType  = true;
+      
+	    // Step 4: generate the abstract cursor classe
+      
+	    result = a.generate_Abs_Cursor_Type( mods, CursorName );
+      
+	    // Step 5: replace this node with result reduce
+	    if (sepFiles)
+		{
+		    p = AstProperties.open(filename);
+		    Java_file_header(p);
+		    result.reduce2java(p);
+		    p.close();
+		}
+	    else {
+	        this.Replace(result);
+	        result.reduce2java(props);
+	    }
+	}
+    }
+  
+  
+    //**************************************************
+    // P3CContDecl extension class
+    //**************************************************
+    static public class P3CContDecl extends $(ParentComponent).P3CContDecl {
+	public void Java_file_header(Lang.AstProperties prop)
+	    {
+		Lang.AstCursor c = new Lang.AstCursor();
+		
+		c.First(Base.getStartRoot());
+		c.PlusPlus();
+		while(c.More()){
+		    //reduce the package and import statements if present
+		    if (c.node instanceof Lang.PackageDeclaration || 
+			c.node instanceof Lang.AST_Imports )
+			{ 
+			    c.reduce2java(prop);  
+			}
+		    c.Sibling();	
+		    c.PlusPlus();
+		}		
+	    }
+	public void reduce2java(Lang.AstProperties props) {
+	    TopParams              tp;
+	    Lang.AstCursor        c = new Lang.AstCursor();
+	    Lang.AST_Class        result;
+	    TOP                    t;
+	    Lang.AST_Modifiers    modifiers;
+	    String                 containerName;
+	    String                 superclass;
+	    Lang.AST_TypeNameList interfaces;
+	    Lang.AST_Exp          typeeqn;
+	    Lang.AstNode          tmp;
+	    Object                 te;
+	    Object                 html_te;
+	    DrcAttributes          d;
+	    TOP_Container_Type     k;
+	    TOP_Element_Type       e;
+	    TOP_CommonCursor_Type  cc;
+	    ContParams             cp;
+	    PackageInfo            pi;
+	    ClassInfo              CContClass, AContClass, ElemClass;
+	    P3UserData             ccontUserData, acontUserData, tmpUD;
+	    Symtab                 st;
+	    atop                   a;
+	    Lang.AstProperties    prop;
+	    Stack                  tag_stack = new Stack();
+	    Lang.AstProperties    p; 
+
+	    // Step 1: assign names to arguments
+      
+	    modifiers = (Lang.AST_Modifiers) arg[0].arg[0];
+	    containerName = arg[1].tok[0].tokenName();
+	    superclass = null;
+	    for (c.First(arg[2]); c.More(); c.PlusPlus()) {
+		if (c.node instanceof AST_QualifiedName) {
+		    superclass = ((Lang.AST_QualifiedName) c.node).GetName();
+		}
+	    }
+	    if ( arg[3].arg[0] != null )
+		interfaces = (Lang.AST_TypeNameList) arg[3].arg[0].arg[0];
+	    else 
+		interfaces = null;
+	    typeeqn    = (Lang.AST_Exp) arg[4].arg[0];
+      
+	    // Step 2: create type equation and design rule check
+      
+	    boolean requires_debuglayer   = false;
+	    boolean requires_profilelayer = false;
+	    boolean requires_htmllayer    = false;
+	    boolean sepFiles              = false; 
+
+
+	    for (c.First(modifiers); c.More(); c.PlusPlus()) {
+		if (c.node instanceof ModP3debug) {
+		    requires_debuglayer = true;
+		    c.node.Delete();
+		}
+		if (c.node instanceof ModProfile) {
+		    requires_profilelayer = true;
+		    c.node.Delete();
+		}
+		if (c.node instanceof ModHtml) {
+		    requires_htmllayer = true;
+		    c.node.Delete();
+		}
+	
+		if ( c.node instanceof ModPublic) 
+		    {
+			sepFiles = true;
+			c.node.Delete();  
+		    }	
+	    }
+      
+	    te = ParseTE.parse(typeeqn);
+	    if (!(te instanceof DS)) 
+		ParseTE.parseError("type equation not of type DS");
+      
+	    // Check if we need to insert html layers here and there.
+	    //-------------------------------------------------------
+      
+	    if ( requires_htmllayer ) {
+		BaseDS current_ds = (BaseDS) te;
+		te = new dshtml( (DS)te );
+		( (dshtml)te ).setLowerLayerName(current_ds.getClass().getName());
+		( (dshtml)te ).setUpperLayerName("qualify");
+		String upper_ds_name = current_ds.getClass().getName();
+		while ( current_ds.lower != null ) {
+		    // Insert an html layer.
+		    BaseDS lower_ds  = (BaseDS) current_ds.lower;
+		    String lower_ds_name = lower_ds.getClass().getName();
+		    dshtml dshtml_ds = new dshtml( (DS) lower_ds );
+		    dshtml_ds.setLowerLayerName(lower_ds_name);
+		    dshtml_ds.setUpperLayerName(upper_ds_name);
+		    // dshtml_ds.setTagStack(tag_stack);
+		    upper_ds_name = lower_ds_name;
+		    current_ds.lower = (DS) dshtml_ds;
+		    current_ds = lower_ds;
+		}
+	    }
+	    DS ds = new qualify( (DS) te );
+	    if ( requires_htmllayer )
+		{
+		    BaseDS current_ds = (BaseDS) ds;
+		    ds = new dshtml( ds );
+		    ( (dshtml)ds ).setLowerLayerName(current_ds.getClass().getName());
+		    ( (dshtml)ds ).setUpperLayerName("sort");
+		    ds = new sort( ds );
+		    BaseDS current_ds2 = (BaseDS) ds;
+		    ds = new dshtml( ds );
+		    ( (dshtml)ds ).setLowerLayerName(current_ds2.getClass().getName());
+		    ( (dshtml)ds ).setUpperLayerName("inbetween");
+		    ds = new inbetween( ds );
+		    BaseDS current_ds3 = (BaseDS) ds;
+		    ds = new dshtml( ds );
+		    ( (dshtml)ds ).setLowerLayerName(current_ds3.getClass().getName());
+		
+		}
+	    else {
+		ds = new inbetween ( new sort( ds ) );
+	    }
+      
+	    // Check if we need to add the debug layer.
+	    //-----------------------------------------
+	    if (requires_debuglayer) 
+		{
+		    if ( requires_htmllayer ) 
+			{ 
+			    ( (dshtml)ds ).setUpperLayerName("debug");
+			    ds = new debug(ds);
+			    BaseDS current_ds = (BaseDS) ds;
+			    ds = new dshtml( ds );
+			    ( (dshtml)ds ).setLowerLayerName(current_ds.getClass().getName());  
+			}
+		    else  
+			{
+			    ds = new debug(ds);
+			}
+		}						 
+	  
+	    // Check if we need to add the profile layer.
+	    //-------------------------------------------
+	    if ( requires_profilelayer ) {
+	
+		profile pf;
+		if ( requires_htmllayer ) 
+		    { ( (dshtml)ds ).setUpperLayerName("profile");
+		    ds = new profile(ds);
+		    pf  = (profile) ds;
+		    BaseDS current_ds = (BaseDS) ds;
+		    ds = new dshtml( ds );
+		    ( (dshtml)ds ).setLowerLayerName(current_ds.getClass().getName());  
+		    ( (dshtml)ds ).setUpperLayerName("top2ds");
+		    }
+		else {
+		    ds = new profile(ds);
+		    pf  = (profile) ds;
+		}
+						
+						
+		pf.filename = containerName;
+		pf.filenm   = Lang.Literal.Make("\"" + pf.filename + "\"");
+	
+		// Create the container_name.sts to write out statistics.
+		//-------------------------------------------------------
+		try {
+		    java.io.FileWriter file = new java.io.FileWriter(containerName + ".sts");
+		    String output_string = "|statistics\n|0\n|0\n";
+		    file.write(output_string, 0, output_string.length());
+		    file.close();
+		}
+		catch ( java.io.IOException exc ) {
+		    Util.fatalError("Cannot open file: " + containerName + ".sts");
+		}
+	    }
+      
+	    t = new top2ds(ds);
+	    if ( requires_htmllayer ) ((top2ds) t).setHtml();
+	  
+	    DrcAttributes.drc_errors(); // clear error counter
+	    d = new DrcAttributes();
+	    d = t.drc(d);
+	    if (DrcAttributes.drc_errors() != 0) {
+		Util.fatalError("P3 generation terminated");
+	    }
+      
+	    // Step 3: Lookup abstract container class (superclass) given its name
+	    //         and do some error checking...
+      
+	    st = (Lang.Symtab) Symtab.instance();
+	    AContClass = (ClassInfo) st.lookup(superclass);
+	    if (AContClass == null)
+		Util.fatalError("Class " + superclass  + " does not exist");
+	    acontUserData = (P3UserData) AContClass.getUserData();
+	    if (acontUserData == null) {
+		acontUserData = new P3UserData();
+		AContClass.setUserData(acontUserData);
+	    }
+	    if (! acontUserData.P3AContType) {
+		Util.fatalError("Class " + superclass  + 
+				" is not an abstract container class");
+	    }
+      
+	    // Step 4: create a class object in the symbol table
+	    //         and save the type equation
+      
+	    pi = Symtab.instance().defaultPackage();
+	    CContClass = new ClassP(containerName, 0, null);
+	    pi.addDeclaration(CContClass);
+	    ccontUserData = new P3UserData();
+	    CContClass.setUserData(ccontUserData);
+	    ccontUserData.P3AContClass  = AContClass;
+	    ccontUserData.P3CContType   = true;
+	    ccontUserData.P3AElemClass  = acontUserData.P3AElemClass;
+	    ccontUserData.P3TEqn        = t;
+      
+	    // Step 5: initialize TopParams 
+
+	    tmpUD = (P3UserData) CContClass.getUserData();
+	    tmpUD = (P3UserData) tmpUD.P3AElemClass.getUserData();
+	    a  = (atop) tmpUD.P3atop;
+	    tp = a.tp;
+      
+	    //put the TypeEquat param
+	    prop = Lang.AstProperties.open();
+	    typeeqn.print(prop);
+	    tp.TypeEquat = prop.close();
+      
+	    // Step 6: scan list of modifiers.  If static is
+	    //         seen set single flag and delete the static
+	    //         modifier (as it has no meaning other than
+	    //         for this case).
+      
+	    for (c.First(modifiers); c.More(); c.PlusPlus()) {
+		if (c.node instanceof ModStatic) {
+		    tp.Unique = true;
+		    c.node.Delete();
+		}
+	
+		if (c.node instanceof ModSynchronized) {
+		    tp.Sync = true;
+		    c.node.Delete();
+		}
+	    }
+      
+	    // Step 7: generate the concrete container and element classes
+      
+	    cp = new ContParams(tp, containerName);
+	  
+	  
+	    k = t.make_container_type( a, cp, interfaces );
+	    result = k.generate_class();
+	    if (sepFiles) {
+		p = AstProperties.open(containerName + ".java");
+		Java_file_header(p);
+		((PrintWriter) p.getProperty("output")).println(" public ");
+		result.reduce2java(p);
+		p.close();
+	    }
+	    else {
+	        result.reduce2java(props);
+	    }
+	    e = t.make_element_type();
+	    result = e.generate_class();
+	    if (sepFiles)
+		{
+		    p = AstProperties.open(ElementClassName1 + "_1.java");
+		    Java_file_header(p);
+		    ((PrintWriter) p.getProperty("output")).println(" public ");
+		    result.reduce2java(p);
+		    p.close();
+		}
+	    else {
+		result.reduce2java(props);}
+	    cc = t.make_commoncursor_type();
+	    result = cc.generate_class();
+	    if (sepFiles)
+		{
+		    p = AstProperties.open(CursName1 + ".java");
+		    Java_file_header(p);
+		    ((PrintWriter) p.getProperty("output")).println(" public ");
+		    result.reduce2java(p);
+		    p.close();
+		}
+	    else {
+		result.reduce2java(props);}
+	}
+    }
+  
+  
+    //**************************************************
+    // P3CCursDecl extension class
+    //**************************************************
+    static public class P3CCursDecl extends $(ParentComponent).P3CCursDecl {
+	public void Java_file_header(Lang.AstProperties prop)
+	    {
+		Lang.AstCursor c = new Lang.AstCursor();
+		
+		c.First(Base.getStartRoot());
+		c.PlusPlus();
+		while(c.More()){
+		    //reduce the package and import statements if present
+		    if (c.node instanceof Lang.PackageDeclaration || 
+			c.node instanceof Lang.AST_Imports )
+			{ 
+			    c.reduce2java(prop);  
+			}
+		    c.Sibling();	
+		    c.PlusPlus();
+		}		
+	    }
+	public void reduce2java(Lang.AstProperties props) {
+	    Lang.AST_Modifiers     modifiers;
+	    String                 cursorname;
+	    Lang.AST_ParList       paramlist;
+	    String                 superclass;
+	    Lang.AST_TypeNameList  interfaces;
+	    Lang.AST_Exp           predicate;
+	    String                 containername = null;
+	    Lang.AST_FieldDecl     fd;
+	    TopParams              tp;
+	    Lang.AstCursor         c = new Lang.AstCursor();
+	    Lang.AST_QualifiedName typename, fieldname;
+	    TOP                    teqn;
+	    TOP_Cursor_Type        k;
+	    Usage                  cursor_usage;
+	    Lang.AstNode           n;
+	    String                 sortfield;
+	    ClassInfo              CContClass;
+	    P3UserData             ccontUserData;
+	    P3UserData             tmpUD;
+	    Lang.AST_Class         result;
+	    Lang.AstProperties     p; 
+	    boolean                sepFiles;
+	    String                 filename = " ";
+      
+	    // Step 1: assign names to arguments
+      
+	    // Step 1a: modifiers, cursorname, and paramlist first
+      
+	    modifiers = (Lang.AST_Modifiers) arg[0].arg[0];
+      
+	    cursorname = arg[1].tok[0].tokenName();
+      
+	    paramlist  = (Lang.AST_ParList) arg[2];
+	    if ( arg[3].arg[0] != null )
+		interfaces = (Lang.AST_TypeNameList) arg[3].arg[0].arg[0];
+	    else 
+		interfaces = null;
+      
+	    // Step 1b: get the where predicate
+      
+	    if ( arg[5].arg[0] != null )
+		predicate = (Lang.AST_Exp) arg[5].arg[0].arg[0];
+	    else
+		predicate = null;
+	
+	    // Step 1bis : check on modifiers
+		  
+	    sepFiles   = false;
+	    for (c.First(modifiers); c.More(); c.PlusPlus()) {
+		if ( c.node instanceof ModPublic) 
+		    {
+			sepFiles = true;
+			filename = cursorname + ".java"; 
+			c.node.Delete();  
+		    }	
+	    }
+	
+      
+	    // Step 1c: here is where we should collect information
+	    //          about cursor usage and orderby - but we postpone this to
+	    //          Step 3, so that we can do some error checking
+	    //          and some common computations first.
+      
+	    // Step 2: Do some error checking
+      
+	    containername = null;
+	    for (c.First(paramlist.arg[0].arg[0]); c.More(); c.PlusPlus()) {
+		if (c.node instanceof AST_QualifiedName) {
+		    containername = ((Lang.AST_QualifiedName) c.node).GetName();
+		    break;
+		}
+	    }
+      
+	    if (containername == null) {
+		Util.fatalError("first parameter of cursor declaration should be "
+				+ "container class");
+	    }
+      
+	    // Now we have got the container name and we can write 
+	    // statistics to containername.sts.
+	    //----------------------------------------------------
+	    try {
+		java.io.FileWriter file = new java.io.FileWriter(cursorname + ".sts");
+		String output_string = "|0\n";
+		file.write(output_string, 0, output_string.length());
+		file.close();  
+	  
+	  
+	  
+		java.io.FileInputStream i_file = new java.io.FileInputStream(containername + ".sts");
+		java.io.RandomAccessFile ra_file = 
+		    new java.io.RandomAccessFile(containername + ".sts", "rw");
+		ra_file.seek(ra_file.length());
+		ra_file.writeBytes("|0\n");
+		ra_file.close();
+	    }
+	    catch ( java.io.IOException excp ) { }
+
+	    CContClass = (ClassInfo) Symtab.instance().lookup(containername);
+	    if (CContClass == null)
+		Util.fatalError("container class " + containername  + 
+				" does not exist");
+	    ccontUserData = (P3UserData) CContClass.getUserData();
+	    if (ccontUserData == null) {
+		ccontUserData = new P3UserData();
+		CContClass.setUserData(ccontUserData);
+	    }
+	    if (! ccontUserData.P3CContType) {
+		Util.fatalError("Class " + containername  + 
+				" is not a concrete container class");
+	    }
+      
+      
+	    // Step 3a:  now, finish collect information about cursor usage
+	    //          attributes to be updated.
+
+	    tmpUD = (P3UserData) CContClass.getUserData();
+	    tmpUD = (P3UserData) tmpUD.P3AElemClass.getUserData();
+	    tp = ((atop) tmpUD.P3atop).tp;
+	    cursor_usage = new Usage( tp, predicate, cursorname );
+	    if (arg[4].arg[0] != null) {
+		if (arg[4].arg[0] instanceof UpdateAll)
+		    cursor_usage.SetAll();
+		else {
+		    for( c.First(arg[4].arg[0]); c.More(); c.PlusPlus() ) 
+			if (c.node instanceof NameId)
+			    cursor_usage.SetUpd(c.node.tok[0].tokenName());
+		}
+	    }
+      
+	    if (((Lang.AstOptToken) tok[3]).tok[0] != null)
+		cursor_usage.del = true;
+      
+	    // Step 3b: Collect orderby information
+      
+	    n = arg[6].arg[0];
+	    if ( n != null ) {
+		if (((Lang.AstOptToken) n.tok[1]).tok[0] != null)
+		    cursor_usage.forward = false;
+		if (n.arg[0].arg[0] != null) {
+		    sortfield = n.arg[0].arg[0].tok[0].tokenName();
+		    cursor_usage.order = tp.FieldIndex( sortfield );
+		    if (cursor_usage.order == -1)
+			System.err.println("Error: " + sortfield + 
+					   " not an attribute of " + tp.ElementName);
+		}
+	    } 
+      
+	    // Step 4: get type equation and generate class
+      
+	    teqn = (TOP) ccontUserData.P3TEqn; 
+      
+	    k = teqn.make_cursor_type( cursorname, paramlist, cursor_usage );
+	    result = k.generate_class();
+	    if (sepFiles)
+		{
+		    p = AstProperties.open(filename);
+		    Java_file_header(p);			
+		    ((PrintWriter) p.getProperty("output")).println(" public ");
+		    result.reduce2java(p);
+		    p.close();
+		}
+	    else result.reduce2java(props);
+	}
+    }
+}

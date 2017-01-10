@@ -1,0 +1,4 @@
+rm *.class
+rm *.java
+rm *.output
+rm -r copy

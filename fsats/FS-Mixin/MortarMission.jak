@@ -1,0 +1,62 @@
+layer FS;
+
+import java.io.*;
+
+import log.Log;
+
+SoUrCe RooT MortarL "C:!Java!FeatureOrientedProgramming!fsats!MortarL!MortarMission.jak";
+
+abstract State_machine MortarMission$$MortarL extends WeaponMission {}
+
+SoUrCe  MissionWrffeMortarL "C:!Java!FeatureOrientedProgramming!fsats!MissionWrffeMortarL!MortarMission.jak";
+
+// FoMission
+
+public State_machine MortarMission extends MortarMission$$MortarL {
+    States wrffeLoading, wrffeShot, wrffeComplete;
+
+    // Wait for exclusive control of the mortar to Proceed with mission.
+    Enter wrffeMortarAccepted {
+        getOpfac().missionLock( this );
+    }
+
+    // When it's this missions turn, aim and load.
+    Transition wrffeMortarAccepted3 : wrffeMortarAccepted -> wrffeLoading
+        condition ( message instanceof LockGranted )
+        do {
+            getOpfac().timeout( 15F, new LoadTime( getId() ) );
+        }
+
+    // When loaded shoot and notify observer.
+    Transition wrffeLoading1 : wrffeLoading -> wrffeShot
+        condition ( message instanceof LoadTime )
+        do 
+            {
+            getOpfac().timeout( 15F, new CompleteTime( getId() ) );
+            ShotMessage shotMessage = new ShotMessage( getId() );
+            if ( initiatingUnit != null )
+                shotMessage.setInitiatingUnitId( initiatingUnit.intValue() );
+            sendDown( shotMessage );
+        }
+    
+    // When done shooting notify observer.
+    Transition wrffeShot1 : wrffeShot -> wrffeComplete
+        condition ( message instanceof CompleteTime )
+        do
+            {
+            RoundsCompleteMessage roundsCompleteMessage = new RoundsCompleteMessage( getId() );
+            if ( initiatingUnit != null )
+                roundsCompleteMessage.setInitiatingUnitId( initiatingUnit.intValue() );
+            sendDown( roundsCompleteMessage );
+        }
+        
+    // Allow other missions to Proceed.
+    Enter wrffeComplete {
+        getOpfac().missionFree( this );
+    }
+
+    // On EOM stop.
+    Transition wrffeComplete1 : wrffeComplete -> stop
+        condition ( message instanceof EomMessage )
+        do {}
+}

@@ -1,0 +1,14 @@
+layer BasicL;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+public class BnFseOpfac extends FseOpfac {
+    public Mission newMission() 
+        {
+        return new BnFseMission();
+    }
+}

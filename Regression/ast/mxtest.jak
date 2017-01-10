@@ -1,0 +1,23 @@
+
+import JakBasic.
+
+macro MTEST(AST_QualifiedName ReplaceMe)
+    stm{ AST_Exp ReplaceMe =
+	     exp{
+	5 - $str($mparm(ReplaceMe)) + ReplaceMe * $str(ReplaceMe)
+	    }exp; }stm
+
+macro MTEST2(AST_QualifiedName $TEqn)
+    stm{
+        String s = $str($TEqn) + ".foo";
+    }stm
+
+class mxtest {
+    public static void main(String[] args) {
+	#MTEST(ym);
+	System.out.println("ym = " + ym);
+	#MTEST2(;
+	System.out.println("s = " + s);
+    }
+}
+

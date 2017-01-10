@@ -1,0 +1,12 @@
+layer FS;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+SoUrCe RooT BasicL "C:!Java!FeatureOrientedProgramming!fsats!BasicL!FseMission.jak";
+
+/** Generic Fire Support Element OPFAC. **/
+public State_machine FseMission extends MissionImpl {}

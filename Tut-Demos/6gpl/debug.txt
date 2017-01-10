@@ -1,0 +1,14 @@
+# known compositional properties of Graph Algorithms to verify
+
+#true Cycle and Vertex Numbering are compatible
+Cycle Number
+#end
+
+
+#false Cycle Checking is incompatible with BFS
+Cycle BFS
+#end
+
+#true  this should fail
+Cycle BFS
+#end

@@ -1,0 +1,18 @@
+// testing hashtable layer
+
+interface empty { };
+
+container<emp> empcont;
+
+cursor<empcont> empcursor;
+
+container empcont1 extends empcont implements empty
+   using hash( age, 97, malloc( ) );
+
+cursor t0(empcont1 e);
+
+cursor t1(empcont1 e) where age() > 30 && age() < 50 orderby -;
+
+cursor t2(empcont1 e) where age() == 22;
+
+cursor t3(empcont1 e, int x) where age() == x orderby -;

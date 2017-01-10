@@ -1,0 +1,49 @@
+// test of constructor inheritance
+
+SoUrCe RooT MissionL "C:!Java!FsatsPackages!Frealm!MissionL!MissionImpl.jak";
+
+ abstract class MissionImpl$$MissionL
+        implements Mission
+    {
+        public MissionImpl$$MissionL( String foo ) { /* a constructor! */ }
+    }
+
+SoUrCe  ProxyL "C:!Java!FsatsPackages!Frealm!ProxyL!MissionImpl.jak";
+
+ abstract  class MissionImpl$$ProxyL extends MissionImpl$$MissionL 
+        implements Mission
+    { }
+
+SoUrCe  MissionAnyL "C:!Java!FsatsPackages!Frealm!MissionAnyL!MissionImpl.jak";
+
+ abstract  class MissionImpl$$MissionAnyL extends MissionImpl$$ProxyL
+        implements Mission
+    {
+        public MissionImpl$$MissionAnyL() {
+          MissionImplConstructor(); }
+
+        public void MissionImplConstructor() { /*something*/; }
+
+    }
+
+SoUrCe  MissionWrffeL "C:!Java!FsatsPackages!Frealm!MissionWrffeL!MissionImpl.jak";
+
+ abstract  class MissionImpl$$MissionWrffeL extends MissionImpl$$MissionAnyL
+    { }
+
+SoUrCe  MissionWrffeArtyL "C:!Java!FsatsPackages!Frealm!MissionWrffeArtyL!MissionImpl.jak";
+
+ abstract  class MissionImpl$$MissionWrffeArtyL extends MissionImpl$$MissionWrffeL 
+    { }
+
+SoUrCe  MissionWrffeMlrsL "C:!Java!FsatsPackages!Frealm!MissionWrffeMlrsL!MissionImpl.jak";
+
+ abstract  class MissionImpl$$MissionWrffeMlrsL extends MissionImpl$$MissionWrffeArtyL
+    {
+        public MissionImpl$$MissionWrffeMlrsL( double d ) { /* constructor#2! */ }
+    }
+
+SoUrCe  MissionWrffeMortarL "C:!Java!FsatsPackages!Frealm!MissionWrffeMortarL!MissionImpl.jak";
+
+    public  class MissionImpl extends MissionImpl$$MissionWrffeMlrsL
+    { }

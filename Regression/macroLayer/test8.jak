@@ -1,0 +1,11 @@
+// This program tests that calling a macro with the wrong number of arguments
+// causes an error
+
+public class test4 {
+    #SORT(id{ fooSort }id)
+
+    static public void main(String[] args) {
+	int[] iarray = new int[5];
+	fooSort(iarray);
+    }
+}

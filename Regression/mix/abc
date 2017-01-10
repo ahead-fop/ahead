@@ -1,0 +1,48 @@
+#ifndef _import_
+#define _import_
+#endif
+
+class a;
+
+#ifdef class_
+#undef class_
+#undef super_
+#undef namespace_
+#endif
+
+#define super_ a__0
+#define class_ a__1
+
+//SoUrCe a.h
+its a
+//EnDSoUrCe 
+
+class a;
+
+#ifdef class_
+#undef class_
+#undef super_
+#undef namespace_
+#endif
+
+#define super_ a__1
+#define class_ a__2
+
+//SoUrCe b.h
+its b.h
+//EnDSoUrCe 
+
+class a;
+
+#ifdef class_
+#undef class_
+#undef super_
+#undef namespace_
+#endif
+
+#define super_ a__2
+#define class_ a
+
+//SoUrCe c.h
+its c
+//EnDSoUrCe 

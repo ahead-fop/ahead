@@ -1,0 +1,12 @@
+package MlrsL;
+
+
+
+
+    public extends class OpfacFactory 
+    {
+	protected void OpfacFactoryConstructor() {
+            Base().OpfacFactoryConstructor();
+	    register(OpfacType.MLRS_BTRY, new MlrsOpfac());
+      }
+    }

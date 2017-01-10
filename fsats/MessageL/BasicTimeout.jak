@@ -1,0 +1,25 @@
+layer MessageL;
+
+import fsats.util.DataContainer;
+
+import laydown.*;
+
+import java.util.*;
+
+public abstract class BasicTimeout
+        extends BasicEvent
+        implements Timeout {
+    protected boolean cancelled=false;
+
+    public void cancel() {
+        cancelled=true;
+    }
+
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    protected BasicTimeout( String missionId ) { Super( String )( missionId );
+    }
+
+}

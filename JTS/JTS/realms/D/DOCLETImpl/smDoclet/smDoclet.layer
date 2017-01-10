@@ -1,0 +1,688 @@
+/*
+University of Texas at Austin
+Computer Sciences Department
+JTSDOC project
+Implemented by : Roberto E. Lopez-Herrejon
+Doclet composition.
+Last modified : July 29, 2001
+*/
+
+layer smDoclet(DOCLETImpl lower)
+realm DOCLETImpl
+extends lower
+imports java.util.*,
+        jtsdoc.*,  
+        com.sun.javadoc.*,
+        java.io.*,
+        java.lang.reflect.*,
+        com.sun.tools.javadoc.*       
+{
+ 
+ static public class DocletJTS extends lower.DocletJTS
+ {
+
+  public StateDiagramDocJTS theState;
+
+  public static boolean start(StateDiagramDocJTS state) {
+  String tagName = null; // readOptions(root.options());
+  /*
+  Writer stateFile;       // File handler for writing
+  try {
+
+  // writeContents(state, stateFile);
+
+  } catch(IOException e)
+  {
+    System.out.println("Error at start");
+  }
+  */
+  return true;
+  
+  }
+
+
+ /** Creates a file for writing a state and calls the methods that 
+   define the document layout.
+ */
+ public  static void writeAState(StateDiagramDocJTS state) 
+	 throws IOException
+ {
+  Writer stateFile = createOutFile((state.name()).trim());
+  
+  // writes out the header of the state
+  writeStateHeader(state, stateFile);
+  
+  // writes out the body set up
+  writeStateBodySetup(state, stateFile);
+  
+  // writes out the state name
+  writeStateName(state, stateFile);
+  
+  // writes out the state relationships
+  writeStateRelationships(state, stateFile);
+  
+  // writes out the root clause
+  writeStateRootClause(state, stateFile);
+  
+  // writes out the otherwise clause
+  writeStateOtherwiseClause(state, stateFile);
+
+  // writes out the states clause states
+  writeStateStatesClause(state, stateFile);
+  
+  // These are for ESList 
+  // writes out the exit state clauses
+  writeStateExitClause(state, stateFile);
+ 
+  // writes out the enter state clauses
+  writeStateEnterClause(state, stateFile);
+  
+  // writes out the edges state clause
+  writeStateEdgesClause(state, stateFile);
+  
+  // writes out the other state clauses
+  writeStateOtherClause(state, stateFile);
+  
+  // These are the AST_Field information
+  
+  // writes out the methods of the state
+  LinkedList methods = state.methods();
+  MethodDocJTS[] methodsArray = new MethodDocJTS[methods.size()];
+  for(int i=0; i< methods.size(); i++) 
+		methodsArray[i] = (MethodDocJTS) methods.get(i);
+  writeMethods(methodsArray, stateFile);  
+  
+  // writes out the innerclasses  
+  DOCLETJTS.Lang.ClassDocJTS tempClass = new DOCLETJTS.Lang.ClassDocJTS("");
+  tempClass.setInnerClasses((List)state.innerClasses());
+  writeInnerclasses(tempClass, stateFile);
+ 
+  // writes out the constructors
+  LinkedList constructors = state.constructors();
+  ConstructorDocJTS[] constructorsArray = new ConstructorDocJTS[constructors.size()];
+  for(int i=0; i< constructors.size(); i++) 
+		constructorsArray[i] = (ConstructorDocJTS) constructors.get(i);
+  writeConstructors(constructorsArray, stateFile);
+	
+  // writes out fields
+  LinkedList fields =  state.fields();
+  FieldDocJTS[] fieldsArray = new FieldDocJTS[fields.size()];
+  for(int i=0; i< fields.size(); i++) 
+	fieldsArray[i] = (FieldDocJTS) fields.get(i);
+  writeFields(fieldsArray, stateFile);
+
+  // writes out the innerstates
+  writeInnerStates(state, stateFile);
+
+  // footer stuff
+  writeStateFooter(state, stateFile);
+  
+  // closes the file
+  closeOutFile(stateFile);  
+  
+  } // writeAState
+
+ // ***********************************************************************
+ // ***********************************************************************
+ // ***********************************************************************
+ // ***********************************************************************
+ // Methods that are defined for a State Document
+ public static void writeStateHeader(StateDiagramDocJTS Astate, Writer stateFile)
+	 throws IOException
+ {							   
+  writeHTML("<HTML> <HEAD></HEAD> \n", stateFile);
+  writeHTML("<TITLE> State Layout </TITLE> \n", stateFile);
+  // writeHTML("<H1> State " + Astate.name() + "</H1>", stateFile);	
+ }
+
+ public static void writeStateFooter(StateDiagramDocJTS Astate, Writer stateFile)
+	 throws IOException
+ {
+    writeHTML("</BODY> </HTML> \n", stateFile);
+ }
+ 
+ public static void writeStateBodySetup(StateDiagramDocJTS Astate, Writer stateFile)
+	 throws IOException
+ {
+     writeHTML("<BODY BGCOLOR=\"white\"> \n", stateFile);
+ }
+ 
+ 
+ public static void writeStateName(StateDiagramDocJTS Astate, Writer stateFile)
+	 throws IOException
+ {
+      writeHTML("<H2> <BR> State " + Astate.name()+ " </H2>", stateFile); 
+ }
+ 
+ public static void writeStateRelationships(StateDiagramDocJTS Astate, Writer stateFile)
+	 throws IOException
+ {	 
+	 writeHTML("<DL> <DT>" + Astate.modifiers() + "<B> " + Astate.name()+ "</B>",
+			   stateFile);
+	 
+	 if (Astate.refines() != "") 
+		 writeHTML("<DT> " + " refines " + Astate.refines(), stateFile);
+	 
+	 if (Astate.extendsName()!= "") 
+		 writeHTML("<DT> " + " extends " + Astate.extendsName(), stateFile);
+	 
+	 List impList = Astate.implementsList();
+	 
+	 if (impList != null)
+	 { 
+	   if (impList.size() > 0) 
+		   writeHTML("<DT>implements ", stateFile);
+	   for(int i=0; i< impList.size() ; i++)
+	   {
+		 if (i < impList.size() - 1)   
+		 { writeHTML(((DOCLETJTS.Lang.ClassDocJTS)impList.get(i)).name() + ",", stateFile); }
+		 else
+			writeHTML(((DOCLETJTS.Lang.ClassDocJTS)impList.get(i)).name() + "", stateFile); 
+	   }
+	 };
+	 writeHTML("</DL>", stateFile);
+	 writeHTML("<HR>", stateFile);
+ }
+ 
+  public static void writeStateRootClause(StateDiagramDocJTS Astate, Writer stateFile)
+	  throws IOException
+  {
+	if (Astate.rootClauseName() == "") return;
+
+    writeHTML("<A NAME=\"root_clause\"><!-- --></A> \n", stateFile);
+    writeHTML("<TABLE BORDER=\"1\" CELLPADDING=\"3\" CELLSPACING=\"0\" WIDTH=\"100%\"> \n",
+			stateFile);
+    writeHTML("<TR BGCOLOR=\"#CCCCFF\" CLASS=\"TableHeadingColor\"> \n", stateFile);
+    writeHTML(" <TD COLSPAN=1><FONT SIZE=\"+2\"> \n", stateFile);
+    writeHTML("<B> Root Clause </B></FONT></TD> \n", stateFile);
+    writeHTML("</TR> \n", stateFile);
+    writeHTML("</TABLE> \n", stateFile);
+	
+	Parameter[] parameters = Astate.parameters();
+	String theSignature = " ( "; 
+    // shows all the arguments of the method
+	if (parameters != null) 
+	   {
+          for (int k=0; k< parameters.length; k++)
+          { 
+    		  theSignature = theSignature + parameters[k].typeName() + " " 
+							 + parameters[k].name();
+			  if (k < parameters.length - 1) 
+			   theSignature = theSignature + ", ";
+            } // for k all the parameters
+	    }
+    theSignature = theSignature + " )";	
+	
+    writeHTML(" <H3> \n", stateFile);
+    writeHTML("<A NAME=\"" + Astate.rootClauseName()+ "Delivery_clause" 
+			  + "\"><!-- --></A> \n", stateFile);
+    writeHTML("Delivery Clause \n", stateFile);  // here goes the first row
+    writeHTML("</H3> \n", stateFile);
+	writeHTML("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; \n", stateFile);
+	writeHTML("<B> " + Astate.rootClauseName() + " \n", stateFile);
+	writeHTML("</B> \n", stateFile);
+	writeHTML(theSignature + " \n", stateFile);
+	writeHTML("<DL> \n", stateFile);
+	writeHTML("<DD> \n", stateFile);
+	
+	writeHTML(" \n", stateFile); // here goes the message description
+	writeHTML("</DL> \n", stateFile);
+	
+	
+	// Here starts the No Transition Clause stuff
+    writeHTML(" <H3> \n", stateFile);
+    writeHTML("<A NAME=\"" + Astate.rootClauseName()+ "NoTransition_clause" 
+			  + "\"><!-- --></A> \n", stateFile);
+    writeHTML("No Transition Clause \n", stateFile);  // here goes the first row
+    writeHTML("</H3> \n", stateFile);
+	
+	// Here comes the list of classes/interfaces of the transition clause
+	LinkedList ntcc = Astate.noTransitionClauseClasses();
+    writeHTML("<UL> \n", stateFile);
+	
+    for (int i=0; i< ntcc.size(); i++)
+    {
+	  DOCLETJTS.Lang.ClassDocJTS theClass = (DOCLETJTS.Lang.ClassDocJTS)ntcc.get(i);
+	  writeHTML("<LI> \n", stateFile);
+	  writeHTML("<a href=\"" + theClass.name()+ ".html" + "\" >\n", stateFile);
+	  writeHTML(theClass.name() + " </a>\n", stateFile);
+	  writeHTML("</LI> \n", stateFile);
+	  
+	  // Creates the innerclass recursively
+	  writeAClass(theClass);
+    }
+    writeHTML("</UL>", stateFile);
+   
+  } // end of RootClause
+ 
+public static void writeStateOtherwiseClause(StateDiagramDocJTS Astate, Writer stateFile)
+	  throws IOException
+  {
+	LinkedList occ = Astate.otherwiseClauseClasses();
+	
+	// if there are no otherwise clauses just return
+	if (occ.size() == 0) return;
+	
+	writeHTML("<!-- ======== OTHERWISE CLAUSE ======== --> \n", stateFile);
+	writeHTML("<A NAME=\"otherwise_clause\"><!-- --></A> \n", stateFile);
+	writeHTML("<TABLE BORDER=\"1\" CELLPADDING=\"3\" CELLSPACING=\"0\" WIDTH=\"100%\"> \n",
+			  stateFile);
+	writeHTML("<TR BGCOLOR=\"#CCCCFF\" CLASS=\"TableHeadingColor\"> \n", stateFile);
+	writeHTML(" <TD COLSPAN=2><FONT SIZE=\"+2\"> \n", stateFile);
+	writeHTML(" <B>Otherwise Clause</B></FONT></TD> \n", stateFile);
+	writeHTML(" </TR> \n", stateFile);	
+		
+	// Here starts the rows with the innerclasses of the table
+	for (int i=0; i< occ.size(); i++)
+	{
+	  DOCLETJTS.Lang.ClassDocJTS theClass = (DOCLETJTS.Lang.ClassDocJTS)occ.get(i); 
+	  
+	  // writes out the description of a method
+	  writeHTML("<TR BGCOLOR=\"white\" CLASS=\"TableRowColor\"> \n",
+					 stateFile);
+	  writeHTML("<TD><CODE>  \n",stateFile);
+      writeHTML("<A HREF=\"" + theClass.name() + ".html" + "\">" +  "\n", 
+			   stateFile);
+	  writeHTML(theClass.name() + " \n", stateFile);
+	  writeHTML("</A> \n", stateFile);
+	  writeHTML("</CODE> \n", stateFile);
+	  writeHTML("</TD>  \n", stateFile);
+	  writeHTML("<BR> \n", stateFile); // 
+	  writeHTML("</TR>  \n", stateFile);
+	 
+	  // creates the file for the innerclass
+      writeAClass(theClass);
+	}	
+	
+	writeHTML("</TABLE> \n", stateFile);
+	writeHTML("<BR> \n", stateFile);
+
+  } // end of OtherwiseClause
+  
+  
+  public static void writeStateStatesClause(StateDiagramDocJTS Astate, Writer stateFile)
+	  throws IOException
+  {	  
+	LinkedList scs = Astate.statesClauseStates();
+	if (scs.size() == 0 ) return; // there are no states
+
+	writeHTML("<TABLE BORDER=\"1\" CELLPADDING=\"3\" CELLSPACING=\"0\" WIDTH=\"100%\"> \n", 
+			  stateFile);
+	writeHTML("<TR BGCOLOR=\"#CCCCFF\" CLASS=\"TableSubHeadingColor\"> \n", stateFile);
+	writeHTML("<TD><FONT SIZE=\"+2\"><B> States Clause </B></FONT></TD> \n", stateFile);
+	writeHTML("</TR> \n", stateFile);
+
+	// Gets the list of states
+	String theList = "";
+	for (int i=0; i< scs.size(); i++)
+	{
+	  theList = theList + (String)scs.get(i);
+      if (i < scs.size() - 1) theList = theList + ", "; 
+	}
+	
+	// Spits out the row
+	writeHTML("<TR BGCOLOR=\"white\" CLASS=\"TableRowColor\"> \n", stateFile);
+	writeHTML("<TD><CODE> \n", stateFile);  
+	writeHTML(theList + " \n", stateFile);
+	writeHTML("</CODE></TD> \n", stateFile);
+	writeHTML(" </TR> \n", stateFile);
+	writeHTML("</TABLE> \n", stateFile);  	
+	writeHTML("<BR>", stateFile);
+	
+  } // end of stateStatesClause
+ 
+  public static void writeStateExitClause(StateDiagramDocJTS Astate, Writer stateFile)
+	  throws IOException
+  {
+	LinkedList exits = Astate.ExitStates();
+    if (exits.size() == 0) return; // no exit clauses
+	
+    writeHTML("<A NAME=\"exit_clause\"><!-- --></A> \n", stateFile);
+    writeHTML("<TABLE BORDER=\"1\" CELLPADDING=\"3\" CELLSPACING=\"0\" WIDTH=\"100%\"> \n",
+			stateFile);
+    writeHTML("<TR BGCOLOR=\"#CCCCFF\" CLASS=\"TableHeadingColor\"> \n", stateFile);
+    writeHTML(" <TD COLSPAN=1><FONT SIZE=\"+2\"> \n", stateFile);
+    writeHTML("<B> Exit Clause </B></FONT></TD> \n", stateFile);
+    writeHTML("</TR> \n", stateFile);
+    writeHTML("</TABLE> \n", stateFile);	  
+	  
+	for (int i=0; i< exits.size(); i++)
+	{   
+	   StateDocJTS exit_state = (StateDocJTS)exits.get(i);
+	   
+	   // Name of the State
+       writeHTML(" <H3> \n", stateFile);
+       writeHTML("<A NAME=\"" + exit_state.name()+ "Delivery_clause" 
+			  + "\"><!-- --></A> \n", stateFile);
+       writeHTML(exit_state.name() + " \n", stateFile);  // here goes the first row
+       writeHTML("</H3> \n", stateFile);
+	   
+	   // List of the innerclasses/interfaces
+	   LinkedList exit_classes = exit_state.classes();
+	   		
+	   writeHTML("<UL>", stateFile);
+	   for (int j=0; j< exit_classes.size(); j++)
+	   { 
+			 DOCLETJTS.Lang.ClassDocJTS theClass = (DOCLETJTS.Lang.ClassDocJTS)exit_classes.get(j);
+			 writeHTML("<LI> \n", stateFile);
+			 writeHTML("<A HREF=\""+ theClass.name()+".html" + "\">\n", stateFile);
+			 writeHTML(theClass.name() + "</A> \n", stateFile);
+			 writeHTML("</LI> \n", stateFile);
+			 
+			 // Creates the file for the class
+		     writeAClass(theClass);
+			 
+	    } // for all the innerclasses
+	   writeHTML("</UL>", stateFile);
+	   if (i < exits.size() - 1) writeHTML("<HR>", stateFile);
+	  
+	} // for all the exit states
+  
+	 writeHTML("<BR>", stateFile);
+	 
+  } // end of writeStateExitClause
+  
+  
+public static void writeStateEnterClause(StateDiagramDocJTS Astate, Writer stateFile)
+	  throws IOException
+ {
+  LinkedList enters = Astate.EnterStates();
+  if (enters.size() == 0) return; // no enter clauses
+  
+  writeHTML("<A NAME=\"enter_clause\"><!-- --></A> \n", stateFile);
+  writeHTML("<TABLE BORDER=\"1\" CELLPADDING=\"3\" CELLSPACING=\"0\" WIDTH=\"100%\"> \n",
+			stateFile);
+  writeHTML("<TR BGCOLOR=\"#CCCCFF\" CLASS=\"TableHeadingColor\"> \n", stateFile);
+  writeHTML(" <TD COLSPAN=1><FONT SIZE=\"+2\"> \n", stateFile);
+  writeHTML("<B> Enter Clause </B></FONT></TD> \n", stateFile);
+  writeHTML("</TR> \n", stateFile);
+  writeHTML("</TABLE> \n", stateFile);	  
+	
+  for (int i=0; i< enters.size(); i++)
+  {   
+	StateDocJTS enter_state = (StateDocJTS)enters.get(i);
+    
+	// Name of the State
+    writeHTML(" <H3> \n", stateFile);
+    writeHTML("<A NAME=\"" + enter_state.name()+ "enter_clause" 
+			  + "\"><!-- --></A> \n", stateFile);
+    writeHTML(enter_state.name() + " \n", stateFile);  // here goes the first row
+    writeHTML("</H3> \n", stateFile);
+	
+	LinkedList enter_classes = enter_state.classes();
+	writeHTML("<UL>", stateFile);
+	  for (int j=0; j< enter_classes.size(); j++)
+	  {
+		 DOCLETJTS.Lang.ClassDocJTS theClass = (DOCLETJTS.Lang.ClassDocJTS)enter_classes.get(j);
+		 writeHTML("<LI> \n", stateFile);
+		 writeHTML("<A HREF=\""+ theClass.name()+".html" + "\">\n", stateFile);
+		 writeHTML(theClass.name() + "</A> \n", stateFile);
+		 writeHTML("</LI> \n", stateFile);		  
+
+		 // Creates the file for the innerclass
+	     writeAClass(theClass);
+		
+	  } // for all the classes 
+
+	writeHTML("</UL>", stateFile);
+	if (i < enters.size() - 1) writeHTML("<HR>", stateFile);
+	
+   } // for all the states
+    
+  writeHTML("<BR>", stateFile);	   
+	 
+ } // end of writeStateExitClause 
+  
+ 
+public static void writeStateOtherClause(StateDiagramDocJTS Astate, Writer stateFile)
+	  throws IOException
+ {
+  LinkedList  otherwise = Astate.OtherwiseStates();
+  if (otherwise.size() == 0) return; // there are no otherwise states
+ 
+  // Otherwise state
+  writeHTML("<A NAME=\"other_clause\"><!-- --></A> \n", stateFile);
+  writeHTML("<TABLE BORDER=\"1\" CELLPADDING=\"3\" CELLSPACING=\"0\" WIDTH=\"100%\"> \n",
+			stateFile);
+  writeHTML("<TR BGCOLOR=\"#CCCCFF\" CLASS=\"TableHeadingColor\"> \n", stateFile);
+  writeHTML(" <TD COLSPAN=1><FONT SIZE=\"+2\"> \n", stateFile);
+  writeHTML("<B> Other Clause </B></FONT></TD> \n", stateFile);
+  writeHTML("</TR> \n", stateFile);
+  writeHTML("</TABLE> \n", stateFile);	  
+  
+  for (int i=0; i< otherwise.size(); i++)
+  {   
+	StateDocJTS otherwise_state = (StateDocJTS)otherwise.get(i);
+	
+    // Name of the State
+    writeHTML(" <H3> \n", stateFile);
+    writeHTML("<A NAME=\"" + otherwise_state.name()+ "other_clause" 
+			  + "\"><!-- --></A> \n", stateFile);
+    writeHTML(otherwise_state.name() + " \n", stateFile);  // here goes the first row
+    writeHTML("</H3> \n", stateFile);
+	
+	LinkedList otherwise_classes = otherwise_state.classes();
+	  for (int j=0; j< otherwise_classes.size(); j++)
+	  {
+		DOCLETJTS.Lang.ClassDocJTS theClass = (DOCLETJTS.Lang.ClassDocJTS)otherwise_classes.get(j);
+		 writeHTML("<LI> \n", stateFile);
+		 writeHTML("<A HREF=\""+ theClass.name()+".html" + "\">\n", stateFile);
+		 writeHTML(theClass.name() + "</A> \n", stateFile);
+		 writeHTML("</LI> \n", stateFile);		  			
+
+		 // creates the file for the innerclass
+	     writeAClass(theClass);
+		 
+	  } // for all the innerclasses
+	  writeHTML("</UL>", stateFile);
+	  if (i < otherwise.size() - 1) writeHTML("<HR>", stateFile);	
+	  
+  } // for all the states
+   
+  writeHTML("<BR>", stateFile);	  	
+	
+ } // end of writeStateExitClause 
+
+
+public static void writeInnerStates(StateDiagramDocJTS Astate, Writer stateFile)
+	throws IOException
+{
+	LinkedList states =  Astate.states();
+	if (states == null) return;  // there are no innerstates
+	if (states.size() == 0) return;
+
+	writeHTML("<!-- ======== INNERSTATES ======== --> \n", stateFile);
+	writeHTML("<A NAME=\"innerstates\"><!-- --></A> \n", stateFile);
+	writeHTML("<TABLE BORDER=\"1\" CELLPADDING=\"3\" CELLSPACING=\"0\" WIDTH=\"100%\"> \n",
+			  stateFile);
+	writeHTML("<TR BGCOLOR=\"#CCCCFF\" CLASS=\"TableHeadingColor\"> \n", stateFile);
+	writeHTML(" <TD COLSPAN=2><FONT SIZE=\"+2\"> \n", stateFile);
+	writeHTML(" <B>Inner States </B></FONT></TD> \n", stateFile);
+	writeHTML(" </TR> \n", stateFile);	
+	
+	for (int l=0; l < states.size() ; l++)
+	{
+	  StateDiagramDocJTS theState = (StateDiagramDocJTS)states.get(l);  		   
+	  writeHTML("<TR BGCOLOR=\"white\" CLASS=\"TableRowColor\"> \n",
+					 stateFile);
+	  writeHTML("<TD><CODE>  \n",stateFile);
+      writeHTML("<A HREF=\"" + theState.name() + ".html" + "\">" +  "\n", 
+			   stateFile);
+	  writeHTML(theState.name() + " \n", stateFile);
+	  writeHTML("</A> \n", stateFile);
+	  writeHTML("</CODE> \n", stateFile);
+	  writeHTML("</TD>  \n", stateFile);
+	  writeHTML("<BR> \n", stateFile); // here goes the message
+	  writeHTML("</TR>  \n", stateFile);
+	  
+	  // creates the file for the innerstate
+	  writeAState(theState);
+	  
+	 }
+	
+	writeHTML("</TABLE> \n", stateFile);
+	writeHTML("<BR> \n", stateFile);	
+	
+} // write inner states
+
+public static void writeStateEdgesClause(StateDiagramDocJTS Astate, Writer stateFile)
+	throws IOException
+{
+  LinkedList  edges = Astate.EdgeStates();
+  if (edges == null) return;
+  if (edges.size() == 0) return; // there are no edges
+  
+  // Edges state
+  writeHTML("<A NAME=\"edges_clause\"><!-- --></A> \n", stateFile);
+  writeHTML("<TABLE BORDER=\"1\" CELLPADDING=\"3\" CELLSPACING=\"0\" WIDTH=\"100%\"> \n",
+			stateFile);
+  writeHTML("<TR BGCOLOR=\"#CCCCFF\" CLASS=\"TableHeadingColor\"> \n", stateFile);
+  writeHTML(" <TD COLSPAN=1><FONT SIZE=\"+2\"> \n", stateFile);
+  writeHTML("<B> Edges Clause </B></FONT></TD> \n", stateFile);
+  writeHTML("</TR> \n", stateFile);
+  writeHTML("</TABLE> \n", stateFile);	 
+  
+  for (int i=0; i< edges.size(); i++)
+  {   
+	EdgeStateDocJTS edge_state = (EdgeStateDocJTS)edges.get(i);
+	
+	// Name of the State
+    writeHTML(" <H3> \n", stateFile);
+    writeHTML("<A NAME=\"" + edge_state.name()+ "enter_clause" 
+			  + "\"><!-- --></A> \n", stateFile);
+    writeHTML(edge_state.name() + " \n", stateFile);  // here goes the first row
+    writeHTML("</H3> \n", stateFile);	
+
+	// Arrow from startState  ---> endState
+	writeHTML("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; \n", stateFile);
+	writeHTML("<B> "  + edge_state.startName() + " \n", stateFile);
+	writeHTML("</B> \n", stateFile);
+	writeHTML(" ----> \n", stateFile);
+	writeHTML("<B> \n", stateFile);
+	writeHTML(edge_state.endName() + " \n", stateFile);
+	writeHTML("</B> \n", stateFile);
+	writeHTML("<DL> \n", stateFile);
+	writeHTML("<DD> \n", stateFile);
+	writeHTML("<B> Conditions: </B>\n", stateFile); // here goes the message description
+	writeHTML(edge_state.conditions() + "</DD> \n", stateFile);
+	
+	
+	LinkedList edge_classes = edge_state.classes();
+	if (edge_classes.size() !=0 )
+	{
+	 writeHTML("\n", stateFile);	
+	 writeHTML("<DD><BR> \n", stateFile);
+	 writeHTML("<B> Block contents: </B> \n", stateFile);
+     writeHTML("</DD> \n", stateFile);
+	}
+	
+	writeHTML("</DL> \n", stateFile);
+	
+	writeHTML("<UL>", stateFile);
+	writeHTML("<UL>", stateFile);
+	for (int j=0; j< edge_classes.size(); j++)
+	{
+      DOCLETJTS.Lang.ClassDocJTS theClass = (DOCLETJTS.Lang.ClassDocJTS)edge_classes.get(j);
+      writeHTML("<LI> \n", stateFile);
+	  writeHTML("<A HREF=\""+ theClass.name()+".html" + "\">\n", stateFile);
+	  writeHTML(theClass.name() + "</A> \n", stateFile);
+	  writeHTML("</LI> \n", stateFile);	
+	  
+      // Creates the file for the innerclass
+	  writeAClass(theClass);
+	  
+	} // for all the classes in the edge
+
+	writeHTML("</UL>", stateFile);
+	writeHTML("</UL>", stateFile);
+	if (i < edges.size() - 1) writeHTML("<HR>", stateFile);		  
+	  
+  } // for all the edges
+
+  writeHTML("<BR>", stateFile);
+	
+} // of writeStateEdgesClause
+  
+ // ***********************************************************************
+ // ***********************************************************************
+ // ***********************************************************************
+ // ***********************************************************************
+ public static void appendContents(DOCLETJTS.Lang.ClassDocJTS Aclass,
+								   Writer outputFile) throws IOException 
+ {
+	LinkedList states =  Aclass.states();
+	
+	// if there are no states return
+	if (states == null) return;
+	if (states.size() == 0) return;
+	
+	// States header
+ 	writeHTML("<!-- ======== STATES SUMMARY ======== --> \n", outputFile);
+	writeHTML("<A NAME=\"states_summary\"><!-- --></A> \n", outputFile);
+	writeHTML("<TABLE BORDER=\"1\" CELLPADDING=\"3\" CELLSPACING=\"0\" WIDTH=\"100%\"> \n",
+			  outputFile);
+	writeHTML("<TR BGCOLOR=\"#CCCCFF\" CLASS=\"TableHeadingColor\"> \n", outputFile);
+	writeHTML("<TD COLSPAN=2><FONT SIZE=\"+2\"> \n", outputFile);
+	writeHTML("<B>States Summary</B></FONT></TD> \n", outputFile);
+	writeHTML("</TR> \n", outputFile);	 
+	 
+    for (int l=0; l < states.size() ; l++)
+	{
+	  StateDiagramDocJTS theState = (StateDiagramDocJTS)states.get(l);
+	  String stateName = (theState.name()).trim();
+	  
+	  writeHTML("<TR BGCOLOR=\"white\" CLASS=\"TableRowColor\"> \n", outputFile);
+	  writeHTML("<TD ALIGN=\"right\" VALIGN=\"top\" WIDTH=\"1%\"> \n",
+				outputFile);
+	  writeHTML("<FONT SIZE=\"-1\"> \n", outputFile);
+	  writeHTML("<CODE>" + theState.modifiers() + "   "+ "</CODE> \n", 
+				outputFile);
+	  writeHTML("</FONT> \n", outputFile);
+	  writeHTML("</TD> \n", outputFile);
+	  writeHTML("<TD> \n", outputFile);
+	  writeHTML("<CODE> \n", outputFile);
+	  writeHTML("<B> \n", outputFile);
+	  writeHTML("<A HREF=\"" + stateName +".html" + "\"> " + "\n", 
+				outputFile);
+	  writeHTML(stateName + "\n", outputFile);
+	  writeHTML("</A> \n", outputFile);
+	  writeHTML(" \n", outputFile);
+	  writeHTML("</B> \n", outputFile);
+	  writeHTML("</CODE> \n", outputFile);
+	  writeHTML("<BR> \n", outputFile);  // here goes the message 
+	  writeHTML("</TD> \n", outputFile);
+	  writeHTML("</TR> \n", outputFile);			
+		   
+      // Creates the state file
+	  $TEqn.DocletJTS.writeAState(theState);
+		  
+	}
+
+	// trailer
+	writeHTML("</TR> \n", outputFile);
+	writeHTML("</TABLE> \n", outputFile);
+	
+	// calls the super	
+	lower.DocletJTS.appendContents(Aclass,outputFile);
+	
+  } // of appendContents.
+ 
+ 
+  public static void appendsProgramContents(DOCLETJTS.Lang.ProgramDocJTS Aprogram,
+											  Writer outputFile)
+	 throws IOException
+ {
+   // Same strategy create a temp state and fill it up with the innerstates and
+   // call the writeInnerstates
+
+   StateDiagramDocJTS tempState = new StateDiagramDocJTS("");
+   tempState.setStates(Aprogram.states());
+   writeInnerStates(tempState, outputFile);
+   
+   // calls the super
+   lower.DocletJTS.appendsProgramContents(Aprogram,outputFile);
+ }
+ 
+ } // class DocletJTS
+ 
+}

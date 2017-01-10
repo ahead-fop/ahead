@@ -1,0 +1,34 @@
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+if [ "$1" = "-p" ]; 
+then
+   compiler="java -ms16m pizza.compiler.Main"
+else
+   compiler="javac -J-mx32m"
+fi
+
+echo
+echo "Executing regression tests for match ..."
+
+rm -f *.class *.java
+
+for f in test?.jak test??.jak ; do
+	root=${f%.jak}
+	echo
+	echo testing $root
+	java jak.Main $f
+	echo "Compiling ..."
+	$compiler $root.java
+	echo "Run and diff ..."
+	java $root >output
+	if { diff -w output $root.output ; } then
+	    echo "Test succeeded for " $root
+	else
+	    echo "Test FAILED for " $root
+	    exit 1
+	fi
+done
+
+echo -e "\nmatch regression tests succeeded."

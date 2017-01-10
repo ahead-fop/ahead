@@ -1,0 +1,55 @@
+layer M2D2Java;
+
+refines class FldVarDec {
+
+   public void extract( context c ) {
+
+      // Step 1: extract modifier information
+
+      String visibility  = "";       // default
+      boolean isStatic   = false;    // default
+      boolean isFinal    = false;    // default
+
+      AST_Modifiers am = ((AST_Modifiers) arg[0].arg[0]);
+      if (am!=null) {
+         visibility = am.visibility();
+         isStatic   = am.findModifier("static");
+         isFinal    = am.findModifier("final");
+      }
+
+      // Step 2: get type name -- see if it is imported, and if so,
+      //         use the complete pathname
+
+      String t1 = ((AST_TypeName) arg[1]).GetName();
+      String t2 = ImpQual.fullPath(t1,c);
+      String tn = ((AST_TypeName) arg[1]).Signature();
+      tn = t2 + tn.substring(t1.length());
+      if (Main.debug) System.out.println( "+++> " + tn);
+
+      // Step 3: for each variable, declare it      
+
+      AstCursor curs = new AstCursor();
+      for (curs.FirstElement(arg[2]); curs.MoreElement(); curs.NextElement()) {
+
+         // Step 3.1 get VarDecl, variable name, initial value
+
+         VarDecl vd = (VarDecl) curs.node;
+         String varName = vd.GetName(); 
+         String dims = vd.GetDims();
+         String asgn = bodyString(vd.GetAsgn());
+
+         // Step 3.2 declare Field
+
+         String className = c.getClassName();
+         String fieldId = className +  "." + varName;
+         if (c.isClass)
+            c.Footer.add(
+               RubyInstCreator.createClassField( fieldId, fieldId, tn + dims, 
+                  asgn, visibility, isStatic, isFinal, className ) );
+         else
+            c.Footer.add(
+               RubyInstCreator.createInterfaceField( fieldId, fieldId, tn + dims, 
+                  asgn, visibility, isStatic, isFinal, className ) );
+      }
+   }
+}

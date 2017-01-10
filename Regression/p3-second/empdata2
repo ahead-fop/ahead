@@ -1,0 +1,547 @@
+Total number of depts: 16
+Total numver of names: 526
+
+Biology : 29
+Computer Science : 35
+Anthropology : 31
+Architecture : 26
+Chemistry : 29
+English : 47
+Philosophy : 33
+Latin Studies : 37
+Electrical Eng. : 30
+Liberal Arts : 35
+Pre-medicine : 30
+History : 40
+Zoology : 34
+Mechanical Eng. : 26
+Computer Eng. : 34
+Archeology : 30
+
+|526
+|10405|26|Architecture|Mutter, Les|
+|10728|38|Philosophy|Slusser, Cathy|
+|11115|27|Pre-medicine|Perry, Betty|
+|10813|43|Latin Studies|Beegs, Chris|
+|10726|49|Philosophy|Ferrell, Melinda|
+|10909|64|Electrical Eng.|Garcia, Lupe|
+|10610|34|English|Cordes, John|
+|11121|41|Pre-medicine|Rose, Jerry|
+|11219|64|History|Carmichael, Ronda|
+|10924|52|Electrical Eng.|Spontak, Dede|
+|11130|37|Pre-medicine|Perry, George|
+|11236|57|History|Beeson, John|
+|10118|52|Biology|Guerry, Linda|
+|10127|30|Biology|Padilla, Gina|
+|10227|48|Computer Science|Delp, Joan|
+|10710|43|Philosophy|Mersky, Deena|
+|10526|63|Chemistry|Hernandez, Brenda|
+|10110|43|Biology|White, Patty|
+|11228|38|History|Washburn, Christy|
+|10529|30|Chemistry|Derosa, Steven|
+|10226|51|Computer Science|Barclay, Jim|
+|11113|52|Pre-medicine|Coedes, John|
+|10640|24|English|Lawson, Kathy|
+|10225|57|Computer Science|Garcia, Gilbert|
+|10812|34|Latin Studies|Myers, Cecil|
+|11331|32|Zoology|Holland, Jay|
+|10641|51|English|Nelson, Nelda|
+|11611|67|Archeology|Nelson, David|
+|11312|37|Zoology|Haralson, Lisa|
+|10618|63|English|Frost, Tina|
+|10211|49|Computer Science|Merferd, Dannie|
+|11215|60|History|Wikstrom, Chrysa|
+|11218|30|History|Richardson, Carol|
+|10904|67|Electrical Eng.|Paul, Sandra|
+|10719|27|Philosophy|Pasta, Plus|
+|10906|57|Electrical Eng.|Smith, Rod|
+|11522|35|Computer Eng.|Kinsley, Nanou|
+|10630|67|English|Shults, Carry|
+|11224|52|History|Martin, Cindy|
+|10518|64|Chemistry|Reid, Jennifer|
+|10115|41|Biology|Below, Linda|
+|11227|23|History|Puentes, Carlos|
+|10709|36|Philosophy|Whitten, Virginia|
+|10717|22|Philosophy|Wright, Judith|
+|10929|37|Electrical Eng.|Schulze, Debbie|
+|10126|61|Biology|Trommer, Pat|
+|10623|55|English|Holbert, John|
+|11212|21|History|Wilson, Ann|
+|11628|32|Archeology|Zoe, John|
+|10725|55|Philosophy|Shaunessy, Michele|
+|11229|56|History|Pepin, Pat|
+|10128|20|Biology|Walser, Maryanne|
+|10807|50|Latin Studies|Rider, Bobby|
+|10309|60|Anthropology|Reese, Anita|
+|11505|44|Computer Eng.|Mathews, Jerry|
+|10706|30|Philosophy|Bayne, Bette|
+|10223|41|Computer Science|Chen, Gang|
+|10408|33|Architecture|Stinson, Greg|
+|10123|54|Biology|Zygmunt, Amy|
+|10625|35|English|Eger, Audrey|
+|10707|50|Philosophy|Galbreath, Bret|
+|11425|32|Mechanical Eng.|Cantu, Cindy|
+|10627|44|English|Greenberg, Lawrence|
+|10124|21|Biology|Williams, Larry|
+|11614|34|Archeology|Harber, Charlotte|
+|11506|48|Computer Eng.|Paladino, Maureen|
+|11504|59|Computer Eng.|Gore, Donna|
+|11012|41|Liberal Arts|Ham, Tracy|
+|11606|45|Archeology|Friedland, Leonard|
+|10831|69|Latin Studies|White, Michael|
+|11313|60|Zoology|Henson, Diana|
+|10222|52|Computer Science|Murr, C.E.|
+|10524|30|Chemistry|Mersky-Poole, Ruth|
+|10928|36|Electrical Eng.|McQuerry, Kati|
+|10825|48|Latin Studies|Kendrick, Joann|
+|11232|43|History|Miller, Jill|
+|11204|49|History|Giddings, Monica|
+|10413|63|Architecture|Holt, Brian|
+|10228|65|Computer Science|Gregory, Angela|
+|11119|23|Pre-medicine|Black, Beverly|
+|11016|62|Liberal Arts|Percifull, Becky|
+|11417|25|Mechanical Eng.|Batory, Don|
+|10215|62|Computer Science|Foss, Brenda|
+|11415|65|Mechanical Eng.|Smith, Jeff|
+|11623|56|Archeology|Pils, Maryanne|
+|10117|66|Biology|Bergin, Vicky|
+|11530|23|Computer Eng.|Barber, Gretchen|
+|11217|61|History|Jefferies, Tricia|
+|10503|51|Chemistry|Akin, Monica|
+|10206|54|Computer Science|Williams, David|
+|10330|24|Anthropology|Packherser, Vickie|
+|10329|53|Anthropology|Planta, Joyce|
+|11128|42|Pre-medicine|Lamb, Bridget|
+|11233|21|History|Willcott, Murphy|
+|10914|56|Electrical Eng.|Wofford, Deborah|
+|10212|34|Computer Science|Hartness, Glen|
+|11240|49|History|Shead, Linda|
+|10801|25|Latin Studies|Pellinat, Martin|
+|10116|54|Biology|Dell, Al|
+|11414|44|Mechanical Eng.|Bosworth, Michael|
+|10219|24|Computer Science|Wiseman, Addie|
+|11526|58|Computer Eng.|Thoresrud, Carole|
+|10810|47|Latin Studies|Daugherty, Patty|
+|10217|31|Computer Science|Tolbot, Mary|
+|11201|51|History|Tobloka, Rick|
+|11619|47|Archeology|Banks, Richard|
+|10727|35|Philosophy|Radcliff, Katheryn|
+|11332|67|Zoology|Luedke, Lori|
+|10327|59|Anthropology|Williamson, Tricia|
+|10826|36|Latin Studies|Arimes, Sharon|
+|11327|33|Zoology|Moynahan, Jan|
+|10718|51|Philosophy|Ellis, John|
+|10416|41|Architecture|Blagg, Kathy|
+|11009|31|Liberal Arts|Klingman, Darwin|
+|10122|30|Biology|Biery, Linda|
+|11124|60|Pre-medicine|Hanisen, Grace|
+|10644|29|English|Linder-Tate, Janis|
+|10720|66|Philosophy|Shell, Ford|
+|11316|28|Zoology|Koskinsy, Frances|
+|10917|66|Electrical Eng.|Raatz, Ricky|
+|10814|52|Latin Studies|Erard, Carol|
+|11423|51|Mechanical Eng.|Mavil, Andrea|
+|11203|34|History|Shawn, Any|
+|10615|36|English|Denton, Judy|
+|11409|49|Mechanical Eng.|Cannon, Erika|
+|10647|47|English|Edwards, Jola|
+|10804|59|Latin Studies|Tomlin, Phil|
+|10916|32|Electrical Eng.|Comton, Camille|
+|11513|48|Computer Eng.|Stone, Tracy|
+|10802|34|Latin Studies|Graff, Bill|
+|11615|65|Archeology|Anderson, Mary|
+|11517|56|Computer Eng.|Johnson, Mary|
+|11509|39|Computer Eng.|Vance, Mary|
+|10520|51|Chemistry|Nix, Toni|
+|11512|58|Computer Eng.|Manchester, Jane|
+|10731|26|Philosophy|Blizzard, Roy|
+|10318|49|Anthropology|Sullivan, Evie|
+|10830|49|Latin Studies|Lesso, Anne|
+|11334|59|Zoology|Akers, Mark|
+|11624|68|Archeology|King, Norris|
+|11616|28|Archeology|Foster, Peggy|
+|10626|39|English|MacLennan, Kerry|
+|11518|43|Computer Eng.|Mussman, David|
+|10708|39|Philosophy|House, Debbie|
+|11003|64|Liberal Arts|Thomas, Tina|
+|10510|32|Chemistry|Lalinas, Felipe|
+|11235|60|History|Clarkson, Cheryl|
+|11612|63|Archeology|Stenicka, Kitzi|
+|10908|56|Electrical Eng.|Murphy, Michael|
+|11011|30|Liberal Arts|Lim, Sook|
+|10930|58|Electrical Eng.|Reynolds, Morna|
+|11223|22|History|Ricker, Patricia|
+|10820|25|Latin Studies|Hawkins, Catherine|
+|10306|69|Anthropology|Braun, John|
+|10605|32|English|Schweitzer, Virginia|
+|10723|22|Philosophy|Hardwich, Karen|
+|10320|53|Anthropology|Mciver, Janice|
+|11403|43|Mechanical Eng.|Davis, Jeanette|
+|10313|45|Anthropology|Brooks, Pat|
+|10923|38|Electrical Eng.|Udell, Joe|
+|11028|43|Liberal Arts|Daily, John|
+|10310|39|Anthropology|Wiggins, Terry|
+|10608|25|English|Fenelon, Mike|
+|11321|51|Zoology|Souther, Greg|
+|11408|40|Mechanical Eng.|Anderson, Gwyn|
+|10622|57|English|Schacherl, Carol|
+|11608|44|Archeology|Gall, Sandy|
+|10422|53|Architecture|Luther, Mary|
+|11310|66|Zoology|Bergeron, Ronnie|
+|10101|31|Biology|Ashley, Anne|
+|10815|40|Latin Studies|Neunhoffer, Neal|
+|11237|34|History|Fullilove, Gena|
+|11418|51|Mechanical Eng.|Watkins, Larry|
+|11407|69|Mechanical Eng.|Bassion, Susan|
+|10701|59|Philosophy|Whitten, Lynn|
+|11102|33|Pre-medicine|Flores, Valentina|
+|10511|57|Chemistry|Janicek, Nancy|
+|10203|27|Computer Science|Jackson, Ron|
+|10325|37|Anthropology|Salone, Susan|
+|10621|24|English|Nixon, Mary|
+|11411|45|Mechanical Eng.|Taylor, Cathy|
+|10406|62|Architecture|Davis, Alice|
+|10729|41|Philosophy|Vanderkolk, Mark|
+|11314|47|Zoology|Dixon-Eden, Pamela|
+|10235|40|Computer Science|Papa, Lorraine|
+|11122|63|Pre-medicine|Mikeska, Mary|
+|10705|28|Philosophy|Goad, Clayton|
+|10638|39|English|Henglein, Mary|
+|11617|20|Archeology|Hardy, Melanie|
+|10311|61|Anthropology|Dent, Dennis|
+|11421|36|Mechanical Eng.|Pryor, Dwight|
+|10612|63|English|Mayfield, Julie|
+|10829|32|Latin Studies|Beerman, Norma|
+|10817|58|Latin Studies|Grieg, Robbie|
+|11220|52|History|Smith, Mary|
+|10129|58|Biology|Clifton, Georgia|
+|10409|38|Architecture|Longley, Mark|
+|10818|27|Latin Studies|Traweek, Kathy|
+|10504|68|Chemistry|Sonna, Caruth|
+|10921|51|Electrical Eng.|Quirk, Christopher|
+|10229|61|Computer Science|Hanson, Fran|
+|11329|38|Zoology|Sifuentes, Liz|
+|11112|59|Pre-medicine|Watson, Deborah|
+|11007|43|Liberal Arts|Scheynailder, Mark|
+|11602|32|Archeology|Myers, Bill|
+|11410|20|Mechanical Eng.|Root, Janie|
+|10216|42|Computer Science|Vick, Kathleen|
+|11116|48|Pre-medicine|Corder, Jeanne|
+|11129|51|Pre-medicine|Heberly, Jill|
+|10645|51|English|Malitz, David|
+|10816|68|Latin Studies|Barry, Pat|
+|10304|67|Anthropology|Swope, Jeanie|
+|10828|40|Latin Studies|Miller, Lisa|
+|11221|25|History|Pilney, Mary|
+|10836|64|Latin Studies|Moores, Leslie|
+|11226|43|History|Jefferies, Carla|
+|11104|56|Pre-medicine|Kwisely, Mark|
+|11209|59|History|McMichael, Kim|
+|11317|68|Zoology|Wipperman, Wendy|
+|10316|59|Anthropology|Casey, Jan|
+|10523|30|Chemistry|Lively, Mary|
+|10404|50|Architecture|Matthews, Jill|
+|11330|38|Zoology|Garza, Debbie|
+|11207|20|History|Pfeil, Betsy|
+|10208|63|Computer Science|Beller, Karen|
+|11230|49|History|White, Wynette|
+|11420|25|Mechanical Eng.|Fine, Judy|
+|11524|45|Computer Eng.|Weirich, Roma|
+|10323|43|Anthropology|Pace, Kahryn|
+|11208|48|History|Durham, Carolyn|
+|11103|47|Pre-medicine|Avera, Jean|
+|10305|41|Anthropology|Dixon, Royce|
+|11533|53|Computer Eng.|Morales, Marilou|
+|10209|54|Computer Science|Garreh, Mary|
+|10103|57|Biology|Gill, Sharon|
+|11503|57|Computer Eng.|Clements, Rick|
+|11234|21|History|Davis, David|
+|11422|20|Mechanical Eng.|Weatherford, Ann|
+|11030|26|Liberal Arts|Zahn, Cayce|
+|10104|47|Biology|Clawson, Tina|
+|11126|48|Pre-medicine|Hayes, Helen|
+|11622|27|Archeology|Foryce, Fred|
+|10322|34|Anthropology|Stone, Roberta|
+|11328|36|Zoology|Byrd, Sharon|
+|10525|61|Chemistry|Muennink, Pat|
+|10521|33|Chemistry|Linn, Emma|
+|10230|44|Computer Science|Obrien, Jan|
+|11601|48|Archeology|Kraft, Karen|
+|10602|36|English|Linn, Brenda|
+|10512|42|Chemistry|Carr, Virginia|
+|11501|30|Computer Eng.|Millhollow, Gail|
+|10613|55|English|Ybarra, Maria|
+|11625|63|Archeology|Hooper, Melody|
+|10711|32|Philosophy|Hardesty, Ava|
+|11306|43|Zoology|Bradshaw, Mary|
+|10822|66|Latin Studies|Jobe, Mike|
+|10402|40|Architecture|Thompson, Nicole|
+|10913|67|Electrical Eng.|Sottile, Beth|
+|11508|42|Computer Eng.|Hefter, Katie|
+|10619|46|English|Emmert, Deanna|
+|11333|38|Zoology|Stevens, Marla|
+|10205|32|Computer Science|Myler, Danny|
+|11311|46|Zoology|Ray, Vicki|
+|10114|57|Biology|Dow, Ann|
+|11618|45|Archeology|Bryant, Cynthia|
+|11023|53|Liberal Arts|Dabbs, Bryan|
+|10601|32|English|Brooks, Leslie|
+|10119|32|Biology|Skelly, Greg|
+|11613|53|Archeology|Schwartz, Barbara|
+|10926|23|Electrical Eng.|Kerr, Joyce|
+|10407|38|Architecture|Hunt, Jane|
+|10506|48|Chemistry|Sorrell, Nathalie|
+|10303|46|Anthropology|Goodwin, Diane|
+|10721|29|Philosophy|Smith, Donna|
+|10637|54|English|Walker, Pat|
+|10646|42|English|Caserta, Cynthia|
+|11017|46|Liberal Arts|Dabbs, Larry|
+|11303|44|Zoology|Olvera, Elsa|
+|11426|30|Mechanical Eng.|Murphy, Andy|
+|10722|30|Philosophy|Lara, Pamela|
+|10401|61|Architecture|Perry, Karen|
+|10232|56|Computer Science|Dunn, Nikki|
+|10927|34|Electrical Eng.|Gieseck, Terri|
+|11527|25|Computer Eng.|Percorella, Leo|
+|10834|38|Latin Studies|Johns, Leslie|
+|10628|49|English|Worsham, Dennis|
+|11521|53|Computer Eng.|Thompson, Margaret|
+|11605|48|Archeology|Lewis, Debra|
+|10922|67|Electrical Eng.|Berferet, Suzanne|
+|10713|64|Philosophy|Perry, Sue|
+|10724|35|Philosophy|Kelly, Teri|
+|10609|25|English|Leff, Nancy|
+|10204|48|Computer Science|Parr, June|
+|11520|49|Computer Eng.|Garza, Quen|
+|10112|24|Biology|Glover, Ross|
+|11106|35|Pre-medicine|Poorman, Katie|
+|10912|31|Electrical Eng.|Edgin, Penny|
+|11416|36|Mechanical Eng.|Mersky, Lisa|
+|11325|58|Zoology|Eudy, Barbara|
+|11127|45|Pre-medicine|Willis, Shirley|
+|11516|34|Computer Eng.|Dabney, Brad|
+|11202|34|History|Ney, Diana|
+|11118|56|Pre-medicine|Bundy, Stevie|
+|10624|63|English|Kuperman, Helene|
+|11024|60|Liberal Arts|McConnell, Carol|
+|10514|52|Chemistry|Smith, Bill|
+|11515|44|Computer Eng.|Castello, Mary|
+|10102|42|Biology|Gaudet, Laura|
+|10302|47|Anthropology|Holden, Heather|
+|10411|28|Architecture|Zogg, John|
+|10635|49|English|Cardenas, Libby|
+|10224|49|Computer Science|Signor, Beth|
+|11001|20|Liberal Arts|Alexander, Joe|
+|10415|61|Architecture|Webster, Mark|
+|11323|31|Zoology|Epstein, Nancy|
+|11231|34|History|Behrend, Sam|
+|10425|53|Architecture|Bourne, Katleen|
+|11021|38|Liberal Arts|Moores, Julie|
+|11035|41|Liberal Arts|Coleman, Bill|
+|10418|39|Architecture|Atherton, Susan|
+|11318|61|Zoology|Vyner, Jeff|
+|11532|31|Computer Eng.|Hibbitts, Laura|
+|11120|39|Pre-medicine|Mussett, Brett|
+|11534|28|Computer Eng.|Priesnetz, Joe|
+|10109|58|Biology|Barbosa, Tammy|
+|10712|37|Philosophy|Stokes, Gay|
+|10421|23|Architecture|Harms, Fontaine|
+|10527|50|Chemistry|Reece, Johanna|
+|11405|26|Mechanical Eng.|Massat, Gerhard|
+|10426|42|Architecture|Harrison, John|
+|10901|45|Electrical Eng.|O'Conner, Gail|
+|11309|43|Zoology|McCann, Jana|
+|11013|36|Liberal Arts|Fagen, Joe|
+|10642|62|English|Dunkelberg, Janet|
+|11529|49|Computer Eng.|Davis, Tony|
+|11424|29|Mechanical Eng.|Morris, Linda|
+|10919|65|Electrical Eng.|Griffin, Nancy|
+|10108|43|Biology|Pierins, Bill|
+|11225|40|History|Gulla, Susan|
+|10607|29|English|Vaughn, Charles|
+|11117|60|Pre-medicine|Luke, Joe|
+|11627|36|Archeology|Irwin, Trudy|
+|11610|43|Archeology|David, Sandra|
+|10515|69|Chemistry|Chapa, Carola|
+|11307|32|Zoology|Tighe, Rosemary|
+|10501|28|Chemistry|Gil, Belinda|
+|10423|65|Architecture|Durand, Catherine|
+|10321|48|Anthropology|Ivy, Mary|
+|11222|35|History|Schreffler, Kay|
+|10808|26|Latin Studies|Gore, Nancy|
+|11033|43|Liberal Arts|Wilkins, Rosemary|
+|10234|37|Computer Science|Wills, Donna|
+|10121|35|Biology|Duke, Janet|
+|10414|58|Architecture|Sanders, Mike|
+|10509|37|Chemistry|Ayad, Vic|
+|10403|60|Architecture|Smith, Don|
+|11502|26|Computer Eng.|Mendenhall, Laura|
+|11014|31|Liberal Arts|Jones, Lisa|
+|11413|64|Mechanical Eng.|Simmons, E.R.|
+|11305|23|Zoology|McGinty, Ann|
+|10905|32|Electrical Eng.|Rider, Kathy|
+|10410|36|Architecture|Earl, Jerry|
+|10113|50|Biology|Dyer, Elizabeth|
+|11315|60|Zoology|Williams, Susan|
+|10920|21|Electrical Eng.|Pharr, John|
+|11022|31|Liberal Arts|Graham, Bill|
+|10902|65|Electrical Eng.|Claire, Rachel|
+|10907|64|Electrical Eng.|Greig, Lindsey|
+|11604|36|Archeology|Hebbe, Ann|
+|10911|32|Electrical Eng.|Tammadge, Terry|
+|10823|51|Latin Studies|Estill, Ronald|
+|11626|51|Archeology|Geppert, Rolo|
+|10821|56|Latin Studies|Graham, Sam|
+|11402|42|Mechanical Eng.|Kinard, Jeanette|
+|10631|44|English|Ibanez, Jerry|
+|11110|60|Pre-medicine|Benecke, Kathleen|
+|10832|32|Latin Studies|Johanson, Barbara|
+|11621|43|Archeology|Benson, Kathy|
+|10317|32|Anthropology|Mustin, A.K.|
+|11620|62|Archeology|Vallis, Mary|
+|11210|51|History|Green, Carolyn|
+|11109|42|Pre-medicine|Doughtery, Priscilla|
+|11412|41|Mechanical Eng.|Andrews, Kay|
+|10620|27|English|Turney, Connie|
+|11031|63|Liberal Arts|Tims, Mary|
+|11019|52|Liberal Arts|Goldman, Linda|
+|10803|35|Latin Studies|Spurr, Sharon|
+|10233|39|Computer Science|Gammon, Elizabeth|
+|10301|65|Anthropology|Darling, Donna|
+|10502|47|Chemistry|Byors, Anne|
+|10634|30|English|Dyer, Claire|
+|11015|54|Liberal Arts|Sanchez, Aurora|
+|11322|22|Zoology|Harrison, Jaylene|
+|10827|36|Latin Studies|Ward, Melissa|
+|10221|22|Computer Science|Dabbs, Bob|
+|11114|56|Pre-medicine|Nietfell, Craig|
+|11238|59|History|Johnson, Cynthia|
+|10513|36|Chemistry|Mason, Glen|
+|10519|41|Chemistry|Baker, Kathy|
+|11304|33|Zoology|Braodrick, Linda|
+|10824|20|Latin Studies|Solter, Eddie|
+|11607|25|Archeology|Escobedo, Olga|
+|10328|36|Anthropology|Cross, Chris|
+|11008|41|Liberal Arts|Murrell, Adam|
+|10606|51|English|Stalle, Monet|
+|11010|45|Liberal Arts|Anderson, Suzanne|
+|11101|34|Pre-medicine|Kelly, Kim|
+|10516|61|Chemistry|Leonard, Niki|
+|11419|43|Mechanical Eng.|Moe, Charlene|
+|10331|69|Anthropology|McKnight, Hoanne|
+|10105|27|Biology|Cotrell, Georgia|
+|10819|45|Latin Studies|Rhodes, Jody|
+|10111|40|Biology|Ladner, Beth|
+|11301|58|Zoology|Lockwood, James|
+|10837|29|Latin Studies|Spellman, Mary|
+|10308|37|Anthropology|Kupits, Steve|
+|10207|29|Computer Science|Wright, Madalyn|
+|10214|68|Computer Science|Westerfield, Mary|
+|11005|39|Liberal Arts|Wilchar, Ginger|
+|10617|20|English|Mellencamp, Lisa|
+|11507|68|Computer Eng.|Flores, Gina|
+|11034|25|Liberal Arts|Andrews, John|
+|11206|61|History|Armbrust, Cheryl|
+|10811|65|Latin Studies|Cummings, Laura|
+|11511|31|Computer Eng.|Kym, Kerin|
+|11308|20|Zoology|Crouch, Marla|
+|10903|58|Electrical Eng.|Rioroan, Patrick|
+|11216|39|History|Canipe, Sharon|
+|10835|63|Latin Studies|Eads, Vivian|
+|10809|23|Latin Studies|Wiman, Janet|
+|10925|29|Electrical Eng.|Russell, Kittie|
+|11603|27|Archeology|Werrbach, Gail|
+|10603|20|English|Loayza, Katherine|
+|10420|58|Architecture|Johle, Sandy|
+|11214|27|History|McBrayer, Susan|
+|10805|56|Latin Studies|Safady, Ronda|
+|11025|62|Liberal Arts|Batory, Don|
+|11531|68|Computer Eng.|Reagor, Barbara|
+|11018|21|Liberal Arts|Kinsley, Barbara|
+|10633|62|English|Klugman, Rick|
+|11211|20|History|Carlson, Judy|
+|10319|62|Anthropology|Mims, Shirley|
+|10636|35|English|Trimble, Cathy|
+|10507|37|Chemistry|Waring, Melinda|
+|10716|47|Philosophy|Chen, Gang|
+|11105|47|Pre-medicine|Jenkins, Marcella|
+|10202|69|Computer Science|Romberg, John|
+|11004|54|Liberal Arts|Beckner, B.M.|
+|10424|20|Architecture|Richardson, Elizabeth|
+|11006|50|Liberal Arts|Buckley, Carolyn|
+|10324|47|Anthropology|Patterson, Nancy|
+|11319|66|Zoology|Fowler, Kay|
+|11401|52|Mechanical Eng.|Ellis, Carolyn|
+|10715|43|Philosophy|Tillinghast, Kathy|
+|10604|35|English|VanMechelen, Lucky|
+|10833|21|Latin Studies|Jones, Mary|
+|11239|50|History|Bindock, James|
+|11320|53|Zoology|Maund, Yvonne|
+|10505|34|Chemistry|Gary, Jim|
+|10120|26|Biology|Lipscomb, Lois|
+|10915|41|Electrical Eng.|Keene, Sally|
+|10312|58|Anthropology|Donovan, Pat|
+|10733|44|Philosophy|Weber, Pam|
+|10639|67|English|Peirce, Tommy|
+|10307|22|Anthropology|Durst, Pam|
+|10732|21|Philosophy|Swenson, Kayla|
+|10629|38|English|BoneBrake, Veronica|
+|10218|45|Computer Science|Webb, Susie|
+|11324|51|Zoology|Zinnecker, Steve|
+|10806|26|Latin Studies|Muskrella, John|
+|11629|47|Archeology|Hall, Carolyn|
+|11523|31|Computer Eng.|Snow, Brenda|
+|10315|52|Anthropology|Leonpacher, Jennifer|
+|10213|59|Computer Science|Schoonmaker, Dathy|
+|10314|56|Anthropology|Schwertner, Sherri|
+|11510|42|Computer Eng.|Mercer, Orelia|
+|10508|54|Chemistry|Houston, Katherine|
+|10326|43|Anthropology|Lyon, Michael|
+|10107|64|Biology|Burdine, Charles|
+|10412|34|Architecture|Williams, Cynthia|
+|10522|38|Chemistry|Suess, Ellen|
+|11027|26|Liberal Arts|Fuller, Jill|
+|10417|44|Architecture|Hadaway, Beverly|
+|10643|29|English|Braodrick, Ingrid|
+|10910|53|Electrical Eng.|Booher, Doug|
+|11326|25|Zoology|Wilson, Karen|
+|11026|48|Liberal Arts|Clark, Charles|
+|10419|26|Architecture|Wolf, Ann|
+|11609|22|Archeology|Vanderford, Frankie|
+|10704|54|Philosophy|Harms, John|
+|11302|35|Zoology|Stockton, Barbara|
+|11108|64|Pre-medicine|Smith, David|
+|10201|31|Computer Science|Palousek, Cheryl|
+|11125|32|Pre-medicine|Bell, Brenda|
+|10231|63|Computer Science|Golver, Ross|
+|10210|23|Computer Science|Pfeil, Barbara|
+|10730|47|Philosophy|Sottile, Joy|
+|11528|56|Computer Eng.|Montgomedry, Cheryle|
+|11032|29|Liberal Arts|Boone, Bebe|
+|10632|30|English|Musgrave, Todd|
+|11002|48|Liberal Arts|Balagia, Jack|
+|10125|45|Biology|Terwelp, Diane|
+|11213|68|History|Doury, Jennifer|
+|10517|38|Chemistry|Shaw, Camille|
+|10614|69|English|Hebbe, Joseph|
+|11205|66|History|Duwe, Blair|
+|11107|48|Pre-medicine|Penn, Virginia|
+|11029|53|Liberal Arts|Weichert, Margaret|
+|11111|35|Pre-medicine|Tassin, Felix|
+|10611|55|English|Wheeler, Elaine|
+|10616|40|English|Nunn, Kay|
+|11406|65|Mechanical Eng.|Perez, Missy|
+|10702|47|Philosophy|Deutchman, Cherie|
+|11519|69|Computer Eng.|Carlin, Jennefer|
+|10703|58|Philosophy|Zeek, Tonda|
+|11123|55|Pre-medicine|Staat, Katherine|
+|11514|42|Computer Eng.|Yeager, Chris|
+|11525|50|Computer Eng.|Burt, Ruby|
+|10528|27|Chemistry|Numley, Rhonda|
+|11404|25|Mechanical Eng.|Reece, Marsha|
+|10918|22|Electrical Eng.|Tolar, Lori|
+|11020|66|Liberal Arts|Rhode, Marcia|
+|10714|54|Philosophy|Perez, Leola|
+|10106|45|Biology|Jones, Janie|
+|10220|59|Computer Science|Batory, Don|
+|11630|65|Archeology|Grillot, Karen|

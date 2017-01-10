@@ -1,0 +1,63 @@
+
+// example that tests propagation of constructors UP a chain
+
+
+
+abstract class myclass$$L1 extends mytop {
+        int a;
+        public myclass$$L1() { super(); a=5; }
+      // inherited constructors
+
+      myclass$$L1( int v0) { super(  v0); }      myclass$$L1( double v0) { super(  v0); }
+ }
+
+
+
+abstract class myclass$$L2 extends myclass$$L1 {
+      // inherited constructors
+
+      myclass$$L2( int v0) { super(  v0); }      myclass$$L2( double v0) { super(  v0); }
+        public myclass$$L2 (  ) { super(); } }
+
+
+
+abstract class myclass$$L3 extends myclass$$L2 {
+       int c;
+       public myclass$$L3(int i) { super(i); c = 4; }
+      // inherited constructors
+
+      myclass$$L3( double v0) { super(  v0); }
+        public myclass$$L3 (  ) { super(); }
+ }
+
+
+
+abstract class myclass$$L4 extends myclass$$L3 {
+      // inherited constructors
+
+
+       public myclass$$L4 ( int i ) { super(i); }      myclass$$L4( double v0) { super(  v0); }
+        public myclass$$L4 (  ) { super(); } }
+
+
+
+abstract class myclass$$L5 extends myclass$$L4 {
+       double d;
+       public myclass$$L5( double d ) { super(d); this.d = d; }
+		 void foo() { ((myclass) this).d = d; }
+      // inherited constructors
+
+
+       public myclass$$L5 ( int i ) { super(i); }
+        public myclass$$L5 (  ) { super(); }
+    }
+
+
+
+class myclass extends myclass$$L5 {
+      // inherited constructors
+
+
+       public myclass ( int i ) { super(i); }
+       public myclass (  double d ) { super(d); }
+        public myclass (  ) { super(); } }

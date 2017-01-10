@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+echo "******************* Edge refinement with empty extensions ***************"
+java jak2java.Main er2.spec \
+&& javac er2.java \
+&& java -cp "." er2 > junk \
+&& diff -b junk correct-edgeref \
+|| exit 1
+echo "******************* State refinement test ***************"
+java jak2java.Main refined.spec \
+&& javac refined.java \
+&& java -cp "." refined > junk \
+&& diff -b junk correct-refined \
+|| exit 1
+echo "******************* State refinement with proceeds test ***************"
+java jak2java.Main r.spec \
+&& javac r.java \
+&& java -cp "." r > junk \
+&& diff -b junk correct-refined \
+|| exit 1
+echo "******************* Edge refinement test ***************"
+java jak2java.Main edgeref.spec \
+&& javac edgeref.java \
+&& java -cp "." edgeref > junk \
+&& diff -b junk correct-edgeref \
+|| exit 1
+echo "******************* Edge refinement with proceeds test ***************"
+java jak2java.Main er.spec \
+&& javac er.java \
+&& java -cp "." er > junk \
+&& diff -b junk correct-edgeref \
+|| exit 1
+echo "******************* artifact (Enter, Exit,..) refinement ***************"
+java jak2java.Main ref.spec \
+&& javac ref.java \
+&& java -cp "." ref > junk \
+&& diff -b junk correct_ref \
+|| exit 1
+echo "******************* refinement across inheritance boundaries ***************"
+java jak2java.Main r1.spec \
+&& javac r1.java \
+&& java -cp "." r1 > junk \
+&& diff -b junk correct-r1 \
+|| exit 1
+

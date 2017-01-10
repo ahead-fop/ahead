@@ -1,0 +1,45 @@
+//                              -*- Mode: JTS -*-
+// Version         : 1.1
+// Author          : Robert S. MacDonald
+// Last Modified By: Bryan D. Hopkins
+// Last Modified On: Mon May  1 16:16:2000
+
+layer ArtilleryL ( F lower )
+realm F
+extends lower 
+{
+    public static state_diagram FaPltMission refines $TEqn.WeaponMission {}
+
+    public static class FaPltOpfac extends $TEqn.WeaponOpfac 
+    {
+        public $TEqn.Mission newMission() 
+        {
+            return new $TEqn.FaPltMission();
+        }
+    }
+    public static class FaPltProxy extends $TEqn.WeaponProxy 
+    {
+        public int typePrecedence() { return 3; }
+    }
+
+    public static class OpfacFactory extends lower.OpfacFactory 
+    {
+	protected OpfacFactory() 
+        {
+	    register($TEqn.OpfacType.DS_FA_PLT, new $TEqn.FaPltOpfac());
+	    register($TEqn.OpfacType.GS_FA_PLT, new $TEqn.FaPltOpfac());
+	    register($TEqn.OpfacType.R_FA_PLT,  new $TEqn.FaPltOpfac());
+	}
+    }
+
+    public static class ProxyFactory extends lower.ProxyFactory 
+    {
+	protected ProxyFactory() 
+        {
+	    register($TEqn.OpfacType.DS_FA_PLT, new $TEqn.FaPltProxy());
+	    register($TEqn.OpfacType.GS_FA_PLT, new $TEqn.FaPltProxy());
+	    register($TEqn.OpfacType.R_FA_PLT,  new $TEqn.FaPltProxy());
+	}
+    }
+}
+

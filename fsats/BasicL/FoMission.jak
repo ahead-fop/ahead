@@ -1,0 +1,10 @@
+layer BasicL;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+/** Forward Observer OPFAC. **/
+public State_machine FoMission extends FseMission {}

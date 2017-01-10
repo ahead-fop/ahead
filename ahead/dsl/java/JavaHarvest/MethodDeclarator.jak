@@ -1,0 +1,16 @@
+layer JavaHarvest;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+
+/** The variable _harvest_method declared here because MethodDeclaration's 
+ * arg[2] is an object of this type.
+ * @layer<JavaHarvest>
+ */  
+    
+public refines class MethodDeclarator {
+    public  MethodDocJTS _harvest_method;
+}

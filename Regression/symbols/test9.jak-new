@@ -1,0 +1,45 @@
+
+import Jakarta.symtab.*;
+import jak.Lang;
+import java.io.PrintWriter;
+
+public class test9 {
+    private static PrintWriter pw = new PrintWriter(System.out);
+
+    public static void main(String[] args) {
+	Symtab st = Lang.Symtab.instance();
+	ClassInfo ci;
+
+	ci = (ClassInfo) st.lookup("Member");
+	if (ci == null)
+	    pw.println("Lookup of Member failed.");
+	else
+	    ci.dump(pw, 0);
+	pw.println();
+
+	ci = (ClassInfo) st.lookup("Member.Enumerator");
+	if (ci == null)
+	    pw.println("Lookup of Member.Enumerator failed.");
+	else
+	    ci.dump(pw, 0);
+	pw.println();
+
+	// The two lookups below are read from a jar file
+
+	ci = (ClassInfo) st.lookup("TestPak.Member");
+	if (ci == null)
+	    pw.println("Lookup of TestPak.Member failed.");
+	else
+	    ci.dump(pw, 0);
+	pw.println();
+
+	ci = (ClassInfo) st.lookup("TestPak.Member.Enumerator");
+	if (ci == null)
+	    pw.println("Lookup of TestPak.Member.Enumerator failed.");
+	else
+	    ci.dump(pw, 0);
+	pw.println();
+
+	pw.close();
+    }
+}

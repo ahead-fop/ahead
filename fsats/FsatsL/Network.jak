@@ -1,0 +1,18 @@
+layer FsatsL;
+
+import laydown.*;
+
+import java.util.*;
+
+/** Interface for a message relay object */
+public interface Network
+    {
+    /** Notify this netobj of the availability of a named opfac. */
+    public boolean register( String opfacName, Opfac opfac );
+        
+    /** Notify this netobj that a named opfac is no longer available. */
+    public boolean unregister( String opfacName );
+        
+    /** Relay a message to its destination opfac. */
+    public void send( Message message );
+}

@@ -1,0 +1,12 @@
+layer LayerHarvest;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+public refines class GlobalWrapper {
+       // Global variables from where the States and Classes 
+    // will get their values
+    public static String qualifiedLayer = "";
+}

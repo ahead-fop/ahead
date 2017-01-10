@@ -1,0 +1,10 @@
+layer MortarL;
+
+extern outside Int  fsatsRank;
+extern outside Bool basicPresent;
+extern outside Bool mortarPresent;
+extern outside Bool weaponPresent;
+
+requires outside fsatsRank >= 2 and basicPresent;
+provides outside mortarPresent and weaponPresent;
+

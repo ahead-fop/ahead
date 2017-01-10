@@ -1,0 +1,13 @@
+layer foo;
+
+// defined attributes
+
+outside Int a;
+outside Int b;
+
+// externally defined attributes
+
+
+
+provides outside a < 40 and 0 <= b;
+

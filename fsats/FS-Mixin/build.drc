@@ -1,0 +1,55 @@
+
+constant layer FS;
+
+// defined attributes
+
+outside Bool Configuration;
+outside Bool FsatsL;
+outside Bool GuiL;
+outside Bool Libraries;
+outside Bool LocalL;
+outside Bool MessageL;
+outside Bool MissionAny;
+outside Bool MissionWrffeArtyL;
+outside Bool MissionWrffeL;
+outside Bool MissionWrffeMlrsL;
+outside Bool MissionWrffeMortarL;
+outside Bool OpfacL;
+outside Bool ScriptL;
+outside Bool TargetL;
+outside Bool artilleryPresent;
+outside Bool artyMissionPresent;
+outside Bool basicPresent;
+inside Bool configurationPresent;
+outside Bool factoryPresent;
+outside Bool fsatsPresent;
+outside Int fsatsRank;
+outside Bool initPresent;
+inside Bool libraries;
+outside Bool localOrRemotePresent;
+inside Bool main;
+outside Bool messagePresent;
+outside Bool missionPresent;
+outside Bool missionanyPresent;
+outside Bool mlrsMissionPresent;
+outside Bool mlrsPresent;
+outside Bool mortarMissionPresent;
+outside Bool mortarPresent;
+outside Bool networkPresent;
+outside Bool opfacPresent;
+outside Bool proxyPresent;
+outside Bool scriptPresent;
+outside Bool targetPresent;
+inside Bool uses_artillery;
+inside Bool uses_mlrs;
+inside Bool uses_mortars;
+outside Bool weaponPresent;
+outside Bool wrffeCommonPresent;
+
+// externally defined attributes
+
+
+
+provides inside configurationPresent and libraries and main;
+provides outside artilleryPresent and artyMissionPresent and basicPresent and fsatsPresent and fsatsRank == 4 and localOrRemotePresent and messagePresent and missionPresent and missionanyPresent and mlrsMissionPresent and mlrsPresent and mortarMissionPresent and mortarPresent and networkPresent and opfacPresent and proxyPresent and scriptPresent and targetPresent and weaponPresent and wrffeCommonPresent;
+

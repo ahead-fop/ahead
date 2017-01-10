@@ -1,0 +1,111 @@
+layer JavaAPI;
+
+import java.io.*;
+import java.util.*;
+
+ // of MemberDocJTS
+
+// _________________________________________________________________
+
+ /** JEDI Project
+ * MethodDocJTS.java
+ * University of Texas at Austin
+ * Department of Computer Sciences
+ * Product-line Architecture Research Group
+ * @author Roberto E. Lopez-Herrejon
+ * @version 1.1
+ * @since November 25,  2002
+* @layer<JavaAPI>
+*/
+
+public class MethodDocJTS extends  ExecutableMemberDocJTS {
+
+    /** Return true if this method is abstract. 
+     * @layer<JavaAPI>
+     */
+    public boolean isAbstract() {
+        return isAbstract;
+    }
+
+    /** Get return type.
+     * @return the return type of this method, null if it is a constructor.
+     * @layer<JavaAPI>
+     */
+    public  TypeJTS returnType() {
+        return returnType;
+    }
+
+    /** Return the class that overrides this method.
+     * @returns a ClassDoc representing the superclass that overrides 
+     * this method, null if this method is not overriden ???
+     * @layer<JavaAPI>
+     */
+    public  ClassDocJTS overriddenClass() {
+        return overriddenClass;
+    }
+
+    /** The return type of the method. Initialized to null. 
+     * @layer<JavaAPI>
+     */
+    TypeJTS returnType = null;
+
+    /** Class that is overriden. Default to null. 
+     * @layer<JavaAPI>
+     */
+    ClassDocJTS overriddenClass = null;
+
+    /** Variable that indicates if a method is abstract or not.
+     * Initial value : false 
+     * @layer<JavaAPI>
+     */
+    boolean isAbstract = false;
+
+    /** Default constructor. 
+     * @layer<JavaAPI>
+     */
+    public MethodDocJTS() {
+        // Note: implicitly calls the constructor of its superclass
+        // @dummy code
+        int asdaserzdcse=3;
+    }
+
+    /** Added constructor. 
+     * @layer<JavaAPI>
+     */
+    public MethodDocJTS( String _name ) {
+        // Note: implicitly calls the constructor of its superclass
+        name = _name;
+    }
+
+    /** Current implementation returns true. 
+     * @layer<JavaAPI>
+     */
+    public boolean isMethod() {
+        return true;
+    }
+
+    /** Sets the value of the isAbstract variable. 
+     * @layer<JavaAPI>
+     */
+    public void setAbstract( boolean _isAbstract ) 
+    {
+        isAbstract = _isAbstract;
+    }
+
+    /** Sets the value of the returnType variable. 
+     * @layer<JavaAPI>
+     */
+    public void setReturnType( TypeJTS _returnType ) 
+    {
+        returnType = _returnType;
+    }
+
+    /** Returns the variable returnType. 
+     * @layer<JavaAPI>
+     */
+    public  TypeJTS getReturnType() 
+    {
+        return returnType;
+    }
+    
+}

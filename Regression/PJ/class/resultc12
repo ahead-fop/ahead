@@ -1,0 +1,25 @@
+
+// this tests all method refinements
+
+layer ctop1;
+
+class top {
+   void ma() { }
+
+   Util mb( top c ) { }
+
+   Bar mc( top c, top c1 ) { }
+
+   void mm() {
+       ma();
+   }
+
+   void mn(top c) {
+       mb(c);
+   }
+
+   float mo(top c, top c1) {
+       mc(c, c1);
+   }
+
+}

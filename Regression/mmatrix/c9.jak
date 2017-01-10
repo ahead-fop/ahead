@@ -1,0 +1,9 @@
+// tests nested classes
+
+class c9 {
+   final class nested { 
+	   void foo() { }
+		final int v = 4;
+   }
+   void foo() { }
+}

@@ -1,0 +1,106 @@
+#!/usr/bin/env bash
+
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+case "$(command -p uname)" in
+    CYGWIN*) CP="${CLASSPATH};." ;;
+    *)       CP="${CLASSPATH}:." ;;
+esac
+
+if java jak2java.Main -v something ; then
+    :
+else
+   rm -f -r -- copy
+   mkdir copy
+   cp [Aa]* copy
+   cd copy
+   for i in * ; do
+      sed -es/jak2java.Lang/jak2java.*/ $i > tmp
+      sed -es/Lang.//g tmp > $i
+   done
+fi
+
+
+echo -e "\nGenEnv regression test"
+echo "****************************************"
+
+echo -n "Testing AliasTest ... "
+java jak2java.Main AliasTest.jak
+javac AliasTest.java
+java -cp "${CP}" AliasTest >AliasTest.output
+if diff -w AliasTest.output AliasTest.result ; then
+	echo "succeeded"
+else
+	echo "failed"
+	exit 1
+fi
+
+echo -n "Testing AliasTest2 ... "
+java jak2java.Main -s AliasTest2.jak >alias_test.java
+javac alias_test.java
+java -cp "${CP}" alias_test >&AliasTest2.output
+if diff -w AliasTest2.output AliasTest2.result ; then
+	echo "succeeded"
+else
+	echo "failed"
+	exit 1
+fi
+
+echo -n "Testing AliasTest2b ... "
+java jak2java.Main -s AliasTest2b.jak >alias_test.java
+javac alias_test.java
+java -cp "${CP}" alias_test >AliasTest2b.output
+if diff -w AliasTest2b.output AliasTest2b.result ; then
+	echo "succeeded"
+else
+	echo "failed"
+	exit 1
+fi
+
+echo -n "Testing AliasTest3 ... "
+java jak2java.Main AliasTest3.jak
+javac AliasTest3.java
+java -cp "${CP}" AliasTest3 >AliasTest3.output
+if diff -w AliasTest3.output AliasTest3.result ; then
+	echo "succeeded"
+else
+	echo "failed"
+	exit 1
+fi
+
+echo -n "Testing AliasTest4 ... "
+java jak2java.Main -s AliasTest4.jak >alias_test.java
+javac alias_test.java
+java -cp "${CP}" alias_test >&AliasTest4.output
+if diff -w AliasTest4.output AliasTest4.result ; then
+	echo "succeeded"
+else
+	echo "failed"
+	exit 1
+fi
+
+echo -n "Testing AliasTest4b ... "
+java jak2java.Main -s AliasTest4b.jak >alias_test.java
+javac alias_test.java
+java -cp "${CP}" alias_test >AliasTest4b.output
+if diff -w AliasTest4b.output AliasTest4b.result ; then
+	echo "succeeded"
+else
+	echo "failed"
+	exit 1
+fi
+
+echo -n "Testing altst ... "
+java jak2java.Main altst.jak
+javac altst.java
+java -cp "${CP}" altst >altst.output
+if diff -w altst.output altst.result ; then
+	echo "succeeded"
+else
+	echo "failed"
+	exit 1
+fi
+
+echo "All GenEnv tests succeeded."

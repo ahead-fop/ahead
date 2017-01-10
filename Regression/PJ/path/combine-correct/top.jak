@@ -1,0 +1,12 @@
+layer combine;
+
+public class top {
+    public static final void tryit$$one() {
+        System.out.println( "Top works too!" + $pack.A.a);
+    }
+    public static void tryit() {
+        tryit$$one();
+        $pack.A a = new $pack.A();
+        a.print();
+    }
+}

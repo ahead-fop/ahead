@@ -1,0 +1,7 @@
+layer MlrsL;
+
+public refines class OpfacFactory {
+    refines OpfacFactory() {
+        register( OpfacType.MLRS_BTRY, new MlrsOpfac() );
+    }
+}

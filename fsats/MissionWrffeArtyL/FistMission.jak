@@ -1,0 +1,39 @@
+layer MissionWrffeArtyL;
+
+import java.io.*;
+
+import log.Log;
+
+// BnFseMission
+
+public refines State_machine FistMission {
+    // Don't wait for MFR on EOM.
+
+    Transition_action wrffeArtyAccepted1 {
+        if ( false )
+            Proceed( message );
+    }
+
+    Transition_condition wrffeArtyAccepted1 false && Proceed( message );
+
+            /*REFINES EDGE no longer supported.  
+       Move predicate or body into method, and extend method. 
+    Refines Transition wrffeArtyAccepted1 : wrffeArtyAccepted -> wrffeArtyEnding
+                condition false do {} */
+
+            // Relay EOM to gun and stop.
+    Transition wrffeArtyAccepted3 : wrffeArtyAccepted -> stop
+        condition ( message instanceof EomMessage )
+        do {
+            sendUp( ( Message )message.clone() );
+        }
+
+        // net effect of the Refines clause above is to have a false 
+        // Transition condition
+
+/* DELETE
+        public boolean wrffeArtyAccepted1Test(Event message) {
+           return false;
+        }
+*/
+}

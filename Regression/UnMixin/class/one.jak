@@ -1,0 +1,5 @@
+layer one;
+
+class c {
+   int top;
+}

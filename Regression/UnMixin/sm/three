@@ -1,0 +1,19 @@
+layer MissionWrffeMlrsL;
+
+import Jakarta.util.Util;
+import java.io.*;
+import F.Libraries.log.Log;
+
+// MissionImpl
+
+public refines State_machine BnFseMission {
+            // Ignore MFR and stop.
+            /*REFINES EDGE no longer supported.  
+       Move predicate or body into method, and extend method. 
+    Refines Transition wrffeMlrsAccepted1 : wrffeMlrsAccepted -> stop
+                condition (message instanceof MfrMessage) do {} */
+
+            // added -- net effect is to have a no-op action
+
+    public void wrffeMlrsAccepted1( Event message ) {}
+}

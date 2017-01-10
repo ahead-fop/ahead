@@ -1,0 +1,45 @@
+layer JavaHarvest;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+
+/**
+ * ImplementsClause
+ *: "implements" AST_TypeNameList  ::ImplClause
+ * ;
+* @layer<JavaHarvest>
+*/    
+   
+public refines class ImplClause {
+    LinkedList implementedInterfaces;
+    public void execute() {
+        Super().execute();
+        implementedInterfaces = new LinkedList();
+                  
+        AstCursor c1 = new AstCursor(); // c to traverse list
+        AstNode   e1 = arg[0]; // e instanceOf Lang.AstList
+                 
+        // if there are modifiers
+        if ( e1 != null ) { // if there are modifiers
+            for ( c1.FirstElement( e1 ); c1.MoreElement(); c1.NextElement() ) {
+                
+                // TNClass -> QNameType -> AST_QualifiedName
+                // here I have to either look at some table with
+                // all interfaces and the references, BUT in the mean time
+                // I just create an interface object and I added to a list
+                ClassDocJTS cls = 
+                                         ClassDocJTS.ClassDocJTSFactory();
+                cls.ClassDocJTSConstructor( c1.node.arg[0].arg[0].toString() );
+                cls.setInterface( true );
+                                                
+                // adds to the implemented interfaces list
+                implementedInterfaces.add( cls );
+
+            } // for
+        } // if there are implements interfaces
+
+    } // execute
+}

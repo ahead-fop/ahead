@@ -1,0 +1,72 @@
+## ConstructorDetailsSm.vm
+## JEDI Project 
+## HTML Template for Constructor Details
+## Author: Roberto E. Lopez-Herrejon
+## Last update: November 6, 2002
+## Constructor Details of State Machine
+
+#if ($constructors == "true") 
+ ## Writes the bar of Constructor Details 
+ <!-- ======== CONSTRUCTOR DETAILS ======== -->
+ <TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%"> 	
+ <TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+ <TD COLSPAN=1><FONT SIZE="+2">
+ <B> Constructor Details </B>
+ </FONT>
+ </TD>
+ </TR> 
+ </TABLE> 
+ <BR>	 
+
+ #foreach($constructor in $listConstructors)	 
+  <A NAME="$constructor.name() $constructor.getFullSignature()" </A> ## anchor 
+  <H3> $constructor.name() </H3>
+  $constructor.modifiers() &nbsp;  
+  <B> $constructor.name() </B> 
+  $constructor.getFullSignature() &nbsp; 
+  $constructor.getThrowsString()
+  <BR> &nbsp;&nbsp;
+
+  ## Construction description 
+  $generator.descriptionComment($constructor.inlineTags())
+
+  ##  // Displays the tags
+  ##  writeConstructorDescription((ConstructorDocJTS)constructors[l], outFile);
+ 
+  <P>
+  <DL>
+      ## Tests the usability of a single Tag file
+   #set($doc = $constructor)
+   
+   ## Parses deprecated tags
+   #parse("templates/HTML/DeprecatedTags.vm")
+
+   ## Parses param tags
+   #parse("templates/HTML/ParamTags.vm")
+
+   ## Parses throws tags
+   #parse("templates/HTML/ThrowsTags.vm")
+   
+   ## Parse author tags
+   #parse("templates/HTML/AuthorTags.vm")
+
+   ## Parses version tags
+   #parse("templates/HTML/VersionTags.vm")
+  
+   ## Parses since tags
+   #parse("templates/HTML/SinceTags.vm")
+
+     ## Parses see tags
+   #parse("templates/HTML/SeeTags.vm")
+ 
+   ## Parses return tags
+   #parse("templates/HTML/ReturnTags.vm")
+   
+   </DL>
+   <HR>
+   <BR>
+
+  <BR>
+
+ #end
+#end

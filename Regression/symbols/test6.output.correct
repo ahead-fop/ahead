@@ -1,0 +1,75 @@
+Return type of method getFoo() is foo
+Method signature: ()[[Lfoo;
+Dim: 2
+
+barray signature: [[Z
+barray type: boolean
+Dim: 2
+
+barray in nested block:
+barray signature: I
+barray type: int
+Dim: 0
+
+iarray signature: [I
+iarray type: int
+Dim: 1
+
+Package: DEFAULT_PACKAGE
+    Class: Build
+        Class: BuildFilter implements java.io.FilenameFilter
+            boolean accept(java.io.File, java.lang.String)
+            void <init>()
+            void <init>(Build$1)
+        Class: DirectoryFilter implements java.io.FilenameFilter
+            boolean accept(java.io.File, java.lang.String)
+            void <init>()
+            void <init>(Build$1)
+        boolean access$000(java.io.File, java.lang.String)
+        boolean access$100(java.io.File, java.lang.String)
+        boolean isBuildableDirectory(java.io.File, java.lang.String)
+        boolean isNonCVSDirectory(java.io.File, java.lang.String)
+        void <init>()
+        void buildClean()
+        void buildLanguages()
+        void buildRealms()
+        void buildSupport()
+        void main(java.lang.String[])
+        void usage(java.io.PrintStream, java.lang.String)
+    Class: boolean
+    Class: byte
+    Class: char
+    Class: double
+    Class: float
+    Class: foo
+        foo[][] getFoo()
+            boolean[][] barray;
+            int barray;
+        int[] iarray;
+    Class: int
+    Class: long
+    Class: short
+    Class: void
+
+    Package: java
+
+        Package: java.io
+            Class: FilenameFilter
+                boolean accept(java.io.File, java.lang.String)
+
+        Package: java.lang
+            Class: Object
+                boolean equals(java.lang.Object)
+                int hashCode()
+                java.lang.Class getClass()
+                java.lang.Object clone()
+                java.lang.String toString()
+                void <clinit>()
+                void <init>()
+                void finalize()
+                void notify()
+                void notifyAll()
+                void registerNatives()
+                void wait()
+                void wait(long)
+                void wait(long, int)

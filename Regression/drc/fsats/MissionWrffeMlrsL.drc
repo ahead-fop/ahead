@@ -1,0 +1,15 @@
+single layer MissionWrffeMlrsL;
+
+outside Bool mlrsMissionPresent;
+
+extern outside Bool missionPresent;
+extern outside Bool basicPresent;
+extern outside Bool mlrsPresent;
+extern outside Bool wrffeCommonPresent;
+extern outside Int  fsatsRank;
+extern inside  Bool libraries;
+
+requires outside fsatsRank == 3 and mlrsPresent and wrffeCommonPresent
+                 and basicPresent;
+provides outside missionPresent and mlrsMissionPresent;
+requires inside  libraries;

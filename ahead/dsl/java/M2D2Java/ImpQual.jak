@@ -1,0 +1,165 @@
+layer M2D2Java;
+
+import java.util.*;
+
+refines class ImpQual {
+ 
+   public static TreeSet importedPackages;
+   public static TreeMap importedClasses;
+   public static TreeSet unResolvedClasses;
+   public static TreeSet refedClasses;
+
+   // entries for layerClasses made by RubyInstCreator.createClass calls
+   public static TreeSet layerClasses;
+
+   static {
+      importedPackages = new TreeSet();
+      importedPackages.add("java.lang.");
+      importedClasses = new TreeMap();
+      unResolvedClasses = new TreeSet();
+      refedClasses = new TreeSet();   // names of referenced imported classes
+      layerClasses = new TreeSet(); 
+   }
+
+   String Name;  // assigned value by extract()
+  
+   public void extract( context c ) {
+      // Step 1: check to see if there is a DotTimes
+      //         if so, we are importing a package, else a class
+
+      Name= ((AST_QualifiedName) arg[0]).GetName();
+
+      // Step 2: Now register either imported class or imported package ONCE
+
+      if (arg[1].arg[0] != null && !importedPackages.contains(Name)) {  
+
+          // Step 2.1 package import (add "." to the name -- the ".*"
+          // was already stripped off
+          // and add it to imported packages ONCE
+
+          if (!importedPackages.contains(Name+".")) {
+             importedPackages.add(Name+".");
+             c.Header.add( RubyInstCreator.createImportedPackage(Name, Name));
+          }
+      } else 
+      if (arg[1].arg[0] == null && !importedClasses.containsKey(Name)) {  
+
+          // Step 2.2 class import (strip off leading package names)
+          // and add it to imported classes ONCE
+
+          String key = Name.substring(Name.lastIndexOf('.')+1);
+          if (importedClasses.get(key) == null) {
+             importedClasses.put(key, Name);
+             c.Header.add( RubyInstCreator.createImportedClass(Name, Name));
+          }
+      }
+   }
+
+   public void registerImportOwnership( context c ) {
+      if (arg[1].arg[0] != null) {
+          // package import
+          if (c.isClass)
+             c.Header.add( RubyInstCreator.createClassImportsPackage(
+                           c.getClassName(), Name ));
+          else
+             c.Header.add( RubyInstCreator.createInterfaceImportsPackage(
+                           c.getClassName(), Name ));
+      } else {
+          // class import
+          if (c.isClass)
+             c.Header.add( RubyInstCreator.createClassImportsClass(
+                           c.getClassName(), Name ));
+          else
+             c.Header.add( RubyInstCreator.createInterfaceImportsClass(
+                           c.getClassName(), Name ));
+      }
+   }
+
+   // let name be an unqualified class name
+   // the following method returns full name if the class name has been imported
+
+   public static String fullPath( String name, context c ) {
+      Class k; 
+      Iterator i;
+
+      // Step 1: see if the class is imported via packagename.* 
+      //         if it is, declare an object for it ONCE
+
+      i = importedPackages.descendingIterator();
+      while (i.hasNext()) { 
+         String imp = (String) i.next();
+         try {
+            String fullName = imp+name;
+            if (Main.debug) System.out.println("isImported("+ fullName);
+   	    k = Class.forName(fullName);
+            if (!refedClasses.contains(fullName)) {
+               refedClasses.add(fullName);
+               if (k.isInterface())
+                 c.Header.add( RubyInstCreator.createImportedInterface(name,fullName));
+               else
+                 c.Header.add( RubyInstCreator.createImportedClass(name,fullName));
+               }
+            return fullName;
+         } catch (ClassNotFoundException e) { /* ignore */ }
+      }
+
+      // Step 2: if we get here, there are only three possibilities:
+      // (a) the class has been explicitly imported or
+      // (b) the class may be part of a layer.
+      // (c) the class may be a primitive type
+
+      String result = (String) importedClasses.get(name);
+      if (result==null) {
+         if (!unResolvedClasses.contains(name)) 
+            unResolvedClasses.add(name);
+         if (ImpQual.isPrim(name))
+            result = name;
+         else
+            result = "feature."+name;
+      }
+      return result;
+   } 
+
+   // the following method is called in program.extract()
+
+   public static void processUnResolvedClasses( context c ) {
+      Iterator i;
+
+      // Step 1: foreach entry in unresolvedClasses
+      //         determine if the class is part of a layer.
+      //         if so, ignore, as the class has already been
+      //         declared.  Otherwise it is likely a class
+      //         of another feature.
+
+      i = unResolvedClasses.descendingIterator();
+      while (i.hasNext()) {
+         String name = (String) i.next();
+
+         if (Main.debug) 
+             System.out.println("processUnResolvedClasses -- " + name);
+
+         // Step 1.1 perhaps it is a primitive 
+
+         if (ImpQual.isPrim(name)) {
+             c.Header.add( RubyInstCreator.createPrimitiveType(name, name) );
+             continue;
+         }
+         // Step 1.2: if name is not a layer defined class, it is
+         //           likely a reference to another class that
+         //           is part of some other feature.
+         
+         if (!layerClasses.contains(name)) {
+            String fullName = c.getPackageName() + "." + name;
+            c.Header.add( RubyInstCreator.createUsedClass( name, fullName ) );
+         }
+      }
+   }
+
+   public static boolean isPrim( String name ) {
+      return (name.equals("void") || name.equals("int") || 
+         name.equals("boolean") || name.equals("char") || 
+         name.equals("byte") || name.equals("short") ||
+         name.equals("long") || name.equals("double") || 
+         name.equals("float"));
+   }
+}

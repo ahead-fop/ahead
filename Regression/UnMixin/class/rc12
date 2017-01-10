@@ -1,0 +1,21 @@
+package CExt1;
+
+import java.io.Serializable;
+import anotherPackage;
+
+SoUrCe  CExt1 "../class/CExt1.jak";
+
+ transient abstract  class MyClass$$CExt1 implements yyy, java.io.Serializable {
+    int Terse = 2;
+    void foo() throws SomeException { }
+    int increment( int i ) { }
+}
+
+SoUrCe  CExt2 "../../UnMixin/class/CExt2.jak";
+
+ class MyClass extends MyClass$$CExt1 implements java.io.Serializable {
+    overrides void foo() throws AnotherException;
+    overrides void barrr();
+    new int biff( int i );
+    overrides float biff();
+}

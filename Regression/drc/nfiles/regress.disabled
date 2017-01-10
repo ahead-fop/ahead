@@ -1,0 +1,24 @@
+#!/bin/bash
+
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+echo "****************nfiles DRC Regression Test***********"
+
+bash regress-one noncons1.drc noncons2.drc \
+&& bash regress-one path0/testa1.drc path1/empty.drc path2/testa2.drc \
+&& bash regress-one path0/ex0.drc path1/ex1.drc path2/ex2.drc \
+&& bash regress-one cons1.drc noncons1.drc \
+&& bash regress-one cons2.drc cons1.drc \
+&& bash regress-one testa1.drc empty.drc empty.drc testa2.drc \
+&& bash regress-one testa2.drc empty.drc empty.drc testa1.drc \
+&& bash regress-one simp0.drc simp1.drc simp2.drc simp3.drc \
+&& bash regress-one ex0.drc ex1.drc ex2.drc \
+&& bash regress-one ex00.drc ex11.drc ex22.drc \
+&& bash regress-one ex000.drc ex111.drc ex222.drc \
+&& bash regress-one test9a.drc test9.drc \
+&& bash regress-one test9.drc test9a.drc \
+|| exit 1
+
+echo -e "\nDRC Regression Test succeeded."

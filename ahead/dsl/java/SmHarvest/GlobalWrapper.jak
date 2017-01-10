@@ -1,0 +1,155 @@
+layer SmHarvest;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+// **************************************************************************
+// ******* Auxiliary Functions
+// **************************************************************************
+
+public refines class GlobalWrapper {
+ 
+    /** Takes care of updating the modifiers of the state machine, for nested
+     * class declarations
+     * @layer<SmHarvest>
+     */
+    static public void setModifiers( AstNode modifiers_list,
+                     StateMachineDocJTS state ) 
+    {
+        AstCursor c = new AstCursor(); // c to traverse list
+        // $TEqn.AstNode   e = state.arg[0].arg[0];// e instanceOf Lang.AstList
+                            
+        // $TEqn.StateMachineDocJTS state = 
+        //    ((UmodSmDecl)state.arg[1])._state;
+        
+        if ( modifiers_list != null && state !=null ) {
+
+            // Gets the comment from the first modifier
+            c.FirstElement( modifiers_list );
+            AstNode first = c.node;
+
+            for ( ; c.MoreElement(); c.NextElement() ) {
+                                
+                // abstract method
+                if ( c.node instanceof ModAbstract ) {
+                    state.setAbstract( true );
+                }
+                                
+                // final method
+                if ( c.node instanceof ModFinal ) {
+                    state.setFinal( true );
+                }
+                                                
+                // public method
+                if ( c.node instanceof ModPublic ) {
+                    state.setPublic( true );
+                }
+                                
+                // protected method
+                if ( c.node instanceof ModProtected ) 
+                                    {
+                    state.setProtected( true );
+                }
+                                                
+                // private method
+                if ( c.node instanceof ModPrivate ) {
+                    state.setPrivate( true );
+                }
+                                                
+                // static method
+                if ( c.node instanceof ModStatic ) {
+                    state.setStatic( true );
+                }
+                                                
+                // these 4 I dont know if have to be accesed 
+                // transient method
+                if ( c.node instanceof ModTransient ) 
+                                    {
+                    state.setTransient( true );
+                }
+                                                
+                // volatile method
+                if ( c.node instanceof ModVolatile ) {
+                    state.setVolatile( true );
+                }
+                                                
+                // native method
+                if ( c.node instanceof ModNative ) {
+                    state.setNative( true );
+                }
+                                
+                // synchronized method
+                if ( c.node instanceof ModSynchronized ) 
+                                    {
+                    state.setSynchronized( true );
+                }
+            } // for all modifiers
+
+            // ************ Comment Processing **********************
+            // if comments at those are overwritten            
+            String comment = ( ( AstToken ) first.tok[0] ).white_space;
+            CommentJedi stateComment =  
+                                     CommentParser.ParseComment( state, comment );
+            state.setComment( stateComment );
+   
+        } // if there are modifiers
+    
+    }
+    // of setModifiers
+
+       /** This static method just returns an string that represents a
+        * AST_QualifiedName
+        * @layer<SmHarvest>
+        */
+    public static String getAST_QualifiedName( AST_QualifiedName theNode )
+    {
+        AstCursor c = new AstCursor(); // c to traverse list
+        AstNode   e = theNode; // e instanceOf Lang.AstList
+        
+        String qualifiedName = "";
+        String token;
+          
+        for ( c.FirstElement( e ); c.MoreElement(); c.NextElement() ) {
+            token = ( ( AstToken ) c.node.tok[0] ).tokenName();
+            qualifiedName = qualifiedName + "." + token;
+        }
+          
+        // Eliminates the first dot
+        qualifiedName = qualifiedName.substring( 1 );
+        
+        return qualifiedName;
+    }
+
+    /** This methods parses the information in a block and
+     * exports a list with the classes/interfaces in the block.
+     * @layer<SmHarvest>
+     */
+    static public LinkedList parseBlock( AstNode theBlock )
+   {
+        LinkedList listOfClasses = new LinkedList();
+           
+        // if the block passed is null {} then return the empty list.
+        if ( theBlock == null )
+            return listOfClasses;
+           
+        AstCursor c = new  AstCursor();
+        for ( c.FirstElement( theBlock ); c.MoreElement(); c.NextElement() ) {
+            if ( c.node instanceof BlkClassDcl ) {
+                ClassDocJTS innerclass = 
+                                   ( ( UmodClassDecl )c.node.arg[0] )._harvest_class;
+                listOfClasses.add( innerclass );
+            }
+                                                   
+            if ( c.node instanceof BlkInterDcl ) {
+                ClassDocJTS innerclass = 
+                                   ( ( UmInterDecl )c.node.arg[0] )._harvest_class;
+                listOfClasses.add( innerclass );
+            }
+        } // for all nodes
+        return listOfClasses;
+
+    }
+
+}

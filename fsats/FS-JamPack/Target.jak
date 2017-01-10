@@ -1,0 +1,24 @@
+layer FS;
+
+import laydown.*;
+
+import java.util.*;
+
+/** 
+ * Something that should be shot at.
+ */
+public interface Target
+        extends Cloneable, java.io.Serializable 
+    {
+    /** 
+     * Two targets are equal if 
+     * they have equal target, location 
+     */
+    public boolean equals( Object other );
+
+    public String getType();
+    public Location getLocation();
+
+    /** Standard String conversion **/
+    public String toString();
+}

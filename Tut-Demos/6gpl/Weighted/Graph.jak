@@ -1,0 +1,14 @@
+layer Weighted;
+
+// *************************************************************************
+  
+public refines class Graph {
+
+    // Adds an edge with weights
+    public void addAnEdge( Vertex start,  Vertex end, int weight )
+    {
+        Edge theEdge = new  Edge();
+        theEdge.EdgeConstructor( start, end, weight );
+        addEdge( theEdge );
+    }
+}

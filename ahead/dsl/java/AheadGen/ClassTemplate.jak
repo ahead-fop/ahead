@@ -1,0 +1,44 @@
+layer AheadGen;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.util.*;
+import java.io.*;
+
+public refines class ClassTemplate {
+
+    /** Fall back method for the extensions to the document layout 
+     * @layer<AheadGen>
+     */
+    public void extendsClassDocument() {
+
+        // Refines
+        RefinesTemplate rt = new RefinesTemplate();
+        rt.setName( "Refines" );
+        rt.setTemplateFile( "SourceTemplates/Refines.vm" );
+
+        // Overrides
+        OverridesTemplate ot = new OverridesTemplate();
+        ot.setName( "Overrides" );
+        ot.setTemplateFile( "SourceTemplates/Overrides.vm" );
+
+        // Select the place where to put it
+        // Class[2] -> Classbody[4] 
+
+        // Gets the Classbody refences, 2nd element of class
+        DocumentDescriptor classbody = getLayoutElement( 2 );
+        
+        // Gets the class_relationships body, 4th of classbody
+        DocumentDescriptor classrels = classbody.getLayoutElement( 4 );
+
+        // To the class_relationships 0th element refines
+        classrels.insertLayoutElement( rt, 0 );
+
+        // To the class_relationships 1th element overrides
+        classrels.insertLayoutElement( ot, 1 );
+
+        // Daisy chains the calls
+        Super().extendsClassDocument();
+    }
+
+}

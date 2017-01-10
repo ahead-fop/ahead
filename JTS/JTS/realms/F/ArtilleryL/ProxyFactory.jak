@@ -1,0 +1,14 @@
+package ArtilleryL;
+
+
+
+
+    public extends class ProxyFactory 
+    {
+	protected void ProxyFactoryConstructor() {
+            Base().ProxyFactoryConstructor();
+	    register( OpfacType.DS_FA_PLT, new FaPltProxy());
+	    register( OpfacType.GS_FA_PLT, new FaPltProxy());
+	    register( OpfacType.R_FA_PLT,  new FaPltProxy());
+      }
+    }

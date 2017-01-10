@@ -1,0 +1,36 @@
+layer MissionWrffeMlrsL;
+
+import java.io.*;
+
+import log.Log;
+
+// BnFseMission
+
+public refines State_machine FistMission {
+    // If MLRS took mission then stop immediately.
+    Enter wrffeMlrsAccepted {
+        delivery( null );
+    }
+
+    Transition_action wrffeMlrsAccepted1 {
+        if ( false )
+            Proceed( message );
+    }
+
+    Transition_condition wrffeMlrsAccepted1 true || Proceed( message );
+
+        /*REFINES EDGE no longer supported.  
+   Move predicate or body into method, and extend method.
+Refines Transition wrffeMlrsAccepted1 : wrffeMlrsAccepted -> stop
+            condition true do {} 
+
+        // added -- net effect of above refinement is to
+        // make Transition action a no-op, and condition true
+
+        public void wrffeMlrsAccepted1Action( Event message) {}
+
+        public boolean wrffeMlrsAccepted1Test( Event message) {
+           return true;
+        }
+*/
+}

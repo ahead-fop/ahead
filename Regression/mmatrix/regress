@@ -1,0 +1,36 @@
+#!/bin/bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+echo "****************MMatrix Tool Regression Test***********"
+
+bash regress-one c1 \
+&& bash regress-one c2 \
+&& bash regress-one c3 \
+&& bash regress-one c4 \
+&& bash regress-one c5 \
+&& bash regress-one c6 \
+&& bash regress-one c7 \
+&& bash regress-one c8 \
+&& bash regress-one c9 \
+&& bash regress-one c10 \
+&& bash regress-one c11 \
+&& bash regress-one i1 \
+&& bash regress-one i2 \
+&& bash regress-one i3 \
+&& bash regress-one i4 \
+&& bash regress-one i5 \
+&& bash regress-one i6 \
+&& bash regress-one s1 \
+&& bash regress-one s2 \
+&& bash regress-one s3 \
+&& bash regress-one s4 \
+&& bash regress-one t1 \
+&& bash regress-one t2 \
+&& bash regress-one t3 \
+&& bash regress-one x1 \
+&& bash regress-one x2 \
+&& bash regress-one x3 \
+|| exit 1
+
+echo -e "\nMMatrix Tool Regression Test succeeded."

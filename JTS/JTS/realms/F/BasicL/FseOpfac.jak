@@ -1,0 +1,11 @@
+package BasicL;
+
+import  
+    java.util.*;
+import 
+    F.Libraries.laydown.*;
+import 
+    F.Libraries.log.Log;
+
+
+    public class FseOpfac extends OpfacImpl {}

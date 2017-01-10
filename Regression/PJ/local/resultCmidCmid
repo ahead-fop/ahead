@@ -1,0 +1,6 @@
+jampack: Cmid.java:12: Error cannot refine data member jj$$Cmid
+jampack: Cmid.java:11: Error cannot refine data member i$$Cmid
+jampack: Cmid.java:11: Error cannot refine data member j$$Cmid
+jampack: Cmid.java:12: Error cannot refine data member ii$$Cmid
+jampack: Summary 4 errors
+

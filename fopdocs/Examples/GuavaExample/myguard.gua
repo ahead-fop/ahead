@@ -1,0 +1,9 @@
+class myGuard {
+   public static void main( String args[] ) {
+      boolean t = true;
+      t -> System.out.println( "its true" ); // test true Guard
+      t = false;
+      t -> System.out.println( "its false" ); // test false Guard
+   }
+}
+

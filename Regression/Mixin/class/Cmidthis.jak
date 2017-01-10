@@ -1,0 +1,17 @@
+// this test is superceded.  It is possible to have calls to this()
+// and super() *provided* that they do not override existing definitions
+
+// this tests if super(..) references are caught
+// as errors.  This construct is outlawed currently in refinements
+
+layer Cmid;
+
+import AnotherPackage;
+
+refines class top implements java.io.Serializable, xxx {
+
+   top(float x) {  this(); }
+
+   top(String x) { super(x); }
+}
+

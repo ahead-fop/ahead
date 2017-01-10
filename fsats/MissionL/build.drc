@@ -1,0 +1,11 @@
+layer MissionL;
+
+extern outside Int  fsatsRank;
+extern outside Bool missionPresent;
+extern outside Bool fsatsPresent;
+extern inside  Bool libraries;
+
+requires outside fsatsRank >= 1 and fsatsPresent;
+provides outside missionPresent;
+requires inside libraries;
+

@@ -1,0 +1,39 @@
+layer ProxyL;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+/** Add proxy to factory.   
+ */
+public class ProxyFactory {
+    private Map prototypes = new HashMap();
+    
+    protected void register( OpfacType opfacType, Proxy prototype )
+        {
+        prototypes.put( opfacType, prototype );
+    }
+
+    public Proxy create( String opfacName )
+         {
+        OpfacDataWrapper record = LayDown.getSelf().getOpfac( opfacName );
+        OpfacType opfacType = record==null ? null : OpfacType.fromString( record.getType() );
+        Proxy proxy = null;
+        if ( opfacType == null )
+            Log.error( "No proxy registered for type " + ( record==null ? null : record.getType() ) );
+        else
+            proxy = ( Proxy )prototypes.get( opfacType );
+
+        if( proxy == null )
+            Log.error( "No proxy registered for type " + ( record==null ? null : record.getType() ) );
+        else
+            {
+            proxy = ( Proxy )proxy.clone();
+            proxy.init( record );
+        }
+
+        return proxy;
+    }
+}

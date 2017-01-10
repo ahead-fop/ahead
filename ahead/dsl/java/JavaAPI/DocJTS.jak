@@ -1,0 +1,185 @@
+layer JavaAPI;
+
+import java.io.*;
+import java.util.*;
+
+  // end of ConstructorDocJTS
+   
+// _________________________________________________________________
+
+ /** JEDI Project
+ * DocJTS.java
+ * University of Texas at Austin
+ * Department of Computer Sciences
+ * Product-line Architecture Research Group
+ * @author Roberto E. Lopez-Herrejon
+ * @version 1.1
+ * @since November 25, 2002
+* @layer<JavaAPI>
+*/
+
+public abstract class DocJTS {
+
+    /** Return the text of the comment for this doc item.    
+     * @layer<JavaAPI>
+     */
+    public String commentText() {
+        return theComment.text();
+    }
+
+    /**    Compares this Object with the specified Object for order. 
+     * @pending for comparison of documents for index     
+     * @layer<JavaAPI>
+     */
+    public int compareTo( Object obj ) {
+        return 0;
+    }
+
+    /** Return the first sentence of the comment as tags.  
+     * @layer<JavaAPI>
+     */
+    public LinkedList firstSentenceTags() 
+    {
+        return theComment.firstSentenceTags( this, theComment.text() );
+    }
+
+    /**   Return the full unprocessed text of the comment. 
+     * @layer<JavaAPI>
+     */
+    public String getRawCommentText() {
+        return theComment.commentText();
+    }
+
+    /**  Return comment as tags. 
+     * @layer<JavaAPI>
+     */
+    public LinkedList inlineTags() {
+        return theComment.inlineTags();
+    }
+ 
+    /** Is this Doc item a class. Note: interfaces are not classes. 
+     * False until overridden.
+     * @return true is it represents a class
+     * @layer<JavaAPI>
+     */
+    public boolean isClass() {
+        return false;
+    }
+
+    /**   Is this Doc item a constructor? False until overriden.       
+     * @layer<JavaAPI>
+     */
+    public boolean isConstructor() {
+        return false;
+    }
+
+    /** Is this Doc item a error class? False until overriden.      
+     * @layer<JavaAPI>
+     */
+    public boolean isError() {
+        return false;
+    }
+
+    /**  Is this Doc item a exception class? False until overridden.     
+     * @layer<JavaAPI>
+     */
+    public boolean isException() {
+        return false;
+    }
+
+    /** Is this Doc item a field? False until overriden.             
+     * @layer<JavaAPI>
+     */
+    public boolean isField() {
+        return false;
+    }
+
+    /**  Return true if this Doc is include in the active set.         
+     * @layer<JavaAPI>
+     */
+    public boolean isIncluded() {
+        return false;
+    }
+
+    /** Is this Doc item a interface? False until overridden.         
+     * @layer<JavaAPI>
+     */
+    public boolean isInterface() {
+        return false;
+    }
+
+    /** Is this Doc item a simple method (i.e. not a constructor)? 
+     * False until overridden.
+     * @layer<JavaAPI>
+     */
+    public boolean isMethod() {
+        return false;
+    }
+
+    /** Is this Doc item a ordinary class (i.e. not an interface, 
+     * exception, or error)? False until overriden.             
+     * @layer<JavaAPI>
+     */
+    public boolean isOrdinaryClass() {
+        return false;
+    }
+
+    /** Returns the name of this Doc item.                 
+     * @layer<JavaAPI>
+     */
+    public abstract String name();
+ 
+    /** Return the see also tags in this Doc item.             
+     * @layer<JavaAPI>
+     */
+    public LinkedList seeTags() {
+        return theComment.seeTags();
+    }
+
+    /** Set the full unprocessed text of the comment. 
+     * Tags are included as text. Used mainly for store and retrieve 
+     * operations like internalization.
+     * Current implementation is empty. Not clear its actual use.
+     * @pending -> find out what was this?
+     * @layer<JavaAPI>
+     */
+    public void setRawCommentText( String rawDocumentation ) {}
+
+    /** Return all tags in this Doc item.                 
+     * @layer<JavaAPI>
+     */
+    public LinkedList tags() {
+        return theComment.tags();
+    }
+
+    /** Return tags of the specified kind in this Doc item.         
+     * @layer<JavaAPI>
+     */
+    public LinkedList tags( String tagname ) 
+    {
+        return theComment.tags( tagname );
+    }
+   
+    /**************** Implementation members ***************************
+     * @layer<JavaAPI>
+     */
+      
+    /** Contains the comment associated to the document         */
+    CommentJedi theComment;
+
+    /** Current implementation returns a comment. 
+     * @layer<JavaAPI>
+     */
+    public  CommentJedi comment() {
+        return theComment;
+    }
+
+    /** Sets the comment associated to this doc. 
+     * @layer<JavaAPI>
+     */
+    public void setComment( CommentJedi _theComment ) 
+    {
+        theComment = _theComment;
+    }
+
+}

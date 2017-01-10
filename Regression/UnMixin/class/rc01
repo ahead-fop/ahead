@@ -1,0 +1,21 @@
+package CRooT0;
+
+import x.y.z.*;
+import java.io.Serializable;
+import anotherPackage;
+
+SoUrCe RooT Base0 "CBase0.jak";
+
+ abstract class MyClass$$CRooT0 extends anotherClass { 
+    int Silent = 0;
+    void foo() throws AFit {}
+    SomeType bar( int x ) { }
+}
+
+SoUrCe  CExt1 "CExt1.jak";
+
+public transient  class MyClass extends MyClass$$CRooT0 implements yyy, java.io.Serializable {
+    int Terse = 2;
+    void foo() throws SomeException { }
+    int increment( int i ) { }
+}

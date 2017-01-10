@@ -1,0 +1,757 @@
+layer SmAPI;
+
+import java.io.*;
+import java.util.*;
+
+ // end of Program ProgramDocJTS
+
+// _________________________________________________________________
+  /** JEDI 
+ * StateMachineDocJTS.java
+ * University of Texas at Austin
+ * Department of Computer Sciences
+ * Product-line Architecture Research Group
+ * @rationale This class contains the information of an state machine.
+ * @author Roberto E. Lopez-Herrejon
+ * @version 1.0
+ * @since November 8, 2002
+* @layer<SmAPI>
+*/
+
+public class StateMachineDocJTS extends  ExecutableMemberDocJTS {
+
+    // **********************************************************************
+    // **********************************************************************
+    // *** Field Summary 
+    /** Contains the name of the state.
+     * @layer<SmAPI>
+     */
+    String name;
+
+    /** Variable that contains the name of the class it extends.
+     * Initialized to empty string.
+     * @layer<SmAPI>
+     */
+    String extendsName = "";
+
+    /** Classbody of the state.
+     * Pending ???
+     * @layer<SmAPI>
+     */
+    ClassDocJTS classBody;
+
+    /** Imports List.
+     * List that contains ClassDocJTS objects that are interfaces of
+     * implements clause.
+     * @layer<SmAPI>
+     */
+    List implementsList;
+
+    /**    Variable that contains the name of the root clause if any.
+     * Initialized to empty string.
+     * @layer<SmAPI>
+     */
+    String rootClauseName="";
+
+    /** Array that contains the parameters of the delivery class if any.
+     * Initialized to empty array.
+     * @layer<SmAPI>
+     */
+    ParameterJTS[] parameters = new ParameterJTS[0];
+
+    /** List that contains the classes/interfaces of NoTransitionClause.
+     * Initialized to empty list.
+     * @layer<SmAPI>
+     */
+    LinkedList noTransitionClauseClasses = new LinkedList();
+
+    /** List that contains the classes/interfaces of OtherwiseClause.
+     * Initialized to empty list.
+     * @layer<SmAPI>
+     */
+    LinkedList otherwiseClauseClasses = new LinkedList();
+
+    /** List that contains the state string of StatesClause.
+     * Initialized to empty list.
+     * @layer<SmAPI>
+     */
+    LinkedList statesClauseStates = new LinkedList();
+
+    // These lists are for the ESList part of SDClassBody
+    /** List that contains the Exit Transitions.
+     * @layer<SmAPI>
+     */
+    LinkedList  ExitTransitions = new LinkedList();
+
+    /** List that contains the Enter Transitions.
+     * @layer<SmAPI>
+     */
+    LinkedList  EnterTransitions = new LinkedList();
+
+    /** List that contains the Prepare Transitions.
+     * @layer<SmAPI>
+     */
+    LinkedList PrepareTransitions  = new LinkedList();
+
+    /** List that contains the Action Transitions.
+     * @layer<SmAPI>
+     */
+    LinkedList ActionTransitions = new LinkedList();
+
+    /** List that contains the Test Transitions.
+     * @layer<SmAPI>
+     */
+    LinkedList TestTransitions = new LinkedList();
+
+    /** List that contains the Transition Declarations.
+     * @layer<SmAPI>
+     */
+    LinkedList TransitionDeclarations = new LinkedList();
+
+    /** List that contains the Otherwise Transitions.
+     * @layer<SmAPI>
+     */
+    LinkedList OtherwiseTransitions = new LinkedList();
+
+    // These lists are for the AST_FieldDecl part of SDClassBody
+    
+    /** List that contains the methods of SDClassBody.
+     * Initialized to empty list.
+     * @layer<SmAPI>
+     */
+    LinkedList methods = new LinkedList();
+
+    /** List that contains the innerclasses of SDClassBody.
+     * Initialized to empty list.
+     * @layer<SmAPI>
+     */
+    LinkedList innerClasses = new LinkedList();
+
+    /** List that contains the constructors of SDClassBody.
+     * Initialized to empty list.
+     * @layer<SmAPI>
+     */
+    LinkedList constructors = new LinkedList();
+
+    /** List that contains the fields of SDClassBody.
+     * Initialized to empty list.
+     * @layer<SmAPI>
+     */
+    LinkedList fields = new LinkedList();
+
+    /** List that contains the states of SDClassBody.
+     * Initialized to empty list.
+     * @layer<SmAPI>
+     */
+    LinkedList states = new LinkedList();
+ 
+    /** Class that represents the classbody parts of the State.
+     * @layer<SmAPI>
+     */
+    ClassDocJTS theClassBody;
+
+    // *** Method Summary
+    
+    /** Returns the qualified name.
+     * Legacy. Review
+     * @layer<SmAPI>
+     */
+    public String qualifiedName() {
+        return "";
+    }
+
+    /** Returns always false.
+     * Legacy. Review
+     * @layer<SmAPI>
+     */
+    public boolean isIncluded() {
+        return false;
+    }
+
+    /** Returns an string with the modifiers of the ProgramElement.
+     * Current implementation display order : public, protected, 
+     *    private, static, final.
+     * Probably this is not standard order.
+     * @layer<SmAPI>
+     */
+    public String modifiers() 
+    {
+        String output = "";
+        if ( isPublic )
+            output = output + " public ";
+        if ( isProtected )
+            output = output + " protected ";
+        if ( isPrivate )
+            output = output + " private ";
+        if ( isStatic )
+            output = output + " static ";
+        if ( isFinal )
+            output = output + " final ";
+        if ( isRelative )
+            output = output + " relative " ;
+        if ( isAbstract )
+            output = output + " abstract " ;
+        if ( isTransient )
+            output = output + " transient " ;
+        if ( isVolatile )
+            output = output + " volatile " ;
+        if ( isNative )
+            output = output + " native " ;
+        if ( isSynchronized )
+            output = output + " synchronized " ;
+        return output;
+    }
+
+    /** Returns the variable isPublic.
+     * @layer<SmAPI>
+     */
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    /** Returns the variable isProtected.
+     * @layer<SmAPI>
+     */
+    public boolean isProtected() {
+        return isProtected;
+    }
+
+    /** Returns the variable isPrivate.
+     * @layer<SmAPI>
+     */
+    public boolean isPrivate() {
+        return isPrivate;
+    }
+
+    /** Returns the variable isStatic.
+     * @layer<SmAPI>
+     */
+    public boolean isStatic() {
+        return isStatic;
+    }
+
+    /** Returns the variable isFinal. 
+     * @layer<SmAPI>
+     */
+    public boolean isFinal() {
+        return isFinal;
+    }
+
+    /** Returns the variable isRelative.
+     * @layer<SmAPI>
+     */
+    public boolean isRelative() {
+        return isRelative;
+    }
+
+    /** Returns the variable isAbstract.
+     * @layer<SmAPI>
+     */
+    public boolean isAbstract() {
+        return isAbstract;
+    }
+
+    /** Returns the variable isTransient.
+     * @layer<SmAPI>
+     */
+    public boolean isTransient() {
+        return isTransient;
+    }
+
+    /** Returns the variable isVolatile.
+     * @layer<SmAPI>
+     */
+    public boolean isVolatile() {
+        return isVolatile;
+    }
+
+    /** Returns the variable isNative.
+     * @layer<SmAPI>
+     */
+    public boolean isNative() {
+        return isNative;
+    }
+
+    /** Returns the variable isSyncrhonized.
+     * @layer<SmAPI>
+     */
+    public boolean isSynchronized() {
+        return isSynchronized;
+    }
+
+    // **********************************************************************
+    // **********************************************************************
+    // **********************************************************************
+    // **** From this point on auxiliary fields, methods and constructors
+    // **** are added.    
+    
+    // *** Additional fields added to support functionality
+    
+    /** Variable that indicates if the state is public.
+     * @layer<SmAPI>
+     */
+    boolean isPublic = false;
+
+    /** Variable that indicates if the state is protected.
+     * @layer<SmAPI>
+     */
+    boolean isProtected = false;
+
+    /** Variable that indicates if the state is private.
+     * @layer<SmAPI>
+     */
+    boolean isPrivate = false;
+
+    /** Variable that indicates if the state is static.
+     * @layer<SmAPI>
+     */
+    boolean isStatic = false;
+
+    /** Variable that indicates if the state is final.
+     * @layer<SmAPI>
+     */
+    boolean isFinal = false;
+
+    /** Variable that indicates if the state is relative
+     * @layer<SmAPI>
+     */
+    boolean isRelative = false;
+
+    /** Variable that indicates if the state is abstract.
+     * @layer<SmAPI>
+     */
+    boolean isAbstract = false;
+
+    /** Variable that indicates if the state is transient.
+     * @layer<SmAPI>
+     */
+    boolean isTransient = false;
+
+    /** Variable that indicates if the state is volatile.
+     * @layer<SmAPI>
+     */
+    boolean isVolatile = false;
+
+    /** Variable that indicates if the state is native.
+     * @layer<SmAPI>
+     */
+    boolean isNative = false;
+
+    /** Variable that indicates if the state is synchronized.
+     * @layer<SmAPI>
+     */
+    boolean isSynchronized = false;
+    
+    // *** Constructor added to support functionality
+    
+    /** Added : Constructor.
+     * @layer<SmAPI>
+     */
+    public StateMachineDocJTS( String _name )
+    {
+        name = _name;
+    }
+
+    // *** Additional methods added to support functionality
+    /** Gets the name of the state.
+     * @layer<SmAPI>
+     */
+    public String name() {
+        return name;
+    }
+
+    /** Gets the name of the class it extends.
+     * @layer<SmAPI>
+     */
+    public String extendsName() {
+        return extendsName;
+    }
+
+    /** Gets the classBody object of the state.
+     * Pending
+     * @layer<SmAPI>
+     */
+    public  ClassDocJTS classBody() {
+        return classBody;
+    }
+
+    /** Gets the list of the implements strings.
+     * @layer<SmAPI>
+     */
+    public List implementsList() {
+        return implementsList;
+    }
+
+    /** Returns the name of the root clause.
+     * @layer<SmAPI>
+     */
+    public String rootClauseName() {
+        return rootClauseName;
+    }
+
+    /** Returns the array of parameters.
+     * @layer<SmAPI>
+     */
+    public ParameterJTS parameters()[] {
+        return parameters;
+    }
+
+    /** Returns the list of classes in noTransitionClause.
+     * @layer<SmAPI>
+     */
+    public LinkedList noTransitionClauseClasses()
+    {
+        return noTransitionClauseClasses;
+    }
+
+    /** Returns the list of classes in otherwiseClause.
+     * @layer<SmAPI>
+     */
+    public LinkedList otherwiseClauseClasses()
+    {
+        return otherwiseClauseClasses;
+    }
+
+    /** Returns the list of string states of the States clause.
+     * @layer<SmAPI>
+     */
+    public LinkedList statesClauseStates()
+    {
+        return statesClauseStates;
+    }
+
+    /** Returns the list of Exit Transitions.
+     * @layer<SmAPI>
+     */
+    public LinkedList ExitTransitions() {
+        return ExitTransitions;
+    }
+
+    /** Returns the list of Enter Transitions.
+     * @layer<SmAPI>
+     */
+    public LinkedList EnterTransitions() {
+        return EnterTransitions;
+    }
+
+    /** Returns the list of Prepare Transitions.
+    * @layer<SmAPI>
+    */
+    public LinkedList PrepareTransitions() {
+        return PrepareTransitions;
+    }
+
+    /** Returns the list of Action Transitions.
+    * @layer<SmAPI>
+    */
+    public LinkedList ActionTransitions() {
+        return ActionTransitions;
+    }
+
+    /** Returns the list of Test Transitions.
+    * @layer<SmAPI>
+    */
+    public LinkedList TestTransitions() {
+        return TestTransitions;
+    }
+
+    /** Returns the list of TransitionDeclarations.
+     * @layer<SmAPI>
+     */
+    public LinkedList TransitionDeclarations() {
+        return TransitionDeclarations;
+    }
+
+    /** Returns the list of Otherwise Transition list.
+     * @layer<SmAPI>
+     */
+    public LinkedList OtherwiseTransitions() {
+        return OtherwiseTransitions;
+    }
+    
+    /** Returns the methods of the SDClassBody.
+     * @layer<SmAPI>
+     */
+    public LinkedList methods()
+    {
+        return methods;
+    }
+
+    /** Returns the innerclasses of SDClassBody.
+     * @layer<SmAPI>
+     */
+    public LinkedList innerClasses()
+    {
+        return innerClasses;
+    }
+
+    /** Returns the constructors of SDClassBody.
+     * @layer<SmAPI>
+     */
+    public LinkedList constructors()
+    {
+        return constructors;
+    }
+
+    /** Returns the fields of SDClassBody.
+     * @layer<SmAPI>
+     */
+    public LinkedList fields()
+    {
+        return fields;
+    }
+
+    /** Returns the states of the SDClassBody.
+     * @layer<SmAPI>
+     */
+    public LinkedList states()
+    {
+        return states;
+    }
+    
+    /** Sets the name of the machine. 
+     * @layer<SmAPI>
+     */
+    public void setName( String _name ) 
+    {
+        name = _name;
+    }
+
+    /** Sets ot the class it extends.
+     * @layer<SmAPI>
+     */
+    public void setExtendsName( String _extendsName ) 
+    {
+        extendsName = _extendsName;
+    }
+
+    /** Sets the class body object of the state.
+     * @pending --> further details will be provided
+     * @layer<SmAPI>
+     */
+    public void setClassBody( ClassDocJTS _classBody ) 
+    {
+        classBody = _classBody;
+    }
+
+    /** Sets the importsList of the state.
+     * @layer<SmAPI>
+     */
+    public void setImplementsList( List _implementsList ) 
+    {
+        implementsList = _implementsList;
+    }
+
+    /** Sets the isPublic variable of the state.
+     * @layer<SmAPI>
+     */
+    public void setPublic( boolean _isPublic ) {
+        isPublic = _isPublic;
+    }
+
+    /** Sets the isProtected variable of the state.
+     * @layer<SmAPI>
+     */
+    public void setProtected( boolean _isProtected ) 
+    {
+        isProtected = _isProtected;
+    }
+
+    /** Sets the isPrivate variable of the state.
+     * @layer<SmAPI>
+     */
+    public void setPrivate( boolean _isPrivate ) {
+        isPrivate = _isPrivate;
+    }
+
+    /** Sets the isStatic variable of the state.
+     * @layer<SmAPI>
+     */
+    public void setStatic( boolean _isStatic ) {
+        isStatic = _isStatic;
+    }
+
+    /** Sets the isFinal variable of the state.
+     * @layer<SmAPI>
+     */
+    public void setFinal( boolean _isFinal ) {
+        isFinal = _isFinal;
+    }
+
+    /** Sets the isRelative variable of the state.
+     * @layer<SmAPI>
+     */
+    public void setRelative( boolean _isRelative ) {
+        isRelative = _isRelative;
+    }
+
+    /** Sets the isAbstract variable of the state.
+     * @layer<SmAPI>
+     */
+    public void setAbstract( boolean _isAbstract ) {
+        isAbstract = _isAbstract;
+    }
+
+    /** Sets the isTransient variable of the state.
+     * @layer<SmAPI>
+     */
+    public void setTransient( boolean _isTransient ) 
+    {
+        isTransient = _isTransient;
+    }
+
+    /** Sets the isVolatile variable of the state.
+     * @layer<SmAPI>
+     */
+    public void setVolatile( boolean _isVolatile ) 
+    {
+        isVolatile = _isVolatile;
+    }
+
+    /** Sets the isNative variable of the state.
+     * @layer<SmAPI>
+     */
+    public void setNative( boolean _isNative ) {
+        isNative = _isNative;
+    }
+
+    /** Sets the isSynchronized variable of the state.
+     * @layer<SmAPI>
+     */
+    public void setSynchronized( boolean _isSynchronized ) 
+    {
+        isSynchronized = _isSynchronized;
+    }
+
+    /** Sets the RootClause name.
+     * @layer<SmAPI>
+     */
+    public void setRootClauseName( String _rootClauseName )
+    {
+        rootClauseName = _rootClauseName;
+    }
+
+    /** Sets the parameters array.
+     * @layer<SmAPI>
+     */
+    // public void setParameters($TEqn.ParameterJTS[] _parameters)
+    // { parameters = _parameters; }
+    
+    /** Sets the noTransition Clause classes.
+     */
+    public void setNoTransitionClauseClasses( LinkedList 
+        _noTransitionClauseClasses )
+    {
+        noTransitionClauseClasses = _noTransitionClauseClasses;
+    }
+
+    /** Sets the otherwise Clause classes.
+     * @layer<SmAPI>
+     */
+    public void setOtherwiseClauseClasses( LinkedList _otherwiseClauseClasses )
+    {
+        otherwiseClauseClasses = _otherwiseClauseClasses;
+    }
+
+    /** Sets the states strings from States clause.
+     * @layer<SmAPI>
+     */
+    public void setStatesClauseStates( LinkedList _statesClauseStates )
+    {
+        statesClauseStates = _statesClauseStates;
+    }
+
+    /** Sets the Exit Transitions list.
+     * @layer<SmAPI>
+     */
+    public void setExitTransitions( LinkedList _ExitTransitions ) 
+    {
+        ExitTransitions =_ExitTransitions;
+    }
+
+    /** Sets the Enter Transitions list.
+     * @layer<SmAPI>
+     */
+    public void setEnterTransitions( LinkedList _EnterTransitions )
+    {
+        EnterTransitions = _EnterTransitions;
+    }
+
+    /** Sets the Prepare Transitions list.
+     * @layer<SmAPI>
+     */
+    public void setPrepareTransitions( LinkedList _PrepareTransitions ) {
+        PrepareTransitions = _PrepareTransitions;
+    }
+
+    /** Sets the Test Transitions list.
+    * @layer<SmAPI>
+    */
+    public void setTestTransitions( LinkedList _TestTransitions ) {
+        TestTransitions = _TestTransitions;
+    }
+
+    /** Sets the Action Transitions list.
+    * @layer<SmAPI>
+    */
+    public void setActionTransitions( LinkedList _ActionTransitions ) {
+        ActionTransitions = _ActionTransitions;
+    }
+
+    /** Sets the Transition Declarations list.
+     * @layer<SmAPI>
+     */
+    public void setTransitionDeclarations( LinkedList _TransitionDeclarations )
+    {
+        TransitionDeclarations = _TransitionDeclarations;
+    }
+
+    /** Sets the Otherwise Transisiton List.
+     * @layer<SmAPI>
+     */
+    public void setOtherwiseTransitions( LinkedList _OtherwiseTransitions )
+    {
+        OtherwiseTransitions = _OtherwiseTransitions;
+    }
+
+    /** Sets the methods of SDClassBody.
+     * @layer<SmAPI>
+     */
+    public void setMethods( LinkedList _methods )
+    {
+        methods = _methods;
+    }
+
+    /** Sets the innerclasses of SDClassBody.
+     * @layer<SmAPI>
+     */
+    public void setInnerClasses( LinkedList _innerClasses )
+    {
+        innerClasses = _innerClasses;
+    }
+
+    /** Sets the constructors of SDClassBody.
+     * @layer<SmAPI>
+     */
+    public void setConstructors( LinkedList _constructors )
+    {
+        constructors = _constructors;
+    }
+
+    /** Sets the fields of SDClassBody
+     * @layer<SmAPI>
+     */
+    public void setFields( LinkedList _fields )
+    {
+        fields = _fields;
+    }
+
+    /** Sets the states of the SDClassBody
+     * @layer<SmAPI>
+     */
+    public void setStates( LinkedList _states )
+    {
+        states = _states;
+    }
+
+}

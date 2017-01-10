@@ -1,0 +1,45 @@
+
+import java.io.PrintWriter;
+import jak.Lang;
+import Jakarta.util.Util;
+
+public class test8 {
+    public static void main(String[] args) {
+	Lang.AST_Stmt st = stm{ if (x < 5) x++; }stm;
+	Lang.AstProperties props = new Lang.AstProperties();
+	Lang.AstCursor csr = new Lang.AstCursor();
+	PrintWriter pw = new PrintWriter(System.out);
+	boolean foundOne;
+
+	props.setProperty("output", pw);
+	csr.First(st);
+	csr.PlusPlus();
+	if (csr.find("jak.Base$Expression") == null) {
+	    pw.println("Failed to find 'jak.Base$Expression'.");
+	}
+	else {
+	    pw.print("Found expression: ");
+	    csr.node.reduce2java(props);
+	    pw.print("\n");
+	}
+
+	csr.First();
+	csr.PlusPlus();
+	foundOne = false;
+	while (csr.More()) {
+	    if (csr.find("jak.Base$NameId") == null) {
+		if (foundOne)
+		    break;
+		pw.println("Failed to find 'jak.Base$NameId'.");
+	    }
+	    else {
+		pw.print("Found class "+ Util.baseType(csr.node) + ": ");
+		csr.node.reduce2java(props);
+		pw.print("\n");
+		foundOne = true;
+	    }
+	    csr.PlusPlus();
+	}
+	pw.flush();
+    }
+}

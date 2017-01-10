@@ -1,0 +1,9 @@
+import Jakarta.util.*;
+
+abstract refines class ExprStmt {
+
+   node eharvest() {
+	   Util.override( "eharvest()", this );
+		return null;
+	}
+}

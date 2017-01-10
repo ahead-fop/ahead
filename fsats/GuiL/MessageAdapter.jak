@@ -1,0 +1,39 @@
+layer GuiL;
+
+import laydown.*;
+
+import java.util.*;
+
+class MessageAdapter
+        implements fsats.guiIf.Message {
+    String type;
+    String source;
+    String destination;
+    String missionId;
+    String specific;
+
+    public MessageAdapter( Message message )
+        {
+        type = message.getType().toString();
+        source = message.getSource();
+        destination = message.getDestination();
+        missionId = message.getMissionId();
+        specific = message.getSpecific();
+    }
+
+    public String getType() {
+        return type;
+    }
+    public String getSource() {
+        return source;
+    }
+    public String getDestination() {
+        return destination;
+    }
+    public String getMissionId() {
+        return missionId;
+    }
+    public String getSpecific() {
+        return specific;
+    }
+}

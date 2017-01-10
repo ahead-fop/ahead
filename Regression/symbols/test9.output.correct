@@ -1,0 +1,84 @@
+Class: Member
+    Class: Enumerator implements java.util.Enumeration
+        Class: Enumerator2
+            void <init>(Member$Enumerator)
+                Member$Enumerator this$1;
+                Member$Enumerator$Enumerator2 this;
+            Member$Enumerator this$1;
+            int dummy;
+        boolean hasMoreElements()
+            Member$Enumerator this;
+        java.lang.Object nextElement()
+            Member$Enumerator this;
+        void <init>(Member)
+            Member this$0;
+            Member$Enumerator this;
+        Member current;
+        Member this$0;
+    Member access$0(Member)
+        Member $0;
+    java.util.Enumeration enum()
+        Member this;
+    void <init>()
+        Member this;
+    Member head;
+
+Class: Enumerator implements java.util.Enumeration
+    Class: Enumerator2
+        void <init>(Member$Enumerator)
+            Member$Enumerator this$1;
+            Member$Enumerator$Enumerator2 this;
+        Member$Enumerator this$1;
+        int dummy;
+    boolean hasMoreElements()
+        Member$Enumerator this;
+    java.lang.Object nextElement()
+        Member$Enumerator this;
+    void <init>(Member)
+        Member this$0;
+        Member$Enumerator this;
+    Member current;
+    Member this$0;
+
+Class: Member
+    Class: Enumerator implements java.util.Enumeration
+        Class: Enumerator2
+            void <init>(TestPak.Member$Enumerator)
+                TestPak.Member$Enumerator this$1;
+                TestPak.Member$Enumerator$Enumerator2 this;
+            TestPak.Member$Enumerator this$1;
+            int dummy;
+        boolean hasMoreElements()
+            TestPak.Member$Enumerator this;
+        java.lang.Object nextElement()
+            TestPak.Member$Enumerator this;
+        void <init>(TestPak.Member)
+            TestPak.Member this$0;
+            TestPak.Member$Enumerator this;
+        TestPak.Member current;
+        TestPak.Member this$0;
+    TestPak.Member access$0(TestPak.Member)
+        TestPak.Member $0;
+    java.util.Enumeration enum()
+        TestPak.Member this;
+    void <init>()
+        TestPak.Member this;
+    TestPak.Member head;
+
+Class: Enumerator implements java.util.Enumeration
+    Class: Enumerator2
+        void <init>(TestPak.Member$Enumerator)
+            TestPak.Member$Enumerator this$1;
+            TestPak.Member$Enumerator$Enumerator2 this;
+        TestPak.Member$Enumerator this$1;
+        int dummy;
+    boolean hasMoreElements()
+        TestPak.Member$Enumerator this;
+    java.lang.Object nextElement()
+        TestPak.Member$Enumerator this;
+    void <init>(TestPak.Member)
+        TestPak.Member this$0;
+        TestPak.Member$Enumerator this;
+    TestPak.Member current;
+    TestPak.Member this$0;
+

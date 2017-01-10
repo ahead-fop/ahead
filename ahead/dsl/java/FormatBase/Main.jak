@@ -1,0 +1,388 @@
+layer FormatBase;
+
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+//------------- Main -------------------------------  
+
+Local_Id myLayerID, verbose ;
+
+public refines class Main {
+
+
+    private int myLayerID;
+    private boolean verbose = true ;
+    private boolean force = true;
+
+    public static String dir = null;
+    public static String ext = null;
+
+    static protected void usage() {
+        String toolname = $str( $PackName );
+      
+        System.err.println( "Usage: java " + toolname + ".Main [-t number] [-l number] [-n string] [-auto] [-s]" );
+        System.err.println( "                        [-verbose] [-quiet] -d string -e string" );
+        System.err.println( "  -or-" );
+        System.err.println( "Usage: java " + toolname + ".Main [-t number] [-l number] [-n string] [-auto] [-s]" );
+        System.err.println( "                        [-verbose] [-quiet] source_files" );
+        System.err.println();
+        System.err.println( "   -t : number of white spaces for a Tab" );
+        System.err.println( "   -l : maxium number of consecutive white lines in the program" );
+        System.err.println( "   -n : layer name to be added into JavaDoc comments" );
+        System.err.println( "   -auto : automatically detect layer name and add into JavaDoc comments;" );
+        System.err.println( "           will void -n option when turned on" );
+        System.err.println( "   -s : safe mode - prompt before replacing file archives" );
+        System.err.println( "   -verbose : enables verbose output (default)" );
+        System.err.println( "   -quiet : disables verbose output" );
+        System.err.println( "   -d : source directory to be RECURSIVELY searched; will void source file" );
+        System.err.println( "        argument(s)" );
+        System.err.println( "   -e : source file extension to be searched; will void source file argument(s)" );
+         
+        // Force exit
+        System.exit( 1 ) ;
+    }
+
+    /**
+     * Overrides previous version to allow multiple source files in the
+     * argument list.  This is done by successively substituting the
+     * "source file" argument by each of the extra arguments.
+     *
+     * <p>
+     * <em>Note:</em>
+     * The argument processing here is a mess, mostly because the command
+     * line parsing design is poor.  That's another area of clean-up.
+     *
+     * @layer<FormatBase>
+     */
+    protected boolean driver( ArgList args ) {
+
+        Switch sw;
+        File dirFile;
+
+        // Get verbosity level:
+        for ( Iterator p = args.iterator() ; p.hasNext() ; ) {
+            Object object = p.next() ;
+            if ( object instanceof Switch ) {
+                sw = ( Switch ) object ;
+                if ( sw.name == "quiet" )
+                    verbose = false ;
+                else
+                    if ( sw.name == "verbose" )
+                        verbose = true ;
+            }
+        }
+
+        sw = ( Switch ) args.find( "t", Switch.class, myLayerID );
+        if ( sw != null ) {
+            CommentUtil.TabSpace = Integer.parseInt( sw.args[0] );
+        }
+         
+        sw = ( Switch ) args.find( "l", Switch.class, myLayerID );
+        if ( sw != null ) {
+            CommentUtil.WhiteLine = Integer.parseInt( sw.args[0] );
+        }
+
+        sw = ( Switch ) args.find( "n", Switch.class, myLayerID );
+        if ( sw != null ) {
+            CommentUtil.layerName = sw.args[0];
+        }
+
+        sw = ( Switch ) args.find( "auto", Switch.class, myLayerID );
+        if ( sw != null ) {
+            CommentUtil.layerName = "";
+            CommentUtil.autoLayer = true;
+        }
+
+        sw = ( Switch ) args.find( "s", Switch.class, myLayerID );
+        if ( sw != null ) {
+            force = false;
+        }
+
+        sw = ( Switch ) args.find( "d", Switch.class, myLayerID );
+        if ( sw != null ) {
+            dir = sw.args[0];
+        }
+
+        sw = ( Switch ) args.find( "e", Switch.class, myLayerID );
+        if ( sw != null ) {
+            ext = sw.args[0];
+        }
+
+        if ( ( dir != null ) && ( ext == null ) )
+            ext = "";
+        if ( ( ext != null ) && ( ( dir == null ) || ( dir.equals( "" ) ) ) )
+            dir = ".";
+
+        if ( ( dir != null ) || ( ext != null ) ) {
+            try {
+                dirFile = new File( dir );
+                processDirectory( dirFile, dir );
+            }
+            catch ( Exception e ) {
+                System.err.println( "Cannot open directory " + dir );
+                System.err.println( e.getMessage() );
+                System.exit( -10 );
+            }
+        }
+        else {
+            // If there are no extra arguments, then we're done.
+            //
+            if ( extraArgs == null || extraArgs.size() < 1 ) {
+                usage();
+            }
+
+            // Substitute each extra source file argument into the source file
+            // position, then re-evaluate command line.
+            //
+            for ( Iterator p = extraArgs.iterator() ; p.hasNext() ; )
+                processing( packageName, ( String ) p.next() ) ;
+        }
+
+        return true;
+    }
+
+    public void processDirectory( File dirFile, String path ) {
+        File f;
+        int i;
+        String cpath;
+        String array[];
+ 
+        // Step 1: get list of files
+ 
+        if ( ( ext != null ) && ( !ext.equals( "" ) ) )
+            array = dirFile.list( new  filterPattern( "." + ext ) );
+        else
+            array = dirFile.list( new  filePattern() );
+ 
+        // Step 2: for each file name...
+ 
+        for ( i=0; i<array.length; i++ ) {
+            String filename = path + File.separator + array[i];
+            processing( packageName, filename );
+        }
+
+        // Step 3: now recurse on directory
+
+        array = dirFile.list( new  dirPattern() );
+
+        for ( i=0; i<array.length; i++ ) {
+            
+            cpath = path + File.separator + array[i];
+            try {
+                f = new File( cpath );
+                processDirectory( f, cpath );
+            }
+            catch ( Exception e ) {
+                System.err.println( "failed to process directory " + cpath + 
+                    e.getMessage() );
+            }
+        }
+    }
+
+    protected void processing( String label, String fileName ) {
+       
+        AstNode ast;
+        String s;
+        int i;
+
+        ast = createAST( fileName );
+
+        if ( ast != null ) {
+            ast.setComment( "\n" + ast.getComment() );
+            ast.format( 0 );
+            s = ast.getComment();
+            do {
+                i = s.indexOf( '\n' );
+                if ( ( i >= 0 ) && ( s.substring( 0, i+1 ).trim().equals( "" ) ) )
+                    s = s.substring( i+1 );
+                else
+                    break;
+            }
+            while ( true );
+            ast.setComment( s );
+            outputAST( ast );
+            if ( verbose )
+                System.out.println( fileName ) ;
+        }
+    }
+
+    //**************************************************
+    // Method called by the top-most layer to allow a layer to request
+    // switches and arguments.
+    //**************************************************
+    protected void argInquire( int _layer ) {
+        Switch sw;
+
+        // Save my layer number
+        myLayerID = _layer;
+
+        // Register my switches
+        sw = new Switch( "t", "number of white spaces for a Tab", new String[1], true, _layer );
+        switchRegister( sw );
+        sw = new Switch( "l", "maxium number of consecutive white lines in the program", new String[1], true, _layer );
+        switchRegister( sw );
+        sw = new Switch( "n", "layer name to be added into JavaDoc comments", new String[1], true, _layer );
+        switchRegister( sw );
+        sw = new Switch( "auto", "automatically detect layer name and add into JavaDoc comments; will void -n option when turned on", null, true, _layer );
+        switchRegister( sw );
+        sw = new Switch( "s", "safe mode - prompt before replacing file archives", null, true, _layer );
+        switchRegister( sw );
+        sw = new Switch( "verbose", "enables verbose output (default)", null, true, _layer );
+        switchRegister( sw );
+        sw = new Switch( "quiet", "disables verbose output", null, true, _layer );
+        switchRegister( sw );
+        sw = new Switch( "d", "source directory to be searched; will void source file(s) argument(s)", new String[1], true, _layer );
+        switchRegister( sw );
+        sw = new Switch( "e", "source file extension to be searched; will void source file(s) argument(s)", new String[1], true, _layer );
+        switchRegister( sw );
+
+        // Allow extra arguments
+        extraArgs = new ArrayList() ;
+
+    // Call next layer:
+    //
+    // Super(int).argInquire (nextLayer ()) ;
+    }
+
+    private boolean deleteFile( File f, String name ) {
+        try {
+            if ( !f.delete() ) {
+                Util.warning( "Error in deleting file " + name + "~" );
+                return false;
+            }
+        }
+        catch ( Exception e ) {
+            Util.warning( "Error in deleting file " + name + "~: " + e.getMessage() );
+            return false;
+        }
+        return true;
+    }
+
+    //**************************************************
+    // createAST()
+    //**************************************************
+    protected  AstNode createAST( String fileName ) {
+        FileInputStream fis;
+        PositionalArg parg;
+        File inputFile, backup;
+        AstNode root;
+
+        inputFile = null;
+        try {
+            inputFile = new File( fileName );
+            fis = new FileInputStream( inputFile );
+            kernelConstants.globals().mainProps.setProperty( "input", inputFile );
+
+            // now add inputDirectory property
+            String abspath = inputFile.getAbsolutePath();
+            kernelConstants.globals().mainProps.setProperty( "inputDirectory", 
+                                                                      directoryPath( abspath ) );
+            kernelConstants.globals().currentAbsPath = abspath;
+        }
+
+        catch ( Exception e ) {
+            Util.warning( "Can't open file " + fileName );
+            fis = null;
+            return null;
+        }
+        
+        try {
+            Parser parser =  Parser.getInstance( fis ) ;
+	    root = parser.parseAll () ;
+        }
+        catch ( ParseException e ) {
+            Util.warning( "Error in parsing file " + fileName + ": " + e.getMessage() );
+            root = null;
+            return null;
+        }
+ 
+        backup = new File( fileName + "~" );
+
+        if ( backup.exists() ) {
+            if ( force ) { // delete the old backup
+                if ( !deleteFile( backup, fileName ) )
+                    return null;
+            }
+            else {
+                char c;
+                do {
+                    Util.warning( "File " + fileName + "~ already exists - skip this file? (y/n)" );
+                    try {
+                        c = ( char ) System.in.read();
+                        System.in.skip( System.in.available() );
+                    }
+                    catch ( Exception e ) {
+                        Util.warning( e.getMessage() );
+                        return null;
+                    }
+                }
+                while ( ( c != 'y' ) && ( c != 'n' ) );
+                if ( c== 'y' )
+                    return null;
+                else
+                    if ( !deleteFile( backup, fileName ) )
+                        return null;
+            }
+        }
+
+        if ( ( inputFile != null ) && !inputFile.renameTo( backup ) ) {
+            Util.warning( "File " + fileName + " backup failed." );
+            return null;
+        }
+ 
+        return ( root );
+    }
+
+    //**************************************************
+    // outputAST()
+    //**************************************************
+    protected void outputAST( AstNode ast ) {
+        PrintWriter pw;
+        String outputFileName;
+        String inputFileName;
+        String outputDirectory;
+        int lastDot;
+        File inputFile;
+
+        pw = null;
+        String lineSeparator = System.getProperties().getProperty( "line.separator" );
+
+        inputFile = ( File )  kernelConstants.globals().mainProps.getProperty( "input" );
+        inputFileName = inputFile.getAbsolutePath();
+        lastDot = inputFileName.lastIndexOf( '.' );
+        outputFileName = inputFileName;
+        outputDirectory = directoryPath( outputFileName );
+        try {
+            OutputStream os;
+            FileOutputStream fos =
+            new FileOutputStream( outputFileName );
+
+            if ( lineSeparator.compareTo( "\n" ) != 0 )
+                os = new FixDosOutputStream( fos );
+            else
+                os = fos;
+            pw = new PrintWriter( os );
+        }
+        catch ( IOException e ) {
+            Util.warning( "Cannot open " + outputFileName + ": " + e.getMessage() );
+            return;
+        }
+
+        kernelConstants.globals().mainProps.setProperty( "output", pw );
+
+        // in some future version, it might be possible to set
+        // outputDirectory from a command-line argument. if so,
+        // the property of outputDirectory would have been already set
+  
+        if ( ! kernelConstants.globals().mainProps.containsProperty( "outputDirectory" ) )
+            kernelConstants.globals().mainProps.setProperty( "outputDirectory", outputDirectory );
+
+        ast.print( kernelConstants.globals().mainProps );
+        pw.println();
+        pw.flush();
+    }
+}

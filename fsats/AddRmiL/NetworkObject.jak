@@ -1,0 +1,30 @@
+layer AddRmiL;
+
+import java.io.*;
+
+import java.rmi.*;
+
+import java.rmi.server.UnicastRemoteObject;
+
+import log.Log;
+
+public refines class NetworkObject {
+    NetworkObjectRmi _netObjServer;
+
+    refines NetworkObject( String fullName ) {
+        // If fullName is an RMI-style name, string off hostname
+        //           int lastSlash = fullName.lastIndexOf('/');
+        //           if( lastSlash != -1 ) {
+        //              this.name = fullName.substring(lastSlash);
+        //           }
+            
+        // Now create RMI server
+        try {
+            _netObjServer = new NetworkObjectRmi( this, fullName );
+        }
+        catch ( RemoteException e ) {
+            Log.error( e.toString() );
+            System.exit( 10 );
+        }
+    }
+}

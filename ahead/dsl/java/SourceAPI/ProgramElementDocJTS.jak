@@ -1,0 +1,83 @@
+layer SourceAPI;
+
+import java.io.*;
+import java.util.*;
+
+ /** JEDI Project
+ * ProgramElementDocJTS.java
+ * University of Texas at Austin
+ * Department of Computer Sciences
+ * Product-line Architecture Research Group
+ * @rationale Adds information to the API for the Source feature.
+ * @author Roberto E. Lopez-Herrejon
+ * @version 1.1
+ * @since November 26, 2001
+* @layer<SourceAPI>
+*/
+
+public abstract refines class ProgramElementDocJTS {
+
+    // Constructors added to provide inheritance     
+    /** Default constructor. 
+     * @layer<SourceAPI>
+     */
+    // public ProgramElementDocJTS()  { super(); }
+
+    // ******************** For Source Decl ************************
+    
+    /** Variable that contains the string literal. */
+    String sourceStringLiteral = "";
+
+    /** Variable that holds the qualified name of the source 
+     * @layer<SourceAPI>
+     */
+    String sourceQualifiedName = "";
+    
+    /** Variable that hold the flag to see if it has root or not 
+     * @layer<SourceAPI>
+     */
+    boolean sourceHasRoot = false;
+
+    /** Gets the value of the string literal 
+     * @layer<SourceAPI>
+     */
+    public String getSourceStringLiteral() {
+        return sourceStringLiteral;
+    }
+
+    /** Gets the value of the qualified name 
+     * @layer<SourceAPI>
+     */
+    public String getSourceQualifiedName() {
+        return sourceQualifiedName;
+    }
+
+    /** Gets the root flag 
+     * @layer<SourceAPI>
+     */
+    public boolean getSourceHasRoot() {
+        return sourceHasRoot;
+    }
+
+    /** Sets the string literal 
+     * @layer<SourceAPI>
+     */
+    public void setSourceStringLiteral( String sliteral ) {
+        sourceStringLiteral = sliteral;
+    }
+
+    /** Sets the qualified name 
+     * @layer<SourceAPI>
+     */
+    public void setSourceQualifiedName( String rootQN ) {
+        sourceQualifiedName = rootQN;
+    }
+
+    /** Sets the has root flag 
+     * @layer<SourceAPI>
+     */
+    public void setSourceHasRoot( boolean hasroot ) {
+        sourceHasRoot = hasroot;
+    }
+
+}

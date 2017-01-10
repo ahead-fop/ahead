@@ -1,0 +1,10 @@
+//tests simplification of Int expressions
+
+single layer foo;
+
+inside Int  range;
+inside Int  range2;
+
+requires inside range < 4 and range < 3 and range < 4
+               and range2 <= 4 and 3 < range2 and range2 >= 4 ;
+provides inside  3 < range and range < 2 ;

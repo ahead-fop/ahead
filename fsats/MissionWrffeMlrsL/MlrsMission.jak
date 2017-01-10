@@ -1,0 +1,39 @@
+layer MissionWrffeMlrsL;
+
+import java.io.*;
+
+import log.Log;
+
+// FoMission
+
+public refines State_machine MlrsMission {
+    States wrffeShooting;
+     
+    // MLRS shoots one mission at a time.
+    Enter wrffeMlrsAccepted {
+        getOpfac().missionLock( this );
+    }
+
+    // When it's this missions turn begin aim/load/shoot.
+    Transition wrffeMlrsAccepted2 : wrffeMlrsAccepted -> wrffeShooting
+        condition ( message instanceof LockGranted )
+        do {
+            getOpfac().timeout( 20F, new CompleteTime( getId() ) );
+        }
+     
+    // When done shooting send MFR and stop.
+    Transition wrffeShooting1 : wrffeShooting -> stop
+        condition ( message instanceof CompleteTime )
+        do
+            {
+            MfrMessage mfrMessage = new MfrMessage( getId() );
+            if ( initiatingUnit != null )
+                mfrMessage.setInitiatingUnitId( initiatingUnit.intValue() );
+            sendDown( mfrMessage );
+        }
+
+    // Allow next mission to Proceed.
+    Enter stop {
+        getOpfac().missionFree( this );
+    }
+}

@@ -1,0 +1,14 @@
+macro SORT(AST_QualifiedName sortname, AST_TypeName elemtype)
+    mth{ elemtype[] sortname(elemtype[] array) {
+	System.println("Called sort macro");
+	return(array);
+    } }mth
+
+public class test2 {
+    #SORT(id{ fooSort }id, typ{ int }typ)
+
+    static public void main(String[] args) {
+	int[] iarray = new int[5];
+	fooSort(iarray);
+    }
+}

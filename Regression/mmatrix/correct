@@ -1,0 +1,26 @@
+C D top 
+Line range (-1, -1)
+ endMods 
+ beginNest
+        M D foo(float,float) void 
+        Line range (18, 18)
+         endMods 
+        F D i int 
+        Line range (10, 10)
+        static  endMods 
+        F D ii int 
+        Line range (11, 11)
+         endMods 
+        F D j int 
+        Line range (10, 10)
+        static  endMods 
+        F D jj int 
+        Line range (11, 11)
+         endMods 
+        K D top() __
+        Line range (15, 15)
+         endMods 
+        K D top(int) __
+        Line range (16, 16)
+         endMods 
+ endNest

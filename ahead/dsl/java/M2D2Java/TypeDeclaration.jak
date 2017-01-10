@@ -1,0 +1,14 @@
+layer M2D2Java;
+
+import Jakarta.util.*;
+
+refines class TypeDeclaration {
+
+   public void extract( context c ) {
+      Main.oneTypePerFile++;
+      if (Main.oneTypePerFile>1)
+         Util.fatalError( "more than one Jak or Java file in a physical file");
+      Super(context).extract(c);
+   }
+}
+         

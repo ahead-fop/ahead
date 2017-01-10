@@ -1,0 +1,31 @@
+/** @author Roberto E. Lopez-Herrejon */
+
+layer j2ajIntx;
+
+import java.util.*;
+import java.io.*;
+
+public refines class MthDector   {
+
+    public void reduce2java( AstProperties props ) {
+
+         // Checks to see if it is inside an aspect
+         String isAspect = (String) props.getProperty("Aspect");
+         String interfaceName = (String) props.getProperty("InterfaceName");
+
+         // If we are dealing with an interface extension
+         if (isAspect!=null && interfaceName!=null) {
+            // Gets the name of the method from Qname
+            String methodName = arg[0].tok[0].tokenName();
+            props.print(" " + interfaceName + "." + methodName + " ");
+            props.print("( ");
+            arg[1].reduce2java(props);   // reduces AST_ParList
+            props.print(" )");
+            arg[2].reduce2java(props);   // reduces Dims
+         }else {
+           // @debug
+           System.out.println("Treating Mthdector normally");
+           Super(AstProperties).reduce2java(props);
+          }
+    }
+}

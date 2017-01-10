@@ -1,0 +1,12 @@
++ '[' -z /usr/bin/bash ']'
++ echo '****************Interface Regression Test***********'
+****************Interface Regression Test***********
++ bash regress-one IBase1 IExt1 r11
+uncomposing r11 into IBase1 & IExt1 ...succeeded
++ bash regress-one IExt1 IExt2 r12
+uncomposing r12 into IExt1 & IExt2 ...succeeded
++ bash regress-one IExt2 IExt2 r22
+uncomposing r22 into IExt2 & IExt2 ...succeeded
++ echo -e '\nInterface Composition Regression Test succeeded.'
+
+Interface Composition Regression Test succeeded.

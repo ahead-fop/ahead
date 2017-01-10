@@ -1,0 +1,40 @@
+layer FS;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+SoUrCe RooT BasicL "C:!Java!FeatureOrientedProgramming!fsats!BasicL!FoOpfac.jak";
+
+abstract class FoOpfac$$BasicL extends FseOpfac {
+    public Mission newMission() 
+        {
+        return new FoMission();
+    }
+}
+
+SoUrCe  MissionAnyL "C:!Java!FeatureOrientedProgramming!fsats!MissionAnyL!FoOpfac.jak";
+
+public class FoOpfac extends FoOpfac$$BasicL {
+    public float sightRange=0F;
+
+    public boolean canSee( Location location )
+        {
+        return getLocation().distanceTo( location )<=sightRange;
+    }
+
+    public void init( OpfacDataWrapper opfac, Network network )
+        {
+        sightRange = opfac.getRange();
+
+        // As far as I know, sight range for FOs
+        // is not captured in the database,
+        // and for that reason is not in fsats.plan.TestPlan. -bhopkins
+        if( sightRange == -1 )
+            sightRange=7000.0F;
+
+        Super( OpfacDataWrapper, Network ).init( opfac, network );
+    }
+}

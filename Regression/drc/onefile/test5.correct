@@ -1,0 +1,9 @@
+option is deprecated: i
+drc: test5.drc: Error range predicate (3 < range < 2) is inconsistent for layer foo
+drc: test5.drc: Warning composed equation is incomplete: non-null requirements present
+requires left range < 3 and range2 == 4
+
+Exception in thread "main" Jakarta.util.ExitError: drc: Summary 1 error
+	at Jakarta.util.Util.fatalError(Util.java:71)
+	at drc.kernel$AstNode.toolReport(kernel.java:2589)
+	at drc.core$Main.main(core.java:1538)

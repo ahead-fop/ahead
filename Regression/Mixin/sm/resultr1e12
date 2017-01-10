@@ -1,0 +1,30 @@
+layer root1;
+
+import firstPackage.*;
+
+SoUrCe RooT root1 "C:!Java!Regression!Mixin!sm!root1.jak";
+
+ abstract State_machine root$$root1 extends class common  {
+   Delivery_parameters( M m );
+   Unrecognizable_state { ignore(m); }
+   Otherwise_default{ ignore(m); }
+
+   // in root
+   States a, b;
+   States c;
+
+   // in root
+   Transition e1 : a -> b 
+   condition m!=null
+   do { /* action 1 */ }
+
+   Exit a { /* action a */ }
+}
+
+SoUrCe  ext12 "C:!Java!Regression!Mixin!sm!ext12.jak";
+
+ State_machine root extends root$$root1 {
+
+  Otherwise_default { /* do something */ }
+
+}

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+sed -f updates $1     | tr -s '\n\r' '\n' > correct
+sed -f updates $1.jak | tr -s '\n\r' '\n' > current
+
+rm -f $1.jak
+
+if ! diff -w correct current ; then
+   rm correct current
+   echo "failed diff on $1"
+   exit 1
+fi
+
+rm correct current

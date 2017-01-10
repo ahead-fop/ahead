@@ -1,0 +1,42 @@
+#!/bin/bash
+
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+if [ "$1" = "-p" ]; 
+then
+   compiler="java -ms16m pizza.compiler.Main"
+else
+   compiler="javac -J-mx32m"
+fi
+
+echo -e "\ndreck regression test"
+echo "****************************************"
+
+cd Graph
+rm -f *.class *.java
+java dreck.Main Graph.drc
+javac *.java
+cd ..
+java Graph.Main gtest > junk
+
+if diff -w junk correct-gtest ; then
+   echo "Test succeeded for Graph"
+else
+   echo "Test failed for Graph"
+   exit 1
+fi
+cd dst
+rm -f *.class *.java
+java dreck.Main dst.drc
+javac *.java
+cd ..
+java dst.Main dtest > junk
+if diff -w -b junk correct-dtest ; then
+   echo "Test succeeded for dst"
+else
+   echo "Test failed for dst"
+   exit 1
+fi
+echo -e "\ndreck regression tests succeeded."

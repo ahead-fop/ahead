@@ -1,0 +1,13 @@
+layer NetworkL;
+
+extern outside Int fsatsRank;
+extern outside Bool networkPresent;
+extern inside  Bool libraries;
+
+// must be in first rank of layers
+// must be outside targetL
+
+requires outside fsatsRank == 1 and targetPresent;
+provides outside networkPresent;
+requires inside  libraries;
+

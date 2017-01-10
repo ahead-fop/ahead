@@ -1,0 +1,19 @@
+layer combine;
+
+SoUrCe RooT one "../one/top.jak";
+
+abstract class top$$one {
+    public static void tryit() {
+        System.out.println( "Top works too!" + $pack.A.a);
+    }
+}
+
+SoUrCe  one "../two/top.jak";
+
+ public class top extends  top$$one  {
+    public static void tryit() {
+        Super().tryit();
+        $pack.A a = new $pack.A();
+        a.print();
+    }
+}

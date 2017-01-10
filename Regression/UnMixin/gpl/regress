@@ -1,0 +1,55 @@
+#!/bin/bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+echo "****************GPL unmixin Regression Test***********"
+
+# remove old directory (because we don't trust its contents)
+# copy in the correct version
+
+rm -f -r GEN
+cp -f -r CorrectGEN GEN
+
+# now clean out the contents of the java files that will be updated
+for i in `cat updatedFiles` ; do
+#		echo $i
+		cat $i | sed -e "/^   /d" > tmp
+		mv tmp $i
+done
+
+FAILURES=0
+
+# now unpack each .jak file in GPL and propagate it back to its
+# original version in GEN
+
+cd GPL
+
+java unmixin.Main *.java || FAILURES=1
+#for JAK in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace ; do
+#   java unmixin.Main "${JAK}.java" || FAILURES=1
+#done
+
+if ((FAILURES)) ; then
+   echo -e "\nGPL unmixin Regression Test completed with ERRORS."
+   exit 1
+fi
+
+
+# now compare the GPL version with the GEN version to see if 
+# they are "effectively" equal
+
+cd ..
+cd GEN
+fileList=`ls */*.java`
+cd ..
+
+for FILE in ${fileList} ; do 
+    bash regress-one "${FILE}" || FAILURES=1
+done
+
+if ((FAILURES)) ; then
+   echo -e "\nGPL unmixin Regression Test completed with ERRORS."
+   exit 1
+fi
+
+echo -e "\nGPL unmixin Regression Test completed Successfully."

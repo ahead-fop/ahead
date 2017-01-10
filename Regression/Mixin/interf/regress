@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+echo "****************Interface Regression Test***********"
+
+bash regress-one IBase1 IExt1 r11 \
+&& bash regress-one IExt1 IExt2 r12 \
+&& bash regress-one IExt2 IExt2 r22 \
+&& bash leftassoc  IBase1 IExt1 IExt2 b12 \
+&& bash rightassoc IBase1 IExt1 IExt2 b12 \
+|| exit 1
+
+echo -e "\nInterface Composition Regression Test succeeded."

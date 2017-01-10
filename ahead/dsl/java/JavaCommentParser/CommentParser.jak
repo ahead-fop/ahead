@@ -1,0 +1,426 @@
+layer JavaCommentParser;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+// *******************************************************************
+// *******************************************************************
+// *******************************************************************
+// *******************************************************************
+
+/** This class contains all comment parsing a la javadoc.
+ * Receives the different comments from.
+ * @layer<JavaCommentParser>
+ */
+
+public class CommentParser {
+
+    /*************************************************************************
+     * @layer<JavaCommentParser>
+     */
+    /********************* Auxiliary Parsing Functions ************************/
+    /**************************************************************************/
+
+     /** Parses any kind of comment and returns the filled up Comment object
+      * @param a document reference
+      * @param an String with the comment to parse
+      * @return a CommentJedi object
+     */
+    public static  CommentJedi ParseComment( DocJTS Document, 
+          String rawComment )
+ {
+        // Auxiliary variables
+        CommentJedi theComment = null;
+        // String rawComment = comment;
+        String comment = "";
+        String text = "";
+                    
+        // Processing the comment
+        // Trims the lines of ending or trailing garbage or whitespaces
+        String[] lines =  TagParser.trimComment( rawComment );
+        
+        // Finds the start and the end of the comment
+        int start =  TagParser.findBegin( lines );
+        int end =  TagParser.findEnd( lines, start );
+        
+        // Creates the array for tags that is going to be processed
+        // At the begining it is going to be empty
+        String[] TagLines = new String[0];
+
+        //  If no begining or end was found then this String is not a
+        //  comment as we want it, so text and comment are made empty
+        if ( ( start < 0 ) || ( end < 0 ) ) {
+            text = comment = "";
+        }
+        else
+        { // This is a comment so find the header and the tags
+            // Finds the first Tag
+            int firstTag =  TagParser.findFirstTag( lines, start, end );
+
+            // A misnomer, it is the header
+            text =  TagParser.collapseArray( TagParser.findHeaderLines( lines, start, end, firstTag ) );
+
+            // A misnomer, it is the text of all tags
+            TagLines=  TagParser.findTagLines( lines, start, end, firstTag );
+            comment =  TagParser.collapseArray( TagLines );
+        
+        }
+
+        // 5) Creates the Comment Object
+        theComment = new  CommentJedi();
+
+        // 6) Harvests the tag lines and stores info in the comment
+        createTags( Document, TagLines, theComment );
+                
+        // Sets the header comments and so forth
+        theComment.setCommentString( rawComment );
+        theComment.setText( text );
+        theComment.setFirstSentenceTag( computeFST( Document, text ) );
+        theComment.setInlineTag( computeIT( Document, text ) );
+        
+        // returns the comment with the information harvested    
+        return theComment;
+
+    }
+    // of ParseComment
+ 
+      /** Computes the first setence tags for the comment header.  
+       * @layer<JavaCommentParser>
+       */
+    public static LinkedList computeFST( DocJTS Document, 
+                        String stringTag ) {
+        // Here we have to get the first sentence as well        
+        // Gets the first sentence by using split
+        String splitPattern = "(\\.)";
+        String[] sentences = stringTag.split( splitPattern );
+
+        // @pending -> later API will have first sentences as list so
+        // that no conversion will be required
+        LinkedList FirstSentenceTags = ParseSentence( sentences[0], Document );
+     
+        // @pending -> remove once tested 
+        // return convertTags(FirstSentenceTags);
+
+        // Returns the list of the first sentence tags parsed.
+        return FirstSentenceTags;
+
+    }
+
+    /** Computes the inline tags for the comment header. 
+     * @layer<JavaCommentParser>
+     */
+    public static LinkedList computeIT( DocJTS Document, String stringTag )
+    {
+        // Parses the whole comment
+        LinkedList wcTags = ParseSentence( stringTag, Document );
+        
+        return wcTags;
+    }
+
+     // /**  List to array conversion rutines 
+     // * @deprecated in the following API Release 
+     //  */
+     // public static $TEqn.TagJTS[] convertTags(LinkedList tags)
+     // {
+     //    $TEqn.TagJTS[] arrayTags = 
+     //        new $TEqn.TagJTS[tags.size()];
+     //    
+     //    for(int i=0; i< tags.size(); i++)
+     //        arrayTags[i] = ($TEqn.TagJTS)tags.get(i);
+     //    
+     //    return arrayTags;
+     // }
+ 
+    /***********************************************************************
+     * @layer<JavaCommentParser>
+     */
+    /************************************************************************/
+    /*********************** TAG PARSING   **********************************/  
+
+    /** This method receives as input an array of String  where each element
+     * corresponds to a tag Line.
+     * The output of the method is a Linked List with a tag object for each
+     * of the input Strings.
+     */
+    public static void createTags( DocJTS Document, String[] tagArray,
+                   CommentJedi theComment ) {
+
+        // Hash table to contain the handlers of the tags
+        Hashtable tagHandlers = new Hashtable();
+        tagHandlers.put( "@param", new  ParamTagJedi() );
+        tagHandlers.put( "@see", new  SeeTagJedi() );
+        tagHandlers.put( "@throws", new  ThrowsTagJedi() );
+        tagHandlers.put( "@author", new  AuthorTagJedi() );
+        tagHandlers.put( "@deprecated", new  DeprecatedTagJedi() );
+        tagHandlers.put( "@exception", new  ExceptionTagJedi() );
+        tagHandlers.put( "@return", new  ReturnTagJedi() );
+        tagHandlers.put( "@since", new  SinceTagJedi() );
+        tagHandlers.put( "@version", new  VersionTagJedi() );
+
+        // For all the tags in the input list
+        for ( int i=0; i< tagArray.length ; i++ )
+            {
+            // Tag that is going to be added to the returned list
+            // Tag currentTag;
+                        
+            // Tag string of current list element
+            String stringTag = tagArray[i];
+
+            parseTags( Document, stringTag, theComment, tagHandlers );
+                   
+        } // for all the tags in the list of Strings
+       
+    }
+
+    /** Test the handlers of the tags 
+     * @layer<JavaCommentParser>
+     */
+    public static void parseTags( DocJTS Document, String stringTag, 
+                 CommentJedi theComment, 
+                Hashtable tagHandlers ) 
+    {
+        // For all the tags in the input list
+        String token = "";
+                
+        // Get the first word of the tag by an string tokenizer
+        StringTokenizer tokens = new StringTokenizer( stringTag, " ", false );
+        if ( tokens.hasMoreTokens() )
+            token = tokens.nextToken();
+
+        // @debug -> remove later
+          // System.out.println("The Tag was->" + token + "<-");
+                
+          // Gets the handler from the hash table
+        Object outcome = tagHandlers.get( token );
+        if ( outcome!=null ) {
+            ( ( AbstractTagJedi )outcome ).parse( Document, theComment, 
+                                                                         stringTag );
+        }
+        else {
+        // @debug
+        // System.out.println(" Outcome was null ");
+        }
+
+    }
+    // of parseTags
+    
+      /**********************************************************************
+       * @layer<JavaCommentParser>
+       */
+      /***********************************************************************/
+      /********************** GENERAL PARSING ROUTINES  **********************/   
+   
+      /** Parse a description tag of the inlineTags and text tags as well */  
+    public static void ParseDescription( DocJTS Document, 
+                String stringTag, String TagType,
+                 AbstractTagJedi newTag ) {
+        // Here is where the Tag is created
+        // removes the @tag reference        
+        String tagRegExp = "(^@\\S+)";
+        String onlyText =  TagParser.firstReplace( tagRegExp, stringTag, "" );
+
+        // @pending -> delete once tested
+        // $TEqn.TagJTS newTag =  new $TEqn.TagJTS(Document, onlyText,TagType);
+
+        newTag.setHolder( Document );
+        newTag.setText( onlyText );
+        newTag.setName( TagType );
+        newTag.setKind( TagType );
+
+        // Gets the first sentence by using split
+        String splitPattern = "(\\.)";
+        String[] sentences = onlyText.split( splitPattern );
+
+        // First Sentence Tags 
+        LinkedList FirstSentenceTags = ParseSentence( sentences[0], Document );
+
+        // @debug -> delete once tested
+        // Adds the inlineTags and the First Sentence Tags 
+        // $TEqn.TagJTS[] fsTags = new $TEqn.TagJTS[FirstSentenceTags.size()];
+        // for(int i=0; i< FirstSentenceTags.size(); i++)
+        //         { fsTags[i] = ($TEqn.TagJTS) FirstSentenceTags.get(i); }
+
+        // Whole Comment Tags
+        LinkedList InlineTags = ParseSentence( onlyText, Document );
+        
+        newTag.setFirstSentenceTags( FirstSentenceTags );
+        newTag.setInlineTags( InlineTags );
+     
+    // @debug -> delete once tested
+    // return newTag;            
+
+    }
+    // of ParseDescription
+ 
+     /** Parses a sentence, and returns the list of inlinetags and normal 
+      * text tags the same way javadoc does it.
+      * @param an String with the sentence to parse
+      * @param a Document object to relate the tags to a document
+      * @return a LinkedList with inlineTags and text tags.
+      * @layer<JavaCommentParser>
+      */
+    public static LinkedList ParseSentence( String sentence, 
+         DocJTS Document ) {
+
+        // Results list
+        LinkedList tagsList = new LinkedList();
+        
+        // Creates a tokenizer to parse a tag
+        String patternString = " \t\n\r\f.@{}";
+        String expressionString = sentence;
+        StringTokenizer tokens = 
+            new StringTokenizer( expressionString, patternString, true );
+        String Element = "";
+
+        // Auxiliary variables for tag computation
+        String tagText = "";
+        String inlineTagText = "";
+        boolean closeFound = false;
+
+        // Pattern and matcher to verify format of inlinetag
+        String inlineString = "(\\{)( *)(@\\S+)(.*)(\\})";
+        Pattern p = Pattern.compile( inlineString );
+        Matcher m = null;
+
+        // Reads every token, keep looping until all tokens are consumed
+        while( tokens.hasMoreTokens() ) {
+            Element = tokens.nextToken();
+
+            // If { is found then start accumulating an inlineTag
+            if ( Element.equals( "{" ) ) {
+
+                // If there is already some normal tag spit it out
+                if ( tagText!="" ) {
+                    DefaultTagJedi ntt = newTextTag( tagText, Document );
+                    if ( ntt!=null )
+                        tagsList.add( ntt );
+                    tagText = "";
+                }
+
+                // Initialize inlinetag variables
+                inlineTagText = Element;
+                closeFound = false;
+
+                // Loops until the } is reached or it is the end
+                while( tokens.hasMoreTokens() && !closeFound ) {
+                    Element = tokens.nextToken();
+                    if ( Element.equals( "}" ) )
+                        closeFound = true;
+                    inlineTagText = inlineTagText + Element;
+                } // until finds close
+
+                // If closeFound then we have to validate it 
+                if ( closeFound ) {
+                    // If so, then it is an inline otherwise is a normal
+                    // tag
+                    m = p.matcher( inlineTagText );
+                    if ( m.find() ) {
+                        tagsList.add( newInlineTag( m.group( 3 ), m.group( 4 ), 
+                                                                                                     Document ) );
+                    }
+                    else {
+                        DefaultTagJedi ntt=newTextTag( tagText, Document );
+                        if ( ntt!=null )
+                            tagsList.add( ntt );
+                                            
+                    }
+                } // of closeFound
+                else { // we thought it was inline but we ran out tokens
+
+                    DefaultTagJedi ntt = newTextTag( tagText, Document );
+                    if ( ntt!=null )
+                        tagsList.add( ntt );
+                }
+
+                // Clears Element, since it has already been added we dont
+                // need to added once more
+                Element = "";
+            } // of open
+
+            // A normal tag is simply accumulated
+            tagText = tagText + Element;
+
+        } // while there are tokens
+
+        // It there are still some remants of tagText spit it out
+        if ( tagText!="" ) {
+            DefaultTagJedi ntt = newTextTag( tagText, Document );
+            if ( ntt!=null )
+                tagsList.add( ntt );
+        }
+
+        // Returns the list of tags
+        return tagsList;
+
+    }
+    // end of ParseSentence
+ 
+     /** Method that creates a new Tag of type Text.
+      * @layer<JavaCommentParser>
+      */
+    public static  DefaultTagJedi newTextTag( String currentTagText, 
+                            DocJTS Document )
+  {
+        String trimmedText = currentTagText.trim();
+        if ( trimmedText.length() > 0 )
+          {
+            DefaultTagJedi newTag = 
+                              new  DefaultTagJedi( Document,trimmedText,"Text" );
+            newTag.setKind( "Text" );
+            return newTag;
+        }
+        else
+            return null;
+    }
+
+    /** Method that creates a new Inline Tag of the type TagType.
+     * @layer<JavaCommentParser>
+     */
+    public static  AbstractTagJedi newInlineTag( String TagType, 
+                 String inlineTagText,  DocJTS Document )
+  {
+
+        //@debug -> remove once tested
+        // System.out.print("TagType = "+ TagType + " inText =" + inlineTagText);
+     
+        // Trims the tag text.
+        String trimmedText = inlineTagText.trim();
+          
+        // Removes the last closing curly braces.
+        // String inlineTag = trimmedText.substring(0,trimmedText.length()-1);
+          
+        // Checks to see if TagType is link, if so it is converted to @see
+        // This is how javadoc does it, exactly why? I dont know.
+        if ( TagType.compareTo( "@link" )==0 )
+          {
+            SeeTagJedi seeTag = 
+                         SeeTagJedi.ParseMember( Document, inlineTagText );
+
+            return seeTag;
+        }
+          
+        // Else it is a normal tag
+        DefaultTagJedi newTag = 
+          new  DefaultTagJedi( Document, inlineTagText, TagType );
+        newTag.setKind( TagType );
+        return newTag;
+          
+    }
+    // end of newInlineTag
+
+     /** Method that creates a new Inline Tag of the type TagType.
+      * @layer<JavaCommentParser>
+      */
+    public static  SeeTagJedi newSeeTag( String TagType, 
+             String inlineTagText,  DocJTS Document ) {
+        SeeTagJedi seeTag = 
+              new  SeeTagJedi( Document, inlineTagText,TagType );
+        seeTag.setKind( "@see" );
+        return seeTag;
+    }
+
+}

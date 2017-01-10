@@ -1,0 +1,14 @@
+# run this script to see if generated files are the same as bootstrapped
+# files.  Note this function is useful when bootstrapping.
+
+
+for i in *.jar ; 
+do du --bytes -s $i > size1
+	(cd ../../build/lib; du --bytes -s $i )  > size2
+   if cmp -s size1 size2 ;
+   then echo 
+	else
+        cat size1 size2
+	fi
+done
+rm size1 size2

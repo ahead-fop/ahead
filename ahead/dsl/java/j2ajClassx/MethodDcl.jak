@@ -1,0 +1,162 @@
+/** @author Roberto E. Lopez-Herrejon */
+
+layer j2ajClassx;
+
+public refines class MethodDcl {
+
+    // Returns true if it finds a Super token inside the node
+    // Which is either BasePre for method call, or ConSSuper is
+    // for a constructor extension
+    public boolean containsSuper(AstNode n) {
+        if (n==null) return false;
+        // System.out.println("Classname = " + n.className());
+        // System.out.println(" " + (n instanceof AstList));
+
+        if (n instanceof BasePre) {
+          return true;
+        }
+
+        // If the node is a list traverse it with a cursor
+        if (n instanceof AstList) {
+            AstCursor c = new AstCursor();
+            for(c.FirstElement(n);c.MoreElement(); c.NextElement()) {
+              if (containsSuper(c.node)) return true;
+            }
+        }
+
+        // Traverses the children looking for Super
+        // Array args can be a null pointer so check if that
+        // is not the case
+        if (n.arg == null) return false;
+        for(int i=0; i< n.arg.length;  i++) {
+            if (containsSuper(n.arg[i])) return true;
+        }
+
+        // If it does not find a Super simply return false
+        return false;
+    }
+
+    /** Reduce method */
+    public void reduce2java( AstProperties props ) {
+        // Checks to see if it is inside an aspect
+        String isAspect = (String) props.getProperty("Aspect");
+
+        // If it is inside an aspect
+        if (isAspect!=null) {
+
+          // Checks whether or not it is a class
+          String className = (String) props.getProperty("ClassName");
+
+          // If it is inside a class
+          if (className!=null) {
+             // Store the modifiers for later use
+             props.setProperty("ModifiersNode", arg[0]);
+
+             // Stores the type name to generate the advice
+             props.setProperty("TypeNode", arg[1]);
+
+             // Checks to see if there is a Super inside the method
+             // If so, we are dealing with a method extension
+             // Otherwise is a method introduction
+             if(containsSuper(arg[4])) {
+               props.setProperty("Super","true"); // set variable
+
+               // Initilize declared vars
+               props.setProperty("DeclaredVars",",");
+
+               // Push a marker in the context for this method
+               VarContext context=(VarContext)props.getProperty("VariableContext");
+               context.pushMarker();
+
+               // Continues with the reduction
+               arg[1].reduce2java(props);   // AST_TypeName
+               props.setProperty("ThrowsClause", arg[3]);
+               arg[2].reduce2java(props);   // MethodDeclarator
+               arg[4].reduce2java(props);   // MethodDeclSuffix
+
+               // Removes the context
+               context.popContext();
+
+               // Removes properties
+               props.removeProperty("ThrowsClause");
+               props.removeProperty("Super");
+               props.removeProperty("TypeNode");
+               props.removeProperty("ModifiersNode");
+
+             } // it contains Super
+             else { // does not contain Super, reduce to introduction
+               // Continues with the reduction
+               arg[0].reduce2java(props);   // AST_Modifiers
+               arg[1].reduce2java(props);   // AST_TypeName
+               arg[2].reduce2java(props);   // MethodDeclarator
+               arg[3].reduce2java(props);   // ThrowsClause
+               arg[4].reduce2java(props);   // MethodDeclSuffix
+             } // It does not contain Super
+
+          } // it is a class
+
+        } else { // It is not an aspect, treat it normally
+          // @debug
+          System.out.println("Treat method decl normally ");
+          Super(AstProperties).reduce2java(props);
+        }
+
+ // ***********************************************************
+        // If it is not an aspect then reduce modifiers
+        // if (isAspect==null) {
+        //  arg[0].reduce2java(props);   // AST_Modifiers
+        // } else { // it is an aspect
+        //   // if it is not an interface (it is a class) then reduce
+        //   if (interfaceName==null) {
+        //      arg[0].reduce2java(props);   // AST_Modifiers
+        //   }
+        // }
+
+        // If we are dealing with an aspect store the modifiers node
+        // if (isAspect!=null) props.setProperty("ModifiersNode", arg[0]);
+
+        // arg[1].reduce2java(props);   // AST_TypeName
+
+        // Stores the type name to generate the advice
+        // props.setProperty("TypeNode", arg[1]);
+
+        // Checks to see if there is a Super inside the method
+        // boolean hasSuper = containsSuper(arg[4]);
+
+        // If so, notify that
+        // if (hasSuper) props.setProperty("Super","true");
+
+        // if we are dealing with an aspect initilize declared vars
+        // if (isAspect!=null) props.setProperty("DeclaredVars",",");
+
+
+        // If we are dealing with an aspect, create a new context
+        // in VariableContext
+        // /if (isAspect!=null) {
+        //    VarContext context=(VarContext)props.getProperty("VariableContext");
+         //  context.pushMarker();
+        // }
+
+        // Continues with the reduction
+        // arg[2].reduce2java(props);   // MethodDeclarator
+        // arg[3].reduce2java(props);   // ThrowsClause
+        // arg[4].reduce2java(props);   // MethodDeclSuffix
+
+        // If we are in an aspect, pop the current context
+       // if (isAspect!=null) {
+       //    VarContext context=(VarContext)props.getProperty("VariableContext");
+           // @debug, remove once solve
+        //   System.out.println("Context = " + context);
+        //   context.popContext();
+        // }
+
+        // if (hasSuper) props.removeProperty("Super");
+
+        // Removes the type node from the properties
+        // props.removeProperty("TypeNode");
+
+        // Removes the Modifiers Node if we reduced an aspect
+        // if (isAspect==null) props.removeProperty("ModifiersNode");
+
+    }
+}

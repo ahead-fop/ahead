@@ -1,0 +1,16 @@
+#!/bin/bash
+[ -z "${BASH}" ] && exec "$0" "$@"
+
+echo -n "composing $1 & $2 -> $3 ... "
+
+(echo ; cat $3) | sed -f updates | tr -s '\n\r' '\n' > correct
+(echo ; java mixin.Main -tk $1.jak $2.jak) | sed -f updates | tr -s '\n\r' '\n' > current
+
+if diff -w correct current ; then
+    rm -f -r correct current || :
+    echo succeeded
+else
+    rm -f -r correct current || :
+    echo failed
+    exit 1
+fi

@@ -1,0 +1,24 @@
+echo "************** WRFFE COMMON REPEATER ***********"
+java jak2java.Main wrffe_repeater.spec
+javac wrffe_repeater.java
+
+echo "************** WRFFE MORTAR REPEATER ***********"
+java wrffe_mortar_repeater > junk
+if ! diff -b junk correct-mortar-repeater ; then
+   echo failed
+   exit 1
+fi
+
+echo "************** WRFFE ARTILLERY REPEATER ***********"
+java wrffe_artillery_repeater > junk
+if ! diff -b junk correct-artillery-repeater ; then
+   echo failed
+   exit 1
+fi
+
+echo "************** WRFFE MLRS REPEATER ***********"
+java wrffe_mlrs_repeater > junk
+if ! diff -b junk correct-mlrs-repeater ; then
+   echo failed
+   exit 1
+fi

@@ -1,0 +1,19 @@
+// tests composition of extensions that reference methods
+
+layer ext111;
+
+import firstPackage.*;
+
+refines State_machine root {
+
+   States h1;
+
+   Exit h1 { fromext11$$ext111(); }
+
+
+   void fromext11(  ){ fromext11$$ext111(  ); }
+
+   final void fromext11$$ext111() { }
+
+   void fromext14() { }
+}

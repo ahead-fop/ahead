@@ -1,0 +1,21 @@
+package MessageL;
+
+import  
+    fsats.util.DataContainer;
+import 
+    F.Libraries.laydown.*;
+import 
+    java.util.*;
+
+
+
+    /** Message that shot flight is done **/
+    public class FlightTime
+        extends BasicTimeout 
+    {
+        public EventType getType() { return TimeoutType.flightTime; }
+	public FlightTime(String missionId) { super(missionId);
+          FlightTimeConstructor(missionId); }
+	public void FlightTimeConstructor(String missionId) {
+      }
+    }

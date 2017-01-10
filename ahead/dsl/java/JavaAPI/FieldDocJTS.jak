@@ -1,0 +1,101 @@
+layer JavaAPI;
+
+import java.io.*;
+import java.util.*;
+
+ // of Executable Member Doc
+
+// _________________________________________________________________
+
+ /** JEDI Project
+ * FieldDocJTS.java
+ * University of Texas at Austin
+ * Department of Computer Sciences
+ * Product-line Architecture Research Group
+ * @author Roberto E. Lopez-Herrejon
+ * @version 1.1
+ * @since November 25, 2002
+* @layer<JavaAPI>
+*/
+
+public class FieldDocJTS extends  MemberDocJTS {
+
+    /** Get the type of the field. 
+     * @layer<JavaAPI>
+     */
+    public  TypeJTS type() {
+        return type;
+    }
+
+    /** Return true if this field is transient. 
+     * @layer<JavaAPI>
+     */
+    public boolean isTransient() {
+        return isTransient;
+    }
+
+    /** Return true if this field is volatile. 
+     * @layer<JavaAPI>
+     */
+    public boolean isVolatile() {
+        return isVolatile;
+    }
+
+    /** Type of the Field. 
+     * @layer<JavaAPI>
+     */
+    TypeJTS type ;
+
+    /** Variable that indicates if the field is transient or not.
+     * Initialized to false.
+     * @layer<JavaAPI>
+     */
+    boolean isTransient = false;
+
+    /** Variable that indicates if the field is volatile or not.
+     * Initialized to false.
+     * @layer<JavaAPI>
+     */
+    boolean isVolatile = false;
+
+    /** Added constructor.  
+     * @layer<JavaAPI>
+     */
+    public FieldDocJTS( String _name ) {
+        name = _name;
+    }
+
+    /** Overrides the method in DocJTS and returns always true since this is a
+     * field. 
+     * @layer<JavaAPI>
+     */
+    public boolean isField() {
+        return true;
+    }
+
+    // @debug, what it has to be here????        
+    // public String getMyName() { return name; }
+    
+    /** Sets the isTransient variable. 
+     * @layer<JavaAPI>
+     */
+    public void setTransient( boolean _isTransient ) 
+    {
+        isTransient = _isTransient;
+    }
+
+    /** Sets the isVolatile variable. 
+     * @layer<JavaAPI>
+     */
+    public void setVolatile( boolean _isVolatile ) {
+        isVolatile = _isVolatile;
+    }
+
+    /** Sets the type of the field.   
+     * @layer<JavaAPI>
+     */
+    public void setType( TypeJTS _type ) {
+        type = _type;
+    }
+
+}

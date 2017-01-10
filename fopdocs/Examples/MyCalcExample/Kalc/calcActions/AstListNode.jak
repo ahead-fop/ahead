@@ -1,0 +1,5 @@
+refines class AstListNode {
+   public void execute(Stack S) { 
+       Util.fatalError("AstListNode.execute() method should not be called");
+    }
+}

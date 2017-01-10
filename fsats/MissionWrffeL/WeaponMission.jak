@@ -1,0 +1,31 @@
+layer MissionWrffeL;
+
+import java.io.*;
+
+import log.Log;
+
+// MissionImpl
+
+public refines State_machine WeaponMission {
+            /*REFINES EDGE no longer supported.  
+       Move predicate or body into method, and extend method.
+    Refines Transition wrffeInitiated1 : wrffeInitiated -> wrffeAssigned
+                condition false do {} */
+
+    Transition_condition wrffeInitiated1 false && Proceed( message );
+ 
+    // If weapon selected do weapon specific Transitions. 
+    Transition wrffeInitiated4 : wrffeInitiated -> wrffeAccepted
+        condition ( weaponSelected() )
+        do {
+            sendAccept();
+        }
+/*
+        // add -- net effect of Refines is to have a false Transition condition
+
+        public boolean wrffeInitiated1Test(Message message) {
+           return false;
+        }
+*/
+
+}

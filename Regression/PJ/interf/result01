@@ -1,0 +1,13 @@
+
+layer IBase0;
+
+import java.io.Serializable;
+
+public transient
+
+interface MyInt extends FooInterface, yyy, java.io.Serializable { 
+    void foo() throws SomeException;
+    SomeType bar( int x );
+    int increment( int i );
+    int Terse = 2;
+}

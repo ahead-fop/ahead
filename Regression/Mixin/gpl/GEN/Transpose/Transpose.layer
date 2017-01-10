@@ -1,0 +1,81 @@
+// Graph Algorithms Product Line (GPL)
+// University of Texas at Austin
+// Department of Computer Sciences
+// Product-Line Architecture Research Group
+// Edge-Neighbor Representation
+// TRANSPOSE : transpose layer
+// Last Update: May 15, 2001
+// Written by: Roberto E. Lopez-Herrejon (rlopez@cs.utexas.edu)
+
+layer Transpose( GEN lower )
+realm GEN
+extends lower
+imports java.util.LinkedList
+{
+   // *********************************************************   
+   static public class Graph extends lower.Graph {
+   
+   public $TEqn.Graph ComputeTranspose($TEqn.Graph the_graph)
+   {	
+     int i;
+     int num_vertices = (the_graph.vertices).size();
+     String theName;
+		
+     // Creating the new Graph
+     $TEqn.Graph newGraph = new $TEqn.Graph();
+		
+     // Creates and adds the vertices with the same name
+     for (i=0; i<num_vertices; i++)
+     {
+	theName = (($TEqn.Vertex)(the_graph.vertices).get(i)).name;			
+        newGraph.addVertex(new $TEqn.Vertex().assignName(theName));
+     }
+
+    $TEqn.Neighbor newNeighbor;
+    $TEqn.Vertex theVertex, newVertex;
+    $TEqn.Neighbor theNeighbor;
+    $TEqn.Vertex newAdjacent;
+    $TEqn.Edge newEdge;
+    int num_neighbors;
+    int j;
+
+    // adds the transposed edges
+    for (i=0; i<num_vertices; i++)
+    {        		
+       // theVertex is the original source vertex
+       // the newAdjacent is the reference in the newGraph to theVertex  
+       theVertex = ($TEqn.Vertex)(the_graph.vertices).get(i);
+       newAdjacent = newGraph.findsVertex(theVertex.name); 
+       num_neighbors = (theVertex.neighbors).size();
+                               
+       for(j=0; j<num_neighbors; j++)
+       {
+          // Gets the neighbor object in pos j
+          theNeighbor = ($TEqn.Neighbor)(theVertex.neighbors).get(j);
+              
+          // the new Vertex is the vertex that was adjacent to theVertex
+          // but now in the new graph
+          newVertex = newGraph.findsVertex(theNeighbor.end.name);
+                          
+          // Creates a new Edge object and adjusts the adornments 
+          newEdge = new $TEqn.Edge(newVertex,newAdjacent);
+          newEdge.adjustAdorns(theNeighbor.edge);
+ 
+          // Adds the new Neighbor object with the newly formed edge
+          // newNeighbor = new $TEqn.Neighbor(newAdjacent, newEdge);
+          // (newVertex.neighbors).add(newNeighbor);
+             
+          newGraph.addEdge(newEdge);
+
+         }  // all adjacentNeighbors       
+      } // all the vertices
+        
+        return newGraph;
+        
+   } // of ComputeTranspose
+
+ } // of Graph
+ 
+ 
+         
+}

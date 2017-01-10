@@ -1,0 +1,13 @@
+// testing hashtable layer
+
+container<emp> empcont;
+
+cursor<empcont> empcursor;
+
+container empcont1 extends empcont
+   using hash( name, 100, malloc( ) );
+
+cursor all(empcont1 e);
+cursor joe(empcont1 e) where name() == "Alexander, Joe";
+cursor kay(empcont1 e) where name() == "Andrews, Kay";
+

@@ -1,0 +1,10 @@
++ '[' -z /usr/bin/bash ']'
++ echo '****************AstGscope Regression Test***********'
+****************AstGscope Regression Test***********
++ bash regress-one top g6 topg6
+uncomposing topg6 into top & g6 ...succeeded
++ bash regress-one top mangle topmangle
+uncomposing topmangle into top & mangle ...succeeded
++ echo -e '\nAstGscope Regression Test succeeded.'
+
+AstGscope Regression Test succeeded.

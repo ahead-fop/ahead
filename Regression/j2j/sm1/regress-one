@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+function normalize() {
+    sed -e 's#//.*$##' | tr -s '\040\n\r\t' '\040'
+}
+
+function compare() {
+    normalize < "${1}" > "${1}.tmp"
+    normalize < "${2}" > "${2}.tmp"
+    if diff -Bbw "${1}.tmp" "${2}.tmp" ; then
+	rm --force -- "${1}.tmp" "${2}.tmp"
+	return 0
+    fi
+    return 1
+}
+
+echo -n "translating $1 ... "
+
+if ! java jak2java.Main -s $1.jak > current ; then
+    echo failed
+    exit 1
+fi
+
+if compare "${1}.correct" current ; then
+    rm --force -- current
+    echo succeeded
+else
+    echo failed
+    exit 1
+fi

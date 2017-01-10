@@ -1,0 +1,6 @@
+layer simp1;
+
+extern inside Int a;
+extern inside Int b;
+
+provides inside a < 40 and b >= 0;

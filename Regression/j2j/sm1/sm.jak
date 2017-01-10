@@ -1,0 +1,7 @@
+State_machine foo {
+   Delivery_parameters( Event e );
+   States a, b, c;
+   foo() {
+      Goto_state a (null);
+   }
+}

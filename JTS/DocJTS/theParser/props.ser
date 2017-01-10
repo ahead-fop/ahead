@@ -1,0 +1,8 @@
+#Type equation properties
+#Fri Aug 24 14:16:23 PDT 2001
+ParentComponent=kernel
+LanguageName=theParser
+TypeEquation=\#layers\#Java\#
+LibSrcDirList=
+StartSymbolClass=AST_Program
+LibList=

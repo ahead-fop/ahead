@@ -1,0 +1,168 @@
+/** @author Roberto E. Lopez-Herrejon */
+
+layer j2ajClassx;
+
+import java.util.*;
+import java.io.*;
+
+public refines class MthDector   {
+
+    /** This method outputs the args PCD of the aspect */
+    public static void processArguments(AST_ParList args, AstProperties props) {
+       props.print(" && args ( ");
+       processParamNames(args, props);
+       props.print(") ");
+    }
+
+    /** This method outputs only the names of the parameter variables */
+    public static void processParamNames(AST_ParList args, AstProperties props) {
+
+      AstCursor c = new AstCursor();
+      int counter = 0;
+
+      // Counts how many arguments has
+      for(c.FirstElement(args);c.MoreElement(); c.NextElement()) {
+         counter++;
+      }
+
+      int current = 0;
+      for(c.FirstElement(args);c.MoreElement(); c.NextElement()) {
+         // @debug
+         System.out.println("Arg class name " + c.node.className());
+         FormParDecl param = (FormParDecl) c.node;
+         param.arg[1].reduce2java(props);
+         current++;
+         if (current < counter) props.print(",");
+       }
+
+
+      //@debug
+      System.out.println("Num arguments " + counter);
+    }
+
+     /** This method processes the Argument lists to
+      * extract only the types of the arguments for the generation
+      * of an advice PCD
+     */
+      /** This method outputs the args PCD of the aspect */
+    public static void processTypes(AST_ParList args, AstProperties props) {
+
+      AstCursor c = new AstCursor();
+      int counter = 0;
+
+      // Counts how many arguments has
+      for(c.FirstElement(args);c.MoreElement(); c.NextElement()) {
+         counter++;
+      }
+
+      int current = 0;
+      for(c.FirstElement(args);c.MoreElement(); c.NextElement()) {
+         FormParDecl param = (FormParDecl) c.node;
+         param.arg[0].reduce2java(props); // reduces the type
+         current++;
+         if (current < counter) props.print(",");
+       }
+    }
+
+    /** This method strips modifiers of any comments
+     * It is used for generation of pointcuts
+    */
+    public static void processModifiers(AST_Modifiers modifiers, AstProperties props) {
+       AstCursor c = new AstCursor();
+       props.print(" ");
+       for(c.FirstElement(modifiers);c.MoreElement(); c.NextElement()) {
+         Modifier m = (Modifier) c.node;
+         props.print(m.GetName() + " ");
+       }
+    }
+
+    /** Reduces to java this class */
+    public void reduce2java( AstProperties props ) {
+
+           // @debug
+           System.out.println("In MethDector " );
+
+         // Gets the name of the method from Qname
+         String methodName = arg[0].tok[0].tokenName();
+
+         // Checks to see if it is inside an aspect
+         String isAspect = (String) props.getProperty("Aspect");
+
+         // If YES then prefix the class name and print
+         // Othervise simply reduce it
+
+         if (isAspect!=null) {
+            // It is an aspect
+            // Check if it has Super or not
+            String hasSuper = (String) props.getProperty("Super");
+
+            if (hasSuper!=null) {
+              // Retrieves the name of the class
+              String className = (String) props.getProperty("ClassName");
+
+              // It has a Super so it is converted to around advice
+              props.print(" around ");
+              props.print(" (");
+              arg[1].reduce2java(props); // AST_ParList
+
+              // if there are parameters in the method put a comma
+              if (arg[1].arg[0] != null)  props.print(", ");
+
+              // Puts the target type and the mangled variable
+              props.print(className + " obj$" + className + " )");
+
+              // Include the throws clauses here
+              AstNode throwsClause = (AstNode) props.getProperty("ThrowsClause");
+              throwsClause.reduce2java(props);
+
+              props.print(" : execution (");
+
+              // Modifiers
+              AstNode modifiersNode = (AstNode) props.getProperty("ModifiersNode");
+              if (modifiersNode.arg[0] != null)
+                  processModifiers((AST_Modifiers)modifiersNode.arg[0], props);
+
+              // Type
+              AstNode typeNode = (AstNode) props.getProperty("TypeNode");
+              typeNode.reduce2java(props);
+
+              // ClassName.methodName
+              props.print(" " + className + "." + methodName + " ");
+              props.print("(");
+              // arg[1].reduce2java(props);  // AST_ParList params of execution PCD
+
+              processTypes((AST_ParList)arg[1].arg[0], props); // processes types
+
+              props.print(")");
+              props.print(" )"); // closes the execution pointcut
+              props.print(" && target ( ");
+
+              // if there are no arguments dont put a comma
+              // if (arg[0].arg[0] !=null) props.print(",");
+              props.print("obj$" + className);
+              props.print(")");
+
+              // Here goes the args() expression if necessary
+              // we will need to deal with types separately
+               if (arg[1].arg[0] != null)
+                  processArguments((AST_ParList)arg[1].arg[0], props);
+
+            } else
+            { // It has no Super so it is converted to method intro
+               String className = (String) props.getProperty("ClassName");
+               props.print(" " + className + "." + methodName + " ");
+               props.print("( ");
+               arg[1].reduce2java(props);   // reduces AST_ParList
+               props.print(" )");
+               arg[2].reduce2java(props);   // reduces Dims
+            } // of has Super
+          } else {
+            // @debug
+            System.out.println("Class MthDector Normal");
+
+            // If not an aspect reduce normally
+            Super(AstProperties).reduce2java(props);
+          }
+
+    } // of reduce2java
+}

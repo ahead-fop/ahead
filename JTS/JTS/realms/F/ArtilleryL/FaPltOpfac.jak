@@ -1,0 +1,11 @@
+package ArtilleryL;
+
+
+
+    public class FaPltOpfac extends WeaponOpfac 
+    {
+        public Mission newMission() 
+        {
+            return new FaPltMission();
+        }
+    }

@@ -1,0 +1,58 @@
+#ifndef _import_
+#include "a.h"
+#include "b.h"
+#include "c.h"
+#define _import_
+#endif
+
+class d;
+
+#ifdef class_
+#undef class_
+#undef super_
+#undef namespace_
+#endif
+
+#define super_ d__0
+#define class_ d__1
+
+//SoUrCe d.h
+//import_ "a.h"
+
+void class_::foo() { }
+
+//EnDSoUrCe 
+
+class d;
+
+#ifdef class_
+#undef class_
+#undef super_
+#undef namespace_
+#endif
+
+#define super_ d__1
+#define class_ d__2
+
+//SoUrCe e.h
+//import_ "b.h"
+
+class_::foobar() { }
+//EnDSoUrCe 
+
+class d;
+
+#ifdef class_
+#undef class_
+#undef super_
+#undef namespace_
+#endif
+
+#define super_ d__2
+#define class_ d
+
+//SoUrCe f.h
+//import_ "c.h"
+
+class_::baz() { }
+//EnDSoUrCe 

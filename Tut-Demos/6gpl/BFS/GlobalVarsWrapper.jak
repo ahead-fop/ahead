@@ -1,0 +1,11 @@
+layer BFS;
+
+import java.util.LinkedList;
+
+// Edge-Neighbor implementation
+
+// Class to wrap global variables
+   
+public class GlobalVarsWrapper {
+    public static LinkedList Queue =  new LinkedList();
+}

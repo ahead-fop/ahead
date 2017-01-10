@@ -1,0 +1,17 @@
+layer OpfacL;
+
+import laydown.OpfacDataWrapper;
+
+import log.Log;
+
+import java.util.*;
+
+import fsats.util.*;
+
+public refines interface Opfac {
+    Object clone();
+
+    void sendTo( String to, Message message );
+
+    void timeout( float delay, Timeout event );
+}

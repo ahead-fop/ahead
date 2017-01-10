@@ -1,0 +1,3 @@
+layer Cons2;
+
+class MyClass extends AstNode { /*2*/ }

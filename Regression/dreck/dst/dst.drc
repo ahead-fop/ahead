@@ -1,0 +1,129 @@
+domain dst;
+
+realm DS;
+
+Inherit below_topmost_layer "a below-topmost layer";
+Inherit unordered_layer     "an unordered layer";
+Inherit Iretrieval_layer    "a retrieval layer";
+Synth   Sretrieval_layer    "a retrieval layer";
+
+Annotation keyAccess;
+Single    logical_del_layer;
+
+conditions() {
+   below_topmost_layer.negate();
+   unordered_layer.negate();
+   Iretrieval_layer.negate();
+   Sretrieval_layer.negate();
+}
+
+bstree[k:String, x:DS]:DS {
+   requires above keyAccess.test("rbtree/bstree",$.k);
+   exports below x { keyAccess.set("rbtree/bstree",$.k); 
+                     below_topmost_layer.affirm();
+                     Iretrieval_layer.affirm(); }
+   exports above { Sretrieval_layer.affirm(); }
+
+   and_expr ", and " 
+   explain_expr "all elements are stored on"+another()+"binary tree with key "+ $.k +
+                Child[0].and() + Child[0].explain();
+}
+
+delflag[x:DS]:DS {
+   requires above logical_del_layer.Pnegate();
+   exports below x { logical_del_layer.affirm(); }
+
+   and_expr ", and "
+   explain_expr "elements are logically deleted" +
+                Child[0].and() + Child[0].explain();
+}
+
+dlist[x:DS]:DS {
+   requires above unordered_layer.Pnegate();
+   exports below x { unordered_layer.affirm();
+                     below_topmost_layer.affirm();
+                     Iretrieval_layer.affirm(); }
+   exports above { Sretrieval_layer.affirm(); }
+
+   and_expr ", and "
+   explain_expr "all elements are stored on a "+
+                "chronologically-ordered doubly linked list" + 
+                Child[0].and() + Child[0].explain();
+}
+
+hash[k:String, nbuckets:int, x:DS]:DS {
+   requires above keyAccess.test("hash",$.k);
+   exports below x { keyAccess.set("hash",$.k);
+                     below_topmost_layer.affirm();
+                     Iretrieval_layer.affirm(); }
+   exports above { Sretrieval_layer.affirm(); }
+
+   and_expr ", and "
+   explain_expr "all elements are stored in"+another()+ "hash structure with" 
+                +$.nbuckets+ 
+                " and hashed on key "+$.k + Child[0].and() + Child[0].explain();
+}
+
+hashcmp[k:String, x:DS]:DS {
+   requires above keyAccess.test("hashcmp",$.k) & below_topmost_layer.Pnegate();
+   exports below x { keyAccess.set("hashcmp",$.k); }
+   requires below x Sretrieval_layer.Paffirm();
+
+   and_expr ", and "
+   explain_expr "equality predicates on attribute " +$.k +
+                " are hash-qualified to improve selection performance"
+                + Child[0].and() + Child[0].explain();
+}
+
+malloc[]:DS {
+   requires above Iretrieval_layer.Paffirm();
+
+   and_expr " "
+   explain_expr "in transient memory.";
+}
+
+odlist[k:String, x:DS]:DS {
+   requires above keyAccess.test("odlist",$.k);
+   exports below x { keyAccess.set("odlist",$.k);  
+                     below_topmost_layer.affirm();
+                     Iretrieval_layer.affirm(); }
+   exports above { Sretrieval_layer.affirm(); }
+
+   and_expr ", and " 
+   explain_expr "all elements are stored on"+another()+
+                "ordered doubly-linked list with key "+ $.k +
+                Child[0].and() + Child[0].explain();
+}
+
+persistent[]:DS {
+   requires above Iretrieval_layer.Paffirm();
+
+   and_expr " "
+   explain_expr "in persistent memory.";
+}
+                     
+predindx[pred:String, x:DS]:DS {
+   //predindx is not exactly a retrieval layer when it comes to
+   // design rule checking - it only can store a *subset* of
+   // the elements of a container
+
+   requires above keyAccess.test("predindx",$.pred);
+   exports below x { below_topmost_layer.affirm(); }
+
+   and_expr ", and "
+   explain_expr another() + "separate, insertion-ordered doubly-linked list " +
+                "is maintained for elements that satisfy the predicate " +
+                $.pred + Child[0].and() + Child[0].explain();
+}
+
+rbtree[k:String, x:DS]:DS {
+   requires above keyAccess.test("rbtree/bstree",$.k);
+   exports below x { keyAccess.set("rbtree/bstree",$.k); 
+                     below_topmost_layer.affirm();
+                     Iretrieval_layer.affirm(); }
+   exports above { Sretrieval_layer.affirm(); }
+
+   and_expr ", and " 
+   explain_expr "all elements are stored on"+another()+"red-black tree with key "+ 
+                $.k + Child[0].and() + Child[0].explain();
+}

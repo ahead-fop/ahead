@@ -1,0 +1,28 @@
+C E OpfacThreadXXX 
+Line range (-1, -1)
+public  endMods 
+ beginKeys
+Classes :(  fooXXX ):
+Interfaces :(  YYY ZZZ ):
+super :(  fooXXX ):
+ endKeys
+ beginNest
+        K D OpfacThread(OpfacImpl) __
+        Line range (19, 21)
+        public  endMods 
+         beginKeys
+        Throws :(  x y z ):
+         endKeys
+        M D OpfacThreadConstructor(OpfacImpl) void 
+        Line range (23, 25)
+        public  endMods 
+         beginKeys
+        Throws :(  q r s ):
+         endKeys
+        F D oi OpfacImpl 
+        Line range (17, 17)
+         endMods 
+        M D run() void 
+        Line range (27, 32)
+        public  endMods 
+ endNest

@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+case "$(command -p uname)" in
+    CYGWIN*) CP="${CLASSPATH};." ;;
+    *)       CP="${CLASSPATH}:." ;;
+esac
+
+echo "****************GPL Regression Test***********"
+
+rm -f -r GPL &> /dev/null
+
+mkdir GPL
+rm -f demo2.class &> /dev/null
+
+if java jak2java.Main -v something ; then
+   cp demo2.jjava demo2.java
+else
+   sed -es/Lang.//g demo2.jjava > demo2.java
+fi
+
+FAILURES=0
+
+javac -classpath "${CP}" demo2.java || FAILURES=1
+java -cp "${CP}" demo2 || FAILURES=1
+
+for TEST in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace ; do
+    bash regress-one "${TEST}" || FAILURES=1
+done
+
+(
+    cd GPL
+    for JAK in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace ; do
+       java jak2java.Main "${JAK}.jak" || FAILURES=1
+    done
+    javac *.java || FAILURES=1
+)
+
+if ((FAILURES)) ; then
+   echo -e "\nGPL Composition Regression Test completed with ERRORS."
+   exit 1
+fi
+
+rm -rf GPL
+
+echo -e "\nGPL Composition Regression Test completed Successfully."

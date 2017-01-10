@@ -1,0 +1,185 @@
+// Graph Algorithms Product Line (GPL)
+// University of Texas at Austin
+// Department of Computer Sciences
+// Product-Line Architecture Research Group
+// Edge-Neighbor Representation
+// DIRECTED : directed graph layer
+// Last Update: May 15, 2001
+// Written by: Roberto E. Lopez-Herrejon (rlopez@cs.utexas.edu)
+
+/* A graph consists of:
+   1) A Graph class that contains:
+     + A list of vertices (Vertex objects)
+
+   2) A Vertex class that contains:
+     + A list of adjacent Neighbor objects.
+
+   3) A Neighbor class contains :
+     + the end Vertex
+     
+   4) A Edge class contains:
+     + The start vertex
+     
+  + Adding an edge requires start vertex and a Neighbor object.
+     
+ */
+ 
+layer Directed()
+realm GEN
+imports java.util.LinkedList
+{
+   
+   // *************************************************************************
+   static public class Graph {
+      public LinkedList vertices;
+      public LinkedList edges;
+      public static final boolean isDirected = true;
+   
+      public Graph() { 
+         GraphConstructor();
+      }
+
+      public void GraphConstructor() {
+         Base().GraphConstructor();
+         vertices = new LinkedList();
+         edges = new LinkedList();
+      }
+   
+      public void addVertex( $TEqn.Vertex v ) { 
+         vertices.add( v );
+      }
+   
+      public void addEdge($TEqn.Edge the_edge) {
+	 $TEqn.Vertex start = the_edge.start;
+	 $TEqn.Vertex end = the_edge.end;
+	 edges.add(the_edge);		 
+         start.addNeighbor(new $TEqn.Neighbor(end,the_edge));           
+      }
+	  
+      // This method adds only the edge and not the neighbor
+      // used in Transpose
+      public void addOnlyEdge($TEqn.Edge the_edge) {
+		 edges.add(the_edge);		 
+      }
+	  
+      // Finds a vertex given its name in the vertices list
+      public $TEqn.Vertex  findsVertex(String theName)
+      {
+	int i=0;
+	$TEqn.Vertex theVertex;
+	
+	// if we are dealing with the root
+	if (theName==null) return null;
+	    
+	for(i=0; i<vertices.size(); i++)
+	{
+	 theVertex = ($TEqn.Vertex)vertices.get(i);
+	 if (theName.equals(theVertex.name))
+		return theVertex;
+	}
+	return null;
+       }
+	   
+      public void display() {
+         int i;
+		  		 
+	 System.out.println("******************************************");
+	 System.out.println("Vertices ");
+         for (i=0; i<vertices.size(); i++) 
+            (($TEqn.Vertex) vertices.get(i)).display();
+         
+         System.out.println("******************************************");
+         System.out.println("Edges ");
+         for (i=0; i<edges.size(); i++)
+			(($TEqn.Edge) edges.get(i)).display();
+		
+	 System.out.println("******************************************");
+      }
+      
+   } // of graph
+   
+   
+   // *************************************************************************   
+   static public class Vertex {
+      public LinkedList neighbors;
+      
+      public String name;
+  
+      public void VertexConstructor() {
+         Base().VertexConstructor(); 
+         name      = null;
+         neighbors = new LinkedList();
+      }
+
+      public $TEqn.Vertex assignName( String name ) {
+         this.name = name;
+         return ($TEqn.Vertex) this;
+      }
+      
+      public void addNeighbor( $TEqn.Neighbor n ) {
+         neighbors.add(n);
+      }
+
+      public void display() {
+         int s = neighbors.size();
+         int i;
+
+         System.out.print(" Node " + name + " connected to: ");
+
+         for (i=0; i<s; i++) 
+         {	
+	    $TEqn.Neighbor theNeighbor = ($TEqn.Neighbor) neighbors.get(i);
+	    $TEqn.Vertex v = theNeighbor.end;
+            System.out.print( v.name + ", ");
+         }
+         System.out.println();
+      }
+   }
+   
+   // *************************************************************************
+   static public class Neighbor {
+	public $TEqn.Vertex end;		
+	public $TEqn.Edge edge;
+		
+	public Neighbor() {
+          NeighborConstructor();
+        }
+
+        public void NeighborConstructor() {
+ 	  end = null;
+	  edge = null;
+	}
+		
+	public Neighbor($TEqn.Vertex v, $TEqn.Edge e) {
+          NeighborConstructor( v, e );
+        }
+
+        public void NeighborConstructor( $TEqn.Vertex v, $TEqn.Edge e ) {
+	  end = v;
+	  edge = e;
+	}
+}
+   
+   // *************************************************************************
+   static public class Edge extends Neighbor{
+	public $TEqn.Vertex start;
+		
+	public Edge($TEqn.Vertex the_start, $TEqn.Vertex the_end) {
+           EdgeConstructor( the_start, the_end );
+        }
+
+        public void EdgeConstructor($TEqn.Vertex the_start, $TEqn.Vertex the_end) {
+	  start = the_start;
+	  end = the_end;
+	}
+		
+	public void adjustAdorns($TEqn.Edge the_edge)
+	{
+	}		
+		
+	public void display()
+	{
+	  System.out.println(" start=" + start.name + " end=" + end.name);
+	}
+ }   
+}

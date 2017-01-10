@@ -1,0 +1,817 @@
+//                              -*- Mode: Java -*- 
+// CodeTemplate --- 
+// Author          : Bernie Lofaso
+// Created On      : Wed May 13 08:48:44 1998
+// Last Modified By: 
+// Last Modified On: Mon Jul 05 11:21:15 1999
+// Update Count    : 77
+// Status          : Under Development
+// 
+// $Locker:  $
+// $Log: CodeTemplate,v $
+// Revision 1.3  2002-08-26 16:57:05  sarvela
+// Changed "BaliParser.ReInit" calls to "$TEqn.Parser.getInstance" calls.
+// This is the last step in making BaliParser instances non-static.
+//
+// Revision 1.2  2002/02/22 18:19:41  sarvela
+// Removed carriage returns.
+//
+// Revision 1.1.1.1  1999/07/12 16:01:02  sarvela
+// Imported original v3.0beta4 sources from Webpage
+//
+// Revision 1.1.1.1  1999/07/12 16:01:01  lofaso
+// new composition component
+//
+// Revision 1.4  1999/06/14 14:52:58  lofaso
+// Changed syntax of type equation such that inner-most component may have an
+// empty set of parentheses. For example, before we accepted "Base(kernel)"
+// where now we can write "Base(kernel())".
+//
+// Revision 1.3  1999/05/19 21:28:08  lofaso
+// Fix bug where code that allowed the removal of 'realms' from CLASSPATH wasn't
+// working properly.
+//
+// Revision 1.2  1999/04/07 16:27:27  lofaso
+// Build program needed package extended to include 'JTS.realms.' prefix.
+//
+// Revision 1.1.1.1  1999/02/18 16:15:35  lofaso
+// Snapshot 2-18-99
+//
+// Revision 1.2  1998/09/25 21:48:43  lofaso
+// Modified JTS such that only default constructor and constructor taking a
+// single int is required for extending grammar classes.
+//
+// Revision 1.1.1.1  1998/06/22 18:01:19  lofaso
+// Layer composition
+//
+// 
+
+package $(LanguageName);
+
+import $(LanguageName).layersLib.*;
+import Jakarta.util.Util;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.Vector;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+public class layers extends $(ParentComponent) {
+    static File realmDir;
+    static File compositeDir;
+    static String packageName;
+    static String mostRefinedMixin;
+
+    //**************************************************
+    // TEGen class
+    //**************************************************
+    static public class TEGen extends $(ParentComponent).TEGen {
+	static final String msg1 =
+	    "Invalid package/most refined name in type equation";
+
+	public void reduce2java(Lang.AstProperties props) {
+	    String packMix;	// package.mixin name
+	    int dot;
+	    String realmName;
+	    String lastComp;
+	    File lastMixin;
+	    File kernelOutput;
+	    PrintWriter output;
+	    File inputFile;
+
+	    // The realm name is simply arg[0]
+	    realmName = arg[0].toString().trim();
+	    realmDir = Util.findPackageDir("JTS.realms." +
+					   realmName);
+
+	    // The package name and most refined class name (mixin layer
+	    // name) is a qualified name with two components. We must break
+	    // these into separate AST_QualifiedName's.
+	    packMix = ((Lang.AST_QualifiedName) arg[1]).GetName();
+	    dot = packMix.indexOf('.');
+	    if ((dot == -1) || (packMix.indexOf('.', dot+1) != -1))
+		Util.fatalError(msg1);
+	    packageName = packMix.substring(0, dot);
+	    mostRefinedMixin = packMix.substring(dot+1);
+
+	    // Create a directory for the composition.
+	    inputFile = (File) props.getProperty("input");
+	    compositeDir = new File(Util.getParentDir(inputFile), packageName);
+	    if (! compositeDir.exists()) {
+		if (! compositeDir.mkdir())
+		    Util.fatalError("Can't create directory for '" +
+				    packageName + "'");
+	    }
+
+	    // Now that these "global" variables are set, invoke the
+	    // instantiateComponent() method of the type expression.
+	    try {
+		lastComp =
+		    ((Expression) arg[2]).instantiateComponent(realmName);
+	    }
+	    catch (Exception e) {
+		Util.fatalError(e);
+		lastComp = null;
+	    }
+
+	    // Now create top-most mixin layer
+	    lastMixin = new File(compositeDir, mostRefinedMixin + ".java");
+	    output = Util.backedOutput(lastMixin);
+	    output.println("\npackage " + packageName + ";");
+	    output.println("\npublic class " + mostRefinedMixin + " extends " +
+			   lastComp + " {}");
+	    output.close();
+
+	    // Now create Main layer
+	    output = Util.backedOutput(new File(compositeDir, "Main.java"));
+	    output.println("\npackage " + packageName + ";");
+	    output.println("\npublic class Main extends " + mostRefinedMixin +
+			   ".Main {}");
+	    output.close();
+	    output.close();
+	}
+    }
+
+
+    //**************************************************
+    // Exception that's thrown whenever the type equation specified in
+    // TEGen's expression is invalid.
+    //**************************************************
+    static public class InvalidComponentException extends Exception {
+	public InvalidComponentException() { super(); }
+	public InvalidComponentException(String s) { super(s); }
+    }
+
+
+    //**************************************************
+    // Expression extension
+    //**************************************************
+    static public class Expression extends $(ParentComponent).Expression {
+	public String instantiateComponent(String realmName)
+	    throws InvalidComponentException {
+	    throw new InvalidComponentException("Invalid Type Equation");
+	}
+    }
+
+
+    //**************************************************
+    // PrimExpr extension. This verifies that the PrimaryPrefix is a
+    // PPQualName and the PrimarySuffix is a MthCall.
+    //**************************************************
+    static public class PrimExpr extends $(ParentComponent).PrimExpr {
+	static final String msg1 = "Invalid layer name";
+
+	public String instantiateComponent(String realmName)
+	    throws InvalidComponentException {
+	    Lang.MthCall mcall;
+	    if ((! (arg[0] instanceof Lang.PPQualName)) ||
+		(! (arg[1].arg[0].arg[0] instanceof Lang.MthCall)))
+		throw new InvalidComponentException(msg1);
+	    mcall = (Lang.MthCall) arg[1].arg[0].arg[0];
+	    return(mcall.instantiateComponent(realmName));
+	}
+    }
+
+
+    //**************************************************
+    // MthCall extension. The only distinction between this class and
+    // the above PPQualName class (in the context of the type equation) is
+    // that the above is terminal and hence has a parent class not appearing
+    // in the type equation.
+    //**************************************************
+    static public class MthCall extends $(ParentComponent).MthCall {
+	static final String msg1 = "Incorrect number of args in type equation";
+	static final String msg2 = "Invalid layer name";
+
+	public String instantiateComponent(String realmName)
+	    throws InvalidComponentException {
+	    Lang.AST_ArgList args = (Lang.AST_ArgList) arg[0].arg[0].arg[0];
+	    int count, lcount;
+	    Lang.Expression expr;
+	    Lang.AST_QualifiedName layerNameAST;
+	    String layerName;
+	    Lang.AstNode lnode;		// actually an AstListNode
+	    Properties bindings = new Properties();
+	    String[] realmNames;	// type of parameter in layer stmt
+	    String[] parmNames;		// name of parameter in layer stmt
+	    String componentName;	// name of parm in type eqn.
+	    String layerFileName;
+	    File layerFile;
+	    File outputFile;
+	    FileInputStream fis;
+	    BaliParser parser;
+	    Lang.AstNode layerAST;
+	    Lang.AstProperties props;
+	    PrintWriter output;
+	    FileOutputStream fos;
+
+	    // True of inner-most component
+	    if (args == null)
+		args = new Lang.AST_ArgList();
+
+	    // Get a layer name
+	    try {
+		// MthCall->SuffixesElem->Suffixes->PrimExpr->
+		//    PPQualName->AST_QualifiedName
+		layerNameAST = (Lang.AST_QualifiedName)
+		    up.up.up.arg[0].arg[0];
+	    }
+	    catch (Exception e) {
+		throw new InvalidComponentException(msg2);
+	    }
+	    layerName = layerNameAST.GetName();
+
+	    // Count number of args
+	    lnode = args.arg[0];
+	    count = 0;
+	    while (lnode != null) {
+		count++;
+		lnode = lnode.right;
+	    }
+
+	    // Test if the output file already exists. If so, we won't
+	    // recreate it. (This is important for use with Bali as Bali
+	    // will create the Base component.)
+	    outputFile = new File(compositeDir, layerName + ".java");
+	    if (outputFile.exists() &&
+		(layerName.compareTo("Base") == 0) &&
+		(count == 1)) {
+		expr = (Expression) args.arg[0].arg[0];
+		expr.instantiateComponent("J");	// use realm name of kernel
+		return(layerName);
+	    }
+
+	    //**************************************************
+	    // Read layer file and build realmNames[].
+	    //**************************************************
+
+	    // Find directory containing layer file
+	    layerFileName = "JTS.realms." + realmName + "." + layerName;
+	    layerFile = Util.findPackageDir(layerFileName);
+	    if (layerFile == null) {
+		Util.fatalError("Can't find layer file '" + layerFileName +
+				"'");
+	    }
+
+	    // Find layer file
+	    layerFile = new File(layerFile, layerName + ".layer");
+	    try {
+		fis = new FileInputStream(layerFile);
+		parser = Lang.Parser.getInstance (fis) ;
+// 		layerAST = getStartRoot(parser);
+		layerAST = parser.LayerHeader();
+		fis.close();
+	    }
+	    catch (Exception e) {
+		Util.fatalError(e);
+		layerAST = null;
+	    }
+
+	    // Count parameters in layer definition and compare with that
+	    // of the type equation.
+	    lnode = layerAST.arg[2].arg[0];
+	    if (lnode != null) {
+		lcount = 0;
+		lnode = lnode.arg[0];
+		while (lnode != null) {
+		    lcount++;
+		    lnode = lnode.right;
+		}
+	    }
+	    else
+		lcount = 0;
+
+	    if (count != lcount) {
+		Util.fatalError("Incorrect arg count for layer '" +
+				layerName + "'");
+	    }
+
+	    realmNames = new String[count];
+	    parmNames = new String[count];
+
+	    // Scan parm list assigning types to realmNames and parm names
+	    // to parmNames.
+	    lnode = layerAST.arg[2].arg[0];
+	    if (lnode != null) {
+		count = 0;
+		lnode = lnode.arg[0];	// pt to AstListNode
+		while (lnode != null) {
+		    realmNames[count] = lnode.arg[0].arg[0].toString().trim();
+		    parmNames[count] = lnode.arg[0].arg[1].toString().trim();
+		    count++;
+
+		    lnode = lnode.right;
+		}
+	    }
+
+	    // Scan args of type equation and evaluate each one
+	    lnode = args.arg[0];
+	    count = 0;
+	    while (lnode != null) {
+		// instantiate a parameter (component)
+		expr = (Expression) lnode.arg[0];
+		componentName = expr.instantiateComponent(realmNames[count]);
+
+		// create a binding to be used to instantiate this component
+		bindings.put(parmNames[count], componentName);
+
+		count++;
+		lnode = lnode.right;
+	    }
+
+	    // Assign hidden args
+	    bindings.put("$PackName", packageName);
+	    bindings.put("$TEqn", mostRefinedMixin);
+	    bindings.put(layerName, layerName);
+
+	    // Instantiate layer
+	    props = new Lang.AstProperties();
+	    try {
+		fis = new FileInputStream(layerFile);
+		parser = Lang.Parser.getInstance (fis) ;
+		layerAST = parser.Layer_Decl();
+		fis.close();
+
+		fos = new FileOutputStream(outputFile);
+		output = new PrintWriter(fos);
+		props.setProperty("output", output);
+		props.setProperty("bindings", bindings);
+		layerAST.reduce2java(props);
+		output.close();
+	    }
+	    catch (Exception e) {
+		Util.fatalError(e);
+	    }
+
+	    return(layerName);
+	}
+    }
+
+
+    //**********************************************************************
+    // Imported from old layer_def.
+    //**********************************************************************
+//     static ImportLists importLists = new ImportLists();
+
+    //**************************************************
+    // Main extension
+    //**************************************************
+    static public class Main extends $(ParentComponent).Main {
+	protected Lang.AstNode reduceAST(ArgList argObjects,
+					 Lang.AstNode ast) {
+	    PositionalArg parg;
+	    File inputFile;
+
+	    parg = (PositionalArg) argObjects.first(PositionalArg.class);
+	    try {
+		inputFile = new File(parg.binding);
+		mainProps.setProperty("input", inputFile);
+	    }
+	    catch (Exception e) {
+		Util.fatalError(e);
+	    }
+	    return(super.reduceAST(argObjects, ast));
+	}
+    }
+
+
+
+    //**************************************************
+    // LDecl class. This class exists so that we can override reduce2java()
+    // so that it only outputs a 'parse succeeded' output message when we
+    // process a layer file. Only when we process a type equation (TEGen)
+    // will we call LayerDecl.reduce2java() directly.
+    //**************************************************
+    static public class LDecl extends $(ParentComponent).LDecl {
+	public void reduce2java(Lang.AstProperties props) {
+	    System.out.println("Syntax of layer file successfully checked.");
+	}
+    }
+
+
+    //**************************************************
+    // LayerDecl class
+    //**************************************************
+    static public class LayerDecl extends $(ParentComponent).LayerDecl {
+
+	//**************************************************
+	// This method builds an AST_Program object from LayerDecl. The
+	// program is reduced to the appropriate output file (which is set
+	// by MthCall.instantiateComponent()).
+	//**************************************************
+	public void reduce2java(Lang.AstProperties props) {
+	    Lang.AstNode node;
+	    ImportLists importLists;
+
+	    // Search to determine if relative keyword has been specified.
+	    node = arg[0].arg[0];	// pt. to LayerModifiers object
+	    if (node != null) {
+		node = node.arg[0];	// pt. to list node
+		while (node != null) {
+		    if (node.arg[0] instanceof Lang.ModRelative) {
+			props.setProperty("relative", "relative");
+			break;
+		    }
+
+		    node = node.right;
+		}
+	    }
+
+	    importLists = new ImportLists();
+	    props.setProperty("imports", importLists);
+	    node = LayerDeclSupport.createProgram(this, props);
+	    node.reduce2java(props);
+
+	    props.removeProperty("relative");
+	}
+    }
+
+
+    //**************************************************
+    // LyrImports class - a list of import specifications
+    //**************************************************
+    static public class LyrImports extends $(ParentComponent).LyrImports {
+
+	public Lang.AST_Imports getImportList(Lang.AstProperties props) {
+	    Lang.AstListNode lnode;
+	    Lang.AST_Imports impList;
+	    Lang.ImportPak ipack;
+	    ImportLists importLists;
+
+	    lnode = (Lang.AstListNode) arg[0].arg[0];
+
+	    // Get first import statement
+	    ipack = (Lang.ImportPak) lnode.arg[0];
+	    importLists = (ImportLists) props.getProperty("imports");
+	    importLists.addImport(ipack.toString().trim());
+	    impList = ipack.getImportList(props);
+	    lnode = (Lang.AstListNode) lnode.right;
+
+	    // Concatenate remaining import statements
+	    while (lnode != null) {
+		ipack = (Lang.ImportPak) lnode.arg[0];
+		importLists.addImport(ipack.toString().trim());
+		impList.add(ipack.getImportList(props));
+		lnode = (Lang.AstListNode) lnode.right;
+	    }
+
+	    return(impList);
+	}
+    }
+
+
+    //**************************************************
+    // ImportPak class - a list of import specifications
+    //**************************************************
+    static public class ImportPak extends $(ParentComponent).ImportPak {
+	public Lang.AST_Imports getImportList(Lang.AstProperties props) {
+	    return(ImportPakSupport.getImportList(this, props));
+	}
+    }
+
+
+    //**************************************************
+    // AST_QualifiedName. This class is extended to support expanding
+    // non-fully qualified names if the 'relative' keyword prefaces a
+    // layer definition.
+    //**************************************************
+    static public class AST_QualifiedName
+	extends $(ParentComponent).AST_QualifiedName {
+	private static String TEqnBinding = null;
+
+	//**************************************************
+	// reduce2java()
+	//**************************************************
+	public void reduce2java(Lang.AstProperties props) {
+	    PrintWriter output;
+	    Lang.AstToken token;
+
+	    if (props.getProperty("relative") != null) {
+		if (expandRelative(props)) {
+		    // TEqnBinding is set only once - then cached value used.
+		    if (TEqnBinding == null) {
+			Properties bindings =
+			    (Properties) props.getProperty("bindings");
+			TEqnBinding = bindings.getProperty("$TEqn") + ".";
+		    }
+
+		    output = (PrintWriter) props.getProperty("output");
+		    token = (Lang.AstToken) last.arg[0].tok[0];
+		    output.print(token.white_space);
+		    output.print(TEqnBinding);
+		    return;
+		}
+	    }
+
+	    super.reduce2java(props);
+	}
+
+
+	//**************************************************
+	// This method will determine if the AST_QualifiedName needs to be
+	// expanded to a name qualified with '$TEqn.'.
+	//**************************************************
+	private boolean expandRelative(Lang.AstProperties props) {
+	    Lang.AstNode lastComponent;
+	    String lastComponentName;
+	    ImportLists importLists;
+
+	    // return if name has more than one component.
+	    if (arg[0] != last)
+		return(false);
+
+	    // return if name isn't a type name.
+	    if (up == null)
+		return(false);
+	    if (! (up instanceof QNameType))
+		return(false);
+
+	    lastComponent = last.arg[0];
+	    if (! (lastComponent instanceof NameId))
+		return(false);
+
+	    // Test to see if this is an imported type.
+	    lastComponentName = lastComponent.tok[0].tokenName();
+	    importLists = (ImportLists) props.getProperty("imports");
+	    if (importLists.isImportedType(lastComponentName))
+		return(false);
+
+	    // Name is eligible for expansion. We simply output the binding
+	    // of $TEqn followed by ".".
+	    return(true);
+	}
+    }
+
+
+    //**************************************************
+    // NameId - this class is extended in order to identify parameters
+    // that have bindings that we should perform substitution for
+    // (in reduce2java).
+    //**************************************************
+    static public class NameId extends $(ParentComponent).NameId {
+	public void reduce2java(Lang.AstProperties props) {
+	    Properties bindings;
+	    String binding;
+	    PrintWriter output = (PrintWriter) props.getProperty("output");
+
+	    // Do nothing if inside an un-escaped AST constructor
+	    if (props.getProperty("AstLevel") != null)
+		return;
+
+	    // Check if there is a binding associated with the name
+	    bindings = (Properties) props.getProperty("bindings");
+	    if (bindings != null) {
+		binding = bindings.getProperty(tok[0].tokenName());
+		if (binding != null) {
+		    output.print(((Lang.AstToken) tok[0]).white_space);
+		    output.print(binding);
+		    return;
+		}
+	    }
+
+	    // else output normal reduction
+	    super.reduce2java(props);
+	}
+    }
+
+
+    //**************************************************
+    // This class acts as a repository for remembering import declarations
+    // and will allow the user to query, via the isImportedType() method,
+    // whether a simple name is a type "covered" by one of the import
+    // declarations.
+    //**************************************************
+    static public class ImportLists {
+	static class ZipDir {
+	    private ZipFile archive;
+	    private String dirPrefix;
+
+	    public ZipDir(ZipFile a, String dp) {
+		archive = a;
+		dirPrefix = dp;
+	    }
+
+	    public boolean hasType(String name) {
+		if (archive.getEntry(dirPrefix + name + ".class") != null)
+		    return(true);
+		return(false);
+	    }
+	}
+
+	// This serves as the set of File/ZipFile objects that addImport
+	// filters on for import-on-demand directories.
+	private Vector roots;	// list of File or ZipFile
+
+	// All objects represent directories. Either they are File objects
+	// which point to directories in the file system, or they are ZipDir
+	// objects which point to a virtual directory in a ZipFile.
+	private Vector importOnDemand;
+
+	// Objects are Strings of the type names.
+	private Vector importSingleType;
+
+	//**************************************************
+	// Constructor
+	//**************************************************
+	public ImportLists() {
+	    String classpath;
+	    int start, end;
+	    String root;
+	    File rfile;
+
+	    roots = new Vector();
+	    importOnDemand = new Vector();
+	    importSingleType = new Vector();
+
+	    // Build roots
+	    classpath = System.getProperty("java.class.path");
+	    start = 0;
+	    end = classpath.indexOf(File.pathSeparatorChar, 0);
+	    while (end > 0) {
+		root = classpath.substring(start, end);
+		rfile = new File(root);
+		if (rfile.isDirectory())
+		    roots.addElement(rfile);
+		else if (rfile.getName().endsWith(".zip") ||
+			 rfile.getName().endsWith(".jar")) {
+		    try {
+			roots.addElement(new ZipFile(rfile));
+		    }
+		    catch (Exception e) {}
+		}
+
+		// next root directory
+		start = end + 1;
+		end = classpath.indexOf(File.pathSeparatorChar, start);
+	    }
+
+	    // last directory
+	    root = classpath.substring(start);
+	    rfile = new File(root);
+	    if (rfile.isDirectory())
+		roots.addElement(rfile);
+	    else if (rfile.getName().endsWith(".zip") ||
+		     rfile.getName().endsWith(".jar")) {
+		try {
+		    roots.addElement(new ZipFile(rfile));
+		}
+		catch (Exception e) {}
+	    }
+
+	    // This will add an entry to roots if you're using Java 1.2
+	    root = System.getProperty("java.home") + File.separator +
+		"lib" + File.separator + "rt.jar";
+	    rfile = new File(root);
+	    if (rfile.exists()) {
+		try {
+		    roots.addElement(new ZipFile(rfile));
+		}
+		catch (Exception e) {}
+	    }
+
+	    // Add default java.lang package
+	    addImport("java.lang.*");
+	}
+
+
+	//**************************************************
+	// Used to add import specifications (in the form of String's)
+	// to the repository. The specs may be either import-single-type
+	// or import-on-demand.
+	//**************************************************
+	public void addImport(String importSpec) {
+	    int index;
+	    String component;
+	    Enumeration cursor;
+	    Object fileOrZip;
+	    ZipDir zd;
+	    ZipFile zfile;
+	    ZipEntry entry;
+	    StringTokenizer stok;
+	    String[] comp;
+	    File f;
+	    String path;
+
+	    index = importSpec.indexOf('.');
+	    if (index == -1) {
+		if (importSpec.compareTo("*") == 0) {
+		    // This imports everything in the default package.
+		    cursor = roots.elements();
+		    while (cursor.hasMoreElements()) {
+			fileOrZip = cursor.nextElement();
+			if (fileOrZip instanceof File)
+			    importOnDemand.addElement(fileOrZip);
+			else {
+			    zd = new ZipDir((ZipFile) fileOrZip, "");
+			    importOnDemand.addElement(zd);
+			}
+		    }
+		}
+		else {
+		    // Import a single type from default package.
+
+		    // No validation is done for single types
+		    importSingleType.addElement(importSpec);
+		}
+
+		return;
+	    }
+
+	    // Import spec has multiple components
+
+	    // See if it's single type or IOD
+	    index = importSpec.lastIndexOf('.');
+	    component = importSpec.substring(index+1);
+	    if (component.compareTo("*") != 0) {
+		// single type import - add type to list and return
+		importSingleType.addElement(component);
+		return;
+	    }
+
+	    // Import on demand. Scan roots and create entries as necessary.
+
+	    // Throw away ".*" part of spec and create an array of name
+	    // components.
+	    importSpec = importSpec.substring(0, index);
+	    stok = new StringTokenizer(importSpec, ".");
+	    comp = new String[stok.countTokens()];
+	    index = 0;
+	    while (stok.hasMoreTokens())
+		comp[index++] = stok.nextToken();
+
+	    // Create path that we search for in ZipFile's. Note that directory
+	    // entries in ZipFile's have a '/' character at the end.
+	    path = importSpec.replace('.', '/') + "/";
+
+	    cursor = roots.elements();
+	ClasspathScan:
+	    while (cursor.hasMoreElements()) {
+		fileOrZip = cursor.nextElement();
+		if (fileOrZip instanceof File) {
+		    // Use File as a root and locate directories that make
+		    // up the import "path".
+		    f = (File) fileOrZip;
+		    for (index = 0; index < comp.length; index++) {
+			f = new File(f, comp[index]);
+			if (! (f.exists() && f.isDirectory()))
+			    continue ClasspathScan;
+		    }
+		    importOnDemand.addElement(f);
+		}
+		else {
+		    // Use Zip file as a root and locate directory entries
+		    // for import "path".
+		    zfile = (ZipFile) fileOrZip;
+		    entry = zfile.getEntry(path);
+		    if (entry != null) {
+			zd = new ZipDir(zfile, path);
+			importOnDemand.addElement(zd);
+		    }
+		}
+	    }
+	}
+
+
+	//**************************************************
+	// This method takes a name (a simple unqualified name) and
+	// determines if it is a type that is imported.
+	//**************************************************
+	public boolean isImportedType(String name) {
+	    Enumeration scanPtr;
+	    Object obj;
+	    File f;
+	    ZipDir zd;
+
+	    // Check importSingleType first
+	    scanPtr = importSingleType.elements();
+	    while (scanPtr.hasMoreElements()) {
+		if (name.compareTo((String) scanPtr.nextElement()) == 0)
+		    return(true);
+	    }
+
+	    // Check importOnDemand
+	    scanPtr = importOnDemand.elements();
+	    while (scanPtr.hasMoreElements()) {
+		obj = scanPtr.nextElement();
+		if (obj instanceof File) {
+		    f = (File) obj;
+		    f = new File(f, name + ".class");
+		    if (f.exists() && f.isFile())
+			return(true);
+		}
+		else {
+		    zd = (ZipDir) obj;
+		    if (zd.hasType(name))
+			return(true);
+		}
+	    }
+
+	    return(false);
+	}
+    }
+}

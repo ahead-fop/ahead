@@ -1,0 +1,33 @@
+I E Opfac 
+Line range (-1, -1)
+static  endMods 
+ beginKeys
+Interfaces :(  Cloneable java.io.Serializable ):
+super :(  Cloneable java.io.Serializable ):
+ endKeys
+ beginNest
+        M D deliver(Event) void 
+        Line range (19, 19)
+         endMods 
+        M D getActiveMissions() Collection 
+        Line range (26, 26)
+         endMods 
+        M D getLocation() Location 
+        Line range (26, 26)
+         endMods 
+        M D getName() String 
+        Line range (21, 21)
+         endMods 
+        M D getSuperior() String 
+        Line range (29, 29)
+         endMods 
+        M D getType() OpfacType 
+        Line range (23, 23)
+         endMods 
+        M D getUnit() int 
+        Line range (23, 23)
+         endMods 
+        M D init(OpfacDataWrapper,Network) void 
+        Line range (17, 17)
+         endMods 
+ endNest

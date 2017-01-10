@@ -1,0 +1,12 @@
+layer FormatBase;
+
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+public abstract refines class AstNode {
+    public void format( int position ) {}
+}

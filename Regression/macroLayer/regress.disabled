@@ -1,0 +1,165 @@
+#!/bin/bash
+
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+echo -e "\nmacro regression test"
+echo "*****************************************"
+
+echo -n "Testing test1 ... "
+java jak.Main -s test1.jak >&test1.java
+if diff -w test1.java test1.result  ; then
+	echo "succeeded"
+else
+	echo "failed"
+	exit 1
+fi
+
+echo -n "Testing test2 ... "
+java jak.Main -s test2.jak >&test2.java
+if diff -w test2.java test2.result  ; then
+	echo "succeeded"
+else
+	echo "failed"
+	exit 1
+fi
+
+echo -n "Testing test3 ... "
+java jak.Main -s test3.jak >&test3.java
+if diff -w test3.java test3.result  ; then
+	echo "succeeded"
+else
+	echo "failed"
+	exit 1
+fi
+
+echo -n "Testing test4 ... "
+java jak.Main -s test4.jak >&test4.java
+if diff -w test4.java test4.result  ; then
+	echo "succeeded"
+else
+	echo "failed"
+	exit 1
+fi
+
+echo -n "Testing test5 ... "
+java jak.Main -s test5.jak | sed -e"s/\\\\r//g" > test5.java 2>&1
+if diff -w test5.java test5.result  ; then
+	echo "succeeded"
+else
+	echo "failed"
+	echo "WARNING: test5 MAY fail due to the output containing AST"
+	echo "constructors. These contain integers for the parser tokens"
+	echo "which may change when jak is altered. Such a failure is"
+	echo "not an indication of a malfunction and should be ignored."
+	echo "Consider replacing the archive's test5.result with test5.java."
+	exit 1
+fi
+
+echo -n "Testing test6 ... "
+java jak.Main -s test6.jak >&test6.java
+if diff -w test6.java test6.result  ; then
+	echo "succeeded"
+else
+	echo "failed"
+	exit 1
+fi
+
+echo -n "Testing test6b ... "
+java jak.Main -s test6b.jak >&test6b.java
+if diff -w test6b.java test6b.result  ; then
+	echo "succeeded"
+else
+	echo "failed"
+	exit 1
+fi
+
+echo -n "Testing test7 ... "
+java jak.Main -s test7.jak >&test7.java
+if ./compare test7.java test7.result ; then
+    echo "succeeded"
+else
+    echo "failed"
+    exit 1
+fi
+
+echo -n "Testing test8 ... "
+java jak.Main -s test8.jak >&test8.java
+if ./compare test8.java test8.result ; then
+    echo "succeeded"
+else
+    echo "failed"
+    exit 1
+fi
+
+echo -n "Testing test9 ... "
+java jak.Main -s test9.jak >&test9.java
+if diff -w test9.java test9.result  ; then
+	echo "succeeded"
+else
+	echo "failed"
+	exit 1
+fi
+
+echo -n "Testing test10 ... "
+java jak.Main -s test10.jak >&test10.java
+if ./compare test10.java test10.result ; then
+    echo "succeeded"
+else
+    echo "failed"
+    exit 1
+fi
+
+echo -n "Testing test11 ... "
+java jak.Main -s test11.jak >&test11.java
+if diff -w test11.java test11.result  ; then
+	echo "succeeded"
+else
+	echo "failed"
+	exit 1
+fi
+
+echo -n "Testing test12 ... "
+java jak.Main -s test12.jak >&test12.java
+if diff -w test12.java test12.result  ; then
+	echo "succeeded"
+else
+	echo "failed"
+	echo "WARNING: test12 MAY fail due to the output containing AST"
+	echo "constructors. These contain integers for the parser tokens"
+	echo "which may change when jak is altered. Such a failure is"
+	echo "not an indication of a malfunction and should be ignored."
+	echo "Consider replacing the archive's test12.result with test12.java."
+	exit 1
+fi
+
+echo -n "Testing test13 ... "
+cp SORT.ser ../../JTS/Jakarta/util
+java jak.Main -s test13.jak >&test13.java
+if diff -w test13.java test13.result  ; then
+	echo "succeeded"
+else
+	echo "failed"
+	echo "WARNING: This test requires a copy of SORT.ser to be in the"
+	echo "Jakarta/util directory. The regression script has attempted"
+	echo "to fulfill that requirement but may have failed. Please"
+	echo "investigate this."
+	exit 1
+fi
+
+echo -n "Testing test14 ... "
+java jak.Main -s test14.jak >&test14.java
+if diff -w test14.java test14.result  ; then
+	echo "succeeded"
+else
+	echo "failed"
+	echo "WARNING: test14 MAY fail due to the output containing AST"
+	echo "constructors. These contain integers for the parser tokens"
+	echo "which may change when jak is altered. Such a failure is"
+	echo "not an indication of a malfunction and should be ignored."
+	echo "Consider replacing the archive's test14.result with test14.java."
+	exit 1
+fi
+
+echo "All macro tests succeeded."

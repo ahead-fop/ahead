@@ -1,0 +1,11 @@
+package MortarL;
+
+
+
+
+    public extends class ProxyFactory {
+	protected void ProxyFactoryConstructor() {
+            Base().ProxyFactoryConstructor();
+	    register( OpfacType.MTR_PLT, new MortarProxy());
+      }
+    }

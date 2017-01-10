@@ -1,0 +1,6 @@
+layer test;
+
+class str {
+
+   void foo() { char a = 'x';  String q = "abc"; String xy = "'x'"; }
+}

@@ -1,0 +1,14 @@
+#!/bin/sh
+
+[ -z "$BASH" ] && exec bash "$0" "$@"
+
+echo -n "composing $1 & $2 -> $3 ... "
+
+java XC.Main2 $1.html $2.html > /dev/null
+
+if diff -wB result.html $3.html ; then
+    echo succeeded
+else
+    echo failed
+    exit 1
+fi

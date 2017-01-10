@@ -1,0 +1,16 @@
+layer FormatJava;
+
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public refines class AstOptToken {
+    //this method should really be written into Comments layer
+    public  AstToken findToken() {
+        if ( tok[0] != null )
+            return ( AstToken ) tok[0];
+        else
+            return null;
+    }
+}

@@ -1,0 +1,6 @@
+refines class AstOptNode {
+   public void execute(Stack S) {
+      if (arg[0]!=null)
+         arg[0].execute(S);
+   }
+}

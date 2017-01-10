@@ -1,0 +1,28 @@
+layer M2D2Java;
+
+refines class ThrowsClauseC {
+
+   public void extract( context c ) {
+      AstCursor curs = new AstCursor();
+      String className = c.getClassName();
+
+      // Step 1: iterate over each AST_TypeName
+
+      for (curs.FirstElement(arg[0]); curs.MoreElement(); curs.NextElement()) {
+
+         // Step 1.1: declare implementing class
+
+         String inc = ((AST_TypeName) curs.node.arg[0]).GetName();
+         inc = ImpQual.fullPath(inc,c);
+
+         // Step 1.2: declare throws
+
+         if (c.isConstructor) 
+            c.Footer.add(
+              RubyInstCreator.createConstructorThrows(c.getMemberName(), inc));
+         else
+            c.Footer.add(
+              RubyInstCreator.createMethodThrows(c.getMemberName(), inc));
+      }
+   }
+}

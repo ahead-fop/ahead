@@ -1,0 +1,20 @@
+layer FormatSm;
+
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public refines class TransitionDecl {
+    public void format( int position ) {
+        newline_routins( position );
+        arg[0].format( position );
+        arg[1].format( position );
+        arg[2].format( position );
+        position += CommentUtil.TabSpace;
+        CommentUtil.token_routins( ( AstToken ) tok[3], position );
+        arg[3].format( position );
+        CommentUtil.token_routins( ( AstToken ) tok[4], position );
+        arg[4].format( position );
+        position -= CommentUtil.TabSpace;
+    }
+}

@@ -1,0 +1,6 @@
+import x.y.z;
+
+interface myint {
+    void base1( float x );
+    void base2();
+}

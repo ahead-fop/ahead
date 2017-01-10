@@ -1,0 +1,5 @@
+ls *.equation | sed -es/.equation// | tr -s '\r' > junk
+for i in `cat junk` ;
+do rm -r -f $i
+done
+rm -f junk _* *~ */*~

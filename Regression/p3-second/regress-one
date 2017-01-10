@@ -1,0 +1,45 @@
+#!/bin/bash
+
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+if [ "$2" = "-p" ]; 
+then
+   compiler="java -ms16m pizza.compiler.Main"
+else
+   compiler="javac -J-mx32m"
+fi
+
+echo -n "test$1 ... "
+
+if [ ! -e "emp.class" ] ; then
+   $compiler emp.java
+fi
+
+java jak.Main test$1.jak
+# indent -i3 -ts80 -br -nce -bad -bap -sob -npcs -di0 test$1.java
+# rm test$1.java~
+
+rm -f empty.class
+$compiler test$1.java
+if [ ! -e "empty.class" ] ; then
+   echo failed
+   exit 1
+fi
+
+if [ ! -e "p3test.class" ] ; then
+   $compiler p3test.java
+fi
+
+java p3test empdata1 > junk1
+java p3test empdata2 > junk2
+
+if diff -w junk1 correct && diff -w junk2 correct ; then
+   echo succeeded
+else
+   echo failed
+   exit 1
+fi
+
+rm junk1 junk2

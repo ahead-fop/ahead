@@ -1,0 +1,12 @@
+#!/bin/bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+FAILURES=0
+
+echo "******************* STAR test ***************"
+java jak2java.Main star.spec \
+&& javac star.java \
+&& java star > junk \
+&& diff -b junk correct-star \
+|| exit 1

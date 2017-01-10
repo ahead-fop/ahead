@@ -1,0 +1,59 @@
++ '[' -z /usr/bin/bash ']'
++ case "$(command -p uname)" in
+++ command -p uname
+++ uname
++ CP='C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.'
++ echo '****************GPL Regression Test***********'
+****************GPL Regression Test***********
++ rm -f -r GPL
++ mkdir GPL
++ rm -f demo2.class
++ java jak2java.Main -v something
++ sed -es/Lang.//g demo2.jjava
++ FAILURES=0
++ javac -classpath 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' demo2.java
++ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' demo2
++ for TEST in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace
++ bash regress-one Edge
+Comparing GPL/Edge.jak gpl-correct/Edge.jak ... succeeded
++ for TEST in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace
++ bash regress-one Graph
+Comparing GPL/Graph.jak gpl-correct/Graph.jak ... succeeded
++ for TEST in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace
++ bash regress-one Main
+Comparing GPL/Main.jak gpl-correct/Main.jak ... succeeded
++ for TEST in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace
++ bash regress-one Neighbor
+Comparing GPL/Neighbor.jak gpl-correct/Neighbor.jak ... succeeded
++ for TEST in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace
++ bash regress-one NumberWorkSpace
+Comparing GPL/NumberWorkSpace.jak gpl-correct/NumberWorkSpace.jak ... succeeded
++ for TEST in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace
++ bash regress-one Vertex
+Comparing GPL/Vertex.jak gpl-correct/Vertex.jak ... succeeded
++ for TEST in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace
++ bash regress-one WorkSpace
+Comparing GPL/WorkSpace.jak gpl-correct/WorkSpace.jak ... succeeded
++ cd GPL
++ for JAK in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace
++ java jak2java.Main Edge.jak
++ for JAK in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace
++ java jak2java.Main Graph.jak
++ for JAK in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace
++ java jak2java.Main Main.jak
++ for JAK in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace
++ java jak2java.Main Neighbor.jak
++ for JAK in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace
++ java jak2java.Main NumberWorkSpace.jak
++ for JAK in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace
++ java jak2java.Main Vertex.jak
++ for JAK in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace
++ java jak2java.Main WorkSpace.jak
++ javac Edge.java Graph.java Main.java Neighbor.java NumberWorkSpace.java Vertex.java WorkSpace.java
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
++ (( FAILURES ))
++ rm -rf GPL
++ echo -e '\nGPL Composition Regression Test completed Successfully.'
+
+GPL Composition Regression Test completed Successfully.

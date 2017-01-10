@@ -1,0 +1,19 @@
+layer rootc;
+
+import firstPackage.*;
+
+SoUrCe RooT rootc "C:!Documents and Settings!Don!My Documents!test!smcommenttest!rootc.jak";
+
+// this is a comment on root
+
+abstract State_machine root$$rootc extends class common  {
+   Delivery_parameters( M m );
+   Unrecognizable_state { ignore(m); }
+}
+
+SoUrCe  extc "C:!Documents and Settings!Don!My Documents!test!smcommenttest!extc.jak";
+
+// this is a comment on root refinement 
+ State_machine root extends root$$rootc {
+
+}

@@ -1,0 +1,9 @@
+// tests ability to add attributes
+
+single layer foo1;
+
+import bottom-up Bool bottom;
+top-down Bool search;
+
+requires below !bottom;
+provides below search;

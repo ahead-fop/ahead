@@ -1,0 +1,18 @@
+// no errors should be reported when this(), super(), and super.xxx
+// are used in a refinement when appearing within quoted text.
+
+layer uberalles;
+
+class foo {
+
+   void bar() { 
+      // if CommonErrorAst doesn't work, each of the following
+      // lines will generate an error
+
+      AST_FieldDecl e = mth{ aConstructor() { super(); } }mth;
+
+      AST_FieldDecl y = mth{ void bary() { super.foo(); } }mth;
+
+      AST_FieldDecl z = mth{ aConstructor() { this(5);  } }mth;
+   }
+}

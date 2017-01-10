@@ -1,0 +1,56 @@
+package MessageL;
+
+import  
+    fsats.util.DataContainer;
+import 
+    F.Libraries.laydown.*;
+import 
+    java.util.*;
+
+
+
+
+    public extends class EventType
+        implements EventTypeInterface
+    {
+        private String name;
+
+        // added -- Java insists that this constructor be present
+        // but oddly, it wasn't needed in the .layer format....
+
+        protected EventType() {
+           EventTypeConstructor(null);
+        }
+
+        protected EventType(String name)
+        {
+          EventTypeConstructor(name);
+        }
+
+        protected void EventTypeConstructor(String name) {
+            this.name = name;
+      }
+
+        public String toString()
+        {
+            return name;
+        }
+
+/* delete -- never used and causes problems when attempting to compile
+	public static EventType fromString(String name)
+	{
+	    EventType type = null;
+
+	    if (name.equals("target"))
+		type = EventType.target;
+	    else if (name.equals("lockGranted"))
+		type = EventType.lockGranted;
+
+	    return type;
+	}
+*/
+
+        public static final EventType target = new EventType("target");
+
+        public static final EventType lockGranted = new EventType("lockGranted");
+    }

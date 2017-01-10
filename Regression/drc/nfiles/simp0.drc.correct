@@ -1,0 +1,21 @@
+drc: simp3.drc: Warning composed equation is incomplete: non-null requirements present
+requires inside a < 30 and 10 <= b
+requires outside 20 < A and B < 20
+
+layer foo;
+
+// defined attributes
+
+inside Int a;
+inside Int b;
+
+// externally defined attributes
+
+extern outside Int A;
+extern outside Int B;
+
+
+requires inside a < 30 and 10 <= b;
+provides inside a < 40 and 0 <= b;
+requires outside 20 < A and B < 20;
+

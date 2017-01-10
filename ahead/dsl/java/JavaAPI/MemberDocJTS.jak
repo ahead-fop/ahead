@@ -1,0 +1,129 @@
+layer JavaAPI;
+
+import java.io.*;
+import java.util.*;
+
+ // of FieldDocJTS
+
+// _________________________________________________________________
+
+ /** JEDI Project
+ * MemberDocJTS.java
+ * University of Texas at Austin
+ * Department of Computer Sciences
+ * Product-line Architecture Research Group
+ * @author Roberto E. Lopez-Herrejon
+ * @version 1.1
+ * @since November 25, 2002
+* @layer<JavaAPI>
+*/
+
+public abstract class MemberDocJTS extends  ProgramElementDocJTS {
+
+    /** Returns true if this member was synthesized by the compiler.
+     * @layer<JavaAPI>
+     */
+    public boolean isSynthetic() {
+        return isSynthetic;
+    }
+
+    /** Name of the MemberDoc. 
+     * @layer<JavaAPI>
+     */
+    String name ;
+
+    /** Variable that indicates if a member is Synthetic or not.
+     * Initial value is false.  
+     * @layer<JavaAPI>
+     */
+    boolean isSynthetic = false;
+
+    /** Variable that indicates if a member is Included or not.
+     * Initial value is false   
+     * @layer<JavaAPI>
+     */
+    boolean isIncluded = false;
+
+    /** Containing package of the member. 
+     * @layer<JavaAPI>
+     */
+    PackageDocJTS containingPackage;
+
+    /** Default constructor. 
+     * @layer<JavaAPI>
+     */
+    public MemberDocJTS() {
+        // @dummy code
+        int xasds=43;
+    }
+
+    /** Additional constructor. 
+     * @layer<JavaAPI>
+     */
+    public MemberDocJTS( String _name ) 
+    {
+        name = _name;
+    }
+
+    /** Returns the qualified Name ???
+     * Currrent implementation returns containinPackage + "." + name
+     * @layer<JavaAPI>
+     */
+    public String qualifiedName() {
+        return name;
+    }
+
+    /** Returns the name of the MemberDoc. 
+     * @layer<JavaAPI>
+     */
+    public String name() {
+        return name;
+    }
+
+    /** Returns the containing package. 
+     * @layer<JavaAPI>
+     */
+    public  PackageDocJTS containingPackage() 
+    {
+        return containingPackage;
+    }
+
+    /** Returns the isIncluded variable. 
+     * @layer<JavaAPI>
+     */
+    public boolean isIncluded() {
+        return isIncluded;
+    }
+
+    /** Sets the name of the member doc. 
+     * @layer<JavaAPI>
+     */
+    public void setName( String _name ) {
+        name = _name;
+    }
+
+    /** Sets the isSynthetic variable.  
+     * @layer<JavaAPI>
+     */
+    public void setSynthetic( boolean _isSynthetic ) 
+    {
+        isSynthetic = _isSynthetic;
+    }
+
+    /** Sets the isIncluded variable. 
+     * @layer<JavaAPI>
+     */
+    public void setIncluded( boolean _isIncluded )
+    {
+        isIncluded = _isIncluded;
+    }
+
+    /** Sets the containing package of the member. 
+     * @layer<JavaAPI>
+     */
+    public void setContainingPackage( PackageDocJTS _containingPackage )
+    {
+        containingPackage = _containingPackage;
+    }
+  
+}

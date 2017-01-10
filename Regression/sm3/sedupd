@@ -1,0 +1,5 @@
+for i in *.jak; do
+  echo $i
+  sed -f sed-updates $i > junk
+  mv junk $i
+done

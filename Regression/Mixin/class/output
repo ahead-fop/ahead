@@ -1,0 +1,20 @@
+
+layer foo.bar.one;
+
+SoUrCe RooT foo.bar.one "eins.jak";
+
+abstract class c$$foo$bar$one {
+   int top;
+}
+
+SoUrCe  baz.bar.two "zwei.jak";
+
+ abstract class c$$baz$bar$two extends  c$$foo$bar$one  {
+  int mid;
+}
+
+SoUrCe  baz.baz.three "drei.jak";
+
+ class c extends  c$$baz$bar$two  {
+   int bottom;
+}

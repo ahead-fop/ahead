@@ -1,0 +1,23 @@
+#!/usr/bin/env condor_submit
+#
+# Condor job description file to run the automatic test summary script as a
+# batch job under the UTCS Condor distributed job management system.  This
+# version assumes the job is submitted while in the autotest root directory.
+#
+# Usage: cd <autotest-root> ; condor_submit summary.condor
+#=============================================================================#
+# requirements	= InScout == 0 && InPhylofarm == 0 && OpSys == "LINUX"
+#
+
+universe	= vanilla
+executable	= bin/summary
+
+coresize	= 0
+error		= summary.run
+log		= condor.log
+nice_user	= False
+notification	= always
+notify_user	= sarvela@cs.utexas.edu
+output		= summary.run
+requirements	= InPublic != 0 && OpSys == "LINUX"
+QUEUE

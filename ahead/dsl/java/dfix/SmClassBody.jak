@@ -1,0 +1,23 @@
+layer dfix;
+
+public refines class SmClassBody {
+   public void reduce2java( AstProperties props ) {
+
+	   // supply default delivery parameters declaration if necessary
+
+      tok[0].reduce2java(props); // "{"
+	   RootDecl rd = (RootDecl) arg[0].arg[0];
+	   if (rd == null) {
+		   props.println(""); // empty line
+		   props.println("    Delivery_parameters (" +
+			       kernelConstants.deliverDefault + " );");
+	   }
+      else
+		   rd.reduce2java(props);
+		arg[1].reduce2java(props);  // otherwise clauses
+		arg[2].reduce2java(props);  // stateslist
+		arg[3].reduce2java(props);  // eslist
+		arg[4].reduce2java(props);  // astfielddecl
+      tok[1].reduce2java(props);  // "}"
+   }
+}

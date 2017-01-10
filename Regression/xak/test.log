@@ -1,0 +1,23 @@
++ '[' -z /usr/bin/bash ']'
++ echo '**************** XAK - v1 - HTML Test ***************'
+**************** XAK - v1 - HTML Test ***************
++ echo '**************** XAK - HTML Test ***************'
+**************** XAK - HTML Test ***************
++ java org.onekin.xak.Xak -c base-index.html ref-index.html -o result.html
++ diff -wB index.html result.html
++ echo '1 HTML succeeded'
+1 HTML succeeded
++ echo '**************** XAK -v1 - XML (Ant) Test **********'
+**************** XAK -v1 - XML (Ant) Test **********
++ java org.onekin.xak.Xak -c base-build.xml ref-build.xml -o result.xml
++ diff -wB result-build.xml result.xml
++ echo '2 XML (Ant) succeeded'
+2 XML (Ant) succeeded
++ echo '**************** XAK - v2 - HTML Test **********'
+**************** XAK - v2 - HTML Test **********
++ java org.onekin.xak.Xak -xak2 -c base-sven.xak refine-sven.xak -o result.xak
+XAK2XML: [xak: result.xak] -> [xml: result.xhtml]
++ diff -wB result.xak result-sven.xak
++ echo '1 XAK-v2 succeeded'
+1 XAK-v2 succeeded
++ rm result.html result.xak result.xhtml result.xml

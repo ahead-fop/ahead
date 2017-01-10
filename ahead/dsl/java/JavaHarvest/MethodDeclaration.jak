@@ -1,0 +1,175 @@
+layer JavaHarvest;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+
+/** MethodDeclaration
+ *: [ AST_Modifiers ] AST_TypeName MethodDeclarator
+ *      [ ThrowsClause] MethodDeclSuffix::MethodDcl
+ *;
+ * @layer<JavaHarvest>
+ */
+    
+public refines class MethodDeclaration {
+    LinkedList thrownExceptions;
+
+    public void execute() {
+        Super().execute();
+                  
+        // Gets the _harvest_method from its MethodDeclarator
+        MethodDocJTS met = 
+                ( ( MethodDeclarator )arg[2] )._harvest_method;
+                                    
+        AstCursor c = new AstCursor(); // c to traverse list
+        AstNode   e = arg[0].arg[0]; // e instanceOf Lang.AstList
+ 
+        // Contains the comment
+        String comment ="";
+        String returnTypeString = "";
+                                   
+        if ( e != null ) { // if there are modifiers
+            // Gets the comments from the first modifier
+            c.FirstElement( e );
+            AstNode first = c.node;
+                                                     
+            for ( ; c.MoreElement(); c.NextElement() ) {
+                                  
+                // abstract method
+                if ( c.node instanceof ModAbstract ) 
+                                                {
+                    met.setAbstract( true );
+                }
+                                                
+                // final method
+                if ( c.node instanceof ModFinal ) {
+                    met.setFinal( true );
+                }
+                                                
+                // public method
+                if ( c.node instanceof ModPublic ) {
+                    met.setPublic( true );
+                }
+                                                
+                // protected method
+                if ( c.node instanceof ModProtected ) 
+                                                {
+                    met.setProtected( true );
+                }
+                                                
+                // private method
+                if ( c.node instanceof ModPrivate ) {
+                    met.setPrivate( true );
+                }
+                                                
+                // static method
+                if ( c.node instanceof ModStatic ) {
+                    met.setStatic( true );
+                }
+                                    
+            // these 4 somehow are not part of ProgramElementDocJTS
+            // transient, volatile, native, synchronized
+            } // for all modifiers
+                           
+            // ************ Comment Processing *************************
+            comment = ( ( AstToken ) first.tok[0] ).white_space;
+                   
+        } // if there are modifiers
+        else  // if there are no modifiers read the comments from ???? 
+                {
+            // Gets the comment from the primitive type
+            if ( arg[1] instanceof  PrimType ) {
+                comment = ( ( AstToken )arg[1].arg[0].tok[0] ).white_space;
+            // returnTypeString = 
+            // (($TEqn.AstToken)arg[1].arg[0].tok[0]).tokenName();
+            }
+                                      
+            // Gets the comment from a Qualified type name
+            if ( arg[1] instanceof  QNameType )
+                          {
+                // arg[1] = QNameType, arg[1].arg[0] = AST_QualifiedName
+                    // arg[1].arg[0].arg[0] = AST_QualifiedNameElem;
+                    // arg[1].arg[0].arg[0].arg[0] = $TEqn.NameId 
+                AstNode commentNode =  arg[1].arg[0].arg[0].arg[0];
+                comment = ( ( AstToken )commentNode.tok[0] ).white_space;
+            // returnTypeString = arg[1].toString();
+                                                  
+            // In case there are comments get only the type
+             // returnTypeString = 
+             // returnTypeString.substring(comment.length(), 
+            // returnTypeString.length());
+            }
+                          
+        } // if there are no modifiers
+                  
+        CommentJedi methodComment = 
+                CommentParser.ParseComment( met, comment );
+        met.setComment( methodComment );
+                                      
+        // Obtains the returnTypeString 
+        // Gets the comment from the primitive type
+        if ( arg[1] instanceof  PrimType ) {
+            returnTypeString = 
+                                    ( ( AstToken )arg[1].arg[0].tok[0] ).tokenName();
+        }
+                          
+        // Gets the comment from a Qualified type name
+        if ( arg[1] instanceof  QNameType ) {
+            returnTypeString = arg[1].toString();
+
+            // If there are no modifiers then returnType should remove the
+            // comment
+            if ( e == null )
+                returnTypeString = 
+                                                returnTypeString.substring( comment.length(), 
+                                                                      returnTypeString.length() );
+        }
+                                             
+        // Sets the corresponding AST_TypeName
+        met.setReturnType( new  TypeJTS( returnTypeString,returnTypeString ) );
+                  
+        // ************************************************************* 
+                                                      
+        // Throws class is optional that's why we have to check its kid
+        AstNode tn = arg[3].arg[0];
+                   
+        if ( tn != null ) {
+            // AST_TypeNameList is tn.arg[0]
+
+            thrownExceptions  = new LinkedList();
+                          
+            AstCursor c1 = new AstCursor(); // c to traverse list
+            AstNode   e1 = tn.arg[0]; // e instanceOf Lang.AstList
+                              
+            for ( c1.FirstElement( e1 ); c1.MoreElement(); c1.NextElement() ) {
+                
+                // TNClass -> QNameType -> AST_QualifiedName
+                // I suppose that here I have to either look at some table
+                // all the interfaces and got the references, BUT in the
+                //  meantime I just create an interface object added to a list
+                ClassDocJTS cls = 
+                   ClassDocJTS.ClassDocJTSFactory();
+                cls.ClassDocJTSConstructor( c1.node.arg[0].arg[0].toString() );
+                cls.setClass( true );
+                                                
+                // adds to the implemented interfaces list
+                thrownExceptions.add( cls );
+            } // for
+                                       
+            ClassDocJTS[] arrayExceptions = 
+                            new  ClassDocJTS[thrownExceptions.size()];
+            for ( int i=0; i < thrownExceptions.size(); i++ )
+                arrayExceptions[i] = 
+                                                ( ClassDocJTS ) thrownExceptions.get( i );
+                                       
+            // sets the method's thrown exception field
+            met.setThrownExceptions( arrayExceptions );
+                           
+        } // if there are throw clauses
+        else // there are no throw clauses
+            met.setThrownExceptions( new  ClassDocJTS[0] );
+          
+    } // execute
+}

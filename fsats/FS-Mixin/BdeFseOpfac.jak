@@ -1,0 +1,16 @@
+layer FS;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+SoUrCe RooT BasicL "C:!Java!FeatureOrientedProgramming!fsats!BasicL!BdeFseOpfac.jak";
+
+public class BdeFseOpfac extends FseOpfac {
+    public Mission newMission() 
+        {
+        return new BdeFseMission();
+    }
+}

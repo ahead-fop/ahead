@@ -1,0 +1,14 @@
+layer foo;
+
+// defined attributes
+
+inside Int range;
+outside Int val;
+
+// externally defined attributes
+
+
+
+provides inside range == 50;
+provides outside val == 4;
+

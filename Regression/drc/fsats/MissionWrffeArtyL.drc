@@ -1,0 +1,15 @@
+single layer MissionWrffeArtyL;
+
+outside Bool artyMissionPresent;
+
+extern outside Bool missionPresent;
+extern outside Bool basicPresent;
+extern outside Bool artilleryPresent;
+extern outside Bool wrffeCommonPresent;
+extern outside Int  fsatsRank;
+extern inside  Bool libraries;
+
+requires outside fsatsRank == 3 and artilleryPresent and wrffeCommonPresent
+                 and basicPresent;
+provides outside missionPresent and artyMissionPresent;
+requires inside  libraries;

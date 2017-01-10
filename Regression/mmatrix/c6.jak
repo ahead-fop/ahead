@@ -1,0 +1,10 @@
+layer L1;
+
+    // test refinement of static method
+
+    public refines class C1 { 
+       static int foo() {
+           System.out.println(Super().foo());
+       }
+    }
+

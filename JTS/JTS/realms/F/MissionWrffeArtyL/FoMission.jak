@@ -1,0 +1,53 @@
+package MissionWrffeArtyL;
+
+import 
+    Jakarta.util.Util;
+import 
+    java.io.*;
+import 
+    F.Libraries.log.Log;
+
+ // FistMission
+
+ 
+    public extends state_machine FoMission
+    {
+        // Don't wait for MFR on EOM.
+        /*REFINES EDGE no longer supported.  
+   Move predicate or body into method, and extend method.
+Refines edge wrffeArtyAccepted1 : wrffeArtyAccepted -> wrffeArtyEnding
+            conditions false do {} */
+        
+        // Ignore shot message.
+        /*REFINES EDGE no longer supported.  
+   Move predicate or body into method, and extend method. 
+Refines edge wrffeArtyAccepted2 : wrffeArtyAccepted -> wrffeArtyAccepted
+            conditions (message instanceof ShotMessage) 
+         do {} */
+        
+        // On RoundsComplete send EOM to gun and stop.
+        edge wrffeArtyAccepted3 : wrffeArtyAccepted -> stop
+            conditions (message instanceof RoundsCompleteMessage)
+            do
+	    { EomMessage eomMessage = new EomMessage(getId());
+		if (initiatingUnit != null)
+		    eomMessage.setInitiatingUnitId(initiatingUnit.intValue());
+		sendUp(eomMessage);
+	    }
+
+        // net effect of first Refines is to have a false edge condition
+
+        public boolean wrffeArtyAccepted1Test(Event message) {
+           return false;
+        }
+
+        // net effect of second Refines is to change the boolean and
+        // action methods
+
+        public boolean wrffeArtyAccepted2Test(Event message) {
+           return (message instanceof ShotMessage);
+        }
+
+        public void wrffeArtyAccepted2Action(Event message) { }
+
+    }

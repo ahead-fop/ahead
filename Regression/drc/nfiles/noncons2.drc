@@ -1,0 +1,4 @@
+// checks "constant" composition
+
+layer noncons2;
+

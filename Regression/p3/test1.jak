@@ -1,0 +1,19 @@
+interface empty { };
+
+container<emp> empcont;
+
+cursor<empcont> empcursor;
+
+container empcont1 extends empcont implements empty
+   using dlist( delflag( malloc( ) ) );
+
+cursor old(empcont1 e) 
+       where age() > 40  /*orderby name*/;
+
+cursor all(empcont1 e);
+
+cursor allname(empcont1 e, int x ) 
+       where age() == x orderby name;
+
+cursor allname1(empcont1 e) deletion update age, name 
+       where name() == "Don";

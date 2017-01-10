@@ -1,0 +1,58 @@
+layer SmWriter;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.io.*;
+import java.util.*;
+
+// of ClassGenerator
+
+   /** Generates an HMTL file for States
+    * @layer<SmWriter>
+    */
+    
+public class StateWriter {
+
+    public static void GenerateState( StateMachineDocJTS 
+                     _state,
+                     String outDir, 
+                     LinkedList documentsList ) 
+        throws Exception
+    {
+
+        // System.out.println("Generating  a State ");
+
+        // Call the generation for this state
+        if ( _state!=null )
+            try {
+                // HTMLGenerator.Lang generator = 
+                //                new HTMLGenerator.Lang();
+                GlobalWrapper.setOutputDirectory( outDir );
+
+                StateMachineTemplate stemp = 
+                                                ( StateMachineTemplate )documentsList.get( 1 );
+                StateGenerator.GenerateState( _state, stemp );
+            }
+            catch( Exception ex ) 
+                        {
+                System.out.println( "Error in state " + _state.name() +
+                                                                       " " + ex );
+            }
+
+    // // Call for each inner state the function recursively
+    // LinkedList innerstates = _state.states();
+    // for(int i=0; i< innerstates.size(); i++)
+    //    GenerateState(($TEqn.StateMachineDocJTS)
+    //              innerstates.get(i),
+    //              outDir);
+
+    // // Call for each inner class the Class Writer
+    // LinkedList innerclasses = _state.innerClasses();
+    // for(int i=0; i< innerclasses.size(); i++)
+     //    $TEqn.ClassWriter.GenerateClass(($TEqn.ClassDocJTS)
+    //                       innerclasses.get(i),
+    //                       outDir);
+
+    } // of GenerateState
+
+}

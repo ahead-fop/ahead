@@ -1,0 +1,38 @@
+layer JavaTagHandlers;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+ // of DeprecatedTag
+
+// **********************************************************************
+// **********************************************************************
+// **********************************************************************
+
+/** The Tag Jedi for Return Tags 
+ * @layer<JavaTagHandlers>
+ */
+
+public class ReturnTagJedi extends AbstractTagJedi {
+
+    /** Method that parses and builds a ReturnTag.
+    * ReturnTag -> @return description
+    * @layer<JavaTagHandlers>
+    */
+    public void parse( DocJTS Document,  CommentJedi comment, 
+           String stringTag ) {
+
+        ReturnTagJedi tag = new  ReturnTagJedi();
+        CommentParser.ParseDescription( Document, stringTag, "@return", tag );
+
+        LinkedList tagsList = comment.getTags();
+        tagsList.add( tag );
+        comment.setTags( tagsList ); // @redundant?
+
+    } // of parse
+
+}

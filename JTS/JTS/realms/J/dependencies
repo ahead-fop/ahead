@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# The files in each list should have identical content:
+#
+bash same ast  astEmpty
+bash same Basemm j2jBase mixinbase preprocess unmixinbase CapSuperGram
+bash same Classmm CompClass j2jClassx mixinClass unmixinclass
+bash same CompInt Intmm j2jIntx mixinInt unmixinint
+bash same gscope gscopeEmpty
+bash same AspectGram AspectDecl AspectTrans 
+bash same LocalId LocalIdEmpty LocalIdError
+bash same CompSm Sm2mm j2jSmx mixinSm unmixinsm
+bash same sm4 smempty
+bash same Source SourceError Sourcemm

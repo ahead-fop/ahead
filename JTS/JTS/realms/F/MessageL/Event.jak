@@ -1,0 +1,22 @@
+package MessageL;
+
+import  
+    fsats.util.DataContainer;
+import 
+    F.Libraries.laydown.*;
+import 
+    java.util.*;
+
+
+    /** Any event that can occur to an opfac. */
+    public extends interface Event
+        extends java.io.Serializable, Cloneable
+    {
+        /** Get message type. */
+        EventType getType();
+
+        /** Get mission identifier. */
+        String getMissionId();
+
+        Object clone();
+    }

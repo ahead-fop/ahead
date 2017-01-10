@@ -1,0 +1,24 @@
+layer FS;
+
+import laydown.*;
+
+import java.util.*;
+
+class LocationAdapter
+        implements fsats.guiIf.Location {
+    private float latitude;
+    private float longitude;
+
+    public LocationAdapter( Location location )
+        {
+        this.latitude = location.getLatitude();
+        this.longitude = location.getLongitude();
+    }
+
+    public float getLatitude() {
+        return latitude;
+    }
+    public float getLongitude() {
+        return longitude;
+    }
+}

@@ -1,0 +1,10 @@
+//layer CExt1;
+
+import java.io.Serializable;
+import anotherPackage;
+
+public transient refines class MyClass implements yyy, java.io.Serializable {
+    int Terse = 2;
+    void foo() throws SomeException { }
+    int increment( int i ) { }
+}

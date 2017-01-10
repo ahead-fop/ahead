@@ -1,0 +1,3 @@
+
+mixin::12: Error method biff cannot both refine (Super) and invoke super
+mixin::15: Error method baz cannot both refine (Super) and invoke super

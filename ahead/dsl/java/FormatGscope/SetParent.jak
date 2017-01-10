@@ -1,0 +1,12 @@
+layer FormatGscope;
+
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public refines class SetParent {
+    public void format( int position ) {
+        newline_routins( position );
+        super.format( position );
+    }
+}

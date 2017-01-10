@@ -1,0 +1,45 @@
+layer FormatJava;
+
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public abstract refines class AstNode {
+
+    // some routins that will be used by nodes that does not start a new line
+    public void inline_routins( int position ) {
+        setComment( CommentUtil.replaceTabs( this.getComment(),position ) );
+        setComment( CommentUtil.trimComment( this.getComment() ) );
+    }
+
+    // some routins that will be used by nodes that starts a new line
+    public void newline_routins( int position ) {
+        setComment( CommentUtil.replaceTabs( this.getComment(),position ) );
+        if ( !CommentUtil.layerName.equals( "" ) )
+            setComment( CommentUtil.addLayerComment( this.getComment(), CommentUtil.layerName ) );
+        setComment( CommentUtil.adjustComment( this.getComment(),position ) );
+    }
+    
+    public void format( int position ) {
+        setComment( CommentUtil.replaceTabs( this.getComment(),position ) );
+        for ( int i=0; i<arg.length; i++ )
+            if ( arg[i] != null )
+                arg[i].format( position );
+    }
+      
+    // for debugging use only
+    public void display() {
+        for ( int i=0; i<arg.length; i++ )
+            if ( arg[i] != null ) {
+                if ( arg[i].tok != null )
+                    for ( int j=0; j < arg[i].tok.length; j++ )
+                        if ( arg[i].tok[j] instanceof  AstToken ) {
+                            System.out.println( ( ( AstToken )arg[i].tok[j] ).name + ":" );
+                            System.out.println( ( ( AstToken )arg[i].tok[j] ).white_space + ";" );
+                            System.out.println();
+                        }
+                arg[i].display();
+            }
+    }
+}

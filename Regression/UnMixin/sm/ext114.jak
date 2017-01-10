@@ -1,0 +1,13 @@
+// tests composition of extensions that have state and Transition declarations
+// and method declarations
+
+layer ext114;
+
+refines State_machine root {
+
+   States h1;
+
+   Exit h1 { Super().fromext11(); }
+
+   void fromext14() { }
+}

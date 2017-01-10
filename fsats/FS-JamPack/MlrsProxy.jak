@@ -1,0 +1,7 @@
+layer FS;
+
+public class MlrsProxy extends WeaponProxy {
+    public int typePrecedence() {
+        return 2;
+    }
+}

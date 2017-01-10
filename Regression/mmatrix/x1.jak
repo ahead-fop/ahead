@@ -1,0 +1,42 @@
+// tests mmatrix with presense of Source declarations
+
+// layer Ctop; 
+
+import Jakarta.util.*;
+
+import java.i.*;
+
+SoUrCe RooT Ctop "C:!Java!FeatureOrientedProgramming!Regression!Mixin!local!Ctop.jak";
+
+ abstract
+
+class top$$Ctop {
+   static int i$$Ctop,j$$Ctop;
+   int ii$$Ctop,jj$$Ctop;
+
+   static { i$$Ctop = 4; }
+
+   top$$Ctop() {  ii$$Ctop = 5; }
+   top$$Ctop(int rj) { jj$$Ctop = rj; }
+
+   void foo$$Ctop(float x, float y) { /* do something */ }
+
+   float bar( float x ) { return (float) 5.0; }
+}
+
+SoUrCe  Cmid "C:!Java!FeatureOrientedProgramming!Regression!Mixin!local!Cmid5.jak";
+
+ class top extends top$$Ctop implements java.io.Serializable {
+
+   static int i$$Cmid,j$$Cmid;
+   int ii$$Cmid,jj$$Cmid;
+
+   static { i$$Cmid = 4; }
+
+   void foo$$Cmid(float x, float y) { /* do something */ }
+
+   float bar( float x ) { 
+       Super(float).bar(x);
+       return (float) 4.0; 
+   }
+}

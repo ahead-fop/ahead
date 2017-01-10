@@ -1,0 +1,25 @@
+echo "******************* State refinement test ***************"
+java jak2java.Main refined.spec \
+&& javac refined.java \
+&& java refined > junk \
+&& diff -b junk correct-refined \
+|| exit 1
+echo "******************* State refinement with proceeds test ***************"
+java jak2java.Main r.spec \
+&& javac r.java \
+&& java r > junk \
+&& diff -b junk correct-refined \
+|| exit 1
+echo "******************* Edge refinement test ***************"
+java jak2java.Main edgeref.spec \
+&& javac edgeref.java \
+&& java edgeref > junk \
+&& diff -b junk correct-edgeref \
+|| exit 1
+echo "******************* Edge refinement with proceeds test ***************"
+java jak2java.Main er.spec \
+&& javac er.java \
+&& java er > junk \
+&& diff -b junk correct-edgeref \
+|| exit 1
+

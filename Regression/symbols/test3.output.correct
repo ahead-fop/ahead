@@ -1,0 +1,367 @@
+Binding of bar in nested top-level failed
+Binding of bar in member class : int bar;
+Binding of baz in outer refined : double baz;
+Binding of baz in nested top-level failed
+Binding of baz in member class : double baz;
+Binding of string in nested top-level : Class: String implements java.io.Serializable, java.lang.Comparable
+    Class: CaseInsensitiveComparator implements java.io.Serializable, java.util.Comparator
+        int compare(java.lang.Object, java.lang.Object)
+        void <init>()
+        void <init>(java.lang.String$1)
+        long serialVersionUID;
+    boolean endsWith(java.lang.String)
+    boolean equals(java.lang.Object)
+    boolean equalsIgnoreCase(java.lang.String)
+    boolean regionMatches(boolean, int, java.lang.String, int, int)
+    boolean regionMatches(int, java.lang.String, int, int)
+    boolean startsWith(java.lang.String)
+    boolean startsWith(java.lang.String, int)
+    byte[] getBytes()
+    byte[] getBytes(java.lang.String)
+    byte[] getBytes(sun.io.CharToByteConverter)
+    char charAt(int)
+    char[] toCharArray()
+    int compareTo(java.lang.Object)
+    int compareTo(java.lang.String)
+    int compareToIgnoreCase(java.lang.String)
+    int hashCode()
+    int indexOf(int)
+    int indexOf(int, int)
+    int indexOf(java.lang.String)
+    int indexOf(java.lang.String, int)
+    int lastIndexOf(int)
+    int lastIndexOf(int, int)
+    int lastIndexOf(java.lang.String)
+    int lastIndexOf(java.lang.String, int)
+    int length()
+    java.lang.String concat(java.lang.String)
+    java.lang.String copyValueOf(char[])
+    java.lang.String copyValueOf(char[], int, int)
+    java.lang.String intern()
+    java.lang.String replace(char, char)
+    java.lang.String substring(int)
+    java.lang.String substring(int, int)
+    java.lang.String toLowerCase()
+    java.lang.String toLowerCase(java.util.Locale)
+    java.lang.String toString()
+    java.lang.String toUpperCase()
+    java.lang.String toUpperCase(java.util.Locale)
+    java.lang.String trim()
+    java.lang.String valueOf(boolean)
+    java.lang.String valueOf(char)
+    java.lang.String valueOf(char[])
+    java.lang.String valueOf(char[], int, int)
+    java.lang.String valueOf(double)
+    java.lang.String valueOf(float)
+    java.lang.String valueOf(int)
+    java.lang.String valueOf(java.lang.Object)
+    java.lang.String valueOf(long)
+    sun.io.ByteToCharConverter getBTCConverter(java.lang.String)
+    sun.io.CharToByteConverter getCTBConverter(java.lang.String)
+    void <clinit>()
+    void <init>()
+    void <init>(byte[])
+    void <init>(byte[], int)
+    void <init>(byte[], int, int)
+    void <init>(byte[], int, int, int)
+    void <init>(byte[], int, int, java.lang.String)
+    void <init>(byte[], int, int, sun.io.ByteToCharConverter)
+    void <init>(byte[], java.lang.String)
+    void <init>(char[])
+    void <init>(char[], int, int)
+    void <init>(int, int, char[])
+    void <init>(java.lang.String)
+    void <init>(java.lang.StringBuffer)
+    void getBytes(int, int, byte[], int)
+    void getChars(int, int, char[], int)
+    char[] value;
+    int count;
+    int hash;
+    int offset;
+    java.io.ObjectStreamField[] serialPersistentFields;
+    java.lang.ThreadLocal btcConverter;
+    java.lang.ThreadLocal ctbConverter;
+    java.util.Comparator CASE_INSENSITIVE_ORDER;
+    long serialVersionUID;
+Binding of Util in member class : Class: Util
+    int errorCount()
+    int system(java.lang.String)
+    int system(java.lang.String, java.lang.String)
+    int warningCount()
+    java.io.File findClasspathBase(java.lang.String)
+    java.io.File findPackageDir(java.lang.String)
+    java.io.PrintWriter backedOutput(java.io.File)
+    java.lang.String baseType(java.lang.Class)
+    java.lang.String baseType(java.lang.Object)
+    java.lang.String baseType(java.lang.String)
+    java.lang.String getFullPath(java.io.File)
+    java.lang.String getParentDir(java.io.File)
+    java.lang.String[] findComponents(java.lang.String)
+    void <clinit>()
+    void <init>()
+    void error(java.lang.String)
+    void fatalError(java.lang.Exception)
+    void fatalError(java.lang.String)
+    void fatalError(java.lang.String, java.lang.Exception)
+    void override(java.lang.String, java.lang.Object)
+    void report(java.lang.String)
+    void resetCounters()
+    void setReportStream(java.io.PrintWriter)
+    void stop(java.lang.String)
+    void stopError(java.lang.String)
+    void warning(java.lang.String)
+    int errors;
+    int warnings;
+    java.io.PrintWriter reportStream;
+    java.lang.String bashExec;
+    java.lang.String classpath;
+Binding of Symtab in member class : Class: Symtab
+    Jakarta.symtab.ClassInfo classOf(Jakarta.symtab.Declaration)
+    Jakarta.symtab.Declaration lookup(java.lang.String)
+    Jakarta.symtab.Declaration lookup(java.lang.String, Jakarta.symtab.Scope)
+    Jakarta.symtab.PackageInfo defaultPackage()
+    Jakarta.symtab.PackageInfo getJavaLangPackage()
+    Jakarta.symtab.Scope currentScope()
+    Jakarta.symtab.Scope deactivateScope()
+    Jakarta.symtab.Symtab instance()
+    Jakarta.symtab.Type sigToType(java.lang.String)
+    java.lang.String sigToString(java.lang.String)
+    java.util.Vector getRoots()
+    void <clinit>()
+    void <init>()
+    void activateScope(Jakarta.symtab.Scope)
+    void clearScopeStack()
+    void declare(Jakarta.symtab.Declaration)
+    void dump(java.io.PrintWriter)
+    void expunge()
+    void initDefaultPackage()
+    Jakarta.symtab.ClassInfo Boolean;
+    Jakarta.symtab.ClassInfo Byte;
+    Jakarta.symtab.ClassInfo Character;
+    Jakarta.symtab.ClassInfo Double;
+    Jakarta.symtab.ClassInfo Float;
+    Jakarta.symtab.ClassInfo Integer;
+    Jakarta.symtab.ClassInfo Long;
+    Jakarta.symtab.ClassInfo Short;
+    Jakarta.symtab.ClassInfo Void;
+    Jakarta.symtab.ClassInfo javaLangObject;
+    Jakarta.symtab.PackageInfo def_pkg;
+    Jakarta.symtab.PackageInfo javaLangPkg;
+    Jakarta.symtab.Symtab theInstance;
+    boolean collectNames;
+    boolean debug;
+    java.lang.String classpath;
+    java.lang.String[] indent;
+    java.util.Stack scopeStack;
+    java.util.Vector names;
+    java.util.Vector roots;
+*** SymbolTable ***
+
+Package: DEFAULT_PACKAGE
+    Class: boolean
+    Class: byte
+    Class: char
+    Class: double
+    Class: float
+    Class: int
+    Class: long
+    Class: short
+    Class: void
+
+    Package: Jakarta
+
+        Package: Jakarta.symtab
+            Class: Symtab
+                Jakarta.symtab.ClassInfo classOf(Jakarta.symtab.Declaration)
+                Jakarta.symtab.Declaration lookup(java.lang.String)
+                Jakarta.symtab.Declaration lookup(java.lang.String, Jakarta.symtab.Scope)
+                Jakarta.symtab.PackageInfo defaultPackage()
+                Jakarta.symtab.PackageInfo getJavaLangPackage()
+                Jakarta.symtab.Scope currentScope()
+                Jakarta.symtab.Scope deactivateScope()
+                Jakarta.symtab.Symtab instance()
+                Jakarta.symtab.Type sigToType(java.lang.String)
+                java.lang.String sigToString(java.lang.String)
+                java.util.Vector getRoots()
+                void <clinit>()
+                void <init>()
+                void activateScope(Jakarta.symtab.Scope)
+                void clearScopeStack()
+                void declare(Jakarta.symtab.Declaration)
+                void dump(java.io.PrintWriter)
+                void expunge()
+                void initDefaultPackage()
+                Jakarta.symtab.ClassInfo Boolean;
+                Jakarta.symtab.ClassInfo Byte;
+                Jakarta.symtab.ClassInfo Character;
+                Jakarta.symtab.ClassInfo Double;
+                Jakarta.symtab.ClassInfo Float;
+                Jakarta.symtab.ClassInfo Integer;
+                Jakarta.symtab.ClassInfo Long;
+                Jakarta.symtab.ClassInfo Short;
+                Jakarta.symtab.ClassInfo Void;
+                Jakarta.symtab.ClassInfo javaLangObject;
+                Jakarta.symtab.PackageInfo def_pkg;
+                Jakarta.symtab.PackageInfo javaLangPkg;
+                Jakarta.symtab.Symtab theInstance;
+                boolean collectNames;
+                boolean debug;
+                java.lang.String classpath;
+                java.lang.String[] indent;
+                java.util.Stack scopeStack;
+                java.util.Vector names;
+                java.util.Vector roots;
+
+        Package: Jakarta.util
+            Class: Util
+                int errorCount()
+                int system(java.lang.String)
+                int system(java.lang.String, java.lang.String)
+                int warningCount()
+                java.io.File findClasspathBase(java.lang.String)
+                java.io.File findPackageDir(java.lang.String)
+                java.io.PrintWriter backedOutput(java.io.File)
+                java.lang.String baseType(java.lang.Class)
+                java.lang.String baseType(java.lang.Object)
+                java.lang.String baseType(java.lang.String)
+                java.lang.String getFullPath(java.io.File)
+                java.lang.String getParentDir(java.io.File)
+                java.lang.String[] findComponents(java.lang.String)
+                void <clinit>()
+                void <init>()
+                void error(java.lang.String)
+                void fatalError(java.lang.Exception)
+                void fatalError(java.lang.String)
+                void fatalError(java.lang.String, java.lang.Exception)
+                void override(java.lang.String, java.lang.Object)
+                void report(java.lang.String)
+                void resetCounters()
+                void setReportStream(java.io.PrintWriter)
+                void stop(java.lang.String)
+                void stopError(java.lang.String)
+                void warning(java.lang.String)
+                int errors;
+                int warnings;
+                java.io.PrintWriter reportStream;
+                java.lang.String bashExec;
+                java.lang.String classpath;
+
+    Package: MyPackage
+        Class: outer
+            double baz;
+            float bar;
+        Class: outerRefined extends MyPackage.outer
+            Class: memberClass
+            Class: nestedTopLevel
+                String string;
+            int bar;
+
+    Package: java
+
+        Package: java.io
+            Class: Serializable
+
+        Package: java.lang
+            Class: Comparable
+                int compareTo(java.lang.Object)
+            Class: Object
+                boolean equals(java.lang.Object)
+                int hashCode()
+                java.lang.Class getClass()
+                java.lang.Object clone()
+                java.lang.String toString()
+                void <clinit>()
+                void <init>()
+                void finalize()
+                void notify()
+                void notifyAll()
+                void registerNatives()
+                void wait()
+                void wait(long)
+                void wait(long, int)
+            Class: String implements java.io.Serializable, java.lang.Comparable
+                Class: CaseInsensitiveComparator implements java.io.Serializable, java.util.Comparator
+                    int compare(java.lang.Object, java.lang.Object)
+                    void <init>()
+                    void <init>(java.lang.String$1)
+                    long serialVersionUID;
+                boolean endsWith(java.lang.String)
+                boolean equals(java.lang.Object)
+                boolean equalsIgnoreCase(java.lang.String)
+                boolean regionMatches(boolean, int, java.lang.String, int, int)
+                boolean regionMatches(int, java.lang.String, int, int)
+                boolean startsWith(java.lang.String)
+                boolean startsWith(java.lang.String, int)
+                byte[] getBytes()
+                byte[] getBytes(java.lang.String)
+                byte[] getBytes(sun.io.CharToByteConverter)
+                char charAt(int)
+                char[] toCharArray()
+                int compareTo(java.lang.Object)
+                int compareTo(java.lang.String)
+                int compareToIgnoreCase(java.lang.String)
+                int hashCode()
+                int indexOf(int)
+                int indexOf(int, int)
+                int indexOf(java.lang.String)
+                int indexOf(java.lang.String, int)
+                int lastIndexOf(int)
+                int lastIndexOf(int, int)
+                int lastIndexOf(java.lang.String)
+                int lastIndexOf(java.lang.String, int)
+                int length()
+                java.lang.String concat(java.lang.String)
+                java.lang.String copyValueOf(char[])
+                java.lang.String copyValueOf(char[], int, int)
+                java.lang.String intern()
+                java.lang.String replace(char, char)
+                java.lang.String substring(int)
+                java.lang.String substring(int, int)
+                java.lang.String toLowerCase()
+                java.lang.String toLowerCase(java.util.Locale)
+                java.lang.String toString()
+                java.lang.String toUpperCase()
+                java.lang.String toUpperCase(java.util.Locale)
+                java.lang.String trim()
+                java.lang.String valueOf(boolean)
+                java.lang.String valueOf(char)
+                java.lang.String valueOf(char[])
+                java.lang.String valueOf(char[], int, int)
+                java.lang.String valueOf(double)
+                java.lang.String valueOf(float)
+                java.lang.String valueOf(int)
+                java.lang.String valueOf(java.lang.Object)
+                java.lang.String valueOf(long)
+                sun.io.ByteToCharConverter getBTCConverter(java.lang.String)
+                sun.io.CharToByteConverter getCTBConverter(java.lang.String)
+                void <clinit>()
+                void <init>()
+                void <init>(byte[])
+                void <init>(byte[], int)
+                void <init>(byte[], int, int)
+                void <init>(byte[], int, int, int)
+                void <init>(byte[], int, int, java.lang.String)
+                void <init>(byte[], int, int, sun.io.ByteToCharConverter)
+                void <init>(byte[], java.lang.String)
+                void <init>(char[])
+                void <init>(char[], int, int)
+                void <init>(int, int, char[])
+                void <init>(java.lang.String)
+                void <init>(java.lang.StringBuffer)
+                void getBytes(int, int, byte[], int)
+                void getChars(int, int, char[], int)
+                char[] value;
+                int count;
+                int hash;
+                int offset;
+                java.io.ObjectStreamField[] serialPersistentFields;
+                java.lang.ThreadLocal btcConverter;
+                java.lang.ThreadLocal ctbConverter;
+                java.util.Comparator CASE_INSENSITIVE_ORDER;
+                long serialVersionUID;
+
+        Package: java.util
+            Class: Comparator
+                boolean equals(java.lang.Object)
+                int compare(java.lang.Object, java.lang.Object)
+*** End SymbolTable ***

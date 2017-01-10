@@ -1,0 +1,11 @@
+#!/bin/bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+echo "****************AstGscope Regression Test***********"
+
+bash regress-one top g6 topg6 \
+&& bash regress-one top mangle topmangle \
+|| exit 1
+
+echo -e "\nAstGscope Regression Test succeeded."

@@ -1,0 +1,40 @@
+package $(LanguageName);
+
+import Kalc.asgn.calcCont.*;
+
+public class asgn extends $(ParentComponent) {
+   static pc containr = new pc();
+
+   static public class Assign extends $(ParentComponent).Assign {
+      public void execute() { 
+          String var = tok[0].tokenName();
+          findname c = new findname(containr, var);
+          pairs p;
+ 
+          c.first();
+          if (c.more()) {
+             // we found the name! do nothing
+          } else {
+              c.insert( new pairs(0, var));
+          }
+          p = (pairs) c.obj();
+          p.value( arg[0].eval() );
+       }
+   }
+
+   static public class Ident extends $(ParentComponent).Ident {
+      public int eval() { 
+          String var = tok[0].tokenName();
+          findname c = new findname(containr, var);
+          pairs p;
+ 
+          c.first();
+          if (c.more()) {
+             // we found the name! return value;
+             return ((pairs)c.obj()).value();
+          } else {
+              return 0;	// return dummy value (instead of an error!)
+          }
+       }
+   }
+}

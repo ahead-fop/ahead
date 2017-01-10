@@ -1,0 +1,357 @@
+<method layers >  layers method
+<li><font face="Arial">CompSm -- compresses state diagram extension
+    hierarchies</font></li>
+<call layers >
+</method> end layers method
+
+<method chapterLinks > chapterLinks method
+  <li><font face="Arial"><a href="#Specifying State Diagrams and State Diagram Extensions">State Diagram extension specifications</a></font></li>
+<call chapterLinks >
+</method> end chapterLinks method
+
+<method chapters > chapters method
+<h2><font face="Arial" color="#0000FF"><a name="Specifying State Diagrams and State Diagram Extensions">Specifying
+State Diagrams and State Diagram Extensions</a></font></h2>
+<p><font face="Arial"><b>PJ</b> expects a file containing a base state diagram
+to have the following format:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package &lt;package-name&gt;;</font></pre>
+  <pre><font face="Courier New">[&lt;import-statements&gt;]</font></pre>
+  <pre><font face="Courier New">&lt;state-diagram-declaration&gt;</font></pre>
+</blockquote>
+<p><font face="Arial">Note:</font></p>
+<ul>
+  <li><font face="Arial">a package name is required.&nbsp; It is the
+    layer name to which the state diagram belongs.</font></li>
+  <li><font face="Arial">import statements are optional.</font></li>
+  <li><font face="Arial">a state diagram specification is expected with no
+    nested interfaces, nested class declarations.</font></li>
+  <li><font face="Arial">only one state diagram can be defined per file.</font></li>
+</ul>
+<p><font face="Arial">The syntax of a state diagram specification (which
+incidentally is slightly different than the version used to develop the FSATS
+prototype) is discussed later.</font></p>
+<p><font face="Arial">A state diagram extension file has the following format:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package &lt;package-name&gt;;</font></pre>
+  <pre><font face="Courier New">[&lt;import-statements&gt;]</font></pre>
+  <pre><font face="Courier New">&lt;state-digram-extension-declaration&gt;</font></pre>
+</blockquote>
+<p><font face="Arial">Note:</font></p>
+<ul>
+  <li><font face="Arial">a package name is required.&nbsp; It is the
+    layer name to which this class belongs.</font></li>
+  <li><font face="Arial">import statements are optional.</font></li>
+  <li><font face="Arial">note the special syntax used for class extensions.</font></li>
+  <li><font face="Arial">only one class extension can be defined per file; there
+    can be no other declarations.</font></li>
+</ul>
+<p><font face="Arial">The syntax of a state diagram extension specification is
+discussed later.</font></p>
+<h3><font face="Arial"><font color="#0000FF">Syntax of State Diagrams</font>&nbsp;</font></h3>
+<p><font face="Arial">A state diagram can be:</font></p>
+<ul>
+  <li><font face="Arial">stand alone</font></li>
+  <li><font face="Arial">extend a previously defined state diagram</font></li>
+  <li><font face="Arial">extend a previously defined class -- this is useful if
+    there are methods that many different state diagrams can share; define these
+    methods in a single class and derive state machines as
+    &quot;subclasses&quot;.&nbsp;</font></li>
+</ul>
+<p><font face="Arial">Each is specified in the following way, where bold phrases
+are parameters and [bracketed] phrases are optional:</font></p>
+<blockquote>
+  <pre><font face="Courier New">[modifiers] state_diagram <b>name</b> [implementsClause] SDClassBody</font></pre>
+  <pre><font face="Courier New">[modifiers] state_diagram <b>name</b> extends <b>supername</b> [implementsClause] SDClassBody</font></pre>
+  <pre><font face="Courier New">[modifiers] state_diagram <b>name</b> extends class <b>supername</b> [implementsClause] SDClassBody</font></pre>
+</blockquote>
+<p><font face="Arial">The body of a state diagram (SDClassBody above) has the
+following syntax:</font></p>
+<blockquote>
+  <pre><font face="Courier New">{
+   event_delivery methodname ( &lt;parameter-list&gt; );	(1)</font></pre>
+  <pre><font face="Courier New">   no_transition &lt;block&gt;				(2)</font></pre>
+  <pre><font face="Courier New">   [ otherwise_default &lt;block&gt; ]			(3)</font></pre>
+  <pre><font face="Courier New">   [ &lt;states-list&gt; ]					(4)</font></pre>
+  <pre><font face="Courier New">   [ &lt;ES-list&gt; ]					(5)</font></pre>
+  <pre><font face="Courier New">   [ &lt;field-and-method-declarations&gt; ]			(6)
+}</font></pre>
+</blockquote>
+<p><font face="Arial">The meaning of these concepts is specified in a separate <a href="StateMachine.html">document</a>;
+here we talk only about the syntax of state diagram specifications. Observe the
+following notes:</font></p>
+<ul>
+  <li><font face="Arial">(1) and (2) above are specified for all state
+    diagrams.&nbsp; In the case that a state diagram is extending a previously
+    defined state diagram, (1) and (2) cannot be included in an SDClassBody.&nbsp;
+    (Stated another way, once an event_delivery and no_transition block is
+    defined, they cannot be redefined.</font></li>
+  <li><font face="Arial">There can be only one otherwise_default (3)
+    specification in a state diagram.</font></li>
+  <li><font face="Arial">There can be any number of state-declaration statements
+    (4) of the form:</font></li>
+</ul>
+<blockquote>
+  <blockquote>
+    <pre><font face="Courier New">states a, b, c;
+states e, f, g, h;  // and so on</font></pre>
+  </blockquote>
+</blockquote>
+<ul>
+  <li><font face="Arial">The ES-list stands for state enter, exit, and otherwise
+    blocks, and edge declarations (5).&nbsp; There can be at most one enter
+    declaration, one exit declaration, and one otherwise declaration per state
+    in a state diagram.&nbsp; Further, all edge declarations are unique and are
+    distinguished by their name (i.e., no two edges can have the same names).</font></li>
+  <li><font face="Arial">The field-and-method-declarations are variable and
+    method declarations (6).</font></li>
+</ul>
+<p><font face="Arial">An example of a state diagram specification is:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package root1;
+
+import firstPackage.*;
+
+state_diagram root extends class common  {
+   event_delivery mymessage( M m );
+   no_transition { ignore(m); }
+
+   // in root
+   states a, b;
+   states c;
+
+   // in root
+   edge e1 : a -&gt; b 
+   conditions m!=null
+   do { /* action 1 */ }
+
+   Exit a { /* action a */ }
+}</font></pre>
+</blockquote>
+<h2><font face="Arial" color="#0000FF">Syntax of State Diagram Extension</font></h2>
+<p><font face="Arial">An extension to a state diagram is expressed in the
+following syntax:</font></p>
+<blockquote>
+  <pre><font face="Courier New">[modifiers] extends state_diagram <b>name</b> [implementsClause] SDExtBody</font></pre>
+</blockquote>
+<p><font face="Arial">The body of a state diagram extension (SDExtBody above)
+has the following syntax:</font></p>
+<blockquote>
+  <pre><font face="Courier New">{
+</font><font face="Courier New">   [ otherwise_default &lt;block&gt; ]			(3)</font></pre>
+  <pre><font face="Courier New">   [ &lt;states-list&gt; ]					(4)</font></pre>
+  <pre><font face="Courier New">   [ &lt;ES-list&gt; ]					(5)</font></pre>
+  <pre><font face="Courier New">   [ &lt;field-and-method-declarations&gt; ]			(6)
+}</font></pre>
+</blockquote>
+<p><font face="Arial">Again, the meaning of these concepts is specified in a
+separate <a href="StateMachine.html">document</a>; here we talk only about the
+syntax.&nbsp; The meanings of these concepts is the same as above.&nbsp; Keep
+the following in mind:</font></p>
+<ul>
+  <li><font face="Arial">States are unique and can be declared only once.&nbsp;
+    (So if a base or extension diagram defines state &quot;A&quot;, no other
+    extension can define &quot;A&quot;).</font></li>
+  <li><font face="Arial">All state enter, exit, and otherwise blocks and edge
+    declarations are unique. Once defined, they cannot be redefined by an
+    extension.</font></li>
+</ul>
+<p><font face="Arial">An issue that can arise in the design of state diagrams is
+that an edge predicate or block of code associated with the actions of a state
+or edge can be modified by an extension.&nbsp; Since there are <b>no</b> <b>capabilities</b>
+to extend predicates or code blocks, the way this can be done is to define a
+boolean method for a predicate and a void method to encapsulate a code
+block.&nbsp; Methods can be extended using the normal mechanisms.&nbsp; So the
+way to understand ES-list declarations is that they are one-time-specifications
+that cannot be modified.&nbsp; These specifications can refer to methods which
+can be modified by extensions.&nbsp; So the scheme described here is general and
+simple.&nbsp;</font></p>
+<p><font face="Arial">Admittedly, this is a bit different from the original
+state diagram specification used in the FSATS prototype, it is marginally
+so.&nbsp; Further, there is no capability now for &quot;refines edge&quot;
+(i.e., the refinement/extension of edges).&nbsp; This too can be handled by
+defining predicates and edge transitions as methods which can be modified by
+extensions.</font></p>
+<p><font face="Arial">An example of a state diagram extension is:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package ext1;
+
+import firstPackage.*;
+
+extends state_diagram root {
+
+   // from ext 1
+   states d;
+   states e;
+
+   // from ext1
+   edge e2 : d -&gt; e 
+   conditions m!=null
+   do { /* action 2 */ }
+
+   edge e3 : c -&gt; d
+   conditions true
+   do { /* action 3 */ }
+
+   Exit b { /* action a */ }
+}
+</font></pre>
+</blockquote>
+<p><font face="Arial">The result of composing the base state diagram defined
+earlier with the above extension is (defined to be the) union of these
+specifications, with the proviso that no state or edge is defined twice.&nbsp;
+The statements in <span style="background-color: #FFFF00">yellow</span> were
+added by the above extension.</font></p>
+<blockquote>
+  <pre>package root1;
+
+import firstPackage.*;
+
+state_diagram root extends class common  {
+   event_delivery mymessage( M m );
+   no_transition { ignore(m); }
+
+   // in root
+   states a, b;
+   states c;
+
+   <span style="background-color: #FFFF00">// from ext 1
+   states d;
+   states e;</span>
+
+   // in root
+   edge e1 : a -&gt; b 
+   conditions m!=null
+   do { /* action 1 */ }
+
+   Exit a { /* action a */ }
+
+   <span style="background-color: #FFFF00">// from ext1
+   edge e2 : d -&gt; e 
+   conditions m!=null
+   do { /* action 2 */ }
+
+   edge e3 : c -&gt; d
+   conditions true
+   do { /* action 3 */ }
+
+   Exit b { /* action a */ }</span>
+}</pre>
+</blockquote>
+<h2><font face="Arial" color="#0000FF">Grammar for State Diagram Specifications</font></h2>
+<p><font face="Arial">The complete grammar for state diagram specifications is
+listed below:</font></p>
+<blockquote>
+  <pre>// &quot;state diagram&quot; adds constructs to define state machines
+
+
+&quot;state_diagram&quot; STATE_DIAGRAM
+&quot;states&quot;	STATES
+&quot;event_delivery&quot; EVENT_DELIVERY
+&quot;edge&quot;		EDGE
+&quot;conditions&quot;	CONDITIONS
+&quot;-&gt;&quot; 		ARROW
+&quot;Exit&quot;		EXIT
+&quot;Enter&quot;		ENTER
+&quot;otherwise&quot;     OTHERWISE
+&quot;otherwise_default&quot; OTHERWISE_DEFAULT 
+&quot;no_transition&quot; NO_TRANSITION
+
+// the following hooks SDDeclaration with class, interface declarations
+
+UnmodifiedTypeDeclaration
+	: SDDeclaration				:: SDDecl
+	;
+
+SDDeclaration
+	: STATE_DIAGRAM QName [ SMExtendsClause ]
+          [ ImplementsClause ] SDClassBody 	:: UmodSdDecl
+	;
+
+SMExtendsClause
+	: LOOKAHEAD(2) ExtendsClause                           :: SMExtends
+	| LOOKAHEAD(2) &quot;extends&quot; &quot;class&quot; AST_QualifiedName     :: SMClsExtends
+	;
+
+SDClassBody
+	: &quot;{&quot; [ RootClause ] [ OtherwiseClause ] [ StatesList ] [ ESList ] 
+  	  [ AST_FieldDecl ] &quot;}&quot; 		:: SdClassDecl
+	;
+
+StatesList
+	: (StatesClause)+
+	;
+
+StatesClause
+	: STATES AST_TypeNameList &quot;;&quot;		:: StatesDecl
+	;
+
+RootClause
+	: DelivClause NoTransitionClause	:: RootDecl
+	;
+
+NoTransitionClause
+	: NO_TRANSITION Block			:: NoTransDecl
+	;
+
+DelivClause
+	: EVENT_DELIVERY QName &quot;(&quot; AST_ParList &quot;)&quot; &quot;;&quot;
+						:: DelivDecl
+	;
+
+OtherwiseClause
+        : OTHERWISE_DEFAULT Block               :: ODefaultDecl
+        ;
+
+ESList	: ( Es )+
+	;
+
+Es	
+	: EXIT QName Block			:: ExitDecl
+	| ENTER QName Block			:: EnterDecl
+	| EDGE QName &quot;:&quot; StartName ARROW QName
+	  CONDITIONS AST_Exp DO Block 		:: EdgeDecl
+        | OTHERWISE QName Block                 :: OtherDecl
+	;
+
+StartName 
+	: QName					:: SdSName
+	| &quot;*&quot;					:: StarName
+	;
+
+
+// the following is used to allow SD declarations to be nested within
+// class declarations; this is useful if we want to include SD specifications
+// within layers
+
+NestedSDDeclaration
+	: [ AST_Modifiers ] SDDeclaration	:: NSDDecl
+	;
+
+ClassBodyDeclaration
+	: LOOKAHEAD( [ AST_Modifiers() ] &quot;state_diagram&quot; )
+            NestedSDDeclaration	
+        ;
+
+// the following is used to define extensions to state machines
+
+UnmodifiedTypeExtension
+        : STATE_DIAGRAM QName [ ImplementsClause ] SDClassBody :: UmodSmExt
+	;</pre>
+</blockquote>
+<p><font face="Arial"><b>PJ</b> is still undergoing changes.&nbsp; Known problems
+include:</font></p>
+<ul>
+  <li><font face="Arial">identifying terminal (unextended) methods with the name
+    of the layer that introduced that method is unsupported.&nbsp; This is
+    useful for programmers who examine code of squashed extension hierarchies
+    and that want to know from which layer a particular method or variable has
+    been defined. (Basically, I
+    don't have a good solution for this).</font></li>
+  <li><font face="Arial">retaining comments associated with extended methods and
+    classes.</font></li>
+</ul>
+<call chapters >
+</method> end chapters
+
+

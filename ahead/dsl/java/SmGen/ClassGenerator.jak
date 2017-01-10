@@ -1,0 +1,35 @@
+layer SmGen;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.util.*;
+import java.io.*;
+
+/**
+*com.sun.javadoc.*,
+*com.sun.tools.javadoc.*
+* @layer<SmGen>
+*/
+
+   /** Extends the class generator with inner states.
+    */  
+    
+public refines class ClassGenerator {
+    
+    public static void addContext( ClassDocJTS _class )
+    {
+    // @pending -> context addition will be removed from here 
+    //  // Adds the template to include Inner states
+    //  // extensionsList.add("templates/HTML/InnerStateSummary.vm");
+    //  String innerstatesFlag = "false";
+    //  LinkedList innerstates = _class.states();
+    //  if (innerstates.size() > 0) innerstatesFlag = "true";
+    //  context.put("innerstates", innerstatesFlag);
+    //  context.put("listInnerstates", innerstates);
+
+      // Passes the composition down the layers
+      // lower.ClassGenerator.addContext(_class);
+         
+    }
+
+}

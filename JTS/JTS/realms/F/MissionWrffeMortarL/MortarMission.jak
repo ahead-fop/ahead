@@ -1,0 +1,52 @@
+package MissionWrffeMortarL;
+
+import 
+    Jakarta.util.Util;
+import 
+    java.io.*;
+import 
+    F.Libraries.log.Log;
+
+ // FoMission
+
+
+    public extends state_machine MortarMission
+    {
+        states wrffeLoading, wrffeShot, wrffeComplete;
+
+        // Wait for exclusive control of the mortar to proceed with mission.
+        Enter wrffeMortarAccepted { getOpfac().missionLock(this); }
+
+        // When it's this missions turn, aim and load.
+        edge wrffeMortarAccepted3 : wrffeMortarAccepted -> wrffeLoading
+            conditions (message instanceof LockGranted) 
+            do { getOpfac().timeout(15F, new LoadTime(getId())); }
+
+        // When loaded shoot and notify observer.
+        edge wrffeLoading1 : wrffeLoading -> wrffeShot
+            conditions (message instanceof LoadTime)
+            do 
+            { 
+                getOpfac().timeout(15F, new CompleteTime(getId())); ShotMessage shotMessage = new ShotMessage(getId());
+		if (initiatingUnit != null)
+		    shotMessage.setInitiatingUnitId(initiatingUnit.intValue());
+                sendDown(shotMessage);
+            }
+    
+        // When done shooting notify observer.
+        edge wrffeShot1 : wrffeShot -> wrffeComplete
+            conditions (message instanceof CompleteTime)
+            do
+	    { RoundsCompleteMessage roundsCompleteMessage = new RoundsCompleteMessage(getId());
+		if (initiatingUnit != null)
+		    roundsCompleteMessage.setInitiatingUnitId(initiatingUnit.intValue());
+		sendDown(roundsCompleteMessage);
+	    }
+        
+        // Allow other missions to proceed.
+        Enter wrffeComplete { getOpfac().missionFree(this); }
+
+        // On EOM stop.
+        edge wrffeComplete1 : wrffeComplete -> stop
+            conditions (message instanceof EomMessage) do {}
+    }

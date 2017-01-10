@@ -1,0 +1,19 @@
+layer one;
+
+SoUrCe RooT one "C:!Java!Regression!Mixin!class!one.jak";
+
+abstract class c$$one {
+   int top;
+}
+
+SoUrCe  two "C:!Java!Regression!Mixin!class!two.jak";
+
+ abstract class c$$two extends c$$one {
+  int mid;
+}
+
+SoUrCe  three "C:!Java!Regression!Mixin!class!three.jak";
+
+ class c extends c$$two {
+   int bottom;
+}

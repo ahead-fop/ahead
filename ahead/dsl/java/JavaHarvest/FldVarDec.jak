@@ -1,0 +1,155 @@
+layer JavaHarvest;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+
+/** FieldDeclaration
+ * [ AST_Modifiers ] AST_TypeName AST_VarDecl ";"::FldVarDec
+ * ;
+ * @layer<JavaHarvest>
+ */
+    
+public refines class FldVarDec {
+    LinkedList fieldsList = new LinkedList();
+    
+    public void execute() 
+    {
+        Super().execute();
+
+        // arg[2] is AST_VarDecl is a AstList so that we have to traverse
+        // it to get the list of Fields
+        AstCursor c = new AstCursor(); // c to traverse list
+        AstNode   e = arg[2]; // e instanceOf Lang.AstList
+  
+        for ( c.FirstElement( e ); c.MoreElement(); c.NextElement() ) {
+            if ( c.node instanceof VarDecl ) 
+                            {
+                fieldsList.add( ( ( VarDecl )c.node )._harvest_field );
+            }
+        } // for
+              
+        // For all the fields of the list.
+        for( int i=0; i< fieldsList.size(); i++ ) {
+            // Gets the _harvest_method from its MethodDeclarator
+            FieldDocJTS field = 
+                            ( FieldDocJTS )fieldsList.get( i );
+                          
+            AstCursor c1 = new AstCursor(); // c to traverse list
+            AstNode   e1 = arg[0].arg[0]; // Lang.AstList
+            // Contains the comment
+            String comment ="";
+            String returnTypeString = "";
+                        
+            // Sets the modifiers
+            if ( e1 != null ) // if there are modifiers
+                            {
+                // Gets the comments from the first modifier
+                c1.FirstElement( e1 );
+                AstNode first = c1.node;
+                                   
+                for ( ; c1.MoreElement(); c1.NextElement() ) {
+
+                    // final method
+                    if ( c1.node instanceof ModFinal ) 
+                                                                                {
+                        field.setFinal( true );
+                    }
+                                                            
+                    // public method
+                    if ( c1.node instanceof ModPublic ) 
+                                                                                {
+                        field.setPublic( true );
+                    }
+                                                            
+                    // protected method
+                    if ( c1.node instanceof ModProtected ) 
+                                                                                {
+                        field.setProtected( true );
+                    }
+                                                            
+                    // private method
+                    if ( c1.node instanceof ModPrivate ) 
+                                                                                {
+                        field.setPrivate( true );
+                    }
+                                                            
+                    // static method
+                    if ( c1.node instanceof ModStatic ) 
+                                                                                {
+                        field.setStatic( true );
+                    }
+                                                            
+                    // transient and volatile are part of FieldDocJTs
+                    // transient method
+                    if ( c1.node instanceof ModTransient )                    
+                                                                                {
+                        field.setTransient( true );
+                    }
+                                                            
+                    // volatile method
+                    if ( c1.node instanceof ModVolatile ) 
+                                                                                {
+                        field.setVolatile( true );
+                    }
+                } // for all modifiers
+                                   
+                // ************ Comment Processing ******************
+                comment = ( ( AstToken ) first.tok[0] ).white_space;
+                           
+            } // if there are modifiers
+            else  // if no modifiers then read the comments from ???? 
+                            {
+                // Gets the comment from the primitive type
+                if ( arg[1] instanceof  PrimType ) {
+                    comment = 
+                                                                ( ( AstToken )arg[1].arg[0].tok[0] ).white_space;
+                }
+                                                  
+                // Gets the comment from a Qualified type name
+                if ( arg[1] instanceof  QNameType )
+                                                  {
+                    // arg[1] = QNameType, 
+                    // arg[1].arg[0] = AST_QualifiedName
+                    // arg[1].arg[0].arg[0] = AST_QualifiedNameElem;
+                    // arg[1].arg[0].arg[0].arg[0] = $TEqn.NameId 
+                    AstNode commentNode =  
+                                                                                  arg[1].arg[0].arg[0].arg[0];
+                    comment = 
+                                                                  ( ( AstToken )commentNode.tok[0] ).white_space;
+                }
+                                      
+            } // if there are no modifiers
+                          
+            CommentJedi fieldComment = 
+                            CommentParser.ParseComment( ( DocJTS )field, comment );
+            field.setComment( fieldComment );
+                        
+            // Obtains the returnTypeString 
+            // Gets the comment from the primitive type
+            if ( arg[1] instanceof  PrimType ) {
+                returnTypeString = 
+                                    ( ( AstToken )arg[1].arg[0].tok[0] ).tokenName();
+            }
+                                      
+            // Gets the comment from a Qualified type name
+            if ( arg[1] instanceof  QNameType ) {
+                returnTypeString = arg[1].toString();
+                                    
+                // If no modifiers then returnType should remove the
+                // comment
+                if ( e1 == null )
+                    returnTypeString = 
+                                                                returnTypeString.substring( comment.length(), 
+                                                                                                          returnTypeString.length() );
+            }
+                        
+            // sets the type of the field
+            field.setType( new  TypeJTS( returnTypeString, 
+                                                                               returnTypeString ) );
+                
+        } // for all the fields of the list
+    } // of execute
+}

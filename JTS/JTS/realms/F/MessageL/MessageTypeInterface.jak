@@ -1,0 +1,15 @@
+package MessageL;
+
+import  
+    fsats.util.DataContainer;
+import 
+    F.Libraries.laydown.*;
+import 
+    java.util.*;
+
+
+
+    /** An enumerated tactical message type. */
+    public extends interface MessageTypeInterface {
+        /** Create a Message from an FSAMS message. **/
+        Message fromFsams(DataContainer fsams);}

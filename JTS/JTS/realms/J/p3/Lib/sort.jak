@@ -1,0 +1,330 @@
+/*
+ * sort -- this layer forces the "orderby" when it doesn't happen to match
+ * the actual retrieval order of the lower layers
+ */
+
+package p3Lib;
+
+import JakBasic.Lang;
+
+
+public final class sort extends BaseDS implements DS {
+   //public DS        lower;
+   public TopParams tp;
+   environment;
+
+   public sort( DS lowerlevel ) { 
+      lower = lowerlevel;
+   }
+
+   public sort( ) { }
+
+   public DS_Container_Type make_container_type( TopParams t, ContParams c ) {
+      return new sort_Container_Type( this, t, c );
+   }
+
+   public DS_Element_Type make_element_type( ) {
+      return new sort_Element_Type( this );
+   }
+
+   public DS_CommonCursor_Type make_commoncursor_type( ) {
+      return new sort_CommonCursor_Type( this );
+   }
+
+   public DS_Cursor_Type make_cursor_type( Usage u ) { 
+        return new sort_Cursor_Type( this, u ); 
+   }
+
+   public DrcAttributes drc( DrcAttributes d ) {
+      d = lower.drc(d);
+      if ( !d.qualify_present )
+         DrcAttributes.DrcError( "no qualify layer below sort" );
+      return d;
+   } 
+
+   public void set_keyword( TOP toplayer, TopParams tph ) {
+      tp = tph;
+      environment parent toplayer;
+      lower.set_keyword( toplayer, tp );
+   }
+
+   public Object ParseArgs( Lang.AstNode x ) {
+      // will this function be called?
+      Object result = null;
+
+      if ( x != null && x.arg[0] != null && x.arg[0].right != null )
+         result = ParseTE.parse( x );
+      if ( result == null || !( result instanceof DS ) ) 
+         ParseTE.parseError( "sort layer expecting single parameter of type DS");
+      lower = (DS) result;
+      return this;
+   }
+}
+
+final class sort_Container_Type implements DS_Container_Type {
+   ContParams        cp;
+   sort              _layer;
+   DS_Container_Type lower;
+   environment;
+
+   sort_Container_Type( DS sortlayer, TopParams t, ContParams c ) { 
+      // Step 1: save the arguments as we'll refer to them later
+
+      _layer    = (sort) sortlayer;
+      cp       = c;
+      _layer.tp = t;
+      environment parent _layer;
+
+      // Step 2: create chain of lower level containers
+
+      lower = _layer.lower.make_container_type( t, cp );
+   }
+
+   public void validate( ) {
+      // nothing to validate as sort has no nonrealm parameters
+      lower.validate( );
+   }
+
+   public Lang.AST_FieldDecl dataMembers( ) {
+      return lower.dataMembers( );
+   }
+
+   public Lang.AST_Stmt containerMethod( ) {
+      return lower.containerMethod( );
+   }
+
+   public Lang.AST_Exp is_fullMethod( ) {
+      return lower.is_fullMethod( );
+   }
+   
+   public Lang.AST_Stmt insertMethod(){
+     return lower.insertMethod();
+   }
+
+   public Lang.AST_Stmt storageMethod() {
+      return lower.storageMethod();
+   }
+
+   public Lang.AST_Stmt finishMethod() {
+      return lower.finishMethod();
+   }
+
+   public Lang.AST_Stmt openMethod() {
+      return lower.openMethod();
+   }
+
+
+}
+
+final class sort_Element_Type implements DS_Element_Type {
+   sort            _layer;
+   DS_Element_Type lower;
+   environment;
+
+   sort_Element_Type( DS sortlayer ) {
+      _layer = ( sort ) sortlayer;
+      lower = _layer.lower.make_element_type( );
+      environment parent _layer;
+   }
+
+   public Lang.AST_FieldDecl dataMembers( ) {
+      return lower.dataMembers( );
+   }
+
+   public Lang.AST_Stmt link( ) {
+      return lower.link( );
+   }
+
+   public Lang.AST_FieldDecl relink( ) {
+      return lower.relink( );
+   }
+
+   public Lang.AST_FieldDecl unlink( ) {
+      return lower.unlink( );
+   }
+
+   public Lang.AST_Stmt upd( int fieldno ) {
+      return lower.upd( fieldno );
+   }
+}
+
+final class sort_CommonCursor_Type implements DS_CommonCursor_Type {
+   sort                 _layer;
+   DS_CommonCursor_Type lower;
+   environment;
+
+   sort_CommonCursor_Type( DS sortlayer ) {
+      _layer = ( sort ) sortlayer;
+      lower = _layer.lower.make_commoncursor_type( );
+      environment parent _layer;
+   }
+
+   public Lang.AST_FieldDecl dataMembers( ) {
+      return lower.dataMembers( );
+   }
+
+   public Lang.AST_Stmt insertMethod( ) {
+      return lower.insertMethod( );
+   }
+
+   public Lang.AST_Stmt removeMethod( ) {
+      return lower.removeMethod( );
+   }
+
+   public Lang.AST_FieldDecl movementMethods( ) {
+      return lower.movementMethods( );
+   }
+}
+
+
+class sort_Cursor_Type implements DS_Cursor_Type {
+   sort           _layer;
+   DS_Cursor_Type lower;
+   boolean        fwd;
+   int            desired_order;
+   boolean        no_buffering;
+   boolean        no_sorting;
+   
+   environment    vbuf, buffer, index, asize;
+   
+   sort_Cursor_Type( DS sortlayer, Usage u ) {
+      _layer = (sort) sortlayer;
+      lower = _layer.lower.make_cursor_type( u );
+      fwd   = u.forward;
+      desired_order = u.order;
+      environment parent _layer;
+   }
+   
+   public Qopt optimize( Qopt q ) {
+      q = lower.optimize(q);
+      no_buffering = !q.requires_buffering;
+      no_sorting = !q.requires_sorting;
+
+      return q;
+   }
+   
+   public Lang.AST_FieldDecl dataMembers( ) {
+      if ( no_buffering && no_sorting )
+         return lower.dataMembers( );
+
+      return mth{
+         java.util.Vector vbuf;
+         CElemTyp []      buffer;
+         int              index;
+         int              asize;
+         $mth( lower.dataMembers( ) )
+      }mth;
+   }
+   
+   public Lang.AST_Stmt cursorMethod( ) {
+      return lower.cursorMethod( );
+   }
+   
+   public Lang.AST_Stmt firstMethod( ) {
+      if ( no_buffering && no_sorting )
+         return lower.firstMethod( );
+
+      Lang.AST_Stmt sortStmt;
+
+      if ( no_sorting ) {
+         sortStmt = stm{ /* no sort required */ }stm;
+      }
+      else {
+         Lang.AST_Exp compExp;
+         range r = new range("!dummy");
+	 Lang.AST_QualifiedName nn = (Lang.AST_QualifiedName) _layer.tp.AST_FieldName[desired_order].clone();
+	 Lang.AST_QualifiedName nn1 = (Lang.AST_QualifiedName) nn.clone();
+         if ( fwd )
+            compExp = r.Translate( Lang.AST_QualifiedName.Make("tmp"), _layer.tp,
+               exp{ $id( nn )( ) < 
+               buffer[j - incr].$id( nn1 )( ) }exp );
+         else
+            compExp = r.Translate( Lang.AST_QualifiedName.Make("tmp"), _layer.tp,
+               exp{ $id( nn )( ) > 
+               buffer[j - incr].$id( nn1 )( ) }exp );
+
+         sortStmt = stm{
+            int incr = asize / 2;
+            while ( incr >= 1 ) {
+               for ( int i = incr; i < asize; i++ ) {
+                  CElemTyp tmp = buffer[i];
+                  int j = i;
+                  while ( j >= incr && $exp( compExp ) ) {
+                     buffer[j] = buffer[j - incr];
+                     j-= incr;
+                  }
+                  buffer[j] = tmp;
+               }
+               incr /= 2;
+            }
+         }stm;
+      }
+
+      return stm{
+         vbuf = new java.util.Vector( );
+
+         $stm( lower.firstMethod( ) );
+         while ( $exp( lower.moreMethod( ) ) ){
+            vbuf.addElement( obj );
+            $stm( lower.nextMethod( ) );
+         }
+
+         asize = vbuf.size( );
+         buffer = new CElemTyp[asize + 1];
+         vbuf.copyInto( buffer );
+         /* 
+          * add an extra null element to the array so that the 
+          * code for nextMethod() could be as simple as possible
+          */
+         buffer[asize] = null;
+         
+         /* sort the buffer if needed */
+         $stm( sortStmt );
+
+         /* return the first element */
+         obj = buffer[0];
+         index = 1;
+      }stm;
+   }
+   
+   public Lang.AST_Exp moreMethod( ) {
+      if ( no_buffering && no_sorting )
+         return lower.moreMethod( );
+
+      return exp{ index <= asize }exp;
+   }
+   
+   public Lang.AST_Stmt noMoreMethod( ) {
+      // can't imagine why upper layers would call this...
+      if ( no_buffering && no_sorting )
+         return lower.noMoreMethod( );
+
+      return stm{ obj = null; index = asize + 1; }stm;
+   }
+   
+   public Lang.AST_Stmt nextMethod( )  {
+      if ( no_buffering && no_sorting )
+         return lower.nextMethod( );
+
+      return stm{ obj = buffer[index++]; }stm;
+   }
+   
+   public Lang.AST_Exp lowerBound( boolean pos ) {
+      // can't imagine why lowerBound would be called from higher layers...
+      return lower.lowerBound( pos );
+   }
+   
+   public Lang.AST_Exp upperBound( boolean pos ) {
+      // can't imagine why upperBound would be called from higher layers...
+      return lower.upperBound( pos );
+   }
+   
+   public Lang.AST_Exp residual( ) {
+      // can't imagine why residual would be called from higher layers...
+      return lower.residual( );
+   }
+   
+   public Lang.AST_Stmt removeMethod( ) {
+      return lower.removeMethod( );
+   }
+}

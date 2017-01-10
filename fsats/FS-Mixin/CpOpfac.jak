@@ -1,0 +1,16 @@
+layer FS;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+SoUrCe RooT BasicL "C:!Java!FeatureOrientedProgramming!fsats!BasicL!CpOpfac.jak";
+
+public class CpOpfac extends OpfacImpl {
+    public Mission newMission() 
+        {
+        return new CpMission();
+    }
+}

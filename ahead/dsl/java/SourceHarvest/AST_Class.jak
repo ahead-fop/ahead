@@ -1,0 +1,124 @@
+layer SourceHarvest;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+// @pending This is, I think, a bad design decision
+// for now it parses the TypeDeclarations of the AST_Class, and for
+// all states
+   
+public refines class AST_Class {
+    public void execute() {
+
+        // Executes the super, so that it can fill the root comments
+        Super().execute();
+
+        // @debug
+        // System.out.println("arg[0] ->" + arg[0].className());
+        // if (arg[0].arg[0] != null)
+        //  System.out.println("arg[0,0] ->" + arg[0].arg[0].className());
+        
+        // --- new code
+        // arg[0] ->Lang.AST_ClassElem
+        // arg[0,0] ->Lang.SourceDecl
+        // element is assigned to this because AST_Class is already a list of
+        // TypeDeclarations
+
+        AstCursor tdc = new AstCursor(); // type declaration cursor
+        AstNode   element = this; // the  list of type declarations
+                 
+        if ( element != null ) {
+            for ( tdc.FirstElement( element );tdc.MoreElement();tdc.NextElement() ) {
+                                 // @debug                   
+                                 // System.out.println("Class name = " + tdc.node.className());
+                                
+                // If is a ModTypeDecl you have to check what is this
+                if ( tdc.node instanceof  ModTypeDecl ) {
+                    // @debug
+                    // System.out.println("ModType type" + 
+                    // tdc.node.arg[1].className());
+                                        
+                    AstNode tnode = tdc.node.arg[1];
+
+                    // Checks the types of modified types that can be present
+                                        
+                    // If it is an state machine
+                    if ( tnode instanceof  UmodSmDecl ) {
+                        // @debug  
+                                        // System.out.println(" Literal " + string_literal);
+                                            // System.out.println(" QualName " + rootQualifiedName );
+                                            // System.out.println(" hasRoot "  + hasRoot);
+                                                
+                        StateMachineDocJTS st 
+                                                                        = ( ( UmodSmDecl )tnode )._state;
+                        st.setSourceStringLiteral( GlobalWrapper.string_literal );
+                        st.setSourceQualifiedName( GlobalWrapper.rootQualifiedName );
+                        st.setSourceHasRoot( GlobalWrapper.hasRoot );
+                                                                   
+                    } // of UnmodSmDecl
+ 
+                    // If it is an unmodified type extension
+                    if ( tnode instanceof  Ute ) {
+                        AstNode utenode = tnode.arg[0];
+
+                        // @debug
+                        // System.out.println("utnode Type ="+utenode.className());
+                        
+                                                        // An Ute can be either an state, class or interface
+                        // Of an extension state
+                        if ( utenode instanceof  UmodSmExt ) {
+                            StateMachineDocJTS st= ( ( UmodSmExt )utenode )._state;
+                            st.setSourceStringLiteral( GlobalWrapper.string_literal );
+                            st.setSourceQualifiedName( GlobalWrapper.rootQualifiedName );
+                            st.setSourceHasRoot( GlobalWrapper.hasRoot );
+                        }
+                    
+                        // @pending Of an extension interface  
+                        if ( utenode instanceof  UmodIntExt ) {
+                            ClassDocJTS hc = ( ( UmodIntExt )utenode )._harvest_class;
+                            hc.setSourceStringLiteral( GlobalWrapper.string_literal );
+                            hc.setSourceQualifiedName( GlobalWrapper.rootQualifiedName );
+                            hc.setSourceHasRoot( GlobalWrapper.hasRoot );
+                        }
+
+                        // @pending Of an extension class
+                        if ( utenode instanceof  UmodClassExt ) {
+                            ClassDocJTS hc = ( ( UmodClassExt )utenode )._harvest_class;
+                            hc.setSourceStringLiteral( GlobalWrapper.string_literal );
+                            hc.setSourceQualifiedName( GlobalWrapper.rootQualifiedName );
+                            hc.setSourceHasRoot( GlobalWrapper.hasRoot );
+                        }
+                    } // of umod type extension
+                                      
+                    // If it is an Unmodified Class Declaration
+                    if ( tnode instanceof  UmodClassDecl ) {
+                        ClassDocJTS hc = ( ( UmodClassDecl )tnode )._harvest_class;
+                        hc.setSourceStringLiteral( GlobalWrapper.string_literal );
+                        hc.setSourceQualifiedName( GlobalWrapper.rootQualifiedName );
+                        hc.setSourceHasRoot( GlobalWrapper.hasRoot );
+                    }
+
+                    // If it is an Unmodified Interface Declaration 
+                    if ( tnode instanceof  UmInterDecl ) {
+                        ClassDocJTS hc = ( ( UmInterDecl )tnode )._harvest_class;
+                        hc.setSourceStringLiteral( GlobalWrapper.string_literal );
+                        hc.setSourceQualifiedName( GlobalWrapper.rootQualifiedName );
+                        hc.setSourceHasRoot( GlobalWrapper.hasRoot );
+                    }
+         
+                } // if it is modified Type
+
+            // @pending review this implementation detail !!!
+            // Note: see previous note description
+                    // If it is a SourceDecl then ignore it
+
+            } // for all the types
+
+        } // if there are elements
+    // --- end new code  
+        
+    } // of execute
+
+}

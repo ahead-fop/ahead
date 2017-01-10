@@ -1,0 +1,16 @@
+#!/bin/bash
+
+echo -n "translating $1 ... "
+
+(echo ; cat $1.correct) | tr -s '\n\r' '\n' > correct
+
+java jak2java.Main -s $1.jak | tr -s '\n\r' '\n' > current || exit 1
+
+if diff -b -B correct current ; then
+    rm -f -r correct current || :
+    echo succeeded
+else
+    rm -f -r correct current || :
+    echo failed
+    exit 1
+fi

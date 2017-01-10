@@ -1,0 +1,11 @@
+layer one;
+
+SoUrCe RooT one "./Aclass.jak";
+// body check
+
+abstract class x$$one extends z implements y  { int x;}
+
+SoUrCe  two "./Bclass.jak";
+// body check
+
+ class x extends  x$$one  implements y { int x; }

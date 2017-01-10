@@ -1,0 +1,9 @@
+// tests ability to add attributes
+
+single layer foo1;
+
+extern inside Bool bottom;
+outside Bool search;
+
+requires inside !bottom;
+provides outside search;

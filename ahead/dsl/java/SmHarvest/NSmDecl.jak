@@ -1,0 +1,27 @@
+layer SmHarvest;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+/** NestedSmDeclaration
+*: [ AST_Modifiers ] SmDeclaration:: NSmDecl
+* @layer<SmHarvest>
+*/
+   
+public refines class NSmDecl {
+
+    public  StateMachineDocJTS _harvest_state = null;
+ 
+    public void execute() {
+        Super().execute();
+           
+        _harvest_state = ( ( UmodSmDecl )arg[1] )._state;
+
+        // Sets the state modifiers
+        GlobalWrapper.setModifiers( arg[0].arg[0], _harvest_state );
+                  
+    } // execute
+
+}

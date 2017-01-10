@@ -1,0 +1,44 @@
+## Inner State Summary
+#if ($innerstates == "true")
+
+ <!-- ======== INNER CLASS SUMMARY ======== -->
+ <A NAME="inner_state_summary"> <!-- --></A>	
+ <TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+ <TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+ <TD COLSPAN=2>
+   <FONT SIZE="+2">
+     <B>Inner States Summary</B>
+   </FONT>
+ </TD>
+ </TR>
+	
+  ## Innerstates details
+  #foreach ($innerstate in $listInnerstates)
+    <TR BGCOLOR="white" CLASS="TableRowColor">
+      <TD ALIGN="right" VALIGN="top" WIDTH="1%">
+       <FONT SIZE="-1">	  
+	<CODE> $innerstate.modifiers() </CODE> 
+       </FONT>	  
+      </TD>	  
+      <TD>
+       <CODE>
+	  <B>
+            #set($reference = ".html")
+	    <A HREF="$innerstate.name()$reference">
+	    $innerstate.name()
+	    </A>
+	  </B>
+       </CODE>
+       <BR> ##  here goes the message 
+        $innerstate.comment().textFirstSentenceTags()
+      </TD>
+
+     </TR>
+	 
+    #end
+
+  </TR>
+  </TABLE>
+  <BR>
+
+#end

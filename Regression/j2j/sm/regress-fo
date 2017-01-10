@@ -1,0 +1,15 @@
+#!/bin/bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+echo "******** now testing MORTAR & ARTILLERY FO protocol ********"
+java jak2java.Main wrffe_fo.spec \
+&& javac wrffe_fo.java \
+&& java wrffe_mortar_fo > junk \
+&& diff -b junk correct_fo \
+|| exit 1
+
+echo "******** now testing MLRS FO protocol ********"
+java wrffe_mlrs_fo > junk \
+&& diff -b junk correct_fomlrs \
+|| exit 1

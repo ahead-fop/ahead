@@ -1,0 +1,37 @@
+S E MissionImpl 
+Line range (-1, -1)
+public  endMods 
+ beginKeys
+Classes :(  foo ):
+Interfaces :(  Mission ):
+super :(  foo ):
+ endKeys
+ beginNest
+        M D getId() String 
+        Line range (34, 34)
+        public  endMods 
+        M D getOpfac() Opfac 
+        Line range (32, 32)
+        public  endMods 
+        M D getTarget() Target 
+        Line range (41, 44)
+        public  endMods 
+        M D getType() MissionType 
+        Line range (36, 39)
+        public  endMods 
+        M D init(Opfac,String) Mission 
+        Line range (25, 30)
+        public static  endMods 
+        F D missionData MissionData 
+        Line range (23, 23)
+        protected  endMods 
+        F D missionId String 
+        Line range (22, 22)
+        protected  endMods 
+        F D opfac Opfac 
+        Line range (21, 21)
+        protected  endMods 
+        M D toString() String 
+        Line range (47, 50)
+        public  endMods 
+ endNest

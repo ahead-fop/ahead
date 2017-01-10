@@ -1,0 +1,5 @@
+drc: ex222.drc: Error constraint (a < 40) of layer ex2 not satisfied by (a <= 40) set by ex1
+drc: ex222.drc: Error constraint (0 < b) of layer ex2 not satisfied by (0 <= b) set by ex1
+
+drc: Summary 2 errors
+

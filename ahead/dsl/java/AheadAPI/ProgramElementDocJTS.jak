@@ -1,0 +1,43 @@
+layer AheadAPI;
+
+import java.io.*;
+import java.util.*;
+
+ /** JEDI Project
+ * ProgramElementDocJTS.java
+ * University of Texas at Austin
+ * Department of Computer Sciences
+ * Product-line Architecture Research Group
+ * @rationale Adds information to the API for the Base feature.
+ * @author Roberto E. Lopez-Herrejon
+ * @version 1.1
+ * @since November 26, 2001
+* @layer<AheadAPI>
+*/
+
+public abstract refines class ProgramElementDocJTS {
+
+    // Constructors added to provide inheritance     
+    /** Default constructor. 
+     * @layer<AheadAPI>
+     */
+    // public ProgramElementDocJTS()  { super(); }
+    
+    /** Variable that contains wether or not it refines another */
+    public boolean refined = false;
+  
+    /** Tells if it is refined or not. 
+     * @layer<AheadAPI>
+     */
+    public boolean isRefines() {
+        return refined;
+    }
+
+    /** Sets the value of the refined variable.  
+     * @layer<AheadAPI>
+     */
+    public void setRefines( boolean _refines ) {
+        refined = _refines;
+    }
+
+}

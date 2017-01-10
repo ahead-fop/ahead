@@ -1,0 +1,36 @@
+layer TargetL;
+
+import java.util.*;
+
+import log.Log;
+
+/** 
+ * Information about a mission thread.
+ */
+public class MissionDataImpl
+implements MissionData, java.io.Serializable, Cloneable {
+    protected MissionType    _missionType;
+    protected Target    _target;
+
+    public MissionDataImpl() {}
+
+    public MissionDataImpl( MissionType missionType, 
+                   Target target ) 
+	{
+        _missionType = missionType;
+        _target = target;
+    }
+
+    public MissionType getType() {
+        return _missionType;
+    }
+    public Target getTarget() {
+        return _target;
+    }
+    
+    /** Standard String conversion **/
+    public String toString() 
+        {
+        return "type=" + _missionType.toString() + " Target=(" + _target+")";
+    }
+}

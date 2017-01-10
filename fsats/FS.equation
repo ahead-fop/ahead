@@ -1,0 +1,25 @@
+# Created 2002-03-25.
+#
+# This is the "standard" equation in the FSATS model.
+
+FsatsL
+TargetL
+MessageL
+NetworkL
+ScriptL
+OpfacL
+MissionL
+ProxyL
+BasicL
+ArtilleryL
+MortarL
+MlrsL
+MissionAnyL
+MissionWrffeL
+MissionWrffeMortarL
+MissionWrffeArtyL
+MissionWrffeMlrsL
+GuiL
+LocalL
+Libraries
+Configuration

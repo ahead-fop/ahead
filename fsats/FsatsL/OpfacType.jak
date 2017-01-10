@@ -1,0 +1,7 @@
+layer FsatsL;
+
+import laydown.*;
+
+import java.util.*;
+
+public class OpfacType implements OpfacTypeInterface {}

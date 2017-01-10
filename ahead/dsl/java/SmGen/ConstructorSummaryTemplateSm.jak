@@ -1,0 +1,37 @@
+layer SmGen;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.util.*;
+import java.io.*;
+
+// _________________________________________________________________
+
+ /** ConstructorSummaryTemplate.java
+ * JEDI Project
+ * Department of Computer Sciences
+ * University of Texas at Austin
+ * @author Roberto E. Lopez-Herrejon
+ * Last Update: November 30, 2002
+ * @layer<SmGen>
+ */
+
+public class ConstructorSummaryTemplateSm extends DocumentDescriptor {
+
+    // Adds the bindings to the class
+    public VelocityContext 
+        addBindings( ProgramElementDocJTS parsedProgramElement, 
+                VelocityContext context ) {
+        StateMachineDocJTS parsedState = 
+                ( StateMachineDocJTS )parsedProgramElement;
+
+        // Computes the number of constructors of the class and the list
+        LinkedList theConstructors = parsedState.constructors();
+        String constructorFlag = "false";
+        if ( theConstructors.size() > 0 )
+            constructorFlag = "true";
+        context.put( "constructors", constructorFlag );
+        context.put( "listConstructors", theConstructors );
+        return context;
+    }
+}

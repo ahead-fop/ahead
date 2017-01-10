@@ -1,0 +1,62 @@
+/** @author Roberto E. Lopez-Herrejon */
+
+layer j2ajClassx;
+
+public refines class PPQualName {
+
+    private static String TOOLNAME="mixin.";
+
+    /** Reduce method */
+    public void reduce2java( AstProperties props ) {
+
+        String isAspect = (String) props.getProperty("Aspect");
+
+        // If we are dealing with an aspect
+        if (isAspect!=null) {
+
+           // If the reference is inside a method introduction
+           // that is, Super is null in props then simply
+           // continue normally and return
+           String hasSuper = (String) props.getProperty("Super");
+           if (hasSuper==null) {
+              Super(AstProperties).reduce2java(props);
+              return;
+           }
+
+           String idName = ((AST_QualifiedName)arg[0]).GetName();
+           System.out.println("PPQualName " + idName);
+           // String declVars = (String) props.getProperty("DeclaredVars");
+           String typeName = (String) props.getProperty("ClassName");
+           if (typeName==null)
+              typeName = (String) props.getProperty("InterfaceName");
+
+           // if the variable is not declared
+           //if (declVars!=null && declVars.lastIndexOf(","+idName+",")==-1)
+           //  props.print("obj$" + typeName + ".");
+
+           // Here we need to check that idName is
+           // 1) Local variable or parameter          --> leave as is
+           // 2) Field or method in class ClassName   --> rename
+           // 3) Other classes, static members etc    --> leave as is
+
+           // 1) Checks to see if the idName is a local variable or not
+           // Pops the context and looks in the stack
+           VarContext context=(VarContext)props.getProperty("VariableContext");
+
+           // If it is not a local variable, check to see if it is
+           if (!context.findVar(idName)) {
+               // 2) Search using reflection on the jar file
+               // if it is in the jar file, go ahead and mangle it
+               if (ReferenceFinder.findReference(TOOLNAME + typeName, idName)) {
+                // @debug
+                System.out.println("Mangling obj$"+typeName+"."+idName);
+                props.print(" obj$" + typeName + ".");
+               }
+           }
+            props.print(idName);
+            return;
+        }else
+          Super(AstProperties).reduce2java(props);
+    }
+
+}

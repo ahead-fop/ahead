@@ -1,0 +1,23 @@
+layer FormatJava;
+
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public refines class DoWhileStm {
+    public void format( int position ) {
+        newline_routins( position );
+        if ( arg[0] instanceof  BlockC )
+            arg[0].format( position );
+        else {
+            position += CommentUtil.TabSpace;
+            arg[0].format( position );
+            position -= CommentUtil.TabSpace;
+        }
+        CommentUtil.token_routins( ( AstToken ) tok[1], position );
+        arg[1].setComment( " " );
+        arg[1].format( position );
+        ( ( AstToken ) tok[3] ).white_space = " ";
+    }
+}

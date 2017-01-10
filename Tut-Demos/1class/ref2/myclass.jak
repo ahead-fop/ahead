@@ -1,0 +1,5 @@
+import wstuff.*;
+
+refines class myclass {
+    int w;
+}

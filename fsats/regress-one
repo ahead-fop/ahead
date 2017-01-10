@@ -1,0 +1,27 @@
+
+
+echo " -------------building FSATS Prototype using $1 -------------"
+
+rm -r FS
+ant clean > /dev/null
+FAILURES=0
+sed -es/XXX/$1/ composer.props > composer.properties
+( ant ) || FAILURES=1
+if ((FAILURES)); then
+  exit 1
+fi
+
+cd FS-$1
+for i in *.jak ; do
+   cat $i | sed -f ../updates | tr -s '\n\r' '\n' > correct
+   cat ../FS/$i | sed -f ../updates | tr -s '\n\r' '\n' > current
+   if diff -b -q correct current ; then
+      rm correct current
+   else
+      rm correct current
+      echo "$1 --- $i and ../FS/$i are different"
+      exit 1
+   fi
+done
+
+echo " -------------------- $1 Successful ---------------- "

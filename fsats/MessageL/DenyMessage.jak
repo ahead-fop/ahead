@@ -1,0 +1,51 @@
+layer MessageL;
+
+import fsats.util.DataContainer;
+
+import laydown.*;
+
+import java.util.*;
+
+/** Message to deny a mission **/
+public class DenyMessage 
+        extends MissionStatusMessage {
+    public EventType getType() {
+        return MessageType.deny;
+    }
+
+    public DenyMessage( String missionId, String reason ) 
+        { 
+            Super( String )( missionId );
+        this.reason = reason;
+    }
+
+    protected String reason;
+    public String getReason() {
+        return reason;
+    }
+    public String getSpecific() {
+        return "'"+reason+"'";
+    }
+
+    public DataContainer toFsams()
+        {
+        DataContainer fsams = Super().toFsams();
+        fsams.addField( new DataContainer( "NAME", "Deny" ) );
+        DataContainer content = fsams.getField( "CONTENT" );
+        content.addField( "Reason" ).setValue( reason );
+        return fsams;
+    }
+
+    public static Message fromFsams( DataContainer fsams )
+        {
+        Message m;
+
+        DataContainer content = fsams.getField( "CONTENT" );
+        m = new DenyMessage( content.getField( "Target_Id" ).getValue(),
+                content.getField( "Reason" ).getValue() );
+        m.setSource( LayDown.getSelf().getOpfacByUnit( Integer.parseInt( fsams.getField( "FROM" ).getValue() ) ).getName() );
+        m.setDestination( LayDown.getSelf().getOpfacByUnit( Integer.parseInt( fsams.getField( "TO" ).getValue() ) ).getName() );
+
+        return m;
+    }
+}

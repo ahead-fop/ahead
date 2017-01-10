@@ -1,0 +1,25 @@
+layer FS;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+import java.io.*;
+
+/** Battalion Fire Support Element OPFAC. **/
+public State_machine BnFseMission extends FseMission {
+    // Don't relay MFR to FIST.
+
+    Transition_action wrffeArtyEnding1 {
+        if ( false )
+            Proceed( message ); /*do nothing*/
+    }
+    // Ignore MFR and stop.
+
+    Transition_action wrffeMlrsAccepted1 {
+        if ( false )
+            Proceed( message );
+    }
+}

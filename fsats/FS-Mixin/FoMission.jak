@@ -1,0 +1,172 @@
+layer FS;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+import java.io.*;
+
+SoUrCe RooT BasicL "C:!Java!FeatureOrientedProgramming!fsats!BasicL!FoMission.jak";
+
+/** Forward Observer OPFAC. **/
+abstract State_machine FoMission$$BasicL extends FseMission {}
+
+SoUrCe  MissionWrffeMortarL "C:!Java!FeatureOrientedProgramming!fsats!MissionWrffeMortarL!FoMission.jak";
+
+// MissionImpl
+ 
+abstract State_machine FoMission$$MissionWrffeMortarL extends FoMission$$BasicL {
+    // On RoundsComplete send EOM to gun and stop.
+
+    Transition_condition wrffeMortarAccepted1 
+            ( message instanceof RoundsCompleteMessage ) || ( false && Proceed( message ) );
+
+    Transition_action wrffeMortarAccepted1 
+        {
+        EomMessage eomMessage = new EomMessage( getId() );
+        if ( initiatingUnit != null )
+            eomMessage.setInitiatingUnitId( initiatingUnit.intValue() );
+        sendUp( eomMessage );
+    }
+       
+            /*REFINES EDGE no longer supported.  
+       Move predicate or body into method, and extend method. 
+    Refines Transition wrffeMortarAccepted1 : wrffeMortarAccepted -> stop
+                condition (message instanceof RoundsCompleteMessage)
+                do 
+            { EomMessage eomMessage = new EomMessage(getId());
+            if (initiatingUnit != null)
+                eomMessage.setInitiatingUnitId(initiatingUnit.intValue());
+            sendUp(eomMessage);
+            } */
+
+            // Ignore Shot message.
+
+    Transition_condition wrffeMortarAccepted2 
+            ( message instanceof ShotMessage ) || ( false && Proceed( message ) );
+
+    Transition_action wrffeMortarAccepted2 {
+        if ( false )
+            Proceed( message );
+    }
+ 
+        /*REFINES EDGE no longer supported.  
+   Move predicate or body into method, and extend method.
+Refines Transition wrffeMortarAccepted2 : 
+            wrffeMortarAccepted -> wrffeMortarAccepted
+            condition (message instanceof ShotMessage) do {}
+
+        // added -- first Refines changes action, condition
+
+        public void wrffeMortarAccepted1Action(Event message) {
+           EomMessage eomMessage = new EomMessage(getId());
+           if (initiatingUnit != null)
+              eomMessage.setInitiatingUnitId(initiatingUnit.intValue());
+           sendUp(eomMessage);
+}
+
+        public boolean wrffeMortarAccepted1Test(Event message) {
+            return (message instanceof RoundsCompleteMessage);
+        }
+
+        public void wrffeMortarAccepted2Action(Event message) { }
+
+        public boolean wrffeMortarAccepted2Test(Event message) {
+           return (message instanceof ShotMessage);
+        }
+ */
+}
+
+SoUrCe  MissionWrffeArtyL "C:!Java!FeatureOrientedProgramming!fsats!MissionWrffeArtyL!FoMission.jak";
+
+// FistMission
+
+abstract State_machine FoMission$$MissionWrffeArtyL extends FoMission$$MissionWrffeMortarL {
+    // Don't wait for MFR on EOM.
+
+    Transition_condition wrffeArtyAccepted1 false && Proceed( message );
+
+            /*REFINES EDGE no longer supported.  
+       Move predicate or body into method, and extend method.
+    Refines Transition wrffeArtyAccepted1 : wrffeArtyAccepted -> wrffeArtyEnding
+                condition false do {} */
+        
+            // Ignore shot message.
+
+    Transition_condition wrffeArtyAccepted2
+            ( message instanceof ShotMessage ) || ( false && Proceed( message ) );
+
+    Transition_action wrffeArtyAccepted2 {
+        if ( false )
+            Proceed( message );
+    }
+
+            /*REFINES EDGE no longer supported.  
+       Move predicate or body into method, and extend method. 
+    Refines Transition wrffeArtyAccepted2 : wrffeArtyAccepted -> wrffeArtyAccepted
+                condition (message instanceof ShotMessage) 
+             do {} */
+        
+            // On RoundsComplete send EOM to gun and stop.
+    Transition wrffeArtyAccepted3 : wrffeArtyAccepted -> stop
+        condition ( message instanceof RoundsCompleteMessage )
+        do
+            {
+            EomMessage eomMessage = new EomMessage( getId() );
+            if ( initiatingUnit != null )
+                eomMessage.setInitiatingUnitId( initiatingUnit.intValue() );
+            sendUp( eomMessage );
+        }
+
+/*
+        // net effect of first Refines is to have a false Transition condition
+
+        public boolean wrffeArtyAccepted1Test(Event message) {
+           return false;
+        }
+
+        // net effect of second Refines is to change the boolean and
+        // action methods
+
+        public boolean wrffeArtyAccepted2Test(Event message) {
+           return (message instanceof ShotMessage);
+        }
+
+        public void wrffeArtyAccepted2Action(Event message) { }
+*/
+
+}
+
+SoUrCe  MissionWrffeMlrsL "C:!Java!FeatureOrientedProgramming!fsats!MissionWrffeMlrsL!FoMission.jak";
+
+// FistMission
+
+public State_machine FoMission extends FoMission$$MissionWrffeArtyL {
+    // If MLRS took mission then stop immediately.
+    Enter wrffeMlrsAccepted {
+        delivery( null );
+    }
+
+    Transition_condition wrffeMlrsAccepted1 true || ( false && Proceed( message ) );
+
+    Transition_action wrffeMlrsAccepted1 {
+        if ( false )
+            Proceed( message );
+    }
+
+        /*REFINES EDGE no longer supported.  
+   Move predicate or body into method, and extend method. 
+Refines Transition wrffeMlrsAccepted1 : wrffeMlrsAccepted -> stop
+            condition true do {} 
+
+        // added
+
+        public boolean wrffeMlrsAccepted1Test(Event message) {
+           return true;
+        }
+
+        public void wrffeMlrsAccepted1Action(Event message) {}
+*/
+}

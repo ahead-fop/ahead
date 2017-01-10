@@ -1,0 +1,69 @@
+layer MissionWrffeMortarL;
+
+import java.io.*;
+
+import log.Log;
+
+// MissionImpl
+ 
+public refines State_machine FoMission {
+    // On RoundsComplete send EOM to gun and stop.
+
+    Transition_condition wrffeMortarAccepted1 
+            ( message instanceof RoundsCompleteMessage ) || ( false && Proceed( message ) );
+
+    Transition_action wrffeMortarAccepted1 
+        {
+        EomMessage eomMessage = new EomMessage( getId() );
+        if ( initiatingUnit != null )
+            eomMessage.setInitiatingUnitId( initiatingUnit.intValue() );
+        sendUp( eomMessage );
+    }
+       
+            /*REFINES EDGE no longer supported.  
+       Move predicate or body into method, and extend method. 
+    Refines Transition wrffeMortarAccepted1 : wrffeMortarAccepted -> stop
+                condition (message instanceof RoundsCompleteMessage)
+                do 
+            { EomMessage eomMessage = new EomMessage(getId());
+            if (initiatingUnit != null)
+                eomMessage.setInitiatingUnitId(initiatingUnit.intValue());
+            sendUp(eomMessage);
+            } */
+
+            // Ignore Shot message.
+
+    Transition_condition wrffeMortarAccepted2 
+            ( message instanceof ShotMessage ) || ( false && Proceed( message ) );
+
+    Transition_action wrffeMortarAccepted2 {
+        if ( false )
+            Proceed( message );
+    }
+ 
+        /*REFINES EDGE no longer supported.  
+   Move predicate or body into method, and extend method.
+Refines Transition wrffeMortarAccepted2 : 
+            wrffeMortarAccepted -> wrffeMortarAccepted
+            condition (message instanceof ShotMessage) do {}
+
+        // added -- first Refines changes action, condition
+
+        public void wrffeMortarAccepted1Action(Event message) {
+           EomMessage eomMessage = new EomMessage(getId());
+           if (initiatingUnit != null)
+              eomMessage.setInitiatingUnitId(initiatingUnit.intValue());
+           sendUp(eomMessage);
+}
+
+        public boolean wrffeMortarAccepted1Test(Event message) {
+            return (message instanceof RoundsCompleteMessage);
+        }
+
+        public void wrffeMortarAccepted2Action(Event message) { }
+
+        public boolean wrffeMortarAccepted2Test(Event message) {
+           return (message instanceof ShotMessage);
+        }
+ */
+}

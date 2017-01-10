@@ -1,0 +1,201 @@
+//                              -*- Mode: JTS -*-
+// Version         :
+// Author          : Robert S. MacDonald
+// Last Modified By: Bryan D. Hopkins
+// Last Modified On: Mon May  1 16:03:00 2000
+
+layer BasicL ( F lower )
+realm F
+extends lower 
+imports 
+    java.util.*,
+    F.Libraries.laydown.*,
+    F.Libraries.log.Log
+{
+    public static class OpfacImpl extends lower.OpfacImpl
+    {
+        // Abstract - should never be called.
+        public $TEqn.Mission newMission() { return null; }
+    }
+
+    /** Generic Fire Support Element OPFAC. **/
+    public static state_diagram FseMission refines $TEqn.MissionImpl {}
+    public static class FseOpfac extends $TEqn.OpfacImpl {}
+    public static class FseProxy extends $TEqn.ProxyImpl 
+    { 
+        public void init(OpfacDataWrapper record)
+        {
+            super.init(record);
+            addAssets(LayDown.getSelf().getSupporterNames(getName()));
+        }
+    }
+
+    /** Division Fire Support Element OPFAC. **/
+    public static state_diagram DivFseMission refines $TEqn.FseMission {}
+    public static class DivFseOpfac extends $TEqn.FseOpfac
+    {
+        public $TEqn.Mission newMission() 
+        { 
+            return new $TEqn.DivFseMission(); 
+        }
+    }
+    public static class DivFseProxy extends $TEqn.FseProxy {}
+
+    /** Brigade Fire Support Element OPFAC. **/
+    public static state_diagram BdeFseMission refines $TEqn.FseMission { }
+    public static class BdeFseOpfac extends $TEqn.FseOpfac
+    {
+        public $TEqn.Mission newMission() 
+        { 
+            return new $TEqn.BdeFseMission(); 
+        }
+    }
+    public static class BdeFseProxy extends $TEqn.FseProxy { }
+
+    /** Battalion Fire Support Element OPFAC. **/
+    public static state_diagram BnFseMission refines $TEqn.FseMission { }
+    public static class BnFseOpfac extends $TEqn.FseOpfac
+    {
+        public $TEqn.Mission newMission() 
+        { 
+            return new $TEqn.BnFseMission(); 
+        }
+    }
+    public static class BnFseProxy extends $TEqn.FseProxy { }
+
+    /** Fire Support Team OPFAC. **/
+    public static state_diagram FistMission refines $TEqn.FseMission { }
+
+    public static class FistOpfac extends $TEqn.FseOpfac
+    {
+        public $TEqn.Mission newMission() 
+        { 
+            return new $TEqn.FistMission(); 
+        }
+    }
+    public static class FistProxy extends $TEqn.FseProxy { }
+
+    /** Forward Observer OPFAC. **/
+    public static state_diagram FoMission refines $TEqn.FseMission { }
+    public static class FoOpfac extends $TEqn.FseOpfac
+    {
+        public $TEqn.Mission newMission() 
+        { 
+            return new $TEqn.FoMission(); 
+        }
+    }
+    public static class FoProxy extends $TEqn.FseProxy { }
+
+    /** Generic Field Artillery Element OPFAC. **/
+    public static state_diagram CpMission refines $TEqn.MissionImpl { }
+    public static class CpOpfac extends $TEqn.OpfacImpl
+    {
+        public $TEqn.Mission newMission() 
+        { 
+            return new $TEqn.CpMission(); 
+        }
+    }
+    public static class CpProxy extends $TEqn.ProxyImpl 
+    { 
+        public void init(OpfacDataWrapper record)
+        {
+            super.init(record);
+            addAssets(LayDown.getSelf().getSubordinateNames(getName()));
+        }
+    }
+
+    /** Generic Weapon OPFAC. **/
+    public static state_diagram WeaponMission refines $TEqn.MissionImpl {}
+    public static class WeaponOpfac extends $TEqn.OpfacImpl {}
+    public static class WeaponProxy extends $TEqn.ProxyImpl 
+    { 
+        protected float range;
+
+        public void init(OpfacDataWrapper record)
+        {
+            super.init(record);
+            range=record.getRange();
+        }
+
+        public boolean canShoot($TEqn.Mission mission)
+        {
+            return 
+                super.canShoot(mission) && 
+                    distanceTo(mission.getTarget().getLocation())<=range;
+        }
+
+        /** Any weapon is better than not a weapon. */
+        public int typePrecedence() { return 1; }
+
+        /** Best (only) weapon is this, unless can't shoot mission at all. */
+        public $TEqn.SelectedProxy getBestWeapon($TEqn.Mission mission)
+        {
+            return canShoot(mission) ? new SelectedProxy(this, this) : null;
+        }
+    }
+
+    public static class OpfacFactory extends lower.OpfacFactory 
+    {
+	protected OpfacFactory() 
+        {
+	    register(OpfacType.DIV_FSE_TAC, new $TEqn.DivFseOpfac() );
+	    register(OpfacType.BDE_FSE, new $TEqn.BdeFseOpfac() );
+	    register(OpfacType.BN_FSE, new $TEqn.BnFseOpfac() );
+	    register(OpfacType.FIST, new $TEqn.FistOpfac() );
+	    register(OpfacType.FO, new $TEqn.FoOpfac() );
+
+	    register(OpfacType.DIVARTY_CP, new $TEqn.CpOpfac() );
+	    register(OpfacType.DS_BDE_CP, new $TEqn.CpOpfac() );
+	    register(OpfacType.DS_BN_CP, new $TEqn.CpOpfac() );
+	    register(OpfacType.GS_BN_CP, new $TEqn.CpOpfac() );
+	    register(OpfacType.R_BN_CP, new $TEqn.CpOpfac() );
+	    register(OpfacType.MLRS_BN, new $TEqn.CpOpfac() );
+
+            // Added 3 Jan 2000 - bhopkins -
+            // in hopes of fixing "Cannot create" errors.
+            register(OpfacType.GSR_FA_PLT, new $TEqn.CpOpfac() );
+            register(OpfacType.GSR_BN_CP, new $TEqn.CpOpfac() );
+            register(OpfacType.CORPS_FSE_MAIN, new $TEqn.CpOpfac() );
+
+            // Added 20 Mar 2000 - bhopkins -M
+            // in hopes of fixing "Cannot create" errors.
+            register(OpfacType.FA_PLT, new $TEqn.CpOpfac() );
+            register(OpfacType.MECH_FIST, new $TEqn.FistOpfac() );
+
+	    register(OpfacType.ARM_FIST, new $TEqn.FistOpfac() );
+	}
+    }
+
+    public static class ProxyFactory extends lower.ProxyFactory 
+    {
+	protected ProxyFactory() 
+        {
+	    register(OpfacType.DIV_FSE_TAC, new $TEqn.DivFseProxy() );
+	    register(OpfacType.BDE_FSE, new $TEqn.BdeFseProxy() );
+	    register(OpfacType.BN_FSE, new $TEqn.BnFseProxy() );
+	    register(OpfacType.FIST, new $TEqn.FistProxy() );
+	    register(OpfacType.FO, new $TEqn.FoProxy() );
+
+	    register(OpfacType.DIVARTY_CP, new $TEqn.CpProxy() );
+	    register(OpfacType.DS_BDE_CP, new $TEqn.CpProxy() );
+	    register(OpfacType.DS_BN_CP, new $TEqn.CpProxy() );
+	    register(OpfacType.GS_BN_CP, new $TEqn.CpProxy() );
+	    register(OpfacType.R_BN_CP, new $TEqn.CpProxy() );
+	    register(OpfacType.MLRS_BN, new $TEqn.CpProxy() );
+
+            // Added Jan. 3, 2000 - bhopkins -
+            // in hopes of fixing "No proxy" errors.
+            register(OpfacType.GSR_FA_PLT, new $TEqn.CpProxy() );
+            register(OpfacType.GSR_BN_CP, new $TEqn.CpProxy() );
+            register(OpfacType.CORPS_FSE_MAIN, new $TEqn.CpProxy() );
+
+            // Added 20 Mar 2000 - bhopkins -
+            // in hopes of fixing "Cannot create" errors.
+            register(OpfacType.FA_PLT, new $TEqn.CpProxy() );
+            register(OpfacType.MECH_FIST, new $TEqn.FistProxy() );
+
+	    register(OpfacType.ARM_FIST, new $TEqn.FistProxy() );
+	}
+    }
+}
+

@@ -1,0 +1,1 @@
+java -classpath "$AHEAD_LIB/safegen.jar;$AHEAD_LIB/jdom.jar;$AHEAD_LIB/guidsl.jar;$AHEAD_LIB/classreader.jar;$AHEAD_LIB/bcel-5.1.jar" ProgramCube.Validation.SafeComposition.SafeCompositionValidator $@

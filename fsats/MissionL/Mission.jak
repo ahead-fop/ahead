@@ -1,0 +1,20 @@
+layer MissionL;
+
+import java.util.*;
+
+import log.Log;
+
+public interface Mission
+        extends MissionData
+    {
+    Mission init( Opfac opfac, String missionId );
+        
+    /** State_machine Delivery_parameters entry point. */
+    void delivery( Event message );
+
+    /** Implemented by State_machine. */
+    String getState();
+    Opfac getOpfac();
+
+    String getId();
+}

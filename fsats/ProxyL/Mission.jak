@@ -1,0 +1,12 @@
+layer ProxyL;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+public refines interface Mission {
+    void proxyDeny( String opfacName );
+    boolean hasDenied( String opfacName );
+}

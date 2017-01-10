@@ -1,0 +1,10 @@
+#        compare $root.output $root.output.correct
+
+sort $1 > junk1
+sort $2 > junk2
+if diff -w junk1 junk2 ; then
+   echo "Test succeeded for" $3
+else
+   echo "Test failed for" $3
+   exit 1
+fi

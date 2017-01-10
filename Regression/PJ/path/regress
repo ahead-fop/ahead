@@ -1,0 +1,19 @@
+#!/bin/bash
+
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+echo "****************jampack path Layer Declaration Regression Test***********"
+
+bash regress-path combine \
+&& bash regress-path comb.ine \
+|| exit 1
+
+bash regress-one Cons1 Ref1 CR11 \
+&& bash regress-one Cons2 Ref1 CR21 \
+&& bash regress-one Cons1 Ref2 CR12 \
+&& bash regress-one Cons3 Ref3 CR33 \
+|| exit 1
+
+echo -e "\njampack path Declaration Regression Test succeeded."

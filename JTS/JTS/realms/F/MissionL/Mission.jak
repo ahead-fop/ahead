@@ -1,0 +1,20 @@
+package MissionL;
+
+import  
+    java.util.*;
+import 
+    F.Libraries.log.Log;
+
+
+    public interface Mission
+        extends MissionData
+    { Mission init( Opfac opfac, String missionId);
+        
+        /** state_machine event_delivery entry point. */
+        void event( Event message);
+
+        /** Implemented by state_machine. */
+        String getState(); Opfac getOpfac();
+
+	String getId();
+    }

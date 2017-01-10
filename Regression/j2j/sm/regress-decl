@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+echo "******************* Declaration Replication test ***************"
+java jak2java.Main decl.spec \
+&& javac decl.java \
+&& java -cp "." decl > junk \
+&& diff -b junk correct-decl \
+|| exit 1
+

@@ -1,0 +1,24 @@
+## States Clause of State Machine
+
+#if ($clauseFlag == "true")
+   <TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+   <TR BGCOLOR="#CCCCFF" CLASS="TableSubHeadingColor">
+     <TD>
+      <FONT SIZE="+2">
+	<B> States Clause </B>
+      </FONT>
+     </TD>	
+   </TR>
+
+    <TR BGCOLOR="white" CLASS="TableRowColor">
+    <TD>
+     <CODE>  
+      #foreach($clause in $listClauses)
+	$clause &nbsp;
+      #end
+     </CODE>
+    </TD>
+    </TR>
+  </TABLE>
+  <BR>
+#end

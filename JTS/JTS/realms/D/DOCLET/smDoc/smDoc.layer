@@ -1,0 +1,81 @@
+/*
+University of Texas at Austin
+Computer Sciences Department
+JTSDOC project
+Implemented by : Roberto E. Lopez-Herrejon
+Doclet composition.
+Last modified : July 18, 2001
+*/
+
+layer smDoc(DOCLET lower)
+realm DOCLET
+extends lower
+imports java.util.*,
+        jtsdoc.*
+{
+  static public class ClassDocJTS extends lower.ClassDocJTS
+  {
+    /** List of states that can be contained in a class.
+    */
+    LinkedList states;
+
+    /** Default constructor.
+    */
+    public ClassDocJTS() 
+    { 
+       super();
+       states = new LinkedList(); 
+    }
+    
+    /** Constructor with class name. 
+    */
+    public ClassDocJTS(String name) 
+    { 
+       super(name); 
+       states = new LinkedList();
+    }
+  
+    /** Returns the states of the class.
+    */
+    public LinkedList states() { return states; }
+
+    /** Sets the states of the class
+    */
+    public void setStates(LinkedList _states)
+    { states = _states; }
+ 
+  }  // of classDocJTS
+
+ static public class ProgramDocJTS extends lower.ProgramDocJTS
+ {
+  /** Contains a list with all the states accesible from AST_Class production.
+  */
+  LinkedList states ;
+  
+  /** Default constructor initializes the states list.
+  */
+  public ProgramDocJTS()
+  {
+    super();
+    states = new LinkedList();
+  }	
+
+  /** Name constructor
+  */
+  public ProgramDocJTS(String _name)
+  { 
+	  super(_name);
+	  states = new LinkedList();
+  }
+  	
+  /** Returns the list of states accesible from AST_Class production.
+  */
+  public LinkedList states() { return states; }
+  
+  /** Sets the list of states accesible form AST_Class production.
+  */
+  public void setStates(LinkedList _states) { states = _states; }
+  
+ } // end of Program ProgramDocJTS
+
+} // of layer

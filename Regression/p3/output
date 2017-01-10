@@ -1,0 +1,120 @@
+
+Executing regression tests for P3 ...
+test1 ... failed symbol lookup: java.lang.String
+java.lang.Exception: failed symbol lookup: java.lang.String
+	at Jakarta.util.Util.fatalError(Util.java:62)
+	at Jakarta.symtab.MethodInfo.getParameterTypes(Compiled Code)
+	at Jakarta.symtab.MethodCF.getParameterTypes(MethodCF.java:137)
+	at Jak.p3Lib.TopParams.<init>(Compiled Code)
+	at Jak.p3$P3AContDecl.reduce2java(Compiled Code)
+	at Jak.kernel$AstNode.reduce2java(Compiled Code)
+	at Jak.kernel$AstList.reduce2java(Compiled Code)
+	at Jak.kernel$AstOptNode.reduce2java(kernel.java:942)
+	at Jak.kernel$AstNode.reduce2java(Compiled Code)
+	at Jak.Java$Main.outputAST(Java.java:270)
+	at Jak.symbols$Main.outputAST(symbols.java:876)
+	at Jak.kernel$Main.driver(kernel.java:1673)
+	at Jak.kernel$Main.main(kernel.java:1517)
+basic.java:8: Class empcont not found.
+      empcont   ec;
+      ^
+basic.java:9: Class empcursor not found.
+      empcursor all;
+      ^
+basic.java:10: Class empcursor not found.
+      empcursor moreall;
+      ^
+basic.java:11: Class empcursor not found.
+      empcursor some;
+      ^
+basic.java:12: Class empcont1 not found.
+      empcont1  ec1;
+      ^
+basic.java:27: Class empcont1 not found.
+      ec = ec1 = new empcont1();
+                     ^
+basic.java:28: Class all not found.
+      all = new all( ec1 );
+                ^
+basic.java:29: Class all not found.
+      moreall = new all( ec1 );
+                    ^
+basic.java:30: Class old not found.
+      some = new old( ec1 );
+                 ^
+9 errors
+java.lang.NoClassDefFoundError: basic
+Exception in thread "main" 0a1,72
+> original employee data
+> 
+> empno = 10000 age = 60 dept = Biology name = Akers, Mark
+> empno = 10070 age = 22 dept = CompSci name = Andrews, Kay
+> empno = 10020 age = 21 dept = Biology name = Alexander, Joe
+> empno = 10010 age = 40 dept = Physics name = Akin, Monica
+> empno = 10050 age = 42 dept = Biology name = Akerson, Suzanne
+> empno = 10040 age = 53 dept = Astrono name = Akerson, Mary
+> empno = 10060 age = 61 dept = CompSci name = Andrews, John
+> empno = 10030 age = 23 dept = Biology name = Akerson, Gwyn
+> increment ages of all employees
+> 
+> 
+> empno = 10030 age = 23 dept = Biology name = Akerson, Gwyn
+> empno = 10060 age = 61 dept = CompSci name = Andrews, John
+> empno = 10040 age = 53 dept = Astrono name = Akerson, Mary
+> empno = 10050 age = 42 dept = Biology name = Akerson, Suzanne
+> empno = 10010 age = 40 dept = Physics name = Akin, Monica
+> empno = 10020 age = 21 dept = Biology name = Alexander, Joe
+> empno = 10070 age = 22 dept = CompSci name = Andrews, Kay
+> empno = 10000 age = 60 dept = Biology name = Akers, Mark
+> read again
+> empno = 10030 age = 24 dept = Biology name = Akerson, Gwyn
+> empno = 10060 age = 62 dept = CompSci name = Andrews, John
+> empno = 10040 age = 54 dept = Astrono name = Akerson, Mary
+> empno = 10050 age = 43 dept = Biology name = Akerson, Suzanne
+> empno = 10010 age = 41 dept = Physics name = Akin, Monica
+> empno = 10020 age = 22 dept = Biology name = Alexander, Joe
+> empno = 10070 age = 23 dept = CompSci name = Andrews, Kay
+> empno = 10000 age = 61 dept = Biology name = Akers, Mark
+> print old emps and delete
+> 
+> 
+> empno = 10060 age = 62 dept = CompSci name = Andrews, John
+>    empno = 10030 age = 24 dept = Biology name = Akerson, Gwyn
+>    empno = 10040 age = 54 dept = Astrono name = Akerson, Mary
+>    empno = 10050 age = 43 dept = Biology name = Akerson, Suzanne
+>    empno = 10010 age = 41 dept = Physics name = Akin, Monica
+>    empno = 10020 age = 22 dept = Biology name = Alexander, Joe
+>    empno = 10070 age = 23 dept = CompSci name = Andrews, Kay
+>    empno = 10000 age = 61 dept = Biology name = Akers, Mark
+> empno = 10040 age = 54 dept = Astrono name = Akerson, Mary
+>    empno = 10030 age = 24 dept = Biology name = Akerson, Gwyn
+>    empno = 10050 age = 43 dept = Biology name = Akerson, Suzanne
+>    empno = 10010 age = 41 dept = Physics name = Akin, Monica
+>    empno = 10020 age = 22 dept = Biology name = Alexander, Joe
+>    empno = 10070 age = 23 dept = CompSci name = Andrews, Kay
+>    empno = 10000 age = 61 dept = Biology name = Akers, Mark
+> empno = 10050 age = 43 dept = Biology name = Akerson, Suzanne
+>    empno = 10030 age = 24 dept = Biology name = Akerson, Gwyn
+>    empno = 10010 age = 41 dept = Physics name = Akin, Monica
+>    empno = 10020 age = 22 dept = Biology name = Alexander, Joe
+>    empno = 10070 age = 23 dept = CompSci name = Andrews, Kay
+>    empno = 10000 age = 61 dept = Biology name = Akers, Mark
+> empno = 10010 age = 41 dept = Physics name = Akin, Monica
+>    empno = 10030 age = 24 dept = Biology name = Akerson, Gwyn
+>    empno = 10020 age = 22 dept = Biology name = Alexander, Joe
+>    empno = 10070 age = 23 dept = CompSci name = Andrews, Kay
+>    empno = 10000 age = 61 dept = Biology name = Akers, Mark
+> empno = 10000 age = 61 dept = Biology name = Akers, Mark
+>    empno = 10030 age = 24 dept = Biology name = Akerson, Gwyn
+>    empno = 10020 age = 22 dept = Biology name = Alexander, Joe
+>    empno = 10070 age = 23 dept = CompSci name = Andrews, Kay
+> print remaining emps
+> 
+> 
+> empno = 10030 age = 24 dept = Biology name = Akerson, Gwyn
+> empno = 10020 age = 22 dept = Biology name = Alexander, Joe
+> empno = 10070 age = 23 dept = CompSci name = Andrews, Kay
+> 
+> 
+> Done
+failed

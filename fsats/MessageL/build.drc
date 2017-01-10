@@ -1,0 +1,16 @@
+single layer MessageL;
+
+extern outside Int fsatsRank;
+extern outside Bool fsatsPresent;
+extern outside Bool messagePresent;
+extern inside  Bool libraries;
+
+// design rules: MessageL must lie in
+// the rank 1 of layers
+// and that it is outside of TargetL
+// and inside of networkL
+
+requires outside fsatsRank == 1 and fsatsPresent;
+provides outside messagePresent;
+requires inside  libraries;
+

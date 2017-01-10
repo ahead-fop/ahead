@@ -1,0 +1,51 @@
+// layer MissionL;
+
+import  
+    java.util.*;
+import 
+    log.Log;
+
+
+
+    /** Base implementation of an active mission for a particular OPFAC **/
+    public State_machine MissionImpl
+        implements Mission
+    {
+        Delivery_parameters( Event message);
+
+        Unrecognizable_state 
+        { 
+            Log.error(toString()+" invalid state "+current_state); 
+        }
+
+	protected Opfac opfac;
+	protected String missionId;
+        protected MissionData missionData = null;
+	
+        public Mission init( Opfac opfac, String missionId)
+	{
+	    this.opfac = opfac;
+	    this.missionId = missionId;
+            return ( Mission)this;
+	}
+
+	public Opfac getOpfac() { return opfac; }
+
+	public String getId() { return missionId; }
+
+        public MissionType getType() 
+        { 
+            return missionData==null ? null : missionData.getType();
+        }
+
+        public Target getTarget()
+        {
+            return missionData==null ? null : missionData.getTarget();
+        }
+
+	/** Standard string conversion **/
+	public String toString() 
+        {
+            return "mission "+missionId+" opfac "+opfac.getName();
+	}
+    }

@@ -1,0 +1,18 @@
+
+	    class casep {
+		public static void main(String args[]) {
+		    int x = Integer.parseInt(args[0]);
+
+		    switch (x) {
+		    case 0: break;
+		    case 1: ;
+		    case 2: System.out.println("Hi");
+		    case 3: System.out.println("Hi");
+		    default: ;
+		    }
+		}
+	    }
+ 0 break;
+ 1 ;
+ 2 System.out.println("Hi");
+ 3 System.out.println("Hi");

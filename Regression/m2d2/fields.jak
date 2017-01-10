@@ -1,0 +1,12 @@
+layer test;
+
+import java.util.*;
+
+class foo {
+   int a, b=4, c[];
+   private float[] j, k ,l[];
+   String[] x,y,z;
+   foo q;
+   TreeMap w;   // this should be an explicitly imported class
+}
+   

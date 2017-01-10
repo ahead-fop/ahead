@@ -1,0 +1,20 @@
+drc: test9.drc: Warning composed equation is incomplete: non-null requirements present
+requires inside 30 < range
+requires outside val == 4
+
+layer foo;
+
+// defined attributes
+
+inside Int range;
+outside Int val;
+
+// externally defined attributes
+
+
+
+requires inside 30 < range;
+provides inside range == 50;
+requires outside val == 4;
+provides outside val == 4;
+

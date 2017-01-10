@@ -1,0 +1,11 @@
+layer M2D2Java;
+
+refines class ClassBodyDeclaration {
+
+   String bodyString( String s ) {
+      s = s.replace("\\", "\\\\");  // replace right-slash
+      s = s.replace("'", "\\'");    // replace single-quote
+      s = s.replace("\"", "\\\"");  // replace double-quote
+      return s;
+   }
+}

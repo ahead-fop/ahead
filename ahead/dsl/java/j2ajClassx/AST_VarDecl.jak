@@ -1,0 +1,23 @@
+/** @author Roberto E. Lopez-Herrejon */
+
+layer j2ajClassx;
+
+public refines class AST_VarDecl {
+
+    /** Reduce method */
+    public void reduce2java( AstProperties props ) {
+        // Checks to see if it is inside an aspect
+        // String isAspect = (String) props.getProperty("Aspect");
+
+        // If the declaration is in an aspect
+        // if (isAspect!=null) {
+        //    AstCursor c = new AstCursor();
+        //    for(c.FirstElement(this);c.MoreElement(); c.NextElement()) {
+        //      c.node.reduce2java(props);
+        //      props.print(";");
+        //    }
+        //} else
+          Super(AstProperties).reduce2java(props);
+
+    }
+}

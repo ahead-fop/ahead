@@ -1,0 +1,16 @@
+layer FS;
+
+SoUrCe RooT MortarL "C:!Java!FeatureOrientedProgramming!fsats!MortarL!MortarProxy.jak";
+
+public class MortarProxy extends WeaponProxy {
+    public int typePrecedence() {
+        return 4;
+    }
+
+    public boolean canShoot( Mission mission )
+        {
+        return 
+                !mission.getTarget().getType().equals( "ARMOR" )
+                    && Super( Mission ).canShoot( mission );
+    }
+}

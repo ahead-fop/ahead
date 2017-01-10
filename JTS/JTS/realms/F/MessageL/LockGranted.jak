@@ -1,0 +1,21 @@
+package MessageL;
+
+import  
+    fsats.util.DataContainer;
+import 
+    F.Libraries.laydown.*;
+import 
+    java.util.*;
+
+
+
+    /** Notifies a mission that its lock on an opfac has been granted. */
+    public class LockGranted
+        extends BasicEvent
+    {
+        public EventType getType() { return EventType.lockGranted; }
+        public LockGranted(String missionId) { super(missionId);
+          LockGrantedConstructor(missionId); }
+        public void LockGrantedConstructor(String missionId) {
+      }
+    }

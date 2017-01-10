@@ -1,0 +1,56 @@
+layer MissionWrffeArtyL;
+
+import java.io.*;
+
+import log.Log;
+
+public refines State_machine MissionImpl {
+    States wrffeArtyAccepted, wrffeArtyEnding;
+        
+    // Proceed with this branch if a gun accepted the mission.
+    Transition wrffeAcceptedArty : wrffeAccepted -> wrffeArtyAccepted
+        condition ( getWeaponType().equals( "DS_FA_PLT" )
+                || getWeaponType().equals( "GS_FA_PLT" )
+                || getWeaponType().equals( "R_FA_PLT" ) )
+        do {}
+
+    // Relay EOM to gun and wait for MFR.
+    Transition wrffeArtyAccepted1 : wrffeArtyAccepted -> wrffeArtyEnding
+        condition wrffeArtyAccepted1Test( message )
+        do {
+            sendUp( ( Message )message.clone() );
+        }
+        
+    // Relay Shot and RoundsComplete to observer.
+    Transition wrffeArtyAccepted2 : wrffeArtyAccepted -> wrffeArtyAccepted
+        condition wrffeArtyAccepted2Test( message )
+        do {
+            wrffeArtyAccepted2Action( message );
+        }
+        
+    // Relay MFR to BN_FSE and stop.
+    Transition wrffeArtyEnding1 : wrffeArtyEnding -> stop
+        condition ( message instanceof MfrMessage )
+        do {
+            wrffeArtyEnding1Action( message );
+        }
+
+    // Added
+
+    public void wrffeArtyEnding1Action( Event message ) {
+        sendDown( ( Message )message.clone() );
+    }
+
+    public boolean wrffeArtyAccepted1Test( Event message ) {
+        return ( message instanceof EomMessage );
+    }
+
+    public void wrffeArtyAccepted2Action( Event message ) {
+        sendDown( ( Message )message.clone() );
+    }
+
+    public boolean wrffeArtyAccepted2Test( Event message ) {
+        return ( message instanceof ShotMessage )
+                || ( message instanceof RoundsCompleteMessage );
+    }
+}

@@ -1,0 +1,167 @@
++ '[' -z /usr/bin/bash ']'
++ echo '****************GPL unmixin Regression Test***********'
+****************GPL unmixin Regression Test***********
++ rm -f -r GEN
++ cp -f -r CorrectGEN GEN
+++ cat updatedFiles
+cat: updatedFiles: No such file or directory
++ FAILURES=0
++ cd GPL
++ java unmixin.Main Edge.java Graph.java Main.java Neighbor.java NumberWorkSpace.java Vertex.java WorkSpace.java
++ (( FAILURES ))
++ cd ..
++ cd GEN
+++ ls BFS/Graph.java BFS/Vertex.java BFS/WorkSpace.java Benchmark/Graph.java Connected/Graph.java Connected/RegionWorkSpace.java Connected/Vertex.java Cycle/CycleWorkSpace.java Cycle/Graph.java Cycle/Vertex.java DFS/Graph.java DFS/Vertex.java DFS/WorkSpace.java Directed/Edge.java Directed/Graph.java Directed/Neighbor.java Directed/Vertex.java MSTKruskal/Graph.java MSTKruskal/Vertex.java MSTPrim/Graph.java MSTPrim/Vertex.java Number/Graph.java Number/NumberWorkSpace.java Number/Vertex.java Prog/Main.java Shortest/Graph.java Shortest/Vertex.java StronglyConnected/FinishTimeWorkSpace.java StronglyConnected/Graph.java StronglyConnected/Vertex.java StronglyConnected/WorkSpaceTranspose.java Transpose/Graph.java Undirected/Edge.java Undirected/Graph.java Undirected/Neighbor.java Undirected/Vertex.java Weighted/Edge.java
++ fileList='BFS/Graph.java
+BFS/Vertex.java
+BFS/WorkSpace.java
+Benchmark/Graph.java
+Connected/Graph.java
+Connected/RegionWorkSpace.java
+Connected/Vertex.java
+Cycle/CycleWorkSpace.java
+Cycle/Graph.java
+Cycle/Vertex.java
+DFS/Graph.java
+DFS/Vertex.java
+DFS/WorkSpace.java
+Directed/Edge.java
+Directed/Graph.java
+Directed/Neighbor.java
+Directed/Vertex.java
+MSTKruskal/Graph.java
+MSTKruskal/Vertex.java
+MSTPrim/Graph.java
+MSTPrim/Vertex.java
+Number/Graph.java
+Number/NumberWorkSpace.java
+Number/Vertex.java
+Prog/Main.java
+Shortest/Graph.java
+Shortest/Vertex.java
+StronglyConnected/FinishTimeWorkSpace.java
+StronglyConnected/Graph.java
+StronglyConnected/Vertex.java
+StronglyConnected/WorkSpaceTranspose.java
+Transpose/Graph.java
+Undirected/Edge.java
+Undirected/Graph.java
+Undirected/Neighbor.java
+Undirected/Vertex.java
+Weighted/Edge.java'
++ cd ..
++ for FILE in '${fileList}'
++ bash regress-one BFS/Graph.java
+Examining BFS/Graph.java
++ for FILE in '${fileList}'
++ bash regress-one BFS/Vertex.java
+Examining BFS/Vertex.java
++ for FILE in '${fileList}'
++ bash regress-one BFS/WorkSpace.java
+Examining BFS/WorkSpace.java
++ for FILE in '${fileList}'
++ bash regress-one Benchmark/Graph.java
+Examining Benchmark/Graph.java
++ for FILE in '${fileList}'
++ bash regress-one Connected/Graph.java
+Examining Connected/Graph.java
++ for FILE in '${fileList}'
++ bash regress-one Connected/RegionWorkSpace.java
+Examining Connected/RegionWorkSpace.java
++ for FILE in '${fileList}'
++ bash regress-one Connected/Vertex.java
+Examining Connected/Vertex.java
++ for FILE in '${fileList}'
++ bash regress-one Cycle/CycleWorkSpace.java
+Examining Cycle/CycleWorkSpace.java
++ for FILE in '${fileList}'
++ bash regress-one Cycle/Graph.java
+Examining Cycle/Graph.java
++ for FILE in '${fileList}'
++ bash regress-one Cycle/Vertex.java
+Examining Cycle/Vertex.java
++ for FILE in '${fileList}'
++ bash regress-one DFS/Graph.java
+Examining DFS/Graph.java
++ for FILE in '${fileList}'
++ bash regress-one DFS/Vertex.java
+Examining DFS/Vertex.java
++ for FILE in '${fileList}'
++ bash regress-one DFS/WorkSpace.java
+Examining DFS/WorkSpace.java
++ for FILE in '${fileList}'
++ bash regress-one Directed/Edge.java
+Examining Directed/Edge.java
++ for FILE in '${fileList}'
++ bash regress-one Directed/Graph.java
+Examining Directed/Graph.java
++ for FILE in '${fileList}'
++ bash regress-one Directed/Neighbor.java
+Examining Directed/Neighbor.java
++ for FILE in '${fileList}'
++ bash regress-one Directed/Vertex.java
+Examining Directed/Vertex.java
++ for FILE in '${fileList}'
++ bash regress-one MSTKruskal/Graph.java
+Examining MSTKruskal/Graph.java
++ for FILE in '${fileList}'
++ bash regress-one MSTKruskal/Vertex.java
+Examining MSTKruskal/Vertex.java
++ for FILE in '${fileList}'
++ bash regress-one MSTPrim/Graph.java
+Examining MSTPrim/Graph.java
++ for FILE in '${fileList}'
++ bash regress-one MSTPrim/Vertex.java
+Examining MSTPrim/Vertex.java
++ for FILE in '${fileList}'
++ bash regress-one Number/Graph.java
+Examining Number/Graph.java
++ for FILE in '${fileList}'
++ bash regress-one Number/NumberWorkSpace.java
+Examining Number/NumberWorkSpace.java
++ for FILE in '${fileList}'
++ bash regress-one Number/Vertex.java
+Examining Number/Vertex.java
++ for FILE in '${fileList}'
++ bash regress-one Prog/Main.java
+Examining Prog/Main.java
++ for FILE in '${fileList}'
++ bash regress-one Shortest/Graph.java
+Examining Shortest/Graph.java
++ for FILE in '${fileList}'
++ bash regress-one Shortest/Vertex.java
+Examining Shortest/Vertex.java
++ for FILE in '${fileList}'
++ bash regress-one StronglyConnected/FinishTimeWorkSpace.java
+Examining StronglyConnected/FinishTimeWorkSpace.java
++ for FILE in '${fileList}'
++ bash regress-one StronglyConnected/Graph.java
+Examining StronglyConnected/Graph.java
++ for FILE in '${fileList}'
++ bash regress-one StronglyConnected/Vertex.java
+Examining StronglyConnected/Vertex.java
++ for FILE in '${fileList}'
++ bash regress-one StronglyConnected/WorkSpaceTranspose.java
+Examining StronglyConnected/WorkSpaceTranspose.java
++ for FILE in '${fileList}'
++ bash regress-one Transpose/Graph.java
+Examining Transpose/Graph.java
++ for FILE in '${fileList}'
++ bash regress-one Undirected/Edge.java
+Examining Undirected/Edge.java
++ for FILE in '${fileList}'
++ bash regress-one Undirected/Graph.java
+Examining Undirected/Graph.java
++ for FILE in '${fileList}'
++ bash regress-one Undirected/Neighbor.java
+Examining Undirected/Neighbor.java
++ for FILE in '${fileList}'
++ bash regress-one Undirected/Vertex.java
+Examining Undirected/Vertex.java
++ for FILE in '${fileList}'
++ bash regress-one Weighted/Edge.java
+Examining Weighted/Edge.java
++ (( FAILURES ))
++ echo -e '\nGPL unmixin Regression Test completed Successfully.'
+
+GPL unmixin Regression Test completed Successfully.

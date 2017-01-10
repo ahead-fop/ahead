@@ -1,0 +1,49 @@
+// Graph Algorithms Product Line (GPL)
+// University of Texas at Austin
+// Department of Computer Sciences
+// Product-Line Architectures Research Group
+// Edge-Neighbor Representation
+// NUMBER : vertex numbering using trasversal layer
+// Last Update: May 15, 2001
+// Written by: Roberto E. Lopez-Herrejon (rlopez@cs.utexas.edu)
+
+layer Number( GEN lower )
+realm GEN
+extends lower
+{   
+   // *************************************************************************	
+   static public class Graph extends lower.Graph {
+
+      public void NumberVertices() {
+         GraphSearch( new NumberWorkSpace());
+      }
+   }
+
+   // *************************************************************************	
+   static public class Vertex extends lower.Vertex {
+      public int VertexNumber;
+
+      public void display() {
+         System.out.print(" # "+ VertexNumber + " ");
+         super.display();
+      }
+   }
+
+   // *************************************************************************	
+   public static class NumberWorkSpace extends $TEqn.WorkSpace {
+      int vertexCounter;
+
+      public void NumberWorkSpaceConstructor() {
+         vertexCounter = 0;
+      }
+
+      public void preVisitAction($TEqn.Vertex v)
+      {
+	// This assigns the values on the way in
+	if (v.visited!=true) v.VertexNumber = vertexCounter++;
+      }
+
+  } // of WorkSpace
+  
+}
+

@@ -1,0 +1,5 @@
+layer foo.bar.one;
+
+class c {
+   int top;
+}

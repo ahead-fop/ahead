@@ -1,0 +1,13 @@
+layer JavaHarvest;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+
+public  abstract refines class AstListNode {
+    public void execute() {
+        Util.fatalError( "AstListNode.execute() method should not be called" );
+    }
+}

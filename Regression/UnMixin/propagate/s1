@@ -1,0 +1,9 @@
+layer one;
+
+SoUrCe RooT one "./Asm.jak";
+// extends
+abstract State_machine x$$one extends az implements q { }
+
+SoUrCe  two "./Bsm.jak";
+// implements
+ State_machine x extends  x$$one  implements y, rr { }

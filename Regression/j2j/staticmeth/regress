@@ -1,0 +1,20 @@
+#!/bin/bash
+
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+echo "****************jak2java Static Method Refinement Regression Test***********"
+rm *.java *.class
+cp EventType.jjava EventType.java
+javac EventType.java
+
+bash regress-one three \
+&& bash regress-one one \
+&& bash regress-one two \
+|| exit 1
+
+echo -e "\nj2j Static Method Refinement succeeded."
+rm -f current correct out junk *.java *.class
+
+

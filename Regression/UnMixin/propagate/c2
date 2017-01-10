@@ -1,0 +1,10 @@
+layer one;
+
+SoUrCe RooT one "./Aclass.jak";
+// extends
+abstract class x$$one extends R implements y  { }
+
+SoUrCe  two "./Bclass.jak";
+// implements
+
+ class x extends  x$$one  implements y, z { }

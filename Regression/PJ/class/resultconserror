@@ -1,0 +1,2 @@
+jampack: conserror.java:7: Error Overriding of constructor with signature top(int,) not permitted
+jampack: Summary 1 error

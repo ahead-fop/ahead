@@ -1,0 +1,33 @@
+package OpfacL;
+
+import  
+    F.Libraries.laydown.OpfacDataWrapper;
+import 
+    F.Libraries.log.Log;
+import 
+    java.util.*;
+import 
+    fsats.util.*;
+
+
+
+    // added unnested class
+
+    public class OpfacThread extends Thread
+    { OpfacImpl oi;
+
+        public OpfacThread( OpfacImpl oi ) {
+          OpfacThreadConstructor(oi);
+        }
+
+        public void OpfacThreadConstructor( OpfacImpl oi) {
+           this.oi = oi;
+      }
+           
+        public void run() {
+           while (true)
+              { Event event = ( Event)oi.deliveryQueue.get();
+                 oi.receive(event);
+              }
+        } // end run
+    }

@@ -1,0 +1,13 @@
+single layer TargetL;
+
+extern outside Int  fsatsRank;
+extern outside Bool targetPresent;
+extern inside Bool  libraries;
+
+// design rules: TargetL must be immediately outside FsatsL
+//               and that it sets targetPresent.
+
+requires outside fsatsRank == 0;
+provides outside fsatsRank == 1 and targetPresent;
+requires inside  libraries;
+

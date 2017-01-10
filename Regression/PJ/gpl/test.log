@@ -1,0 +1,38 @@
++ '[' -z /usr/bin/bash ']'
++ case "$(command -p uname)" in
+++ command -p uname
+++ uname
++ CP='C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.'
++ echo '****************GPL Regression Test***********'
+****************GPL Regression Test***********
++ rm -f -r GPL
++ mkdir GPL
++ rm -f demo2.class
++ java jak2java.Main -v something
++ sed -es/Lang.//g demo2.jjava
++ javac demo2.java
++ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' demo2
++ for TEST in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace
++ bash regress-one Edge
+Edge
++ for TEST in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace
++ bash regress-one Graph
+Graph
++ for TEST in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace
++ bash regress-one Main
+Main
++ for TEST in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace
++ bash regress-one Neighbor
+Neighbor
++ for TEST in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace
++ bash regress-one NumberWorkSpace
+NumberWorkSpace
++ for TEST in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace
++ bash regress-one Vertex
+Vertex
++ for TEST in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace
++ bash regress-one WorkSpace
+WorkSpace
++ echo -e '\nGPL Composition Regression Test succeeded.'
+
+GPL Composition Regression Test succeeded.

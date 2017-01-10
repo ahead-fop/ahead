@@ -1,0 +1,33 @@
+
+// example that forces propagation of constructors UP the refinement chain
+
+
+
+abstract class MyClass$$Aspect1 extends EventType {
+      // inherited constructors
+
+      MyClass$$Aspect1( String v0) { super(  v0); }      MyClass$$Aspect1( int v0) { super(  v0); }}
+
+
+
+abstract class MyClass$$Aspect2 {
+   MyClass$$Aspect2(int x) {
+      super(x);
+   }
+      // inherited constructors
+
+      MyClass$$Aspect2( String v0) { super(  v0); }
+}
+
+
+
+public abstract  class MyClass extends MyClass$$Aspect2 {
+
+   MyClass(String name, int cons ){
+      super(name);  // propagate this call up the chain
+   }
+      // inherited constructors
+
+
+   MyClass ( int x ) { super(x); }
+}

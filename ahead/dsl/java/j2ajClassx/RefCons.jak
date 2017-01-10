@@ -1,0 +1,139 @@
+/**
+* @author Roberto E. Lopez-Herrejon
+*/
+layer j2ajClassx;
+
+public refines class RefCons  {
+
+     /* Syntax refines QName [ AST_Parlist ] { AST_Stmt }
+      * Constructor extension
+      * modifiers around(Params) : execution(public Class.new(type args)) &&
+                                   target(obj$className) && args(params) {
+        }
+      */
+
+    /** Finds ConSSuper */
+    public boolean containsSuper(AstNode n) {
+        if (n==null) return false;
+
+        if (n instanceof ConSSuper) {
+          return true;
+        }
+
+        // If the node is a list traverse it with a cursor
+        if (n instanceof AstList) {
+            AstCursor c = new AstCursor();
+            for(c.FirstElement(n);c.MoreElement(); c.NextElement()) {
+              if (containsSuper(c.node)) return true;
+            }
+        }
+
+        // Traverses the children looking for Super
+        // Array args can be a null pointer so check if that
+        // is not the case
+        if (n.arg == null) return false;
+        for(int i=0; i< n.arg.length;  i++) {
+            if (containsSuper(n.arg[i])) return true;
+        }
+
+        // If it does not find a Super simply return false
+        return false;
+    }
+
+    /** This method outputs the variable names of the constructor
+    * arguments used in the implicit Super call of a constructor
+    * refinements
+     */
+    public void processParameters(AST_ParList args, AstProperties props) {
+      props.print(" && args ( ");
+      AstCursor c = new AstCursor();
+      int counter = 0;
+
+      // Counts how many arguments has
+      for(c.FirstElement(args);c.MoreElement(); c.NextElement()) {
+         counter++;
+      }
+
+      int current = 0;
+      for(c.FirstElement(args);c.MoreElement(); c.NextElement()) {
+         System.out.println("Arg class name " + c.node.className());
+         FormParDecl param = (FormParDecl) c.node;
+         VariableDeclaratorId id = param.getVariableDeclaratorId();
+         id.reduce2java(props);   // reduces only the name of the param
+         current++;
+         if (current < counter) props.print(",");
+       }
+      props.print(") ");
+
+      //@debug
+      System.out.println("Num arguments " + counter);
+    }
+
+
+    /** Reduces to Java method */
+    public void reduce2java( AstProperties props ) {
+      System.out.println("Constructor refinement");
+      // arg[0].print( props );
+      // arg[1].print( props );
+      // arg[2].print( props );
+
+      // Gets the name of the clas from Qname
+      // We assume they come from the same
+      String className = arg[0].tok[0].tokenName();
+
+      props.print("void around ");
+      props.print(" (");
+      arg[1].reduce2java(props); // AST_ParList
+      // if there are parameters in the method put a comma
+      if (arg[1].arg[0] != null)  props.print(",");
+
+      // Puts the target type and parameter
+      props.print(className + " " + "obj$" + className);
+      props.print(" )");
+      props.print(" : execution (public ");      // starts the PCD
+      props.print(className + ".new(");          // puts the class name
+      MthDector.processTypes((AST_ParList)arg[1].arg[0], props);   // prints types of params
+      props.print(")");
+      props.print(" )"); // closes the execution pointcut
+      props.print(" && target ( " + "obj$" + className + ")");
+
+      // if there are no arguments dont put a comma
+      if (arg[1].arg[0] !=null)
+        MthDector.processArguments((AST_ParList)arg[1].arg[0],props);
+
+      props.print("{");
+
+      // Inserts the proceed call that corresponds to the implicit
+      // super call
+      props.print("proceed( ");
+      if (arg[1].arg[0] != null) { // puts parameter names
+         MthDector.processParamNames((AST_ParList)arg[1].arg[0], props);
+         props.print(",");
+      }
+      props.print("obj$" + className);
+      props.print("); ");
+
+      // Since this is an extension, put a Super tag on the
+      // props list so that identifiers are mangled appropiately
+      props.setProperty("Super","true"); // set variable
+
+      // Initilize declared vars
+      props.setProperty("DeclaredVars",",");
+      // Push a marker in the context for this method
+      VarContext context=(VarContext)props.getProperty("VariableContext");
+      context.pushMarker();
+
+
+      // Reduces the statements
+      arg[2].reduce2java(props);
+
+      // Removes the context
+      context.popContext();
+
+      // Removes properties
+      props.removeProperty("Super");
+
+      props.print("}");
+
+    } // of reduce2java
+}

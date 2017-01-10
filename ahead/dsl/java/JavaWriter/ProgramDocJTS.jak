@@ -1,0 +1,60 @@
+layer JavaWriter;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+  // of Start
+
+// **********************************************************************
+// **********************************************************************
+// ***************  For generation of documents     *********************
+
+// _________________________________________________________________
+  /** JEDI
+ * ProgramDocJTS in JavaWriter.java
+ * University of Texas at Austin
+ * Department of Computer Sciences
+ * Product-line Architecture Research Group
+ * @rationale Introduces a new method for generation of documents.
+ * @author Roberto E. Lopez-Herrejon
+ * @version 1.0
+ * @since November 8, 2002
+ * @layer<JavaWriter>
+ */
+ 
+public refines class ProgramDocJTS {
+
+    /** Contains the generation of classes of a program 
+     * @layer<JavaWriter>
+     */
+    public void generateProgram( String outDir, LinkedList documentsList )
+    throws Exception
+    {
+        LinkedList theClasses = classes();
+        
+        // System.out.println (
+        // "generateProgram("
+        // + outDir
+        // + "," + documentsList
+        // + "); theClasses="
+        // + theClasses
+        // ) ;
+
+        // Gets the template description for a class
+        ClassTemplate ctemp = 
+                        ( ClassTemplate )documentsList.get( 0 );
+        for( int i=0; i< theClasses.size(); i++ ) {
+            ClassDocJTS aclass = ( ClassDocJTS )theClasses.get( i );
+                
+            // @debug
+             // System.out.println("For Class -> " + aclass.name() + "modif  " 
+            //                               + aclass.modifiers());
+                                           
+            ClassWriter.GenerateClass( aclass, outDir, ctemp );
+        }
+    }
+ 
+}

@@ -1,0 +1,10 @@
+layer BasicL;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+/** Battalion Fire Support Element OPFAC. **/
+public State_machine BnFseMission extends FseMission {}

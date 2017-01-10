@@ -1,0 +1,24 @@
+layer ProxyL;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+/** Refinement of an active mission to handle ranking proxies **/
+public refines State_machine MissionImpl 
+        implements Mission {
+    private Set denied = new HashSet();
+
+    /** Discard current asset and go to next highest ranked **/
+    public void proxyDeny( String opfacName ) 
+        {
+        denied.add( opfacName );
+    }
+        
+    public boolean hasDenied( String opfacName )
+        {
+        return denied.contains( opfacName );
+    }
+}

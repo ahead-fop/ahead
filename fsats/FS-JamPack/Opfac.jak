@@ -1,0 +1,59 @@
+layer FS;
+
+import laydown.*;
+
+import java.util.*;
+
+import laydown.OpfacDataWrapper;
+
+import log.Log;
+
+import fsats.util.*;
+
+/** 
+ * Interface for an OPFAC 
+ */
+public interface Opfac 
+        extends Cloneable, java.io.Serializable
+    {
+    /** Psuedo constructor **/
+    void init( OpfacDataWrapper record, Network network );
+        
+    void deliver( Event event );
+
+    String getName();
+
+    int getUnit();
+    OpfacType getType();
+
+    /** A list of currently active Missions. */
+    Collection getActiveMissions();
+    Location getLocation();
+        
+    /** This opfac's commanding unit **/
+    String getSuperior();
+    Object clone();
+
+    void sendTo( String to, Message message );
+
+    void timeout( float delay, Timeout event );
+    Proxy getSuperProxy();
+    Proxy getSelfProxy();
+    /** Can mission be eleveated to this opfacs superior? */
+    boolean canElevate( Mission mission );
+
+    /** Can this opfac observe this location? */
+    boolean canSee( Location location );
+
+    /** Is there any other mission which duplicates mission? */
+    boolean hasDuplicate( Mission mission );
+
+    /** Prevent more than one mission at a time for guns. */
+    void missionLock( Mission mission );
+
+    /** Allow other missions to proceed. */
+    void missionFree( Mission mission );
+
+    /** Spend some time thinking. */
+    void ponder( float seconds );
+}

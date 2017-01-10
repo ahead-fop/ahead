@@ -1,0 +1,76 @@
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+echo
+echo "Executing regression tests for P3 ..."
+
+if ! bash regress-one basic   1  $1 ; then
+	exit 1
+fi
+
+if ! bash regress-one basic   2  $1 ; then
+	exit 1
+fi
+
+if ! bash regress-one basic   3  $1 ; then
+	exit 1
+fi
+
+if ! bash regress-one basic   4  $1 ; then
+	exit 1
+fi
+
+if ! bash regress-one basic   5  $1 ; then
+	exit 1
+fi
+
+if ! bash regress-one basic   6  $1 ; then
+	exit 1
+fi
+
+if ! bash regress-one basic7  7  $1 ; then
+	exit 1
+fi
+
+if ! bash regress-one basic8  8  $1 ; then
+	exit 1
+fi
+
+if ! bash regress-one basic   9  $1 ; then
+	exit 1
+fi
+
+if ! bash regress-one basic10 10  $1 ; then
+	exit 1
+fi
+
+if ! bash regress-one basic   11  $1 ; then
+	exit 1
+fi
+
+if ! bash regress-one basic   12  $1 ; then
+	exit 1
+fi
+
+if ! bash regress-one basic13 13  $1 ; then
+	exit 1
+fi
+
+if ! bash regress-one basic14 14  $1 ; then
+	exit 1
+fi
+
+if ! bash regress-one basic15 15  $1 ; then
+	exit 1
+fi
+
+if ! bash regress-one basicdem 16  $1 ; then
+	exit 1
+fi
+
+if ! bash regress-one basicJBeans 17  $1 ; then
+	exit 1
+fi
+
+echo -e "\nP3 regression tests succeeded."

@@ -1,0 +1,6 @@
+layer simp3;
+
+extern outside Int A;
+extern outside Int B;
+
+requires outside A > 20 and B < 20;

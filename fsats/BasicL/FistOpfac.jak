@@ -1,0 +1,14 @@
+layer BasicL;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+public class FistOpfac extends FseOpfac {
+    public Mission newMission() 
+        {
+        return new FistMission();
+    }
+}

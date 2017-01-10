@@ -1,0 +1,6 @@
+//tests ability to check for errors
+
+single layer foo;
+
+outside Bool search ( search == 3 );
+outside Int  range ( range <= 4 and 3 < range and ?search );

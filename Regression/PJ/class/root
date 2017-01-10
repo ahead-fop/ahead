@@ -1,0 +1,8 @@
+layer one;
+
+class root {
+   root( int x, double y, String z ) {}
+   root( int x, float y, String z ) {
+      this(x+1,(double)y+2.0,"xxx"+z);  
+   }
+}

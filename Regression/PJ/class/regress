@@ -1,0 +1,42 @@
+#!/bin/bash
+
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+echo "****************Class Regression Test***********"
+
+bash regress-one CBase3 Asuper resultAsuper \
+&& bash regress-one root0 root1 root \
+&& bash regress-one ref ref refresult \
+&& bash regress-one onec twoc 12result \
+&& bash regress-one C0 mref C0mref \
+&& bash regress-one C00 mref C00mref \
+&& bash regress-one C1 mref C1mref \
+&& bash regress-one constr1 constr2 result12 \
+&& bash regress-one constr2 constr3 result23 \
+&& bash regress-one constr1 constr4 result14 \
+&& bash regress-one statik1 statik2 resultstatik12 \
+&& bash regress-one Cbase1 Cext0 resultlongname \
+&& bash regress-one Ctop Cmidthis resultCmidthis\
+&& bash regress-one ArefExtend Asuper resultAsuper\
+&& bash regress-one Asuper ArefOverride resultAO \
+&& bash regress-one Asuper ArefOverride2 resultAO2 \
+&& bash regress-one Asuper ArefExtend resultAE \
+&& bash regress-one Cmidmods Cmidmod2error resultmoderror3 \
+&& bash regress-one Cmidmods Cmidmod2 resultmod2 \
+&& bash regress-one Ctopmods Cmidmodserror resultmoderror \
+&& bash regress-one Ctopmods Cmidmods resultcmods1 \
+&& bash regress-one cm cm resultcm2 \
+&& bash regress-one cm2 cm2 resultcm22 \
+&& bash regress-one Ctop Cmid resultCtopCmid \
+&& bash regress-one Ctop1 Cmid1 resultc11 \
+&& bash regress-one Ctop1 Cmid2 resultc12 \
+&& bash regress-one Ctop1 Cmid3 resultc13 \
+&& bash regress-one cons conse resultcons \
+&& bash regress-one cons conserror resultconserror \
+&& bash regress-one Ctop Ctoperror resultCtoperror \
+&& bash regress-one CBase3 CExt3 result33 \
+|| exit 1
+
+echo -e "\nClass Composition Regression Test succeeded."

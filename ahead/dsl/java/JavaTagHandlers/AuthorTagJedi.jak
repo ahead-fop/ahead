@@ -1,0 +1,37 @@
+layer JavaTagHandlers;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+// of ExceptionTagJedi
+
+// **********************************************************************
+// **********************************************************************
+// **********************************************************************
+/** The Tag Jedi for Author Tags 
+ * @layer<JavaTagHandlers>
+ */
+
+public class AuthorTagJedi extends AbstractTagJedi {
+
+    /** Method that parses and builds an AuthorTag.
+    * AuthorTag -> @author description
+    * @layer<JavaTagHandlers>
+    */ 
+    public void parse( DocJTS Document,  CommentJedi comment, 
+           String stringTag )
+ {
+        AuthorTagJedi tag = new  AuthorTagJedi();
+        CommentParser.ParseDescription( Document, stringTag,"@author", tag );
+
+        LinkedList tagsList = comment.getTags();
+        tagsList.add( tag );
+        comment.setTags( tagsList ); // @redundant?
+   
+    } // of parse
+
+}

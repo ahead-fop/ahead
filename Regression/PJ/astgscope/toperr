@@ -1,0 +1,18 @@
+// tests mixin composition
+
+layer allesuber;
+
+class g6 { 
+   void anothermethod() {}
+
+   void bar() { 
+      // if CommonErrorAst doesn't work, each of the following
+      // lines will generate an error
+
+      //   AST_FieldDecl e = mth{ aConstructor() { $stm(super()); } }mth;
+
+      AST_FieldDecl y = mth{ void bary() { $stm(super.foo()); } }mth;
+
+      //  AST_FieldDecl z = mth{ aConstructor() { $stm(this(5));  } }mth;
+   }
+}

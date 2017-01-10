@@ -1,0 +1,28 @@
+layer LayerHarvest;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+/** PackageDeclaration
+ *: LAYER AST_QualifiedName ";"::AspectStm
+ * @layer<LayerHarvest>
+ */
+   
+public refines class AspectStm {
+    public void execute() {
+
+        // Executes the super 
+        Super().execute();
+ 
+        // Gets the qualied name for the layer
+        GlobalWrapper.qualifiedLayer = 
+              GlobalWrapper.getAST_QualifiedName( ( AST_QualifiedName )arg[0] );
+
+    // @debug
+        // System.out.println("Qualified Layer Name = " + qualifiedLayer);
+
+    } // of execute
+
+}

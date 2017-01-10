@@ -1,0 +1,7 @@
+layer one;
+
+public class top {
+    public static void tryit() {
+        System.out.println( "Top works too!" + $pack.A.a);
+    }
+}

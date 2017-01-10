@@ -1,0 +1,24 @@
+/* this is the DS interface */
+
+package p3Lib;
+
+import JakBasic.Lang;
+
+
+public interface DS {
+   environment;
+
+   DS_Container_Type    make_container_type( TopParams t, ContParams c );
+
+   DS_Element_Type      make_element_type();
+
+   DS_CommonCursor_Type make_commoncursor_type();
+
+   DS_Cursor_Type       make_cursor_type( Usage u );
+
+   DrcAttributes        drc( DrcAttributes d );
+
+   void                 set_keyword( TOP toplayer, TopParams tp );
+
+   Object               ParseArgs( Lang.AstNode x );
+}

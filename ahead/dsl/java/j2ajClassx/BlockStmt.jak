@@ -1,0 +1,22 @@
+/** Args.jak
+  * @author Roberto E. Lopez-Herrejon
+*/
+
+layer j2ajClassx;
+
+/** This class is executed whenever the is a method call (constructor call?)
+ * In here, verify that it is a call to super then append an extra parameter
+ * at the end of the list.
+*/
+public refines class BlockStmt {
+
+    /** Reduce method */
+    public void reduce2java( AstProperties props ) {
+
+        // Reduces LocalVariable Declaration
+        // arg[0].reduce2java(props);
+
+         Super(AstProperties).reduce2java(props);
+
+    } // of reduce2java
+}

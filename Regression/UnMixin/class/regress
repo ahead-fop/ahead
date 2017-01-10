@@ -1,0 +1,14 @@
+#!/bin/bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+echo "****************Class Regression Test***********"
+
+bash regress-one CBase0 CExt1 rc01 \
+&& bash regress-one CExt1 CExt1 rc11 \
+&& bash regress-one CExt1 CExt2 rc12 \
+&& bash regress-one CBase3 CExt3 rc33 \
+&& bash regress-two one two three rall \
+|| exit 1
+
+echo -e "\nClass Composition Regression Test succeeded."

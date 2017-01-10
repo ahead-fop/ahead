@@ -1,0 +1,16 @@
+layer FS;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+SoUrCe RooT BasicL "C:!Java!FeatureOrientedProgramming!fsats!BasicL!FistOpfac.jak";
+
+public class FistOpfac extends FseOpfac {
+    public Mission newMission() 
+        {
+        return new FistMission();
+    }
+}

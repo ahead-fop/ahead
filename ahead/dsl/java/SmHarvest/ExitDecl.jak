@@ -1,0 +1,44 @@
+layer SmHarvest;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+  /** Es
+: EXIT QName Block:: ExitDecl
+   * @layer<SmHarvest>
+   */
+   
+public refines class ExitDecl {
+    
+    public  TransitionDocJTS exit_transition;
+       
+    public void execute() {
+        // QName
+        String _harvest_transition_name = 
+                ( ( AstToken )arg[0].tok[0] ).tokenName();
+
+        Super().execute();
+        LinkedList listOfClasses = new LinkedList();
+
+        // Block is arg[1]  
+        AstNode e0 = arg[1].arg[0];
+        if ( e0 != null ) {
+            listOfClasses =  GlobalWrapper.parseBlock( e0.arg[0] );
+        } // if there are statements in the block
+              
+        exit_transition = 
+                new  TransitionDocJTS( _harvest_transition_name, 
+                                                      listOfClasses );
+
+        // ************ Comment Processing **********************
+        String comment = 
+                ( ( AstToken ) tok[0] ).white_space;
+            
+        CommentJedi stateComment = 
+                 CommentParser.ParseComment( exit_transition, comment );
+        exit_transition.setComment( stateComment );
+
+    } // of execute
+}

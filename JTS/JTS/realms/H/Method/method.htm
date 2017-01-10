@@ -1,0 +1,41 @@
+<extend>
+
+<ul>
+<method featureList >
+  <li><font face="Arial"><a href="#Method Declarations">Method Declarations</a></font></li>
+<call featureList >
+</method>
+</ul>
+  
+<method chapters >
+<h3><font face="Arial" color="#0000FF"><a name="Method Declarations">Method Declarations</a></font></h3>
+<p><font face="Arial">An <b>XC</b> method is a sequence of HTML (or XML)
+statements and method calls.&nbsp; A method definition for a method with name
+METHODNAME begins on a line containing:</font></p>
+<blockquote>
+  <pre><font face="Courier New">&lt;method METHODNAME &gt;  any-comments-afterwards-on-this-line</font></pre>
+</blockquote>
+<p><font face="Arial">and ends on a line containing:</font></p>
+<blockquote>
+  <pre><font face="Courier New">&lt;/method&gt; any-comments-afterwards-on-this-line</font></pre>
+</blockquote>
+<p><font face="Arial">As an example, methods foo and bar are defined below in
+document <b>E</b>.&nbsp; Note that &lt;method&gt; and &lt;/method&gt; must
+appear on their own lines and that a space must separate the end of a method
+name from the terminating right-widget (&quot;&gt;&quot;) on a &lt;method&gt;
+declaration:</font></p>
+<blockquote>
+  <pre><font face="Courier New">&lt;method foo &gt; beginning of foo
+3  -- method foo
+4  -- method foo
+5  -- method foo
+&lt;/method&gt; end of foo</font></pre>
+  <pre><font face="Courier New">&lt;method bar &gt; beginning of bar
+8  -- method bar
+9  -- method bar
+10 -- method bar
+&lt;/method&gt; end of bar</font></pre>
+</blockquote>
+<p><font face="Arial">Method declarations can not be nested.</font></p>
+<call chapters >
+</method>

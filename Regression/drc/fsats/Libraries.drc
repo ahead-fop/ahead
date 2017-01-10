@@ -1,0 +1,8 @@
+single layer Libraries;
+
+extern inside Bool libraries;
+extern outside Bool localOrRemotePresent;
+extern outside Int  fsatsRank;
+
+provides inside libraries;
+requires outside localOrRemotePresent and fsatsRank == 4;

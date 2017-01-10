@@ -1,0 +1,25 @@
+option is deprecated: i
+drc: test3.drc: Warning composed equation is incomplete: non-null requirements present
+requires left Range < 4 and ?Search
+requires right floor
+
+single layer foo;
+
+// defined attributes
+
+left2right Bool Floor;
+left2right Int Range;
+left2right Bool Search;
+right2left Bool floor;
+right2left Int range (3 < range and range <= 4);
+right2left Bool search;
+
+// externally defined attributes
+
+
+
+requires left Range < 4 and ?Search;
+provides right !Floor and Range < 4 and ?Search;
+requires right floor;
+provides left range < 5 and search;
+

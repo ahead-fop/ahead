@@ -1,0 +1,15 @@
+layer Foo.Bar;
+
+SoUrCe RooT Mixin.path "../Mixin/path/Cons3.jak";
+
+abstract class MyClass$$Mixin$path extends AstNode {
+   int one$$Mixin$path;
+}
+
+SoUrCe  Mixin.path "../Mixin/path/Ref3.jak";
+
+ class MyClass extends  MyClass$$Mixin$path  {
+   int foobar$$Mixin$path;
+   int one$$Mixin$path;
+}
+

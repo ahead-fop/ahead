@@ -1,0 +1,157 @@
+layer JavaHarvest;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+
+   /** ConstructorDeclaration
+     : [ AST_Modifiers ] QName "(" [ AST_ParList ] ")" [ ThrowsClause ] "{" 
+        [LOOKAHEAD(ExplicitConstructorInvocation()) 
+ExplicitConstructorInvocation ] [ AST_Stmt ] "}"::ConDecl
+     ;
+   * @layer<JavaHarvest>
+   */
+    
+public refines class ConDecl {
+    public  ConstructorDocJTS _harvest_constructor;
+    public LinkedList thrownExceptions;
+
+    public void execute() {
+        String constructorName = ( ( AstToken )arg[1].tok[0] ).tokenName();
+        _harvest_constructor = 
+              new  ConstructorDocJTS( constructorName );
+                  
+        Super().execute();
+          
+        // Assign the parameters array to the method
+        // arg1 is an AstOptNode an optional node, we have to get the first
+        // kid if any, which is AST_ParList type, if not null set the 
+        // parameters otherwise just make them null
+        AST_ParList kid = ( AST_ParList )arg[2].arg[0];
+        if ( kid == null ) 
+              {
+            _harvest_constructor.setParameters( new  ParameterJTS[0] );
+        }
+        else
+            _harvest_constructor.setParameters( kid.parametersArray );
+                  
+        // Adjusts the Modifiers of the constructor
+        AstCursor c1 = new AstCursor(); // c to traverse list
+        AstNode   e1 = arg[0].arg[0]; // e instanceOf Lang.AstList
+
+        // Contains the comment
+        String comment ="";
+          
+        if ( e1 != null ) // if there are modifiers
+              {
+            // Gets the comments from the first modifier
+            c1.FirstElement( e1 );
+            AstNode first = c1.node;
+                          
+            for ( ; c1.MoreElement(); c1.NextElement() ) {
+                // final method
+                if ( c1.node instanceof ModFinal ) 
+                                                    {
+                    _harvest_constructor.setFinal( true );
+                }
+                                                
+                // public method
+                if ( c1.node instanceof ModPublic ) 
+                                                    {
+                    _harvest_constructor.setPublic( true );
+                }
+                                                
+                // protected method
+                if ( c1.node instanceof ModProtected ) 
+                                                    {
+                    _harvest_constructor.setProtected( true );
+                }
+                                                
+                // private method
+                if ( c1.node instanceof ModPrivate ) 
+                                                    {
+                    _harvest_constructor.setPrivate( true );
+                }
+                                                
+                // static method
+                if ( c1.node instanceof ModStatic ) 
+                                                    {
+                    _harvest_constructor.setStatic( true );
+                }
+                                                
+                // transient and volatile are part of FieldDocJTs
+                // transient method
+
+                // native method
+                if ( c1.node instanceof ModNative ) 
+                                                    {
+                    _harvest_constructor.setNative( true );
+                }
+                                                
+                // synchronized method
+                if ( c1.node instanceof ModSynchronized ) 
+                                                    {
+                    _harvest_constructor.setSynchronized( true );
+                }
+
+            } // for all modifiers
+                           
+            // ************ Comment Processing ********************
+            comment = ( ( AstToken ) first.tok[0] ).white_space;
+                              
+        } // if there are modifiers
+        else  // if there are no modifiers then read the comments from QName 
+              {
+            comment = ( ( AstToken )arg[1].tok[0] ).white_space;
+        } // if there are no modifiers
+                  
+        CommentJedi constructorComment = 
+             CommentParser.ParseComment( _harvest_constructor, 
+                                                     comment );
+        _harvest_constructor.setComment( constructorComment );
+           
+        // **************************************************************
+                             
+        // Throws class is optional that's why we have to check its kid
+        AstNode tn = arg[3].arg[0];
+                   
+        if ( tn != null ) 
+              {
+            // AST_TypeNameList is tn.arg[0]
+            thrownExceptions  = new LinkedList();
+                          
+            AstCursor c2 = new AstCursor(); // c to traverse list
+            AstNode   e2 = tn.arg[0]; //e instanceOf Lang.AstList
+                          
+            for ( c2.FirstElement( e2 ); c2.MoreElement();c2.NextElement() )
+                              {
+                // TNClass -> QNameType -> AST_QualifiedName
+                // I suppose that here I have look at some table with
+                // all the interfaces BUT in the mean time
+                // I just create an 
+                ClassDocJTS cls = 
+                                                                   ClassDocJTS.ClassDocJTSFactory();
+                cls.ClassDocJTSConstructor( c2.node.arg[0].arg[0].toString() );
+                cls.setClass( true );
+                                                
+                // adds to the implemented interfaces list
+                thrownExceptions.add( cls );
+            } // for
+                                       
+            ClassDocJTS[] arrayExceptions = 
+                              new  ClassDocJTS[thrownExceptions.size()];
+            for ( int i=0; i < thrownExceptions.size(); i++ )
+                arrayExceptions[i] =
+                                                  ( ClassDocJTS )thrownExceptions.get( i );
+                                       
+            // sets the method's thrown exception field
+            _harvest_constructor.setThrownExceptions( arrayExceptions );
+                           
+        } // if there are throw clauses
+        else // if there are no throw clauses
+            _harvest_constructor.setThrownExceptions( new  ClassDocJTS[0] );
+          
+    } // of execute
+}

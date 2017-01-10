@@ -1,0 +1,8 @@
+layer comb.ine.left;
+
+public class B {
+   public final void print$$one$left() { System.out.println("left.B works! "
+       + $pack.A.a ); }
+   public void print() { print$$one$left();
+                    System.out.println("left.B works again!"); }
+}

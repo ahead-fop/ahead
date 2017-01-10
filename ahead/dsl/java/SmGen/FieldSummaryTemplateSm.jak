@@ -1,0 +1,38 @@
+layer SmGen;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.util.*;
+import java.io.*;
+
+// _________________________________________________________________
+
+ /** FieldSummaryTemplate.java
+ * JEDI Project
+ * Department of Computer Sciences
+ * University of Texas at Austin
+ * @author Roberto E. Lopez-Herrejon
+ * Last Update: November 30, 2002
+ * @layer<SmGen>
+ */
+
+public class FieldSummaryTemplateSm extends DocumentDescriptor {
+
+    // Adds the bindings to the class
+    public VelocityContext 
+        addBindings( ProgramElementDocJTS parsedProgramElement, 
+                VelocityContext context ) {
+
+        // Computes the number of fields of the class and the list
+        StateMachineDocJTS parsedState = 
+                        ( StateMachineDocJTS ) parsedProgramElement;
+        LinkedList theFields = parsedState.fields();
+        String fieldFlag = "false";
+        if ( theFields.size() > 0 )
+            fieldFlag = "true";
+        context.put( "fields", fieldFlag );
+        context.put( "listFields", theFields );
+
+        return context;
+    }
+}

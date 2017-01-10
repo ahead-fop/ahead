@@ -1,0 +1,8 @@
+rm -f junk _* *~ */*~
+for i in 1class 2interface 3statem 4eqn 5grammar 6gpl 7mc 8GG ;
+do 
+   echo $i
+   cd $i
+	bash clean.script
+   cd ..
+done

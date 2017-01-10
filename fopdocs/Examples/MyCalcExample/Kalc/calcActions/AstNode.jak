@@ -1,0 +1,10 @@
+refines class AstNode {
+   public void execute(Stack S) { 
+      int i;
+      if (arg == null)
+         return;
+      for (i=0; i<arg.length; i++)
+         if (arg[i]!=null)
+            arg[i].execute(S);
+   }
+}

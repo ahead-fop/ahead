@@ -1,0 +1,24 @@
+jak2java: Mt4.jak:22: Error Super()() is invoked on a constructor with signature (String) that already exists in the refinement chain -- use this() constructor call instead
+jak2java: Mt4.jak:27: Error Super()() is invoked on a constructor with signature (String) that already exists in the refinement chain -- use this() constructor call instead
+// example that catches the error that Super()() creates a constructor
+// that already exists.
+abstract class MessageType$$FsatsL extends EventType implements MessageTypeInterface {
+        protected MessageType$$FsatsL(String name ) {
+           super(name);
+        }
+     }
+public abstract  class MessageType extends MessageType$$FsatsL
+        implements MessageTypeInterface
+    {
+        protected MessageType(double n)
+        {
+            super(""+n);
+          MessageTypeConstructor(name);
+        }
+        protected MessateType(String name, int cons ){
+            super(name);
+            /* something with cons */
+        }
+      // inherited constructors
+        protected MessageType ( String name ) { super(name); }
+    }

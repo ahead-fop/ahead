@@ -1,0 +1,637 @@
+/* top2ds[ DS ] : TOP layer */
+
+package p3Lib;
+
+import Jakarta.util.Util;
+import JakBasic.Lang;
+
+
+public class top2ds implements TOP {
+
+   public DS            lower;
+   public TopParams     tp;
+   public ContParams    cp;
+   
+
+   // Reserved words for software generation
+   environment CElemTyp,  // concrete/transformed element type
+               CContTyp,  // concrete container type
+               ACommTyp,  // abstract common cursor type
+               CCursTyp;  // concrete cursor type
+
+   public top2ds( DS comp ) { 
+      lower = comp; 
+   }
+   
+   
+   // make_container_type create a chain of objects parallel to the type equation
+   // returned object used to generate the container class
+
+   public TOP_Container_Type make_container_type
+          ( atop a, ContParams c, Lang.AST_TypeNameList interfaces ) {
+
+      // Step 1: remember arguments
+
+      cp = c;
+      tp = a.tp;
+      a.cp = c;
+
+      // Step 2: make connections for environments
+
+      environment parent a;
+      lower.set_keyword( this, a.tp );
+
+      return new top2ds_Container_Type( this, cp, interfaces );
+   }
+
+   // make_element_type creates a chain of objects parallel to the type equation
+   // returned object is used to generate class that contains the transformed element
+   // type and the link and unlinking methods
+
+   public TOP_Element_Type make_element_type() {
+      return new top2ds_Element_Type( this );
+   }
+
+   // make_commoncursor_type creates a chain of objects parallel to the type equation
+   // the returned object will generate a class that contains routines (insertion, deletion,
+   // primitive advances) that will be shared by all cursor classes
+
+   public TOP_CommonCursor_Type make_commoncursor_type( ) { 
+      return new top2ds_CommonCursor_Type( this ); 
+   }
+
+   // make cursor_type creates a chain of objects parallel to the type equation
+   // the returned object will generate a class specific to the given query
+
+   public TOP_Cursor_Type make_cursor_type
+          ( String classname, Lang.AST_ParList pl, Usage u ) { 
+      return new top2ds_Cursor_Type( this, classname, pl, u ); 
+   }
+
+   public DrcAttributes drc( DrcAttributes d ) {
+      d = lower.drc(d);
+      if (!d.retrieval_layer_present) 
+         DrcAttributes.DrcError("no retrieval layer in type equation");
+      return d;
+   }
+
+   public Lang.AST_Stmt syncWrapper(Lang.AST_Stmt s) {
+      if (tp.Sync)
+         return stm{
+   synchronized(cont) {
+      $stm(s);
+   }
+         }stm;
+      else
+         return s;
+   }
+
+   public Lang.AST_Modifiers syncModifier() {
+      if (tp.Sync)
+         return mod{ synchronized }mod;
+      else
+         return null;
+   }
+}
+
+
+
+class top2ds_Container_Type implements TOP_Container_Type {
+   public top2ds            _layer;
+   public DS_Container_Type lower;
+   public ContParams        cp;
+   public TopParams         tp;
+   public Lang.AST_TypeNameList  interf;
+   environment;
+   
+
+   // Constructor creates chain of container_type objects that is parallel
+   // to type equation
+
+   top2ds_Container_Type( TOP top_2ds, ContParams c, Lang.AST_TypeNameList interfaces ) {
+
+      // Step 0: remember the constructor arguments as we'll need them later
+
+      _layer    = (top2ds) top_2ds;
+      cp       = c;
+      tp       = _layer.tp;
+      interf   = interfaces;
+      environment parent _layer;
+
+      // Step 1: now create a container_type object for the lower layer
+
+      lower = _layer.lower.make_container_type( tp, cp );
+
+      // Step 2: perform local validation to ensure that nonrealm parameters
+      //         are legal
+
+      lower.validate();
+   }
+
+   final public Lang.AST_Class generate_class() {
+      Lang.AST_Stmt      initContVar;
+      Lang.AST_FieldDecl contents;
+	  
+
+      alias( CElemTyp, cp.AST_ConcreteElementName );
+      alias( CContTyp, cp.AST_ConcreteContainerName );
+      alias( ACommTyp, cp.AST_CommonCursorName );
+	  
+	  
+	  
+      
+
+      // Step 1: generate the container class for this type equation.  
+
+      if (tp.Unique)
+         initContVar = stm{ 
+      if (CElemTyp.cont == null ) CElemTyp.cont = this;
+      else
+     Jakarta.util.Util.fatalError("creating more than one instance");
+
+      }stm;
+      else
+         initContVar = null;
+	
+	
+	
+	Lang.AstProperties props = Lang.AstProperties.open();
+    lower.is_fullMethod().print(props);
+    String result = props.close();
+    // String combined = "return " + result;
+    // Lang.AST_Exp all = Lang.Literal.Make(combined);	 
+    Lang.AST_Exp all = Lang.Literal.Make(result);	 
+   
+      contents = mth{
+   
+   $mth(lower.dataMembers())
+   
+   
+   public CContTyp() {
+      $stm(initContVar);
+      $stm(lower.containerMethod());
+   }
+  
+
+   $mod(_layer.syncModifier()) public boolean is_full() {
+        return $exp(all);
+   }
+
+   $mod(_layer.syncModifier()) public void insert( AElemTyp e ) {
+      new CElemTyp ( this, e );
+	  $stm(lower.insertMethod());
+	  //use the same for both methods
+	  //allows to add a counter in the method
+   }
+
+   $mod(_layer.syncModifier()) public void insert( $plst(tp.ParamLst) ) {
+      new CElemTyp( this, $xlst(tp.ArgLst) );
+	  $stm(lower.insertMethod());
+	  //use the same for both methods
+	  //allows to add a counter in the method
+   }
+   
+   $mod(_layer.syncModifier()) public void checkin(int cardpers) {
+           $stm(lower.storageMethod());
+      }
+   
+   $mod(_layer.syncModifier()) public void close() {
+        $stm(lower.finishMethod());
+      }
+  
+   $mod(_layer.syncModifier()) public static CContTyp open(String namefile) {
+        CContTyp cont = null;
+        $stm(lower.openMethod());
+   		return cont;
+      } 
+   
+      }mth;
+
+      if (interf == null)
+         return cls{
+		 
+final class CContTyp extends AContTyp { 
+     $mth(contents)
+     }   
+	 }cls; 
+     else return cls{
+	 
+final class CContTyp extends AContTyp implements $tlst(interf) { 
+     $mth(contents)
+     }    
+	 }cls;
+   }
+}
+
+class top2ds_Element_Type implements TOP_Element_Type {
+   top2ds          _layer;
+   DS_Element_Type lower;
+   TopParams       tp;
+   
+   environment;
+
+   top2ds_Element_Type( TOP top_2ds ) {
+      _layer = (top2ds) top_2ds;
+      lower = _layer.lower.make_element_type();
+      tp = _layer.tp;
+      environment parent _layer;
+   }
+
+   // generate_class creates the transformed element class that is
+   // a subclass of element
+
+   final public Lang.AST_Class generate_class() {
+      Lang.AST_FieldDecl contDecl;
+      Lang.AST_Stmt      initContCode;
+	  
+	 
+      
+
+      if (tp.Unique) {
+         contDecl = mth{ static public CContTyp cont = null; }mth;
+         initContCode = null;
+      } else  {
+         contDecl = mth{ public CContTyp cont; }mth;
+         initContCode = stm{ cont = c; }stm;
+      }
+
+      return cls{
+	  
+final class CElemTyp extends AElemTyp {
+   $mth(contDecl)
+
+   $mth(lower.dataMembers())
+
+   CElemTyp ( ) { }  /* for rbtree layer */
+
+   CElemTyp ( CContTyp c, AElemTyp e ) {
+     super(e);
+     $stm(initContCode);
+
+                           $stm(_layer.syncWrapper(stm{
+     $stm(lower.link());
+                           }stm));
+   }
+
+   CElemTyp ( CContTyp c, $plst(tp.ParamLst) ) {
+     super( $xlst(tp.ArgLst) );
+     $stm(initContCode);
+                           $stm(_layer.syncWrapper(stm{
+     $stm(lower.link());
+                           }stm));
+   }
+
+   // element unlinking methods
+   $mth(lower.relink())
+   // element linking methods
+   $mth(lower.unlink())
+
+   $mth(make_accessors())
+
+
+   $mth(make_updaters())
+}
+      }cls;
+   }
+
+   // make_accessors is a generator of accessor methods
+
+   Lang.AST_FieldDecl make_accessors() {
+      Lang.AST_FieldDecl     fd;
+      Lang.AST_QualifiedName fname;
+      Lang.AST_QualifiedName ftype;
+      Lang.AST_QualifiedName gname;
+      int               i;
+
+      fd = null;
+      for (i = 0; i < tp.NFields; i++ ) {
+         fname = (Lang.AST_QualifiedName) tp.AST_FieldName[i].clone();
+         ftype = (Lang.AST_QualifiedName) tp.AST_FieldType[i].clone();
+         // gname = tp.get_AST_FieldName[i];
+         fd = mth{ 
+		           $mth(fd)
+                   public $id(ftype) $id(fname)() { 
+                           $stm(_layer.syncWrapper(stm{
+                      return $id(fname); 
+                           }stm));
+                   } }mth;
+
+         if (false) { //(tp.Dem || tp.JBeans) {
+           fd = mth{ 
+		             $mth(fd)
+                   public final $id(ftype) $id(gname)() {
+                      return $id(fname)();
+                   }
+
+                }mth;
+         }
+      }
+      return fd;
+   }
+
+   // make_updaters is a generator of updating methods
+
+   Lang.AST_FieldDecl make_updaters() {
+      Lang.AST_FieldDecl fd;
+      Lang.AST_QualifiedName fname;
+      Lang.AST_QualifiedName ftype;
+      Lang.AST_QualifiedName sname;
+      int i;
+
+      fd = null;
+      for (i = 0; i < tp.NFields; i++ ) {
+         fname = (Lang.AST_QualifiedName) tp.AST_FieldName[i].clone();
+         ftype = (Lang.AST_QualifiedName) tp.AST_FieldType[i].clone();
+         // sname = tp.set_AST_FieldName[i];
+         fd = mth{ 
+		           $mth(fd)
+				   public $id(ftype) $id(fname)( $id(ftype) _newvalue ) { 
+                           $stm(_layer.syncWrapper(stm{
+                      $stm(lower.upd( i ));
+                      return $id(fname); 
+                           }stm));
+                   } }mth;
+
+         if (false) { //tp.Dem || tp.JBeans) {
+            fd = mth{ 
+			          $mth(fd)
+                    public final void $id(sname)( $id(ftype) _newvalue ) {
+                       $id(fname)(_newvalue);
+                    }
+
+                 }mth;
+          }
+       }
+       return fd;
+   }
+}
+
+
+final class top2ds_CommonCursor_Type implements TOP_CommonCursor_Type {
+    top2ds               _layer;
+    DS_CommonCursor_Type lower;
+    TopParams            tp;
+	
+	
+    environment;
+
+    top2ds_CommonCursor_Type( TOP toplayer ) {
+       _layer = (top2ds) toplayer;
+       lower = _layer.lower.make_commoncursor_type();
+       tp    = _layer.tp;            // replace with environment parent
+       environment parent _layer;
+    }
+
+    public  Lang.AST_Class generate_class() {
+	
+	
+
+       return cls{
+abstract class ACommTyp extends ACursTyp implements java.util.Enumeration{
+
+   // encapsulates only added data members and insert/remove methods
+
+   public CElemTyp obj;
+   public CContTyp cont;
+   
+   $mth(lower.dataMembers())
+   
+   public AElemTyp obj() {       
+                           $stm(_layer.syncWrapper(stm{
+      return obj; 
+                           }stm));
+   }
+
+   public boolean hasMoreElements() {
+                           $stm(_layer.syncWrapper(stm{
+      return more();
+                           }stm));
+   }
+
+   public Object nextElement() {
+                           $stm(_layer.syncWrapper(stm{
+      Object ret = obj;
+      next();
+      return ret;
+                           }stm));
+   }
+
+  
+   public void insert( AElemTyp e ) {
+                           $stm(_layer.syncWrapper(stm{
+      obj = new CElemTyp ( cont, e );
+	  $stm(lower.insertMethod());
+                           }stm));
+   }
+
+   public void insert( $plst(tp.ParamLst) ) {
+                           $stm(_layer.syncWrapper(stm{
+      obj = new CElemTyp( cont, $xlst(tp.ArgLst) );
+	  $stm(lower.insertMethod());
+                           }stm));
+   }
+
+   // note: once element is unlinked, it is effectively deleted from the container
+   //       and will be garbage collected by Java once the cursor no longer points
+   //       to it.
+
+   public void remove() {
+                           $stm(_layer.syncWrapper(stm{
+      $stm(lower.removeMethod());
+                           }stm));
+   }
+
+   // position method -- will be overloaded by those concrete cursors supporting
+   // postioning operation
+
+   public AElemTyp position(int pos) {
+      return null;
+   }
+
+   // movement methods
+   $mth(lower.movementMethods())
+}
+         }cls;
+   }
+}
+
+final class top2ds_Cursor_Type implements TOP_Cursor_Type {
+   top2ds         _layer;
+   DS_Cursor_Type lower;
+   Lang.AST_Exp        pred;
+   TopParams      tp;
+   Lang.AST_FieldDecl  fd;
+   Lang.AST_ParList    plist;
+   Lang.AST_ArgList    xl;
+   Lang.AST_Stmt       al;
+   boolean        add_customized_remove_method;
+   boolean        add_position_method;
+   
+   
+   environment;
+
+   top2ds_Cursor_Type( TOP toplayer, String classname, Lang.AST_ParList pl, Usage u ) {
+      Lang.AstCursor          c;
+      Lang.AST_QualifiedName  fieldname;
+      Lang.AST_TypeName       typename;
+      String             fname, pname;
+      Lang.AST_QualifiedName  fnameast, pnameast;
+      Qopt               q;
+
+      // Step 1: remember arguments
+
+      _layer = (top2ds) toplayer;
+      lower = _layer.lower.make_cursor_type( u );
+      pred  = u.predicate;
+      tp    = _layer.tp;
+      plist = pl;
+      environment parent _layer;
+      alias( CCursTyp, Lang.AST_QualifiedName.Make( classname ) );
+
+      // Step 2: create constructor argument list (by trimming off the
+      //         first argument (the container argument) as we defined
+      //         it already in CommonCursor type.  Modify name of 1st argument
+      //         to be "cont".
+
+      //         NOTE: ALWAYS CLONE AST SUBTREES THAT ARE TO BE REUSED
+      //         SEE BELOW
+
+      fd = null;
+      c = new Lang.AstCursor();
+      c.First(pl);
+      while (c.More()) {
+         if (c.node instanceof Lang.FormParDecl) {
+            ((Lang.AstToken) c.node.arg[1].arg[0].tok[0]).name = "cont";
+            c.Sibling();
+            c.PlusPlus();
+            break;
+         }
+         c.PlusPlus();
+      }
+
+      while (c.More()) {
+         if (c.node instanceof Lang.FormParDecl) {
+            typename = (Lang.AST_TypeName) c.node.arg[0].clone();
+            typename.up = null;
+            fieldname = Lang.AST_QualifiedName.Make(
+               c.node.arg[1].arg[0].tok[0].tokenName() );
+            fd = mth{ $mth(fd) public $typ(typename) $id(fieldname); }mth;
+            c.Sibling();
+         }
+         c.PlusPlus();
+      }
+  
+      // Step 3:  Create assignment list and modify names of parameter list
+
+      al = null;
+      xl = null;
+      for (c.First(plist); c.More(); c.PlusPlus()) {
+         if (c.node instanceof Lang.DecNameDim) {
+            fname = c.node.arg[0].tok[0].tokenName();
+            pname = fname+"000";
+            ((Lang.AstToken) c.node.arg[0].tok[0]).name = pname;
+            fnameast = Lang.AST_QualifiedName.Make(fname);
+            pnameast = Lang.AST_QualifiedName.Make(pname);
+            al = stm{ $stm(al); $id(fnameast) = $id(pnameast); }stm;
+            xl = xlst{ $xlst(xl), $id(pnameast) }xlst;
+            c.Sibling();
+         }
+      }
+
+      // Step 4: optimize query and determine if we need to add
+      //         a customized remove method
+
+      q = lower.optimize( new Qopt() );
+      add_customized_remove_method = q.requires_inbetween;
+      add_position_method = u.support_index;
+   }
+
+   public Lang.AST_Class generate_class( ) {
+      Lang.AST_FieldDecl remMethod = null;
+      Lang.AST_FieldDecl posMethod = null;
+	  
+	  
+	  
+		  
+
+      if (add_customized_remove_method) 
+         remMethod = mth{
+   final public void remove( ) {
+                           $stm(_layer.syncWrapper(stm{
+      $stm(lower.removeMethod());
+                           }stm));
+   }
+          }mth;
+
+      if (add_position_method) 
+         posMethod = mth{
+   final public AElemTyp position(int pos) {
+                           $stm(_layer.syncWrapper(stm{
+      AElemTyp ret;
+      int i;
+      if (pos < 0)
+         return null;
+      ret = first();
+      for (i = 0; i < pos; i++) {
+         if (!more())
+            return null;
+         ret = next();
+      }
+      return ret;
+                           }stm));
+   }
+         }mth;
+		 
+  		 
+  Lang.AstProperties props = Lang.AstProperties.open();
+  lower.moreMethod().print(props);
+  String result = props.close();
+  //String combined = "return " + result;
+  //Lang.AST_Exp all = Lang.Literal.Make(combined);                     
+  Lang.AST_Exp all = Lang.Literal.Make(result);
+ 
+      return cls{
+	  
+final class CCursTyp extends ACommTyp {
+
+   $mth(fd)                  // cursor specific (user-defined) fields
+   $mth(lower.dataMembers())
+   public CCursTyp ( $plst(plist) ) {
+      obj = null;
+      $stm(al);
+      $stm(lower.cursorMethod());
+   }
+
+   static public java.util.Enumeration elements( $plst(plist) ) {
+      CCursTyp enum_cur = new CCursTyp( $xlst(xl) );
+      enum_cur.first();
+      return enum_cur;
+   }
+
+   public AElemTyp first() {
+                           $stm(_layer.syncWrapper(stm{
+	  $stm(lower.firstMethod());
+      return obj;
+                           }stm));
+   }
+
+   public boolean more() {
+                           $stm(_layer.syncWrapper(stm{
+	  return $exp(all);
+                           }stm));
+   }
+
+   public AElemTyp next() {
+                           $stm(_layer.syncWrapper(stm{
+      $stm(lower.nextMethod());
+      return obj;
+                           }stm));
+   }
+
+   $mth(remMethod)
+   
+   $mth(posMethod)
+}
+              }cls;
+   }
+}

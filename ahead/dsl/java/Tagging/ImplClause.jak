@@ -1,0 +1,18 @@
+layer Tagging;
+
+refines class ImplClause {
+
+   // note: eventually, we would like to have this conditionally
+   // added.  Right now it is ALWAYS added
+
+   public void setSource( String s ) {
+
+      // label all of the children of this node first, including
+      // labeling the node itsel
+
+      Super(String).setSource(s);
+
+	// Annotate only the AST_TypeNameList
+      arg[0].annotate();
+   }
+}

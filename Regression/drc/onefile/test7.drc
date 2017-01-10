@@ -1,0 +1,7 @@
+//tests ability to check for errors
+// search referenced as an Int, range referenced as a Bool
+
+single layer foo;
+
+outside Bool search ( search == 3 );
+outside Int  range ( range );

@@ -1,0 +1,7 @@
+layer MlrsL;
+
+public refines class ProxyFactory {
+    refines ProxyFactory() {
+        register( OpfacType.MLRS_BTRY, new MlrsProxy() );
+    }
+}

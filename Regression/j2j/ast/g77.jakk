@@ -1,0 +1,58 @@
+// tests propagation of constructors AND the presence of constructors
+// inside quoted text
+
+import java.io.FileInputStream;
+import java.io.PrintWriter;
+import jak2java.Lang;
+
+SoUrCe RooT allesuber "C:!Java!FeatureOrientedProgramming!Regression!Mixin!astgscope!top.jak";
+
+ abstract class g77$$allesuber extends g0 {  }
+
+SoUrCe  middle "C:!Java!FeatureOrientedProgramming!Regression!Mixin!astgscope!g77.jak";
+
+ class g77 extends g77$$allesuber {
+
+   // propagate this constructor
+   g77() {
+      Super(int)(5);
+   }
+
+   public static void main( String args[]) {
+
+   Lang.AST_Class cls = cls{ 
+//--------------------
+class gg0 {
+
+   // don't propagate this constructor
+   gg0() {
+      Super(int)(5);
+   }
+
+   }
+
+//---------------------
+}cls;
+
+
+   Lang.AST_Program prg = prg{ 
+//------------------------------------------
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+
+// makef is a class that generates a make file for 
+// dos and Unix to compile a Bali-generated compiler
+// (e.g., j2jarta).
+
+$cls(cls)  //<----- fill in class definition here
+
+//---------------------
+}prg;
+      Lang.AstProperties props = new Lang.AstProperties();
+      PrintWriter pw = new PrintWriter(System.out);
+      props.setProperty("output", pw);
+      prg.print(props);
+      pw.flush();
+   }
+}

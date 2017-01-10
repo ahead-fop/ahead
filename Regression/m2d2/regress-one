@@ -1,0 +1,19 @@
+#!/bin/bash
+
+echo -n "translating $1 ... "
+
+rm -f junk
+(echo ; cat $1.correct) | tr -s '\n\r' '\n' > correct
+java m2d2.Main $1.jak > junk 2>&1
+cat junk | tr -s '\n\r' '\n' > current ; \
+rm -f junk \
+|| exit 1
+
+if diff -b -B correct current ; then
+#    rm -f -r correct current || :
+    echo succeeded
+else
+#    rm -f -r correct current || :
+    echo failed
+    exit 1
+fi

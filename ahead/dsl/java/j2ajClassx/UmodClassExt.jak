@@ -1,0 +1,42 @@
+/** @author Roberto E. Lopez-Herrejon */
+
+layer j2ajClassx;
+
+import java.util.*;
+import java.io.*;
+
+public refines class UmodClassExt   {
+
+    public void reduce2java( AstProperties props ) {
+
+         // Gets the name of the class
+         String className = arg[0].tok[0].tokenName();
+
+         // Sets up a property to hold this name
+         props.setProperty( "ClassName", className );
+
+         // "class" in token[0] is omitted
+         // do not reduce Qname in arg[0].reduce2java(props);
+
+         // Aspect Name is LayerName$$ClassName
+         String layerName = (String)props.getProperty("LayerName");
+         props.print(" " + layerName + className + " ");
+
+         // @debug
+         System.out.println("Setting RenameNewFile " + layerName + className);
+
+         // Adds the name of the file to the properties
+         props.setProperty( "RenameNewFileName",layerName + className);
+
+         // Does not reduce Implements clause
+         // By design decision, not clear what it means to be
+         // implement an interface in an aspect
+         // arg[1].reduce2java(props);
+
+         // Reduces the ClassBody
+         arg[2].reduce2java(props);
+
+         // Removes the ClassName property
+         props.removeProperty("ClassName");
+    }
+}

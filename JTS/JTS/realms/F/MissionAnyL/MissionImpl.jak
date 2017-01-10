@@ -1,0 +1,201 @@
+package MissionAnyL;
+
+import  
+    java.util.*;
+import  
+    F.Libraries.laydown.*;
+import  
+    F.Libraries.log.Log;
+
+
+
+    /** Implementation of basic opfac state machine functionality */
+    public extends state_machine MissionImpl
+        implements Mission
+    {
+        // What to do if there is no transition for an event. 
+        otherwise_default
+        { 
+            if (message instanceof InitiateMessage)
+            { DenyMessage denyMessage = new DenyMessage(getId(), "Duplicate id");
+		if (initiatingUnit != null)
+		    denyMessage.setInitiatingUnitId(initiatingUnit.intValue());
+                getOpfac().sendTo(
+                    (( Message)message).getSource(), 
+                    denyMessage);
+            }
+            else
+                Log.warn(""+this+" unexpected event: "+message);
+        }
+
+        states start, checkDuplicates, initiated, stop;
+
+        // On Initiate initiate a mission then check for duplicate targets.
+        edge start1 : start -> checkDuplicates
+            conditions (message instanceof InitiateMessage)
+            do
+            { InitiateMessage m = ( InitiateMessage)message;
+		if (m.getInitiatingUnitId() != null)
+                    initiated(m.getSource(), m.getMissionData(), m.getInitiatingUnitId());
+		else
+		    initiated(m.getSource(), m.getMissionData());
+            }
+
+        // On Target initiate a mission.
+        edge start2 : start -> initiated
+            conditions (message instanceof TargetEvent)
+            do
+            { TargetEvent m = ( TargetEvent)message;
+		if (getOpfac() instanceof FoOpfac)
+                    initiated("", m.getMissionData(), new Integer(getOpfac().getUnit()));
+		else if (initiatingUnit != null)
+		    initiated("", m.getMissionData(), initiatingUnit);
+		else
+		    initiated("", m.getMissionData());
+            }
+
+        // Immediately check for duplicates.
+        Enter checkDuplicates { event(null); }
+
+        Exit checkDuplicates 
+        { 
+            getOpfac().ponder(5F); 
+            isDuplicate=getOpfac().hasDuplicate(this);
+        }
+
+        // If duplicate then deny mission and stop.
+        edge checkDuplicates1 : checkDuplicates -> stop
+            conditions isDuplicate
+            do 
+            { 
+                sendDeny("Duplicate target");
+            }
+
+        // If not duplicate then initiate mission.
+        edge checkDuplicates2 : checkDuplicates -> initiated
+            conditions !isDuplicate 
+            do {}
+
+        // Proceed with mission type selection edges. 
+        Enter initiated { event(null); }
+
+        public MissionImpl() {
+          MissionImplConstructor(); }
+
+        public void MissionImplConstructor() { current_state=start;
+      }
+
+        protected boolean isDuplicate=false;
+
+        protected String downstream=null;
+        protected String upstream=null;
+        protected Proxy bestWeapon=null;
+        protected String weaponType;
+
+	protected Integer initiatingUnit;
+
+	protected void initiated(String from, MissionData missionData)
+	{
+	    this.missionData = missionData;
+	    downstream = from;
+	}
+
+        protected void initiated(String from, MissionData missionData,
+				 Integer initiatingUnit)
+        {
+            this.missionData = missionData;
+            downstream = from;
+	    this.initiatingUnit = initiatingUnit;
+        }
+
+        protected void sendInitiate()
+        { InitiateMessage m = new InitiateMessage(missionId, missionData);
+
+	    if (initiatingUnit != null)
+		m.setInitiatingUnitId(initiatingUnit.intValue());
+
+            sendUp(m);
+        }
+
+        protected void sendAccept()
+        { AcceptMessage m = new AcceptMessage(missionId, missionData.getType().toString());
+	    m.setWeaponType(getWeaponType());
+
+	    if (initiatingUnit != null)
+		m.setInitiatingUnitId(initiatingUnit.intValue());
+
+            sendDown(m);
+        }
+
+        protected void sendDeny(String reason)
+        { DenyMessage m = new DenyMessage(missionId, reason);
+	    if (initiatingUnit != null)
+		m.setInitiatingUnitId(initiatingUnit.intValue());
+            sendDown(m);
+        }
+
+        protected void selectBestWeapon()
+        {
+            SelectedProxy p = 
+                getOpfac().getSelfProxy().getBestWeapon(( Mission)this);
+            bestWeapon = p==null ? null : p.getVia();
+        }
+
+        protected boolean weaponSelected()
+        {
+            return bestWeapon!=null;
+        }
+
+        protected void assignWeapon()
+        {
+            upstream=bestWeapon.getName();
+            sendInitiate();
+        }
+
+        protected void weaponDenied()
+        {
+            proxyDeny(bestWeapon.getName());
+        }
+
+        protected void weaponAccepted( AcceptMessage message)
+        {
+            weaponType = message.getWeaponType();
+        }
+
+        protected String getWeaponType() 
+        { 
+            return 
+                weaponType==null
+                    ? getOpfac().getSelfProxy().getType().toString()
+                    : weaponType;
+        }
+
+        protected boolean canElevate()
+        {
+            return getOpfac().canElevate(( Mission)this);
+        }
+
+        protected void elevate()
+        {
+            upstream = getOpfac().getSuperProxy().getName();
+            sendInitiate();
+        }
+
+        protected void sendDown( Message message)
+        {
+            getOpfac().sendTo(downstream, message);
+        }
+
+        protected void sendUp( Message message)
+        {
+            getOpfac().sendTo(upstream, message);
+        }
+
+        public boolean isDuplicate( Mission mission)
+        {
+            return 
+                getTarget().getType().equals(mission.getTarget().getType())
+                    && getTarget().getLocation().distanceTo(
+                            mission.getTarget().getLocation())<=100F;
+        }
+    }

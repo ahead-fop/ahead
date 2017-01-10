@@ -1,0 +1,33 @@
+refines class Main {
+   // define a flag "CheckForInconsistencies" that is set via
+   // command-line invocation
+
+   // add -c option to marquee, and processOptions
+
+   // take action in extending Main.main()
+
+   static boolean CheckForInconsistencies = false;
+  
+   static void marqueeAdditions() {
+      System.out.println( "                -c check for inconsistencies");  
+      Super().marqueeAdditions();
+   }
+
+   static boolean processOptions( char o ) {
+      if ( o == 'c' ) { 
+         CheckForInconsistencies = true;
+         return true;
+      }
+      return Super(char).processOptions( o );
+   }
+
+   public static void main( String args[] ) { 
+      Super(String[]).main(args);
+      if (CheckForInconsistencies) {
+          guiObj.setVisible(false);
+	    solverTest.checkModel();
+          // perform analysis here;
+          System.exit(0);
+      }
+  }
+}

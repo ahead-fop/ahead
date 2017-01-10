@@ -1,0 +1,59 @@
+/** Program that finds references in Binary Files
+ * Auxiliary tool to translate Jak files to AspectJ files
+ */
+
+layer j2ajClassx;
+
+import java.lang.reflect.*;
+
+public class ReferenceFinder {
+
+    /** Reflects on a class name and then looks for fields and methods
+     * with the reference name
+     */
+    public static boolean findReference(String className, String reference) {
+     // @debug
+     System.out.println("Finding in " + className + " <" + reference +">");
+
+    // Checks to see if in the reference there is a .
+    // If so it means that the reference is a qualified name, thus
+    // check only the first name, i.e. all characters before the first .
+    int posDot = reference.indexOf('.');
+    if (posDot!=-1)
+       reference = reference.substring(0,posDot);
+
+    // @debug
+    System.out.println("Actual reference <" + reference +">");
+
+    // Reads the Main class of the tool
+    Class mainClass = null;
+
+    try {
+        mainClass = Class.forName(className);
+    } catch(ClassNotFoundException e) {
+        // @debug message, remove once tested
+        System.out.println("Class not found <" + className + ">");
+        return false;
+    }
+
+    // Looks in the fields
+    Field[] fields = mainClass.getFields();
+    for (int i = 0; i < fields.length; i++) {
+        String fieldName = fields[i].getName();
+        if (fieldName.equals(reference)) return true;
+    } // of for
+
+    // Looks in the methods
+    Method[] methods = mainClass.getMethods();
+    for (int i = 0; i < methods.length; i++) {
+        String methodName = methods[i].getName();
+        if (methodName.equals(reference)) return true;
+    } // of for
+
+    // @debug
+    System.out.println("Returning false");
+
+    return false;
+    }
+
+}

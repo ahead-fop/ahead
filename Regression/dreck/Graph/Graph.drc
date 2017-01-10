@@ -1,0 +1,105 @@
+domain Graph;
+
+realm G;
+
+Synth     directed        "a directed graph" ;
+Synth     undirected      "an undirected graph layer";
+Inherit   operator        "a graph operator layer";
+Inherit   search          "a search component";
+Synth     dft_present     "a depth-first-traversal layer";
+Synth     bft_present     "a breadth-first-traversal layer";
+Single    dft             ;
+Single    bft             ;
+Single    number          ;
+Single    cycle           ;
+Single    region          ;
+Single    strongc         ;
+
+conditions() {
+   directed.negate();
+   undirected.negate();
+   operator.negate();
+   search.negate();
+}
+
+ugraph[]:G {
+   exports above { undirected.affirm(); }
+
+   and_expr ""
+   explain_expr " over an undirected graph";
+}
+
+dgraph[]:G {
+   exports above { directed.affirm(); }
+
+   and_expr ""
+   explain_expr "over a directed graph";
+}
+
+dft[x:G]:G {
+
+   exports below x { search.affirm(); dft.affirm(); dft_present.affirm(); }
+
+   requires above search.Pnegate() & operator.Paffirm() & dft.Pnegate();
+
+   exports above { dft_present.affirm(); }
+
+   and_expr ""
+   explain_expr Child[0].explain()+ " using depth-first traversals.";
+}
+
+bft[x:G]:G {
+
+   exports below x { bft.affirm(); search.affirm(); }
+
+   requires above search.Pnegate() & operator.Paffirm() & bft.Pnegate();
+
+   and_expr ""
+   explain_expr Child[0].explain() + " using breadth-first traversals.";
+}
+
+cycle[x:G]:G {
+
+   exports below x { operator.affirm(); cycle.affirm(); }
+
+   requires above cycle.Pnegate() & search.Pnegate();
+   
+   requires below x dft_present.Paffirm(); 
+
+   and_expr ", and "
+   explain_expr "checks cycles" + Child[0].and() + Child[0].explain();
+}
+
+region[x:G]:G {
+
+   exports below x { operator.affirm(); region.affirm(); }
+
+   requires above region.Pnegate() & search.Pnegate();
+
+   requires below x dft_present.Paffirm() & undirected.Paffirm();
+
+   and_expr ", and "
+   explain_expr "finds connected-regions" + Child[0].and() + Child[0].explain();
+}
+
+number[x:G]:G {
+   exports below x { operator.affirm(); number.affirm(); }
+
+   requires above number.Pnegate() & search.Pnegate();
+
+   and_expr ", and "
+   explain_expr "numbers vertices" + Child[0].and() + Child[0].explain();
+}
+
+strongc[x:G]:G {  
+
+   exports below x { operator.affirm(); strongc.affirm(); }
+
+   requires above strongc.Pnegate() & search.Pnegate();
+   
+   requires below x directed.Paffirm();
+
+   and_expr ", and "
+   explain_expr "finds strongly-connected regions" +Child[0].and() + Child[0].explain();
+}
+

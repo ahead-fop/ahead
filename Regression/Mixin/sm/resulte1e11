@@ -1,0 +1,46 @@
+layer ext1;
+
+import firstPackage.*;
+
+SoUrCe  ext1 "C:!Java!Regression!Mixin!sm!ext1.jak";
+
+ abstract State_machine root$$ext1 {
+
+   // from ext 1
+   States d;
+   States e;
+
+   // from ext1
+   Transition e2 : d -> e 
+   condition m!=null
+   do { /* action 2 */ }
+
+   Transition e3 : c -> d
+   condition true
+   do { /* action 3 */ }
+
+   Exit b { /* action a */ }
+}
+
+SoUrCe  ext11 "C:!Java!Regression!Mixin!sm!ext11.jak";
+
+ State_machine root extends root$$ext1 {
+
+   // from ext 11
+   States g;
+   States h;
+
+   // from ext1
+   Transition e5 : d -> e 
+   condition m!=null
+   do { /* action 2 */ }
+
+   Transition e6 : c -> d
+   condition true
+   do { /* action 3 */ }
+
+   Exit h { /* action a */ }
+
+   // from ext11
+   void fromext11() { as = 5; }
+}

@@ -1,0 +1,19 @@
+
+// example that forces propagation of constructors DOWN the refinement chain
+
+SoUrCe RooT Aspect1 "something1";
+
+abstract class MyClass$$Aspect1 extends EventType {
+   MyClass$$Aspect1(String name, int cons ){ }
+} 
+
+SoUrCe Aspect2 "something2";
+
+abstract class MyClass$$Aspect2 {
+   MyClass$$Aspect2(String name){ }
+} 
+
+SoUrCe  Aspect3 "something3";
+
+public class MyClass extends MyClass$$Aspect2 {
+}

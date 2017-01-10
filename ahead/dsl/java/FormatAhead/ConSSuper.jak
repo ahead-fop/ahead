@@ -1,0 +1,20 @@
+layer FormatAhead;
+
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public refines class ConSSuper {
+    public void format( int position ) {
+        inline_routins( position );
+        ( ( AstToken ) tok[1] ).white_space = "";
+        if ( arg[0].arg[0] == null )
+            ( ( AstToken ) tok[2] ).white_space = "";
+        else {
+            arg[0].arg[0].setComment( " " );
+            arg[0].format( position );
+            ( ( AstToken ) tok[2] ).white_space = " ";
+        }
+        arg[1].format( position );
+    }
+}

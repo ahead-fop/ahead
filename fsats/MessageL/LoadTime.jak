@@ -1,0 +1,17 @@
+layer MessageL;
+
+import fsats.util.DataContainer;
+
+import laydown.*;
+
+import java.util.*;
+
+/** Message that weapon loading is done **/
+public class LoadTime
+        extends BasicTimeout {
+    public EventType getType() {
+        return TimeoutType.loadTime;
+    }
+    public LoadTime( String missionId ) { Super()( missionId );
+    }
+}

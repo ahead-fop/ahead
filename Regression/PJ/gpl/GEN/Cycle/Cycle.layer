@@ -1,0 +1,110 @@
+// Graph Algorithms Product Line (GPL)
+// University of Texas at Austin
+// Department of Computer Sciences
+// Product-Line Architectures Research Group
+// Edge-Neighbor Representation
+// CYCLE : cycle checking layer
+// Last Update: May 15, 2001
+// Written by: Roberto E. Lopez-Herrejon (rlopez@cs.utexas.edu)
+
+layer Cycle(GEN lower)
+realm GEN
+extends lower
+imports java.lang.Integer
+{
+  // Cycle checking, Edge-Neighbor implementation
+  
+  // *************************************************************************
+   public static class Graph extends lower.Graph {
+			  
+      public boolean CycleCheck() {
+         CycleWorkSpace c = new CycleWorkSpace(isDirected);
+         GraphSearch( c );
+         return c.AnyCycles;
+      }
+   }
+
+  // *************************************************************************
+   public static class Vertex extends lower.Vertex {
+      public int VertexCycle;      
+	  public int VertexColor; // white ->0, gray ->1, black->2
+	  
+      public void display() {
+         System.out.print(" VertexCycle# " + VertexCycle + " ");
+         super.display();
+      }
+   }
+
+  // *************************************************************************
+   public static class CycleWorkSpace extends $TEqn.WorkSpace {
+
+      public boolean AnyCycles;
+      public int     counter;
+      public boolean isDirected;
+	  
+      public static final int WHITE = 0;
+      public static final int GRAY  = 1;
+      public static final int BLACK = 2;	  
+	        
+      public CycleWorkSpace(boolean UnDir) {
+         CycleWorkSpaceConstructor(UnDir);
+      }
+
+      public void CycleWorkSpaceConstructor(boolean UnDir) {
+         AnyCycles = false;
+         counter   = 0;
+         isDirected = UnDir;
+      }
+
+      public void init_vertex( $TEqn.Vertex v ) 
+      {	
+	v.VertexCycle = Integer.MAX_VALUE;
+	v.VertexColor = WHITE;				// initialize to white color
+      }
+
+      public void preVisitAction( $TEqn.Vertex v ) { 
+	
+       // This assigns the values on the way in
+       if (v.visited!=true) 
+	{  // if it has not been visited then set the
+	   // VertexCycle accordingly
+	   v.VertexCycle = counter++;
+	   v.VertexColor = GRAY; // we make the vertex gray
+	}
+      }
+
+      public void postVisitAction( $TEqn.Vertex v ) 
+      { 
+	v.VertexColor = BLACK;  // we are done with the visiting so make it black
+	counter--;
+      } // of postVisitAction
+
+
+      public void checkNeighborAction($TEqn.Vertex vsource, $TEqn.Vertex vtarget) 
+      { 
+	// if the graph is directed is enough to check that the source node
+	// is gray and the adyacent is gray also to find a cycle
+	// if the graph is undirected we need to check that the adyacent is not
+	// the father, if it is the father the difference in the VertexCount is
+	// only one.				   
+	if (isDirected)
+	{
+ 	 if ((vsource.VertexColor == GRAY ) && (vtarget.VertexColor == GRAY)) 
+	  {
+ 	    AnyCycles = true;		
+	  }
+        }
+        else
+        {  // undirected case
+ 	  if ((vsource.VertexColor == GRAY ) && (vtarget.VertexColor == GRAY) &&
+		vsource.VertexCycle != vtarget.VertexCycle+1) 
+	  {
+		AnyCycles = true;		
+	  }
+        } 
+        
+       } // of checkNeighboor
+   
+   } // of CycleWorkSpace
+  
+} // of layer

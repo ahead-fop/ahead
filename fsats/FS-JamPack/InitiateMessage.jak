@@ -1,0 +1,89 @@
+layer FS;
+
+import fsats.util.DataContainer;
+
+import laydown.*;
+
+import java.util.*;
+
+/** Message to start a new mission **/
+public class InitiateMessage 
+        extends BasicMessage {
+    public EventType getType() {
+        return MessageType.initiate;
+    }
+
+    public InitiateMessage( String missionId, MissionData missionData )
+	{
+            Super( String )( missionId );
+        this.missionData = missionData;
+    }
+      
+    protected MissionData missionData;
+    public MissionData getMissionData() {
+        return missionData;
+    }
+    public String getSpecific() {
+        return ""+missionData;
+    }
+
+    public DataContainer toFsams()
+        {
+        DataContainer fsams = Super().toFsams();
+        DataContainer content = fsams.getField( "CONTENT" );
+        fsams.addField( "NAME" ).setValue( "Initiate" );
+        DataContainer targetId = content.addField( "Target_Id" );
+        targetId.setValue( getMissionId() );
+        DataContainer target = content.addField( "Target" );
+
+        Target targetInfo = missionData.getTarget();
+
+        if ( targetInfo.getType() != null )
+            target.addField( "Type" ).setValue( targetInfo.getType().toString() );
+        DataContainer location = target.addField( "Location" );
+        location.addField( "Latitude" ).setValue( Double.toString( targetInfo.getLocation().getLatitude() ) );
+        location.addField( "Longitude" ).setValue( Double.toString( targetInfo.getLocation().getLongitude() ) );
+
+        content.addField( "Fire_Mission_Type" ).
+                setValue( missionData.getType().toString() );
+
+        //content.addField("FFE1_Munition").setValue("HEA");
+        //content.addField("FFE1_Fuze").setValue("PDA");
+        //content.addField("FFE2_Munition").setValue("HEA");
+        //content.addField("FFE2_Fuze").setValue("PDA");
+
+        return fsams;
+    }
+
+    public static Message fromFsams( DataContainer fsams )
+        {
+        InitiateMessage m;
+
+        MissionData missionData = null;
+        DataContainer content = fsams.getField( "CONTENT" );
+        DataContainer target = content.getField( "Target" );
+        DataContainer targetId = content.getField( "Target_Id" );
+        DataContainer location = target.getField( "Location" );
+        Location loc = new LocationLatLong( Float.parseFloat( location.getField( "Latitude" ).getValue() ),
+                Float.parseFloat( location.getField( "Longitude" ).getValue() ) );
+        Target targ = new TargetImpl( target.getField( "Type" ).getValue(),
+                loc );
+        missionData = new MissionDataImpl( MissionType.fromString( content.getField( "Fire_Mission_Type" ).getValue() ),
+                targ );
+
+        m = new InitiateMessage( targetId.getValue(), missionData );
+
+        String initiatingUnitIdString = content.getField( "Initiating_Unit" ).getField( "Unit_Id" ).getValue();
+        if ( initiatingUnitIdString!=null && !initiatingUnitIdString.equals( "" ) )
+            m.setInitiatingUnitId( Integer.parseInt( initiatingUnitIdString ) );
+
+        String initiatingUnitObserverIdString = content.getField( "Initiating_Unit" ).getField( "Observer_Id" ).getValue();
+        if ( initiatingUnitObserverIdString!=null && !initiatingUnitObserverIdString.equals( "" ) )
+            m.setInitiatingUnitObserverId( Integer.parseInt( initiatingUnitObserverIdString ) );
+
+        m.setSource( LayDown.getSelf().getOpfacByUnit( Integer.parseInt( fsams.getField( "FROM" ).getValue() ) ).getName() );
+        m.setDestination( LayDown.getSelf().getOpfacByUnit( Integer.parseInt( fsams.getField( "TO" ).getValue() ) ).getName() );
+
+        return m;
+    }
+}

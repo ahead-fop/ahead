@@ -1,0 +1,21 @@
+#!/bin/bash
+
+echo -n "composing $1 & $2 -> $3 ... "
+
+(echo ; java jampack.Main -tk $1.java $2.java) 2>&1 \
+| sed -f updates \
+| tr -s '\040\t\n\r' '\040' \
+> current
+
+(echo ; cat $3) \
+| sed -f updates \
+| tr -s '\040\t\n\r' '\040' \
+> correct
+
+if diff -b correct current ; then
+    rm -f correct current || :
+    echo succeeded
+else
+    echo failed
+    exit 1
+fi

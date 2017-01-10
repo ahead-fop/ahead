@@ -1,0 +1,19 @@
+// This program tests that calling the same macro twice in the same
+// program works correctly.
+
+public class test4 {
+     fooType[] fooSort( fooType[] array) {
+	System.println("Called sort macro");
+	return(array);
+    }
+
+     fooType2[] another_fooSort( fooType2[] array) {
+	System.println("Called sort macro");
+	return(array);
+    }
+
+    static public void main(String[] args) {
+	int[] iarray = new int[5];
+	fooSort(iarray);
+    }
+}

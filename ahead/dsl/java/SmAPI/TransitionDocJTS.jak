@@ -1,0 +1,76 @@
+layer SmAPI;
+
+import java.io.*;
+import java.util.*;
+
+ // of TransitionDeclDocJTS
+
+// _________________________________________________________________
+ /** JEDI 
+  * TransitionDocJTS
+  * University of Texas at Austin
+  * Department of Computer Sciences
+  * Product-line Architecture Research Group
+  * @rationale Contains the info for the Exit, Enter, Prepare, 
+  * Test, and Otherwise transition declarations
+  * @author Roberto E. Lopez-Herrejon
+  * @version 1.0
+  * @since November 10, 2001
+  * @layer<SmAPI>
+  */
+
+public class TransitionDocJTS extends  DocJTS {
+
+    // **********************************************************************
+    // **********************************************************************
+    // *** Field Summary 
+    /** Contains the name of the state.
+     * @layer<SmAPI>
+     */
+    String name;
+
+    /** List that contains the classes/interfaces that are in the block
+     * of Exit, Enter, Prepare, Test,  or Otherwise transition declarations.
+     * @layer<SmAPI>
+     */
+    LinkedList classes;
+
+    /** Additional constructor.
+     * @layer<SmAPI>
+     */
+    public TransitionDocJTS( String _name, LinkedList _classes ) 
+    {
+        name = _name;
+        classes = _classes;
+    }
+
+    // *** Method summary.
+    /** Gets the name of the state.
+     * @layer<SmAPI>
+     */
+    public String name() {
+        return name;
+    }
+
+    /** Gets the list of the classes/interfaces.
+     * @layer<SmAPI>
+     */
+    public LinkedList classes() {
+        return classes;
+    }
+
+    /** Sets the name of the state.
+     * @layer<SmAPI>
+     */
+    public void setName( String _name ) {
+        name = _name;
+    }
+
+    /** Sets the list of classes/interfaces.
+     * @layer<SmAPI>
+     */
+    public void setClasses( LinkedList _classes ) {
+        classes = _classes;
+    }
+    
+}

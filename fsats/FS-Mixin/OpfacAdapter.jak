@@ -1,0 +1,58 @@
+layer FS;
+
+import laydown.*;
+
+import java.util.*;
+
+SoUrCe RooT GuiL "C:!Java!FeatureOrientedProgramming!fsats!GuiL!OpfacAdapter.jak";
+
+class OpfacAdapter
+        implements fsats.guiIf.Opfac {
+    private String id;
+    private String type;
+    private fsats.guiIf.Location location;
+    private fsats.guiIf.Mission[] missions;
+
+    private Opfac opfac;
+
+    public OpfacAdapter( Opfac opfac )
+        {
+        this.opfac=opfac;
+        id = opfac.getName();
+        type = opfac.getType().toString();
+        location = new LocationAdapter( opfac.getLocation() );
+
+        Collection c = opfac.getActiveMissions();
+        missions = new fsats.guiIf.Mission[c.size()];
+        Iterator ci = c.iterator();
+        for ( int i=0; i<missions.length; ++i )
+            missions[i] = new MissionAdapter( ( Mission )ci.next() );
+    }
+
+    public String getId() {
+        return id;
+    }
+    public String getType() {
+        return type;
+    }
+    public fsats.guiIf.Location getLocation() {
+        return location;
+    }
+    public fsats.guiIf.Mission[] getActiveMissions() {
+        return missions;
+    }
+
+    public void putTarget( String id, fsats.guiIf.Target target )
+        {
+        Location location =
+                new LocationLatLong( target.getLocation().getLatitude(),
+                    target.getLocation().getLongitude() );
+        Target targetData =
+                new TargetImpl( target.getType(), location );
+        MissionData mission =
+                new MissionDataImpl( MissionType.wrffe, targetData );
+        TargetEvent message = 
+                new TargetEvent( id, mission );
+        opfac.deliver( message );
+    }
+}

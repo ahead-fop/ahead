@@ -1,0 +1,44 @@
+layer JavaTagHandlers;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+ // of AbstractTagJedi
+
+// **********************************************************************
+// **********************************************************************
+// **********************************************************************
+
+/** The Default Tag Handler for not defined tags 
+ * @layer<JavaTagHandlers>
+ */
+
+public class DefaultTagJedi extends AbstractTagJedi {
+
+    // Empty parse function for the default.
+    public void parse( DocJTS Document,  CommentJedi comment, 
+             String stringTag ) {}
+
+    /** Default Constructor 
+     * @layer<JavaTagHandlers>
+     */
+    public DefaultTagJedi() {
+        // do something dummy here
+        int x=3;
+    }
+
+    /** Constructor 
+     * @layer<JavaTagHandlers>
+     */
+    public DefaultTagJedi( DocJTS _holder, String _text, String _name )
+  {
+        holder = _holder;
+        text = _text;
+        name = _name;
+    }
+
+}

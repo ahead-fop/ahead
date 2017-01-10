@@ -1,0 +1,16 @@
+abstract class wrffe {
+   void error( int s, M m ) {
+      System.err.println("error in state " + getState() + " message " + m.msg );
+      System.exit(1);
+   }
+
+   void ignore_message( int s, M m ) {
+      System.out.println("ignoring message " + m.msg + " in state " + getState() );
+   }
+
+   void outstate( String s ) {
+      System.out.println( s + " " + getState() );
+   }
+
+   abstract String getState();
+}

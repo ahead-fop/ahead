@@ -1,0 +1,70 @@
+layer M2D2Java;
+
+refines class MethodDcl {
+
+   public void extract( context c ) {
+
+      // Step 1: get modifier
+
+      String visibility = "";  // default
+      AST_Modifiers am = (AST_Modifiers) arg[0].arg[0];
+      if (am!=null) {
+         visibility = am.visibility();
+      }
+
+      // Step 2: get return type and method name, and method signature
+
+      String returnType = ((AST_TypeName) arg[1]).GetName();
+      String fullReturnType = ImpQual.fullPath(returnType,c);
+     
+      MthDector m = ((MthDector) arg[2]);
+      String methName = ((QName) m.arg[0]).GetName();
+      String signature = "()";
+      AST_ParList apl = ((AST_ParList) m.arg[1].arg[0]);
+      if (apl != null) signature = "(" + apl.Signature() + ")";
+
+      // Step 3: create method
+
+      String n = methName+signature;
+      c.setMemberName(n);
+      c.isConstructor=false;
+      String cls = c.getClassName();
+      String fullName = cls+"."+n;
+      String body = bodyString( arg[4].toString() );
+      if (c.isClass)
+         c.Footer.add( 
+            RubyInstCreator.createClassMethod( fullName, fullName, fullReturnType, body, 
+               visibility, cls));
+      else
+         c.Footer.add( 
+            RubyInstCreator.createInterfaceMethod( fullName, fullName, fullReturnType,
+               visibility, cls));
+
+      // Step 4: declare each type in parameter list
+
+      AST_ParList pl = ((AST_ParList) m.arg[1].arg[0]);
+      if (pl != null) {
+         AstCursor curs = new AstCursor();
+         for (curs.FirstElement(pl); curs.MoreElement(); curs.NextElement()) {
+            FormParDecl fpd = (FormParDecl) curs.node;
+            String cn = ((AST_TypeName) fpd.arg[0]).GetName();
+            String fcn = ImpQual.fullPath(cn,c);
+            DecNameDim dnd = ((DecNameDim) fpd.arg[1]);
+            String varName = dnd.GetName();
+            String dims = dnd.GetDims();
+            String fvn = fullName+"."+varName;
+            
+            c.Footer.add(
+               RubyInstCreator.createMethodParameter(fvn, 
+                  fvn, fcn, fullName));
+         }
+      }
+
+      // Step 5: now declare throws
+
+      arg[3].extract(c);
+
+      c.Footer.blankLine();
+   }
+}
+

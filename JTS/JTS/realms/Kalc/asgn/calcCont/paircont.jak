@@ -1,0 +1,9 @@
+package Kalc.asgn.calcCont;
+
+public container<pairs> pcont;
+
+public cursor<pcont> pcurs;
+
+public container pc extends pcont using dlist( malloc());
+
+public cursor findname(pc x, String y) where name() == y;

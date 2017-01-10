@@ -1,0 +1,21 @@
+
+#! JavaM => metamodels/JavaM.ecore 
+
+
+layer = JavaM::Layer.new(:name => 'Emport', :identifier => 'layer') 
+package_used = JavaM::Package.new(:name => 'used', :identifier => 'used', :ownerLayer => layer)
+package_feature = JavaM::Package.new(:name => 'Emport', :identifier => 'feature', , :ownerLayer => layer)
+
+# imports.jak
+
+package_java_util = JavaM::Package.new(:name => 'java.util', :identifier => 'java.util', :isImported => true, :ownerLayer => layer)
+java_io_File = JavaM::Class.new(:name => 'java.io.File', :identifier => 'java.io.File', :owner => package_used)
+feature_hero = JavaM::Class.new(:name => 'hero', :identifier => 'feature.hero', :visibility => 'package', :isRefinement => false, :owner => package_feature)
+feature_hero.importsPackage << package_java_util
+feature_hero.importsType << java_io_File
+
+#  implicitly imported files
+
+
+# imports.jak
+

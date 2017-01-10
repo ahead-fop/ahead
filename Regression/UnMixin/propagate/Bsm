@@ -1,0 +1,3 @@
+layer two;
+
+refines State_machine x implements y { }

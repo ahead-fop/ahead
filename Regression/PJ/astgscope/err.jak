@@ -1,0 +1,22 @@
+// this is now OK.  super can appear.
+
+// errors should be reported when super.xxx is used in a refinement 
+// when appearing outside quoted text.  this() and super() can't
+// appear in arbitrary places, that's why the other lines have
+// been commented away
+
+layer uberalles;
+
+refines class g6 {
+
+   void bar() { 
+      // if CommonErrorAst doesn't work, each of the following
+      // lines will generate an error
+
+      //   AST_FieldDecl e = mth{ aConstructor() { $stm(super()); } }mth;
+
+      AST_FieldDecl y = mth{ void bary() { $stm(super.foo()); } }mth;
+
+      //  AST_FieldDecl z = mth{ aConstructor() { $stm(this(5));  } }mth;
+   }
+}

@@ -1,0 +1,112 @@
+// Graph Algorithms Product Line (GPL)
+// University of Texas at Austin
+// Department of Computer Sciences
+// Product-Line Architectures Research Group
+// Edge-Neighbor Representation
+// DFS : depth first search layer
+// Last Update: May 15, 2001
+// Written by: Roberto E. Lopez-Herrejon (rlopez@cs.utexas.edu)
+
+layer DFS ( GEN lower )
+realm GEN
+extends lower
+{
+   // *************************************************************************	
+   static public class Graph extends lower.Graph {
+   
+   // Graph search receives a Working Space, and 
+   public void GraphSearch( WorkSpace w) {
+   int           s, c;
+   $TEqn.Vertex  v;
+  
+   // Step 1: initialize visited member of all nodes
+
+   s = vertices.size();
+   if (s == 0) return;               // if there are no vertices return
+         
+   // Initializig the vertices
+   for (c = 0; c < s; c++) {
+      v = ($TEqn.Vertex) vertices.get(c);  
+      v.init_vertex( w );
+   }
+
+   // Step 2: traverse neighbors of each node
+   for (c = 0; c < s; c++) {
+      v = ($TEqn.Vertex) vertices.get(c);  
+      if (!v.visited)  {
+          w.nextRegionAction(v);
+          v.dftNodeSearch( w);
+      }
+    } //end for
+   }
+ } // end of Graph
+      
+      
+   // *************************************************************************
+   static public class Vertex extends lower.Vertex {
+      public boolean visited;
+   
+      public Vertex() {
+         VertexConstructor();
+      }
+
+      public void VertexConstructor() {
+         Base().VertexConstructor();
+         visited = false;
+      }
+      
+      public void init_vertex( WorkSpace w ) {
+         visited = false;
+         w.init_vertex(($TEqn.Vertex) this);
+      } 
+   
+      public void dftNodeSearch( WorkSpace w) {
+         int           s, c;
+         $TEqn.Vertex v;
+         $TEqn.Neighbor n;
+
+         // Step 1: Do preVisitAction. 
+	 //	    If we've already visited this node return
+
+         w.preVisitAction(($TEqn.Vertex) this);
+         
+         if (visited) return;
+
+         // Step 2: else remember that we've visited and 
+         //         visit all neighbors
+
+         visited = true;
+         
+		s = neighbors.size();
+		for (c = 0; c < s; c++) 
+		{
+			n = ($TEqn.Neighbor) neighbors.get(c);
+			v = n.end;
+			w.checkNeighborAction(($TEqn.Vertex) this, v);  
+			v.dftNodeSearch( w);
+         };
+     
+         // Step 3: do postVisitAction now
+         w.postVisitAction(($TEqn.Vertex) this);
+      } // of dftNodeSearch
+
+      public void display() {
+         if (visited)
+            System.out.print("  visited");
+         else
+            System.out.println(" !visited");
+         super.display();
+      }
+      
+   } // end of vertex
+
+   // *************************************************************************
+   public static class WorkSpace {           // supply template actions
+      public void init_vertex( $TEqn.Vertex v ) { }
+      public void preVisitAction( $TEqn.Vertex v ) {}
+      public void postVisitAction( $TEqn.Vertex v ) { }
+      public void nextRegionAction( $TEqn.Vertex v ) { }
+      public void checkNeighborAction($TEqn.Vertex vsource, $TEqn.Vertex vtarget) { }
+   }
+   
+}

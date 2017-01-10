@@ -1,0 +1,39 @@
+layer FS;
+
+import java.util.*;
+
+import log.Log;
+
+import laydown.*;
+
+SoUrCe RooT MissionL "C:!Java!FeatureOrientedProgramming!fsats!MissionL!Mission.jak";
+
+abstract interface Mission$$MissionL
+        extends MissionData
+    {
+    Mission init( Opfac opfac, String missionId );
+        
+    /** State_machine Delivery_parameters entry point. */
+    void delivery( Event message );
+
+    /** Implemented by State_machine. */
+    String getState();
+    Opfac getOpfac();
+
+    String getId();
+}
+
+SoUrCe  ProxyL "C:!Java!FeatureOrientedProgramming!fsats!ProxyL!Mission.jak";
+
+abstract interface Mission$$ProxyL extends Mission$$MissionL {
+    void proxyDeny( String opfacName );
+    boolean hasDenied( String opfacName );
+}
+
+SoUrCe  MissionAnyL "C:!Java!FeatureOrientedProgramming!fsats!MissionAnyL!Mission.jak";
+
+/** Add state machine related primitives to mission. */
+public interface Mission extends Mission$$ProxyL {
+    /** Is this a duplicate of mission? */
+    boolean isDuplicate( Mission mission );
+}

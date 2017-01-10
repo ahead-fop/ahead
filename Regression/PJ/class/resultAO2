@@ -1,0 +1,11 @@
+jampack: ArefOverride2.java:8: Warning  refinement makes call to non-existent base method AnothersuperFunc()
+// This tests if jampack rewrites calls to inherited methods correctly
+
+layer Asuper;
+
+class top extends superTop {
+   public void AsuperFunc() { 
+      /* do something */
+      super.AnothersuperFunc();
+   } 
+}

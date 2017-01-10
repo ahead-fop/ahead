@@ -1,0 +1,9 @@
+layer FS;
+
+import laydown.*;
+
+import java.util.*;
+
+SoUrCe RooT FsatsL "C:!Java!FeatureOrientedProgramming!fsats!FsatsL!EventTypeInterface.jak";
+
+public interface EventTypeInterface {}

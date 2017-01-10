@@ -1,0 +1,29 @@
+layer FS;
+
+import laydown.OpfacDataWrapper;
+
+import log.Log;
+
+import java.util.*;
+
+import fsats.util.*;
+
+SoUrCe RooT OpfacL "C:!Java!FeatureOrientedProgramming!fsats!OpfacL!OpfacThread.jak";
+
+// added unnested class
+
+public class OpfacThread extends Thread {
+    OpfacImpl oi;
+
+    public OpfacThread( OpfacImpl oi ) {
+        this.oi = oi;
+    }
+           
+    public void run() {
+        while ( true )
+              {
+            Event event = ( Event )oi.deliveryQueue.get();
+            oi.receive( event );
+        }
+    } // end run
+}

@@ -1,0 +1,37 @@
+package MissionWrffeMlrsL;
+
+import 
+    Jakarta.util.Util;
+import 
+    java.io.*;
+import 
+    F.Libraries.log.Log;
+
+ // FoMission
+
+    
+    public extends state_machine MlrsMission
+    {
+        states wrffeShooting;
+     
+        // MLRS shoots one mission at a time.
+        Enter wrffeMlrsAccepted { getOpfac().missionLock(this); }
+
+        // When it's this missions turn begin aim/load/shoot.
+        edge wrffeMlrsAccepted2 : wrffeMlrsAccepted -> wrffeShooting
+            conditions (message instanceof LockGranted)
+            do { getOpfac().timeout(20F, new CompleteTime(getId())); }
+     
+        // When done shooting send MFR and stop.
+        edge wrffeShooting1 : wrffeShooting -> stop
+            conditions (message instanceof CompleteTime)
+            do
+	    { MfrMessage mfrMessage = new MfrMessage(getId());
+		if (initiatingUnit != null)
+		    mfrMessage.setInitiatingUnitId(initiatingUnit.intValue());
+		sendDown(mfrMessage);
+	    }
+
+        // Allow next mission to proceed.
+        Enter stop { getOpfac().missionFree(this); }
+    }

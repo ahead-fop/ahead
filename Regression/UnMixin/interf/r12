@@ -1,0 +1,20 @@
+package Iext1;
+
+import java.io.Serializable;
+
+SoUrCe  Iext1 "IExt1.jak";
+
+ transient abstract  interface MyInt$$Iext1 extends yyy, java.io.Serializable {
+    int Terse = 2;
+    void foo() throws SomeException;
+    int increment( int i );
+}
+
+SoUrCe  Iext2 "IExt2.jak";
+
+ interface MyInt extends java.io.Serializable, MyInt$$Iext1 {
+    overrides void foo() throws AnotherException;
+    overrides void barrr();
+    new int biff( int i );
+    overrides float biff();
+}

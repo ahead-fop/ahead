@@ -1,0 +1,252 @@
+package $(LanguageName);
+
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Vector;
+
+public class calc extends $(ParentComponent) {
+
+    static public class ExprLst extends $(ParentComponent).ExprLst {
+	public void execute() { 
+	    Lang.AstCursor c          = new Lang.AstCursor();
+	    boolean        afterfirst = false;
+ 
+	    for (c.FirstElement(this); c.MoreElement(); c.NextElement()) {
+		if (afterfirst) 
+		    System.out.print(" ,");
+		System.out.print(((Lang.Sums) c.node).eval());
+		afterfirst = true;
+	    }
+	}
+    }
+
+    static public class Sums extends $(ParentComponent).Sums {
+	public int eval() {
+	    int total = arg[0].eval();
+	    if (arg[1].arg[0] != null)
+		return(arg[1].arg[0].eval(total));
+	    return(total);
+	}
+
+	public int eval(int total) {
+	    if (arg[1].arg[0] != null)
+		return(arg[1].arg[0].eval(total));
+	    return(total);
+	}
+    }
+
+    static public class Plus extends $(ParentComponent).Plus {
+	public int eval(int total) {
+	    total += arg[0].arg[0].eval();
+	    return(arg[0].eval(total));
+	}
+    }
+
+    static public class Minus extends $(ParentComponent).Minus {
+	public int eval(int total) {
+	    total -= arg[0].arg[0].eval();
+	    return(arg[0].eval(total));
+	}
+    }
+
+    static public class UnaryMinus extends $(ParentComponent).UnaryMinus {
+	public int eval() { return -arg[0].eval(); }
+    }
+
+    static public class Paren extends $(ParentComponent).Paren {
+	public int eval() { return arg[0].eval(); }
+    }
+
+    static public class Integ extends $(ParentComponent).Integ {
+	public int eval() { return Integer.parseInt(tok[0].tokenName());}
+    }
+
+
+    static public  abstract class AstNode extends $(ParentComponent).AstNode {
+	public void execute() { 
+	    int i;
+	    if (arg == null)
+		return;
+	    for (i=0; i<arg.length; i++)
+		if (arg[i]!=null)
+		    arg[i].execute();
+	}
+	public int eval() { return 0; }
+	public int eval(int total) { return total; }
+    }
+
+    static public  abstract class AstList extends $(ParentComponent).AstList {
+	public void execute() {
+	    Lang.AstNode l;
+	    if (arg[0]==null) return;
+	    for (l = arg[0]; l!=null; l = l.right) {
+		if (l.arg[0] == null) 
+		    continue;
+		l.arg[0].execute();
+	    }
+	}
+    }
+
+    static public  abstract class AstListNode extends $(ParentComponent).AstListNode {
+	public void execute() { 
+	    Util.fatalError("AstListNode.execute() method should not be called");
+        }
+    }
+
+    static public class AstOptNode extends $(ParentComponent).AstOptNode {
+	public void execute() {
+	    if (arg[0]!=null)
+		arg[0].execute(); 
+	}
+    }
+
+
+    static public class Main extends $(ParentComponent).Main {
+
+	private static void usage() {
+	    System.err.println("Usage: java $(LanguageName).Main [-f file]");
+	    System.err.println("       -f for input from file");
+	    System.exit(-10);
+	}
+   
+	public static void main(String args[]) {
+	    int     argc    = args.length;
+	    int                non_switch_args;
+	    int                i, j;
+	    char               ch;
+	    Lang.AstProperties props;
+	    BaliParser         myParser = null;
+	    Lang.Actions       root;
+	    PrintWriter        pw;
+	    String             line;     // one line from the user
+	    String             input;    // one $(LanguageName) command (terminated with line ".")
+
+	    ByteArrayInputStream is;     // is and dis are used together 
+	    DataInputStream      dis;    // to "feed" the scanner.
+	    BufferedReader       userInput = null;
+
+	    // Step 1: print the Marquee...
+ 
+	    System.out.println("$(LanguageName) Started...");
+
+	    // Step 2: a general routine to pick off command line options
+	    //         options are removed from command line and
+	    //         args array is adjusted accordingly.
+   
+	    non_switch_args = 0;
+	    for (i=0; i < argc; i++) {
+		if (args[i].charAt(0) == '-') {
+
+		    // switches of form -xxxxx (where xxx is a sequence of 1
+		    // or more characters
+
+		    for (j=1; j < args[i].length(); j++) {
+			if (args[i].charAt(j) == 'f') {
+			    try {
+				userInput =
+				    new BufferedReader(new FileReader(args[i+1]));
+			    }
+			    catch (Exception e) {
+				System.err.println("File " + args[i+1] + " not found:" 
++ e.getMessage());
+			    }
+			    i++;
+			    break;
+			}
+			else
+			    usage();
+		    }
+		}
+		else {
+		    // non-switch arg
+		    args[non_switch_args] = args[i];
+		    non_switch_args++;
+		}
+	    }
+   
+	    // Step 3: there must be at least one real argument, otherwise error
+         
+	    if (non_switch_args != 0)
+		usage();
+    
+	    // Step 4: Initialize output stream
+	    //         Standard initialization stuff that should be
+	    //         platform independent.
+
+	    props = new Lang.AstProperties();
+	    String lineSeparator =
+		System.getProperties().getProperty("line.separator");
+	    if (lineSeparator.compareTo("\n") != 0)
+		pw = new PrintWriter(new FixDosOutputStream(System.out));
+	    else
+		pw = new PrintWriter(System.out);
+	    props.setProperty("output", pw);
+    
+	    // Step 5: Get input and parse until an empty line is entered.
+	    //         An empty line is something with "." only.
+
+	    if (userInput == null)
+		userInput = new BufferedReader(new InputStreamReader(System.in));
+
+	    do {                  // $(LanguageName) statement loop
+		input = "";       // initialize input string
+
+		// Step 6.1: print prompt
+
+		System.out.print("\n$(LanguageName)> ");
+		System.out.flush();
+
+		// Step 5.2: collect in variable input over multiple line reads
+		do {
+		    line = "";
+		    try {
+			line = userInput.readLine();
+		    }
+		    catch (Exception e) {
+			System.exit(10);
+		    }
+   
+		    if (line.compareTo("") == 0)
+			continue; 
+		    if (line.compareTo(".") == 0)
+			break;
+		    input += "\n" + line;
+		    System.out.print(" > ");
+		    System.out.flush();
+		} while (true);    
+
+		if (input == "")
+		    break;
+
+		// Step 5.3: parse input string
+
+		is  = new ByteArrayInputStream(input.getBytes());
+		dis = new DataInputStream(is);
+		myParser = Lang.Parser.getInstance (dis) ;
+
+		try {
+		    root = (Lang.Actions) getStartRoot(myParser);
+		}
+		catch (Exception e) {
+		    System.out.println("Parsing Exception Thrown: " +
+				       e.getMessage());
+		    e.printStackTrace();
+		    continue;     // go to next $(LanguageName) statement
+		}
+    
+		// Step 5.4: Parse of input command succeeded!
+
+		root.execute();
+		pw.flush();
+
+	    } while (true);          // end $(LanguageName) statement loop
+	} //end main()
+    }  // end Main class
+}

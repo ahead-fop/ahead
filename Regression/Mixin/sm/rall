@@ -1,0 +1,55 @@
+layer BasicL;
+
+import  
+    java.util.*;
+import 
+    F.Libraries.laydown.*;
+import 
+    F.Libraries.log.Log;
+
+import 
+    Jakarta.util.Util;
+import 
+    java.io.*;
+
+SoUrCe RooT BasicL "C:!Java!FeatureOrientedProgramming!Regression!Mixin!sm!one.jak";
+
+
+
+    abstract State_machine BnFseMission$$BasicL extends FseMission { }
+
+SoUrCe  MissionWrffeArtyL "C:!Java!FeatureOrientedProgramming!Regression!Mixin!sm!two.jak";
+
+
+
+    abstract State_machine BnFseMission$$MissionWrffeArtyL extends BnFseMission$$BasicL
+    {
+        // Don't relay MFR to FIST.
+        /*REFINES EDGE no longer supported.  
+   Move predicate or body into method, and extend method.
+Refines Transition wrffeArtyEnding1 : wrffeArtyEnding -> stop
+            condition (message instanceof MfrMessage)
+            do { } */
+
+        // net effect of above is to override action of Transition to do nothing
+
+        public void wrffeArtyEnding1Action(Message message) { }
+
+    }
+
+SoUrCe  MissionWrffeMlrsL "C:!Java!FeatureOrientedProgramming!Regression!Mixin!sm!three.jak";
+
+
+
+    public State_machine BnFseMission extends BnFseMission$$MissionWrffeArtyL
+    {
+        // Ignore MFR and stop.
+        /*REFINES EDGE no longer supported.  
+   Move predicate or body into method, and extend method. 
+Refines Transition wrffeMlrsAccepted1 : wrffeMlrsAccepted -> stop
+            condition (message instanceof MfrMessage) do {} */
+
+        // added -- net effect is to have a no-op action
+
+        public void wrffeMlrsAccepted1( Event message ) {}
+    }

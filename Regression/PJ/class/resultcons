@@ -1,0 +1,17 @@
+layer cons;
+
+class top {
+   int y;
+
+   top() { topinit(0); }
+   top(int x) { topinit(x); }
+
+   top(int q, int x) { topinit(x+y); }
+
+   final void topinit$$cons( int x ) { y = x; }
+
+   void topinit(int x) {
+      topinit$$cons(x*2);
+   }
+
+}

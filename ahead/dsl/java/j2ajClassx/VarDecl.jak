@@ -1,0 +1,40 @@
+/** @author Roberto E. Lopez-Herrejon */
+
+layer j2ajClassx;
+
+public refines class VarDecl {
+
+    /** Reduce method */
+    public void reduce2java( AstProperties props ) {
+
+        /* This node can be reached under three cases:
+         Field declaration, local variable, and for statement.
+         Only in the case it is a field, it is remangled with
+         the class name.
+         Possible problem with nested classes?
+        */
+
+        // Adds space to separate types from names
+        // props.print(" ");
+
+        // Checks if we are dealing with an aspect
+        String isAspect = (String) props.getProperty("Aspect");
+
+        // If we are dealing with an aspect
+        if (isAspect!=null) {
+          String className = (String) props.getProperty("ClassName");
+          String isField = (String) props.getProperty("isField");
+
+        // If it is a field declaration then add the class name
+        if (isField!=null) { // It is a field declaration
+           props.print(" " + className + ".");
+        }
+
+        }
+
+        // Continues with the reduction
+        arg[0].reduce2java(props);   // VariableDeclaratorId
+        arg[1].reduce2java(props);   // [VarAssign]
+    }
+
+}

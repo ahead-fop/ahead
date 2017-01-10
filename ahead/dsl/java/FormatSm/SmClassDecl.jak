@@ -1,0 +1,21 @@
+layer FormatSm;
+
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public refines class SmClassDecl {
+    public void format( int position ) {
+        this.setComment( " " );
+        if ( ( arg[0].arg[0] == null ) && ( arg[1].arg[0] == null )
+             && ( arg[2].arg[0] == null ) && ( arg[3].arg[0] == null )
+             && ( arg[4].arg[0] == null ) && ( ( ( AstToken ) tok[1] ).white_space.trim().length() == 0 ) )
+            ( ( AstToken ) tok[1] ).white_space = "";
+        else {
+            position += CommentUtil.TabSpace;
+            super.format( position );
+            position -= CommentUtil.TabSpace;
+            CommentUtil.token_routins( ( AstToken ) tok[1], position );
+        }
+    }
+}

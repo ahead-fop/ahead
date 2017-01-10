@@ -1,0 +1,12 @@
+#!/bin/bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+FAILURES=0
+
+echo "******************* Default JakExtension test ***************"
+java jak2java.Main extension.spec \
+&& javac extension.java \
+&& java extension > junk \
+&& diff -b junk correct-extension \
+|| exit 1

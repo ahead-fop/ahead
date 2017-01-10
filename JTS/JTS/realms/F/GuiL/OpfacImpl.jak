@@ -1,0 +1,34 @@
+package GuiL;
+
+import 
+    F.Libraries.laydown.*;
+import 
+    java.util.*;
+
+
+
+    /** Modify opfacs to notify the GUI of relevant events to display. */
+    public extends class OpfacImpl
+    {
+        /** Notify GUI after an opfac is created. */
+        public void init(OpfacDataWrapper opfac, Network network)
+        {
+            Base(OpfacDataWrapper,Network).init(opfac, network);
+            guiClass.gui.stateChanged(new OpfacAdapter(this));
+        }
+
+        /** Notify GUI when an opfac is sent a message. */
+        public void deliver( Event message)
+        {
+            Base(Event).deliver(message);
+            if (message instanceof Message)
+                guiClass.gui.messageSent(new MessageAdapter(( Message)message));
+        }
+
+        /** Notify GUI after an opfac processes an event. */
+        protected void receive( Event event)
+        {
+            Base(Event).receive(event);
+            guiClass.gui.stateChanged(new OpfacAdapter(this));
+        }
+    }

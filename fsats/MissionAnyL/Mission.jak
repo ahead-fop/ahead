@@ -1,0 +1,13 @@
+layer MissionAnyL;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+/** Add state machine related primitives to mission. */
+public refines interface Mission {
+    /** Is this a duplicate of mission? */
+    boolean isDuplicate( Mission mission );
+}

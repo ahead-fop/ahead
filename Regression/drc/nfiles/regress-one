@@ -1,0 +1,15 @@
+#!/bin/bash
+
+echo -n "translating $* ... "
+
+(echo ; java drc.Main -a foo $*) 2>&1 | sed -f updates | tr -s '\n\r' '\n' > current
+(echo ; cat $1.correct) | sed -f updates  | tr -s '\n\r' '\n' > correct
+
+if diff -b correct current ; then
+#    rm -f correct current || :
+    echo succeeded
+else
+#    rm -f correct current || :
+    echo failed
+    exit 1
+fi

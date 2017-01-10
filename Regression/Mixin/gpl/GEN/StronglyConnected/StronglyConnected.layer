@@ -1,0 +1,126 @@
+// Graph Algorithms Product Line (GPL)
+// University of Texas at Austin
+// Department of Computer Sciences
+// Product-Line Architectures Research Group
+// Edge-Neighbor Representation
+// STRONGLYCC : strongly connected components layer
+// Last Update: May 15, 2001
+// Written by: Roberto E. Lopez-Herrejon (rlopez@cs.utexas.edu)
+
+layer StronglyConnected( GEN lower )
+realm GEN
+extends lower
+imports java.util.LinkedList,
+	java.util.Collections,
+        java.util.Comparator
+{
+   // Cormen's Textbook 23.5
+   // *************************************************************************	
+   static public class Graph extends lower.Graph {
+
+      public $TEqn.Graph StrongComponents() {
+		
+      FinishTimeWorkSpace FTWS = new FinishTimeWorkSpace();
+        
+      // 1. Computes the finishing times for each vertex
+      GraphSearch(FTWS);
+                  
+      // 2. Order in decreasing  & call DFS Transposal
+      Collections.sort(vertices, 
+	 new Comparator()
+	  {
+	    public int compare (Object o1, Object o2)
+	    { 
+		  $TEqn.Vertex v1 = ($TEqn.Vertex)o1;
+		  $TEqn.Vertex v2 = ($TEqn.Vertex)o2;
+
+		  if (v1.finishTime > v2.finishTime)
+			return -1;
+
+		   if (v1.finishTime == v2.finishTime)
+				return 0;
+		   return 1;	   		 
+		}
+	});
+  
+        // 3. Compute the transpose of G
+        // Done at layer transpose                     
+        $TEqn.Graph gaux = ComputeTranspose(($TEqn.Graph)this);
+            
+        // 4. Traverse the transpose G
+        WorkSpaceTranspose WST = new WorkSpaceTranspose();
+        gaux.GraphSearch(WST);
+ 
+        return gaux;
+        
+      } // of Strong Components
+      
+   } // of Graph
+
+   // *************************************************************************	
+   static public class Vertex extends lower.Vertex {
+      public int finishTime;
+	  public int strongComponentNumber;
+	  
+      public void display() {
+         System.out.print(" FinishTime -> " + finishTime + " SCCNo -> " 
+			+ strongComponentNumber);
+         super.display();
+      }
+   }
+
+   // *************************************************************************	
+   public static class FinishTimeWorkSpace extends $TEqn.WorkSpace {
+      int FinishCounter;
+ 
+      public FinishTimeWorkSpace() {
+         FinishTimeWorkSpaceConstructor();
+      }
+
+      public void FinishTimeWorkSpaceConstructor() {
+         FinishCounter = 1;
+      }
+
+      public void preVisitAction($TEqn.Vertex v)
+      {
+	if (v.visited!=true) FinishCounter++;
+      }
+
+    public void postVisitAction  ( $TEqn.Vertex v ) {
+        v.finishTime = FinishCounter++;
+    } // of postVisit
+    
+   } // of FinishTimeWorkSpace
+   
+   
+   // DFS Transpose traversal
+   // *************************************************************************	
+   public static class WorkSpaceTranspose extends $TEqn.WorkSpace 
+   {
+	// Strongly Connected Component Counter
+	int SCCCounter;  
+		
+	public WorkSpaceTranspose() {
+           WorkSpaceTransposeConstructor();
+        }
+
+        public void WorkSpaceTransposeConstructor() {
+	   SCCCounter = 0;
+	}
+		
+	public void preVisitAction($TEqn.Vertex v)
+	{
+	  if (v.visited!=true) 
+	  { 
+	   v.strongComponentNumber = SCCCounter;
+	  };
+	}
+
+	public void nextRegionAction( $TEqn.Vertex v ) 
+	{ 
+	  SCCCounter++;
+	}
+		
+   } // of WorkSpaceTranspose
+      
+} // of layer

@@ -1,0 +1,7 @@
+layer Foo.Bar;
+
+class MyClass extends AstNode { 
+   int one$$PJ$path; 
+   int foobar$$PJ$path;
+   int one;
+}

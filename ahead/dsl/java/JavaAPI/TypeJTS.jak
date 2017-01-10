@@ -1,0 +1,125 @@
+layer JavaAPI;
+
+import java.io.*;
+import java.util.*;
+
+ // of ProgramElementDocJTS
+
+// _________________________________________________________________
+
+ /** JEDI Project
+ * TypeJTS.java
+ * University of Texas at Austin
+ * Department of Computer Sciences
+ * Product-line Architecture Research Group
+ * @author Roberto E. Lopez-Herrejon
+ * @version 1.1
+ * @since November 19, 2002
+* @layer<JavaAPI>
+*/
+
+public class TypeJTS {
+
+    // ********************************************************************
+    // ********************************************************************
+    // ** Interface methods that have to be implemented
+
+    /** Return unqualified name of type excluding any dimension information.
+     * For example, a two dimensional array of String returns 'String'.
+     * @layer<JavaAPI>
+     */
+    public String typeName() {
+        return typeName;
+    }
+
+    /** Return qualified name of type excluding any dimension information. 
+     * For example, a two dimensional array of String returns ???
+     * 'java.lang.String'.
+     * @layer<JavaAPI>
+     */
+    public String qualifiedTypeName() {
+        return qualifiedTypeName;
+    }
+
+    /** Return the type's dimension information, as a string. 
+     * For example, a two dimensional array of String returns '[][]' ???
+     * @layer<JavaAPI>
+     */
+    public String dimension() {
+        return dimension;
+    }
+
+    /** Returns a string representation of the type. 
+     * Return name of type including any dimension information. 
+     * For example, a two dimensional array of String returns String[][].
+     * @return name of type including any dimension information.
+     * @overrides toString in class java.lang.Object
+     * @layer<JavaAPI>
+     */
+    public String toString() {
+        return typeName+dimension;
+    }
+
+    /** Return this type as a class. Array dimensions are ignored.
+     * @return a ClassDoc if the type is a Class. 
+     * Return null if it is a primitive type. ???
+     * @deprecated -> remove once tested
+     * @layer<JavaAPI>
+     */
+    // public ClassDoc asClassDoc() { return null; }
+
+    /**************** End of interface implementation *****************/
+    
+    /**************** Implementation members **************************/
+    
+    // *** Field Summary
+    /** The type name.
+     */
+    public String typeName;
+
+    /** Package name and type name.
+     * @layer<JavaAPI>
+     */
+    public String qualifiedTypeName;
+
+    /** String with the dimension [], [][] of arrays.
+     * @layer<JavaAPI>
+     */ 
+    public String dimension = "";
+
+    // *** Constructors
+    /** Additional constructor.
+     * @layer<JavaAPI>
+     */
+    public TypeJTS( String _typeName, String _qualifiedTypeName )
+    {
+        typeName = _typeName;
+        qualifiedTypeName = _qualifiedTypeName;
+    }
+
+    // *** Method Summary
+
+    /** Sets the typeName variable.         
+     * @layer<JavaAPI>
+     */
+    public void setType( String _typeName ) {
+        typeName = _typeName;
+    }
+
+    /** Sets the qualifiedTypeName variable.    
+     * @layer<JavaAPI>
+     */
+    public void setQualifiedTypeName( String _qualifiedTypeName )
+    {
+        qualifiedTypeName = _qualifiedTypeName;
+    }
+
+    /** Sets the dimension of the type.     
+     * @layer<JavaAPI>
+     */
+    public void setDimension( String _dimension )
+    {
+        dimension = _dimension;
+    }
+
+}

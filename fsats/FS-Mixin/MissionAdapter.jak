@@ -1,0 +1,41 @@
+layer FS;
+
+import laydown.*;
+
+import java.util.*;
+
+SoUrCe RooT GuiL "C:!Java!FeatureOrientedProgramming!fsats!GuiL!MissionAdapter.jak";
+
+class MissionAdapter
+        implements fsats.guiIf.Mission {
+    private String id;
+    private String state;
+    private String stringValue;
+    private fsats.guiIf.Location targetLocation;
+
+    public MissionAdapter( Mission mission )
+        {
+        id = mission.getId();
+        state = mission.getState();
+        targetLocation = 
+                new LocationAdapter( mission.getTarget().getLocation() );
+        stringValue = mission.toString();
+    }
+        
+    public String getId() {
+        return id;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public fsats.guiIf.Location getTargetLocation() 
+        {
+        return targetLocation;
+    }
+        
+    public String toString() {
+        return stringValue;
+    }
+}

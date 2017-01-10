@@ -1,0 +1,15 @@
+package MortarL;
+
+
+
+    public class MortarProxy extends WeaponProxy 
+    { 
+        public int typePrecedence() { return 4; }
+
+        public boolean canShoot( Mission mission)
+        {
+            return 
+                !mission.getTarget().getType().equals("ARMOR")
+                    && super.canShoot(mission);
+        }
+    }

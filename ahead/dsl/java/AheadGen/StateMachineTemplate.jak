@@ -1,0 +1,50 @@
+layer AheadGen;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.util.*;
+import java.io.*;
+
+// of ClassGenerator
+
+public refines class StateMachineTemplate {
+
+    /** Fall back method for the extensions to the document layout 
+     * @layer<AheadGen>
+     */
+    public void extendsStateDocument() {
+
+        // Refines
+        RefinesTemplate rt = new RefinesTemplate();
+        rt.setName( "Refines" );
+        rt.setTemplateFile( "SourceTemplates/Refines.vm" );
+
+        // Overrides
+        OverridesTemplate ot = new OverridesTemplate();
+        ot.setName( "Overrides" );
+        ot.setTemplateFile( "SourceTemplates/Overrides.vm" );
+
+        // Select the place where to put it
+        // State[2] -> Statebody[3] -> Modifiers
+
+        // Gets the statebody refences, 2nd element of state
+        DocumentDescriptor statebody = getLayoutElement( 2 );
+        
+        // Gets the class_relationships body, 3th of statebody
+        DocumentDescriptor staterels = statebody.getLayoutElement( 3 );
+
+        // Gets the modifiers reference
+        DocumentDescriptor modifiers = staterels.getLayoutElement( 0 );
+
+        // To the class_relationships 0th element refines
+        modifiers.addLayoutElement( rt );
+
+        // To the class_relationships 1th element overrides
+        modifiers.addLayoutElement( ot );
+
+        // Daisy chains the calls
+        Super().extendsStateDocument();
+
+    }
+
+}

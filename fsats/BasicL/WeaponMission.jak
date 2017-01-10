@@ -1,0 +1,10 @@
+layer BasicL;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+/** Generic Weapon OPFAC. **/
+public State_machine WeaponMission extends MissionImpl {}

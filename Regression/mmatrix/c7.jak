@@ -1,0 +1,7 @@
+// tests final declarations of constants
+
+class foo {
+   final int foo = 44, bar = 4;
+	final String biff = "biff", baff = "baff";
+	final String arr[] = { "a", "b", "c" };
+}

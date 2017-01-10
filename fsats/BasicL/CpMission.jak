@@ -1,0 +1,10 @@
+layer BasicL;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+/** Generic Field Artillery Element OPFAC. **/
+public State_machine CpMission extends MissionImpl {}

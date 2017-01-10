@@ -1,0 +1,59 @@
+//                              -*- Mode: Java -*- 
+// ImportPakSupport.jak --- 
+// Author          : Bernie Lofaso
+// Created On      : Wed May  6 11:00:37 1998
+// Last Modified By: 
+// Last Modified On: Mon Jul 05 11:26:32 1999
+// Update Count    : 10
+// Status          : Under Development
+// 
+// $Locker:  $
+// $Log: ImportPakSupport.jak,v $
+// Revision 1.3  2002-08-18 20:19:17  dsb
+// The following layers were updated as a result of revising the
+// ast layer so that it generates "syntactically" correct parse
+// trees -- or something much, much closer to syntactically correct parse
+// trees.  These changes are required for bootstrapping.
+//
+// Revision 1.2  2002/02/22 18:19:41  sarvela
+// Removed carriage returns.
+//
+// Revision 1.1.1.1  1999/07/12 16:01:02  sarvela
+// Imported original v3.0beta4 sources from Webpage
+//
+// Revision 1.1.1.1  1999/07/12 16:01:02  lofaso
+// new composition component
+//
+// Revision 1.1.1.1  1999/02/18 16:15:40  lofaso
+// Snapshot 2-18-99
+//
+// Revision 1.1.1.1  1998/06/22 18:01:50  lofaso
+// Layer definition
+//
+// 
+
+package layersLib;
+
+import JakBasic.Lang;
+import java.util.Enumeration;
+import java.util.Vector;
+
+public class ImportPakSupport {
+    public static Lang.AST_Imports getImportList(Lang.ImportPak ip,
+						 Lang.AstProperties props) {
+	Lang.AST_Imports impStmt;
+
+	// Use an AST constructor to create an import statement list
+	// but the ImportStatement will not have the optional DotTimes
+	// set properly.
+	impStmt = Lang.AST_Imports.MakeAST( "import " + ip.arg[0] + ";");
+	// imp{ import $id(ip.arg[0]); }imp;
+
+	// If we have a DotTimes, then we must edit it into the AST.
+	if (ip.arg[1].arg[0] == null)
+	    return(impStmt);
+
+	impStmt.arg[0].arg[0].arg[1].Replace(ip.arg[1].arg[0]);
+	return(impStmt);
+    }
+}

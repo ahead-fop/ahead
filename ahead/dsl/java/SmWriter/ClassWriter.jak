@@ -1,0 +1,31 @@
+layer SmWriter;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.io.*;
+import java.util.*;
+
+// Should be removed later
+/**
+*com.sun.javadoc.*,
+*        sun.tools.java.*,
+*        com.sun.tools.javadoc.*,
+*
+* @layer<SmWriter>
+*/
+
+public refines class ClassWriter {
+    public static void GenerateClassExtensions( ClassDocJTS _class, String outDir )
+        throws Exception
+    {
+    //  // Calls the writer of a state for all the inner states
+    //  LinkedList innerstates = _class.states();
+    //  for(int i=0; i< innerstates.size(); i++)
+     //    $TEqn.StateWriter.GenerateState(($TEqn.StateMachineDocJTS)
+    //                     innerstates.get(i), 
+    //                     outDir);
+        //
+    //  // Passes the composition down the layers
+    //  lower.ClassWriter.GenerateClassExtensions(_class,outDir);
+    }
+}

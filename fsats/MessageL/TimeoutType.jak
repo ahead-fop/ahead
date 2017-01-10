@@ -1,0 +1,51 @@
+layer MessageL;
+
+import fsats.util.DataContainer;
+
+import laydown.*;
+
+import java.util.*;
+
+public class TimeoutType
+        extends EventType
+        implements TimeoutTypeInterface {
+    private int index;
+
+    private static Vector values = new Vector();
+
+    public int toInt()
+        {
+        return index;
+    }
+
+    protected TimeoutType( String name )
+        {
+            Super( String )( name );
+        index = values.size();
+        values.add( this );
+    }
+
+    public static EventType fromString( String name )
+        {
+        TimeoutType result = null;
+
+        for ( int i=0; i<values.size() && result==null; ++i )
+            if ( values.elementAt( i ).toString().equals( name ) )
+                result = ( TimeoutType )values.elementAt( i );
+
+        return result;
+    }
+
+    public static TimeoutType fromInt( int index )
+        {
+        return 0<=index && index<values.size() ? ( TimeoutType )values.elementAt( index ) : null;
+    }
+
+    public static final TimeoutType flightTime = new TimeoutType( "flightTime" );
+
+    public static final TimeoutType loadTime = new TimeoutType( "loadTime" );
+
+    public static final TimeoutType completeTime = new TimeoutType( "completeTime" );
+
+    public static final TimeoutType watchTime = new TimeoutType( "watchTime" );
+}

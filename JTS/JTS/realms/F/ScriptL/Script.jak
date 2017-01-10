@@ -1,0 +1,121 @@
+package ScriptL;
+
+import  
+    fsats.util.DataContainer;
+import 
+    java.io.*;
+import 
+    F.Libraries.log.Log;
+
+
+    /**
+     * The Script class creates script objects which read from 
+     * script files and send script messages to a designated opfac.
+     */
+    public class Script 
+        extends Thread 
+    {
+    
+	protected String _filename;
+	protected Opfac  _opfac;
+
+        public String toString() { return _filename+"->"+_opfac.getName(); }
+
+	public Script( String filename, Opfac opfac ) 
+        {
+          ScriptConstructor(filename, opfac);
+	}
+
+	public void ScriptConstructor( String filename, Opfac opfac) {
+	    _filename = filename;
+	    _opfac = opfac;
+	    Log.log("Create script: "+this);
+      }
+   
+	/** Thread entry point **/
+	public void run() 
+        {
+	    // Debugging - Announce script object is alive
+	    Log.log("Reading script: "+this);
+   
+            try
+            {
+                PushbackReader input = 
+                    new PushbackReader(new FileReader(new File(_filename)));
+                DataContainer event=DataContainer.read(input);
+                while (!event.isNull())
+                {
+                    processEvent(event);
+                    event=DataContainer.read(input);
+                }
+                input.close();
+            }
+            catch (Exception e)
+            {
+                Log.error("Exception reading script: "+this);
+            }
+	}
+
+        protected void processEvent(DataContainer event)
+        {
+            if (event.getLabel().equals("delay"))
+            {
+                int delay = getDelay(event);
+                try { sleep(delay*1000); } catch (Exception e) {}
+            }
+            else if (event.getLabel().equals("TargetEvent"))
+            {
+                DataContainer mission=event.getField("mission");
+                String id = mission.getField("id").getValue("");
+                MissionData data = getMissionData(mission); Event message = new TargetEvent(id, data);
+                _opfac.deliver(message);
+            }
+            else if (event.getLabel().equals("InitiateMessage"))
+            {
+                DataContainer mission=event.getField("mission");
+                String id = mission.getField("id").getValue("");
+                MissionData data = getMissionData(mission); Message message = new InitiateMessage(id, data);
+                message.setSource(_opfac.getName());
+                message.setDestination(_opfac.getName());
+                _opfac.deliver(message);
+            }
+        }
+
+        protected int getDelay(DataContainer event)
+        {
+            return getInteger(event.getField("delay"));
+        }
+
+        protected MissionData getMissionData(DataContainer mission)
+        {
+            return 
+                new MissionDataImpl( MissionType.fromString(mission.getField("type").getValue("")),
+                     getTarget(mission.getField("target")));
+        }
+
+        protected Target getTarget(DataContainer target)
+        {
+            return
+	        new TargetImpl(
+                    target.getField("type").getValue(""),
+                    getLocation(target.getField("location")));
+        }
+
+        protected Location getLocation(DataContainer location)
+        {
+            return 
+                new LocationLatLong(
+                    getFloat(location.getField("latitude")),
+                    getFloat(location.getField("longitude")));
+        }
+
+        protected int getInteger(DataContainer number)
+        {
+            return Integer.parseInt(number.getValue("0"));
+        }
+
+        protected float getFloat(DataContainer number)
+        {
+            return Float.parseFloat(number.getValue("0.0"));
+        }
+    }

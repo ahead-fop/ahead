@@ -1,0 +1,3 @@
+jampack: Iext0moderror.java:4: Error new method foo() in refinement is overriding method in base
+jampack: Iext0moderror.java:5: Error override method barrr() in refinement does not override method in base
+jampack: Summary 2 errors

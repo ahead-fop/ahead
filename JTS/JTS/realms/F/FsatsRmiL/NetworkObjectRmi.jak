@@ -1,0 +1,14 @@
+package FsatsRmiL;
+
+import  java.rmi.*;
+
+
+   
+   /** The actual interface exported by remote NetObject objects **/
+   public interface NetworkObjectRmi extends java.rmi.Remote
+   {
+       public boolean register( String name, Opfac opfac ) 
+	 throws RemoteException;
+      public boolean send( Message message ) throws RemoteException;
+      public boolean unregister( String name ) throws RemoteException;
+   }

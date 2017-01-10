@@ -1,0 +1,25 @@
+layer SmHarvest;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+/** UnmodifiedClassDeclaration
+  * This class is added to adjust the names of the inner states that
+  * can be present in a class.
+ * @layer<SmHarvest>
+ */
+    
+public refines class UmodClassDecl {
+    public void execute() 
+    {
+        Super().execute();
+        LinkedList states = _harvest_class.states();
+        for( int i=0; i< states.size(); i++ ) {
+            StateMachineDocJTS st = 
+                            ( StateMachineDocJTS ) states.get( i );
+            st.setName( _harvest_class.name() + "." + st.name() );
+        }
+    }
+}

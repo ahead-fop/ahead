@@ -1,0 +1,22 @@
+C D c9 
+Line range (-1, -1)
+ endMods 
+ beginNest
+        M D foo() void 
+        Line range (8, 8)
+         endMods 
+        C D nested 
+        Line range (4, 7)
+        final  endMods 
+         beginNest
+                M D foo() void 
+                Line range (5, 5)
+                 endMods 
+                F D v int 
+                Line range (6, 6)
+                final  endMods 
+                 beginKeys
+                finalValue :(   = 4 ):
+                 endKeys
+         endNest
+ endNest

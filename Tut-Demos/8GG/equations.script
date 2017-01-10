@@ -1,0 +1,3 @@
+cd Equations
+ls *.equation | sed -e s/.equation//
+cd ..

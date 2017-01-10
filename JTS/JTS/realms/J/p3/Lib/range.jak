@@ -1,0 +1,764 @@
+/* 
+   Test/debug program is main() procedure - which is commented
+   out below
+
+   range objects are used in query optimization; they
+   are used to analyze a query w.r.t. a particular attribute
+   Ex: query Q = A > 4 && B == 5 && A <= 7
+   range for attribute A : (4,7]
+   range for attribute B : [5,5]
+
+   The actual format of referencing attributes is via accessor
+   functions (i.e., for attribute A use A()).  Since this predicate
+   will be evaluated by a cursor, range methods will convert A() into
+   obj.A().  Also, depending on the type, standard relations (e.g., ==,
+   !=, etc.) will be converted into their Java equivalents:
+
+   Thus: age() > 35 && name() == "Don" && area() > x
+   (where age is of type int, name is of type String, area is of type foo)
+   will be converted to:
+
+   obj.age() > 35 && obj.name().compareTo("Don") && obj.area().gtr(x)
+
+
+   Another point: we assume now that it is "ATTRIBUTE REL VALUE" format
+   as opposed to "VALUE REL ATTRIBUTE".  So perhaps we may need to normalize
+   predicates later on.  Predicates that are uninterpreted don't fit
+   the above format.  A() == 5 is interpretable (A() == 5) isn't (because
+   it is surrounded by quotes, and 5 == A() isn't (because attribute must
+   be specified first).
+
+   The public interface of the range class is:
+
+   public AST_Exp  LowerBound;
+   public AST_Exp  UpperBound;
+   public boolean  IncludeLower;
+   public boolean  IncludeUpper;
+   public String   Key;
+
+   // representation (a,+infinity] represented as 
+   // LowerBound == a;
+   // UpperBound == null;  (null always means infinity)
+   // IncludeLower == false;
+   // IncludeUpper == true;
+
+   ResetRange()                 - sets range to [ -infinity, +infinity ]
+
+   DetermineRange( predicate )  - sets range for particular predicate given
+                                  the key of the range
+
+   print()                      - displays (stdout) the contents of range
+
+   Translate( preface, tp, predicate )   
+                                - returns predicate that has been translated
+                                  from the P3 standardized format into
+                                  one that can be consumed by java
+                                  if A is int:      A() > 5   =>  A() > 5
+                                  if A is String:   A() > "x" =>  A().compareTo("x") > 0
+                                  if A is ?         A() > y   =>  A().gtr(y)
+
+                                  tp is an object of TopParams that defines
+                                  the attributes of the element class,
+                                  preface is the AST_QualifiedName preface
+                                  to attributes.  (e.g., "obj" yielding
+                                  obj.A().gtr(y))
+
+   KeyPredicate( tp, predicate ) - returns the normalized subpredicate of predicate
+                                   that references the key field.  The 
+                                   returned predicate has NOT been translated.
+
+   Residual( tp, predicate )     - returns the normalized subpredicate of predicate
+                                   that references nonkey fields. The
+                                   returned predicate has NOT been 
+                                   translated.
+
+   LowerPredicate( positive, tp ) - returns the normalized predicate that defines
+                                   the lower bound (or its complement -  set
+                                   positive == false)
+
+   UpperPredicate( positive, tp ) - returns the normalized predicate that defines 
+                                   the lower bound (or its complement -  set
+                                   positive == false)
+
+*/
+
+package p3Lib;
+
+import Jakarta.util.Util;
+import JakBasic.Lang;
+
+public class range {
+
+
+   static final int INTTYPE  = 100;
+   static final int STRTYPE  = 101;
+   static final int BOOLTYPE = 102;
+   static final int ANYTYPE  = 103;
+   static final int UNDEFINED = 500;
+
+   static final int LT =  10;
+   static final int LE =  11;
+   static final int EQ =  12;
+   static final int NE = -12;
+   static final int GT = -11;
+   static final int GE = -10;
+
+   public static final int SCAN_QUERY       = 200;  // [-infinity,+infinity]
+   public static final int UPPER_SCAN_QUERY = 201;  // [a,+infinity]
+   public static final int LOWER_SCAN_QUERY = 202;  // [-infinity,b]
+   public static final int RANGE_QUERY      = 203;  // [a,b]
+   public static final int POINT_QUERY      = 204;  // [a,a]
+
+   public Lang.AST_Exp  LowerBound;
+   public Lang.AST_Exp  UpperBound;
+   public boolean  IncludeLower;
+   public boolean  IncludeUpper;
+   public String   Key;
+
+   // representation (a,+infinity] represented as 
+   // LowerBound == a;
+   // UpperBound == null;  (null always means infinity)
+   // IncludeLower == false;
+   // IncludeUpper == true;
+
+   public range( String key ) {
+
+      //  set range to [ -infinity, +infinity ]
+
+      ResetRange();
+      Key = key;
+   }
+
+   public void ResetRange() {
+      LowerBound = null;
+      UpperBound = null;
+      IncludeLower = true;
+      IncludeUpper = true;
+   }
+
+   public void DetermineRange( Lang.AST_Exp predicate ) {
+      Lang.AstCursor c = new Lang.AstCursor();
+      Lang.AstNode x;
+
+//       for (c.First(predicate); c.More(); c.PlusPlus()) {
+//          if (c.node instanceof Lang.EqualityExpression) {
+//             EvaluatePred(c.node);
+//             c.Sibling();
+//             continue;
+//          }
+//          if (c.node instanceof Lang.CondAndExpr) continue;
+//          ResetRange();
+//          return;
+//       }
+      for (c.First(predicate); c.More(); c.PlusPlus()) {
+         if ((c.node instanceof Lang.CondAndExpr) ||
+	     (c.node instanceof Lang.MoreCondAndExpr))
+	     continue;
+	 if (c.node instanceof Lang.CAEBod)
+	     x = c.node.arg[0];
+	 else
+	     x = c.node;
+
+         if (x instanceof Lang.EqualityExpression) {
+            EvaluatePred(x);
+            c.Sibling();
+            continue;
+         }
+         ResetRange();
+         return;
+      }
+   }
+
+   // NOTE: we don't optimize here 
+   //       query : A > 4 && A > x
+   //       we will just remember the upperbound x (the last bound seen)
+   //       we could do better... Same for lowerbound
+
+   void SetLower(Lang.AstNode x, boolean include) {
+      IncludeLower = include;
+      LowerBound = (Lang.AST_Exp) x;
+   }
+
+   void SetUpper(Lang.AstNode x, boolean include) {
+      IncludeUpper = include;
+      UpperBound = (Lang.AST_Exp) x;
+   }
+
+   void EvaluatePred(Lang.AstNode x) {
+      String fieldname;
+      Lang.AST_QualifiedName fnast;
+  
+      // Step 1: see if we can recognize the field - if it matches
+      //         our key field, proceed to look closer
+      //         match on "key()" for zeroth argument - return if no match
+
+//       if (   x.arg[0] instanceof Lang.MthCall 
+//           && x.arg[0].arg[0] instanceof Lang.QNList
+//           && x.arg[0].arg[1] instanceof Lang.AstOptNode 
+//           && x.arg[0].arg[1].arg[0] == null) {
+//          fnast = (Lang.AST_QualifiedName) x.arg[0].arg[0].arg[0];
+
+      // x is an instance of EqualityExpression
+      if (x.arg[0] instanceof Lang.PrimExpr
+          && x.arg[0].arg[0] instanceof Lang.PPQualName) {
+	  Lang.AstNode mcall = x.arg[0].arg[1].arg[0].arg[0];
+	  if (mcall instanceof Lang.MthCall
+	      && mcall.arg[0].arg[0].arg[0] == null) {
+
+	      fnast = (Lang.AST_QualifiedName) x.arg[0].arg[0].arg[0];
+	      fieldname = ((Lang.AST_QualifiedName) fnast).GetName();
+	      if (fieldname.compareTo(Key) != 0)
+		  return;
+	  }
+      }
+      else  return;
+
+      // Step 2: try to recognize the relation and remember its' bounds
+
+//       if (x instanceof Lang.LtExpr) {
+//          SetUpper(x.arg[1], false);
+//          return;
+//       }
+//       if (x instanceof Lang.GtExpr) {
+//          SetLower(x.arg[1], false);
+//          return;
+//       }
+//       if (x instanceof Lang.LeExpr) {
+//          SetUpper(x.arg[1], true);
+//          return;
+//       }
+//       if (x instanceof Lang.GeExpr) {
+//          SetLower(x.arg[1], true);
+//          return;
+//       }
+//       if (x instanceof Lang.EquExpr) {
+//          SetUpper(x.arg[1],true);
+//          SetLower(x.arg[1],true);
+//          return;
+//       }
+//       if (x instanceof Lang.NeqExpr) {
+//          // do nothing with this predicate
+//          return;
+//       }
+      if (x instanceof Lang.RelExpr) {
+	  // x.arg[1].arg[0].arg[0] is REBod
+	  Lang.AstNode rebod = x.arg[1].arg[0].arg[0];
+	  if (rebod.arg[0] instanceof Lang.LtOp) {
+	      SetUpper(rebod.arg[1], false);
+	      return;
+	  }
+	  if (rebod.arg[0] instanceof Lang.GtOp) {
+	      SetLower(rebod.arg[1], false);
+	      return;
+	  }
+	  if (rebod.arg[0] instanceof Lang.LeOp) {
+	      SetUpper(rebod.arg[1], true);
+	      return;
+	  }
+	  if (rebod.arg[0] instanceof Lang.GeOp) {
+	      SetLower(rebod.arg[1], true);
+	      return;
+	  }
+      }
+      else if (x instanceof Lang.EqExpr) {
+	  // x.arg[1].arg[0].arg[0] is EEBodyC
+	  Lang.AstNode eebodc = x.arg[1].arg[0].arg[0];
+	  if (eebodc.arg[0] instanceof Lang.Eq) {
+	      SetUpper(eebodc.arg[1], true);
+	      SetLower(eebodc.arg[1], true);
+	  }
+
+	  // Do nothing if operator is Neq
+
+	  return;
+      }
+   }
+
+   public void print() {
+      System.out.print("\nRange ");
+      if (IncludeLower) System.out.print("[ "); 
+      else System.out.print("( ");
+      if (LowerBound == null)System.out.print("-infinity");
+      else LowerBound.print();
+      System.out.print(" , ");
+      if (UpperBound == null)System.out.print("+infinity");
+      else UpperBound.print();
+      if (IncludeUpper) System.out.println(" ]");
+      else System.out.println(" )");
+   }
+
+   // Translate replaces "normalized" relations <, <=, etc.
+   // with their type-specific relations lss(), leq(), etc.
+   // this requires that we know the type of each attribute.
+   // This version of Translate is a hack - ultimately we
+   // need to traverse the *entire* predicate and do the
+   // relation rewriting.  What we're doing here is pretty
+   // shallow stuff - we only translate "obj.field() ? x"
+   // into "obj.field().?(x)" - and we probably don't get all of them
+   // if they are nested in uninterpreted expressions
+
+   public Lang.AST_Exp Translate(Lang.AST_QualifiedName preface, TopParams tp, Lang.AST_Exp predicate ) {
+      Lang.AstCursor c = new Lang.AstCursor();
+      Lang.AST_Exp   result, xresult;
+
+      // Step 1: if predicate is null, then return null
+ 
+      if (predicate == null) 
+         return null;
+
+      // Step 2: else translate predicate clause by clause
+
+      result = (Lang.AST_Exp) predicate.clone();
+      for (c.First(result); c.More(); c.PlusPlus()) {
+         if (c.node instanceof Lang.EqualityExpression) {
+            RewritePred(preface, tp, c);
+         }
+      }
+      return (Lang.AST_Exp) c.Root();
+   }
+
+   void RewritePred(Lang.AST_QualifiedName preface, TopParams tp, Lang.AstCursor c) {
+      String fieldname;
+      Lang.AST_QualifiedName fnameAst;
+      Lang.AST_Exp arg, y;
+      int    i, fieldtype, reltype;
+      Lang.AstNode x = c.node;
+
+      // Step 1: see if we can recognize the field - if it matches
+      //         our key field, proceed to look closer
+      //         match on "key()" for zeroth argument - return if no match
+
+//       if (   x.arg[0] instanceof Lang.MthCall 
+//           && x.arg[0].arg[0] instanceof Lang.QNList
+//           && x.arg[0].arg[1] instanceof Lang.AstOptNode 
+//           && x.arg[0].arg[1].arg[0] == null) {
+//          fnameAst = (Lang.AST_QualifiedName) x.arg[0].arg[0].arg[0];
+
+      // x is an instance of EqualityExpression
+      i = 0;		// simply keeps whiney compiler happy
+      fnameAst = null;	// ditto
+      if (x.arg[0] instanceof Lang.PrimExpr
+          && x.arg[0].arg[0] instanceof Lang.PPQualName) {
+	  Lang.AstNode mcall = x.arg[0].arg[1].arg[0].arg[0];
+	  if (mcall instanceof Lang.MthCall
+	      && mcall.arg[0].arg[0].arg[0] == null) {
+
+	      fnameAst = (Lang.AST_QualifiedName) x.arg[0].arg[0].arg[0];
+	      fieldname = ((Lang.AST_QualifiedName) fnameAst).GetName();
+	      for (i=0; i < tp.NFields; i++) {
+		  if (fieldname.compareTo(tp.FieldName[i]) == 0)
+		      break;
+	      }
+	      if (i == tp.NFields) return;
+	  }
+      }
+      else  return;
+
+      // Step 2: determine type of field
+
+      if ( tp.FieldType[i].compareTo("byte")    == 0 ||
+           tp.FieldType[i].compareTo("char")    == 0 ||
+           tp.FieldType[i].compareTo("double")  == 0 ||
+           tp.FieldType[i].compareTo("float")   == 0 ||
+           tp.FieldType[i].compareTo("int")     == 0 ||
+           tp.FieldType[i].compareTo("long")    == 0 ||
+           tp.FieldType[i].compareTo("short")   == 0 ) fieldtype = INTTYPE;
+      else 
+      if (tp.FieldType[i].compareTo("boolean") == 0) fieldtype = BOOLTYPE;
+      else
+      if (tp.FieldType[i].compareTo("java.lang.String") == 0) fieldtype = STRTYPE;
+      else fieldtype = ANYTYPE;
+       
+      // Step 3: try to recognize the relation  - if you don't recognize it
+      //         don't rewrite.
+
+//       if (x instanceof Lang.LtExpr) reltype = LT;
+//       else
+//       if (x instanceof Lang.LeExpr) reltype = LE;
+//       else
+//       if (x instanceof Lang.EquExpr) reltype = EQ;
+//       else
+//       if (x instanceof Lang.GeExpr) reltype = GE;
+//       else
+//       if (x instanceof Lang.GtExpr) reltype = GT;
+//       else
+//       if (x instanceof Lang.NeqExpr) reltype = NE;
+//       else
+//          return;
+      if (x instanceof Lang.RelExpr) {
+	  // x.arg[1].arg[0].arg[0] is REBod
+	  Lang.AstNode rebod = x.arg[1].arg[0].arg[0];
+	  if (rebod.arg[0] instanceof Lang.LtOp)
+	      reltype = LT;
+	  else if (rebod.arg[0] instanceof Lang.GtOp)
+	      reltype = GT;
+	  else if (rebod.arg[0] instanceof Lang.LeOp)
+	      reltype = LE;
+	  else if (rebod.arg[0] instanceof Lang.GeOp)
+	      reltype = GE;
+	  else
+	      return;
+      }
+      else if (x instanceof Lang.EqExpr) {
+	  // x.arg[1].arg[0].arg[0] is EEBodyC
+	  Lang.AstNode eebod = x.arg[1].arg[0].arg[0];
+	  if (eebod.arg[0] instanceof Lang.Eq)
+	      reltype = EQ;
+	  else if (eebod.arg[0] instanceof Lang.Neq)
+	      reltype = NE;
+	  else
+	      return;
+      }
+      else
+	  return;
+
+      // Step 4: create the replacement AST and replace
+      //         don't search replaced tree
+
+      arg = (Lang.AST_Exp) x.arg[1].arg[0].arg[0].arg[1].clone();
+      y = MakeReplacement( preface, fieldtype, reltype, fnameAst, arg );
+      c.Replace(y);
+      c.Sibling();
+   }
+
+   Lang.AST_Exp MakeReplacement( Lang.AST_QualifiedName preface, int WhichType, 
+            int WhichRelation, Lang.AST_QualifiedName n, Lang.AST_Exp arg ) {
+      Lang.AST_QualifiedName np;
+      Lang.AST_Exp           argclone;
+
+      // Step 1: Initialize variables
+
+      if (preface == null)
+         np = (Lang.AST_QualifiedName) n.clone();
+      else
+         //np = id{ $id((Lang.AST_QualifiedName) preface.clone()).$id((Lang.AST_QualifiedName) n.clone()) }id;
+	 np = Lang.AST_QualifiedName.Make( preface + "." + n );
+      argclone = (Lang.AST_Exp) arg.clone();
+ 
+
+
+      switch( WhichType ) {
+      case INTTYPE:  switch (WhichRelation) {
+           case LT:  return exp{ $id(np)() <  $exp(argclone) }exp;
+           case LE:  return exp{ $id(np)() <= $exp(argclone) }exp;
+           case EQ:  return exp{ $id(np)() == $exp(argclone) }exp;
+           case GE:  return exp{ $id(np)() >= $exp(argclone) }exp;
+           case GT:  return exp{ $id(np)() >  $exp(argclone) }exp;
+           case NE:  return exp{ $id(np)() != $exp(argclone) }exp;
+           default:  System.err.println("Error: unrecognized int relation");
+                     return null;
+                     }
+      case BOOLTYPE:  switch (WhichRelation) {
+           case EQ:  return exp{ $id(np)() == $exp(argclone) }exp;
+           case NE:  return exp{ $id(np)() != $exp(argclone) }exp;
+           default:  System.err.println("Error: unrecognized boolean relation");
+                     return null;
+                     }
+      case STRTYPE:  switch (WhichRelation) {
+           case LT:  return exp{ $id(np)().compareTo($exp(argclone)) <0 }exp;
+           case LE:  return exp{ $id(np)().compareTo($exp(argclone))<=0 }exp;
+           case EQ:  return exp{ $id(np)().compareTo($exp(argclone))==0 }exp;
+           case GE:  return exp{ $id(np)().compareTo($exp(argclone))>=0 }exp;
+           case GT:  return exp{ $id(np)().compareTo($exp(argclone)) >0 }exp;
+           case NE:  return exp{ $id(np)().compareTo($exp(argclone))!=0 }exp;
+           default:  System.err.println("Error: unrecognized String relation");
+                     return null;
+                     }
+      default:       switch (WhichRelation) {
+           case LT:  return exp{ $id(np)().lss($exp(argclone)) }exp;           
+           case LE:  return exp{ $id(np)().leq($exp(argclone)) }exp;           
+           case EQ:  return exp{ $id(np)().equ($exp(argclone)) }exp;           
+           case GE:  return exp{ $id(np)().geq($exp(argclone)) }exp;           
+           case GT:  return exp{ $id(np)().gtr($exp(argclone)) }exp;           
+           case NE:  return exp{ $id(np)().neq($exp(argclone)) }exp;           
+           default:  System.err.println("Error: unrecognized comparison relation");
+                     return null;
+                     }
+       }
+   }
+
+
+   // KeyPredicate() strips off all clauses that are not related to the
+   // key field and returns the resulting normalized predicate
+
+   public Lang.AST_Exp KeyPredicate( TopParams tp, Lang.AST_Exp predicate ) {
+      Lang.AstCursor c = new Lang.AstCursor();
+      Lang.AstNode   x;
+      Lang.AST_QualifiedName fnast;
+      String    fieldname;
+      Lang.AST_Exp   result;
+
+      result = null;
+      for (c.First(predicate); c.More(); c.PlusPlus()) {
+         x = c.node;
+         if (x instanceof Lang.EqualityExpression) {
+
+//             if (   x.arg[0] instanceof Lang.MthCall 
+//                 && x.arg[0].arg[0] instanceof Lang.QNList
+//                 && x.arg[0].arg[1] instanceof Lang.AstOptNode 
+//                 && x.arg[0].arg[1].arg[0] == null) {
+//                fnast = (Lang.AST_QualifiedName) x.arg[0].arg[0].arg[0];
+	     if (x.arg[0] instanceof Lang.PrimExpr
+		 && x.arg[0].arg[0] instanceof Lang.PPQualName) {
+		 Lang.AstNode mcall = x.arg[0].arg[1].arg[0].arg[0];
+		 if (mcall instanceof Lang.MthCall
+		     && mcall.arg[0].arg[0].arg[0] == null) {
+
+		     fnast = (Lang.AST_QualifiedName) x.arg[0].arg[0].arg[0];
+		     fieldname = ((Lang.AST_QualifiedName) fnast).GetName();
+		     if (fieldname.compareTo(Key) == 0) {
+			 if (result == null)
+			     result = (Lang.AST_Exp) x.clone();
+			 else
+			     result = exp{ $exp(result) && $exp((Lang.AST_Exp) x.clone()) }exp;
+		     }
+		     c.Sibling();
+		     continue;
+		 }
+	     }
+         } /*end-if*/
+      } /*end for*/
+      return result;
+   }
+
+   // Residual strips off a predicate all clauses dealing with keys
+   // and returns the resulting normalized predicate.
+   // Note: In the case that there is no residual (i.e., the predicate
+   // is TRUE, a null is returned.  Strictly speaking, this isn't quite
+   // correct, but it does offer the possibility of easier optimization
+   // for avoiding the generation of unnecessary code.
+
+   public Lang.AST_Exp Residual( TopParams tp, Lang.AST_Exp predicate ) {
+      Lang.AstCursor c = new Lang.AstCursor();
+      Lang.AstNode   x;
+      Lang.AST_QualifiedName fnast;
+      String    fieldname;
+      Lang.AST_Exp   result;
+      boolean   add_to_result;
+
+      result = null;
+      for (c.First(predicate); c.More(); c.PlusPlus()) {
+
+         // Step 1: Skip over && operators
+
+         if (c.node instanceof Lang.CondAndExpr)
+            continue;
+	 if (c.node instanceof Lang.MoreCondAndExpr)
+	     c.PlusPlus();
+
+         //  Step 2: OK, not an && operator.  What we need here
+         //  is to determine if the clause is a P3-processable
+         //  clause.  If not, add it to the result immediately.
+         //  If it is a P3-processable clause, then we add it to
+         //  the result if it is not a *key* clause.  Thus, we
+         //  add each clause of the input predicate to the result 
+         //  if it isn't a key clause
+
+	 if (c.node instanceof Lang.CAEBod)
+	     x = c.node.arg[0];
+	 else
+	     x = c.node;
+         add_to_result = true;
+
+//          if (x instanceof Lang.EquExpr || x instanceof Lang.LtExpr || x instanceof Lang.GtExpr 
+//             || x instanceof Lang.LeExpr || x instanceof Lang.GeExpr) {
+	 if ((x instanceof Lang.EqExpr) || (x instanceof Lang.RelExpr)) {
+//             if (   x.arg[0] instanceof Lang.MthCall 
+//                 && x.arg[0].arg[0] instanceof Lang.QNList
+//                 && x.arg[0].arg[1] instanceof Lang.AstOptNode 
+//                 && x.arg[0].arg[1].arg[0] == null ) {
+//                fnast = (Lang.AST_QualifiedName) x.arg[0].arg[0].arg[0];
+
+	     if (x.arg[0] instanceof Lang.PrimExpr
+		 && x.arg[0].arg[0] instanceof Lang.PPQualName) {
+		 Lang.AstNode mcall = x.arg[0].arg[1].arg[0].arg[0];
+		 if (mcall instanceof Lang.MthCall
+		     && mcall.arg[0].arg[0].arg[0] == null) {
+
+		     fnast = (Lang.AST_QualifiedName) x.arg[0].arg[0].arg[0];
+		     fieldname = ((Lang.AST_QualifiedName) fnast).GetName();
+		     if (fieldname.compareTo(Key) == 0) 
+			 add_to_result = false;
+		 } /* end-if */
+            } /* end-if */
+         }    /* end-if */
+
+         // Step 3:  Add clause to the result if necessary
+
+         if (add_to_result) {
+            if (result == null) 
+               result = (Lang.AST_Exp) x.clone();
+            else
+               result = exp{ $exp(result) && $exp((Lang.AST_Exp) x.clone()) }exp;
+         }
+
+         // Step 4: skip over the rest of the clause
+
+         c.Sibling();
+
+      } /* end-for */
+
+      // Step 5: return result, null if there is an empty residual
+
+      return result;
+   }
+
+   public Lang.AST_Exp LowerPredicate( boolean positive ) {
+      int relation;
+
+      // Step 1: if the lowerbound is -infinity (regardless of
+      //         inclusion, return null
+
+      if (LowerBound == null)
+         return null;
+
+      // Step 2: LowerBound isn't -infinity.  Determine relational
+      //         predicate
+
+      relation = GT;
+      if (IncludeLower)
+         relation = GE;
+      if (!positive) 
+         relation = -relation;
+
+      // Step 3: return predicate
+
+      return ConvertToPredicate( relation, LowerBound );
+   }
+
+   public Lang.AST_Exp UpperPredicate( boolean positive ) {
+      int relation;
+
+      // Step 1: if the upperbound is -infinity (regardless of
+      //         inclusion, return null
+
+      if (UpperBound == null) 
+         return null;
+
+      // Step 2: UpperBound isn't -infinity.  Determine relational
+      //         predicate.
+
+      relation = LT;
+      if (IncludeUpper) {
+         relation = LE;
+         if (UpperBound == LowerBound)
+            relation = EQ;
+      }
+      if (!positive) 
+         relation = -relation;
+
+      // Step 3: return predicate
+
+      return ConvertToPredicate( relation, UpperBound );
+   }
+
+
+   Lang.AST_Exp ConvertToPredicate( int relation, Lang.AST_Exp bound ) {
+      Lang.AST_QualifiedName keyast = Lang.AST_QualifiedName.Make(Key);
+
+      switch (relation) { 
+         case LT: return exp{ $id(keyast)() <  $exp(bound) }exp;
+         case LE: return exp{ $id(keyast)() <= $exp(bound) }exp;
+         case EQ: return exp{ $id(keyast)() == $exp(bound) }exp;
+         case NE: return exp{ $id(keyast)() != $exp(bound) }exp;
+         case GT: return exp{ $id(keyast)() >  $exp(bound) }exp;
+         case GE: return exp{ $id(keyast)() >= $exp(bound) }exp;
+         default:
+	     Util.fatalError("Unrecognizable relation" + relation);
+	     return null;
+      }
+   }
+
+   public int QueryType() {
+      if (LowerBound == null) {
+         if (UpperBound == null)
+            return SCAN_QUERY;
+         return LOWER_SCAN_QUERY;
+      }
+      if (UpperBound == null)
+         return UPPER_SCAN_QUERY;
+      if (LowerBound == UpperBound)
+         return POINT_QUERY;
+      return RANGE_QUERY;
+   }
+
+
+   static public void main(String[] args) {
+      Lang.AST_Exp x,y;
+      Lang.AstCursor c = new Lang.AstCursor();
+      String key;
+      TopParams tp;
+
+      if (args == null || args.length == 0) key = "age";
+      else key = args[0];
+
+      range  r = new range(key);
+
+      x = exp{ 
+               name() ==  "xx" 
+            && age() < 34 
+            && age() >= 20 
+            && (name() == "i") 
+            && age < 66 
+            && dept() == "YY"
+            && kls() == obj.dept() 
+}exp;
+
+      System.out.print("Key is " + key + " Predicate is");
+      x.print();
+      System.out.println("");
+
+      // code to determine range
+
+      r.DetermineRange(x);
+      System.out.println("Range is");
+      r.print();
+      System.out.println("");
+
+      tp = new TopParams( 4, "emp", true );
+      tp.AddField("empno","int");
+      tp.AddField("age","int");
+      tp.AddField("dept","java.lang.String");
+      tp.AddField("name","java.lang.String");
+
+      System.out.print("Residual Predicate: ");
+      y = r.Residual(tp,x);
+      y.print();
+      System.out.println("");
+
+      System.out.print("Key Predicate: ");
+      y = r.KeyPredicate(tp,x);
+      if (y != null)
+	  y.print();
+      System.out.println("");
+
+      // code to translate
+       y = r.Translate(Lang.AST_QualifiedName.Make("obj"),tp, x);
+      System.out.println("Translated complete predicate");
+      y.print();
+      System.out.println("");
+
+      System.out.println("Range (again):");
+      r.print();
+      System.out.println("");
+      System.out.print("\nlower positive range predicate: ");
+      y = r.LowerPredicate( true);
+      if (y != null)
+	  y.print();
+      System.out.print("\nlower negative range predicate: ");
+      y = r.LowerPredicate( false);
+      if (y != null)
+	  y.print();
+      System.out.print("\nupper positive range predicate: ");
+      y = r.UpperPredicate( true);
+      if (y != null)
+	  y.print();
+      System.out.print("\nupper negative range predicate: ");
+      y = r.UpperPredicate( false);
+      if (y != null)
+	  y.print();
+      System.out.println("");
+   }
+
+
+}

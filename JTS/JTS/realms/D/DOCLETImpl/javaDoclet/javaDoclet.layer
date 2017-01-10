@@ -1,0 +1,660 @@
+/* 
+University of Texas at Austin
+Computer Sciences Department
+JTSDOC project
+Implemented by : Roberto E. Lopez-Herrejon
+Doclet Implementation composition.
+Last modified : July 29, 2001
+*/
+
+layer javaDoclet()
+realm DOCLETImpl
+imports com.sun.javadoc.*,
+        sun.tools.java.*,
+        com.sun.tools.javadoc.*,
+        jtsdoc.*,   
+        java.util.*,
+        java.io.*
+{
+
+ static public class DocletJTS {
+
+ /** Strings that contains the output directory to write the files.
+ */
+ public static String OutputDirectory;
+ 
+ public static boolean start(RootDoc root) {
+  String tagName = null; // readOptions(root.options());
+  try {
+    writeContents(root.classes(), tagName);
+  } catch(IOException e)
+  {
+    System.out.println("Error at start");
+  }
+  return true;
+ }
+
+ 
+ // This is the part I have to work on for the AST Classes part probably ???
+ public static void writeContents(ClassDoc[] classes, String tagName) throws IOException
+ {
+	Writer outFile;
+	
+   System.out.println("Number of classes/interfaces to print in WCJAva" + classes.length);
+  
+   for (int i=0; i < classes.length; i++) 
+   {	  
+    System.out.println("Java -> Producing class/interface for " + classes[i].name()); 
+
+	// opens the corresponding file
+	outFile = createOutFile(classes[i].name());
+		
+	// Inserts the header and 
+	writeHTML("<HTML> <HEAD></HEAD> \n", outFile);
+    writeHTML("<TITLE> Class Hierarchy </TITLE> \n" , outFile);
+    writeHTML("<H1> Layer Layout </H1>", outFile);
+    writeHTML("<BODY> \n", outFile);
+	  writeHTML("<UL> \n", outFile);
+	  /// stateDoclet sd = new stateDoclet();
+      // sd.writeAClass(classes[i], outFile);
+	  
+	  // Here goes the class hierarchy layout
+	  writeAClass(classes[i]);
+	  
+	  writeHTML("</UL> \n", outFile);  // for the class
+    writeHTML("</BODY> </HTML> \n", outFile);
+
+	// closes the output file
+	closeOutFile(outFile);
+	
+    } // for i all the classes		
+   
+  } // writeContents
+ 
+ 
+ /*
+ // WriteContentsAClass
+  public static void writeContentsAClass(ClassDoc Aclass) 
+	  throws IOException
+ {
+   System.out.println("writeContentsAClass " + Aclass.name());
+  
+  } // writeContents
+ */
+ 
+ // Write a simple class, and calls itself recursively in nested interfaces 
+ // and classes
+ // If using the javadoc ClassDocImpl, if using JTS DOCLETJTS.Lang.ClassDocJTS
+ public static void writeAClass(ClassDoc Aclass) 
+	 throws IOException
+ {
+    System.out.println("Producing Documentation for class/interface " + Aclass.name()); 
+ 
+ 	Writer outFile = createOutFile((Aclass.name()).trim());
+		
+	// Inserts the header stuff
+	writeClassHeader(Aclass,outFile);
+	
+	// Inserts the body setup of the class
+	writeClassBodySetup(Aclass, outFile);
+	 
+    // Inserts the class name
+ 	writeClassName(Aclass, outFile);
+	
+	// Insterts the class relationships & modifiers
+	writeClassRelationships(Aclass, outFile);
+	
+	// writes out the fields
+	writeFields(Aclass.fields(), outFile);
+	
+	// writes out the constructors
+	writeConstructors(Aclass.constructors(), outFile);
+	
+	// writes out the methods
+	writeMethods(Aclass.methods(), outFile);
+		  
+	// writes out the Innerclasses
+	writeInnerclasses(Aclass, outFile);
+
+	// *** appends stuff
+	$TEqn.DocletJTS.appendContents((DOCLETJTS.Lang.ClassDocJTS)Aclass, outFile);
+	
+	// **** footer stuff
+    writeClassFooter(Aclass, outFile);
+		
+	// closes the output file
+	closeOutFile(outFile);
+	
+ } // of writeAClass
+
+ // writers the appends Contents of a class
+ public static void appendContents(DOCLETJTS.Lang.ClassDocJTS Aclass,
+								   Writer outputFile) throws IOException 
+ {
+ }
+ 
+ 
+  // ********************************************************
+ // ********************************************************
+ // ********************************************************
+ // Methods that are defined for a Class Document specification
+ public static void writeClassHeader(ClassDoc Aclass, Writer outFile)
+	 throws IOException
+ {							  
+ 	writeHTML("<HTML> <HEAD></HEAD> \n", outFile);
+    writeHTML("<TITLE> Class "+ Aclass.name() + "  </TITLE> \n", outFile);
+	writeHTML("<HR> ", outFile);
+ }
+
+ public static void writeClassFooter(ClassDoc Aclass, Writer outFile)
+	 throws IOException
+ {
+    writeHTML("</BODY> </HTML> \n", outFile);
+ }
+ 
+ public static void writeClassBodySetup(ClassDoc Aclass, Writer outFile)
+	 throws IOException
+ {
+     writeHTML("<BODY BGCOLOR=\"white\"> \n", outFile);
+ }
+ 
+ 
+ public static void writeClassName(ClassDoc Aclass, Writer outFile)
+	 throws IOException
+ {
+	if (Aclass.isClass())
+	{ 
+      writeHTML("<H2> <BR> Class " + Aclass.name()+ " </H2>", outFile); 
+	}
+	
+	if (Aclass.isInterface())
+	{ writeHTML("<H2> <BR> Interface  " + Aclass.name() + "</H2>", outFile); }
+ 
+ }
+ 
+ public static void writeClassRelationships(ClassDoc Aclass, Writer outFile)
+	 throws IOException
+ {
+	 writeHTML("<DL> <DT>" + Aclass.modifiers() + "<B> " + Aclass.name()+ "</B>",
+			   outFile);
+	 if (Aclass.superclass() != null) 
+		 writeHTML("<DT> extends " + (Aclass.superclass()).name(), outFile);
+	 ClassDoc[] theInterfaces = (ClassDoc[])Aclass.interfaces();
+	 
+	 if (theInterfaces != null)
+	 { 
+	   if (theInterfaces.length > 0) 
+		   writeHTML("<DT>implements ", outFile);
+	   for(int i=0; i< theInterfaces.length; i++)
+	   {
+		 if (i < theInterfaces.length - 1)   
+		 { writeHTML(theInterfaces[i].name() + ",", outFile); }
+		 else
+			writeHTML(theInterfaces[i].name() + "", outFile); 
+	   }
+	 };
+	 writeHTML("</DL>", outFile);
+	 writeHTML("<HR>", outFile);
+ }
+ 
+ 
+ /** Writes out the constructors.
+  */
+ public static void writeConstructors(ConstructorDoc[] constructors , Writer outputFile) 
+	 throws IOException
+ {
+	// if constructors is null or there are not constructors dont do anything
+	 if (constructors == null) return;
+	 if (constructors.length == 0) return;
+		 
+	// Constructs the fancy constructor summary table, the header row
+	writeHTML("<!-- ======== CONSTRUCTOR SUMMARY ======== --> \n", outputFile);
+	writeHTML("<A NAME=\"constructor_summary\"><!-- --></A> \n",outputFile);
+	writeHTML("<TABLE BORDER=\"1\" CELLPADDING=\"3\" CELLSPACING=\"0\" WIDTH=\"100%\"> \n",
+			  outputFile);
+	writeHTML("<TR BGCOLOR=\"#CCCCFF\" CLASS=\"TableHeadingColor\"> \n",outputFile);
+	writeHTML(" <TD COLSPAN=2><FONT SIZE=\"+2\"> \n",outputFile);
+	writeHTML(" <B>Constructor Summary</B></FONT></TD> \n",outputFile);
+	writeHTML(" </TR> \n",outputFile);	
+	
+	// constructors
+
+         // for all the constructors of a class
+         for (int l=0; l< constructors.length; l++) 
+		 {
+		   Parameter[] parameters = constructors[l].parameters();
+		   String theSignature = " ( "; 
+           // shows all the arguments of the method
+	       if (parameters != null) 
+		   {
+            for (int k=0; k< parameters.length; k++)
+            { 
+              //writeHTML(" " + parameters[k].typeName() + " " + parameters[k].name()
+			  //			, outputFile);
+			  theSignature = theSignature + parameters[k].typeName() + " " 
+							 + parameters[k].name();
+			  if (k < parameters.length - 1) 
+			   theSignature = theSignature + ", ";
+            } // for k all the parameters
+		   }
+		    theSignature = theSignature + " )";
+            // writeHTML(" ) </LI> \n", outputFile);
+ 
+		   // Adding exceptions	
+		   String theExceptions = "";
+		   
+		   ClassDoc[] thrownExceptions = constructors[l].thrownExceptions();
+	       if (thrownExceptions != null)
+	       { 
+			if (thrownExceptions.length > 0) theExceptions = "throws ";   
+		    for (int m=0; m < thrownExceptions.length; m++)
+			{
+				theExceptions = theExceptions + thrownExceptions[m].name() + " ";
+				if (thrownExceptions.length != thrownExceptions.length)
+					theExceptions = theExceptions + ", ";
+			} // for all the thrown exceptions
+			
+	       } // if there are thrown exceptions
+	
+		   // writes out the description of a method
+		   writeHTML("<TR BGCOLOR=\"white\" CLASS=\"TableRowColor\"> \n",
+					 outputFile);
+		   writeHTML("<TD><CODE><B>  \n",outputFile);
+           writeHTML("<A>" + constructors[l].name() + "\n", outputFile);
+		   writeHTML("</A> \n",outputFile);
+		   writeHTML("</B>" + theSignature + theExceptions + " </CODE> \n", 
+					 outputFile);
+		   writeHTML("</TD>  \n", outputFile);
+		   writeHTML("<BR> \n", outputFile);
+		   writeHTML("</TR>  \n", outputFile);
+			   
+          } // for l the contents of the methods in the class
+	     		  
+	
+	 writeHTML("</TABLE> \n", outputFile);
+	 writeHTML("<BR> \n",outputFile);
+ }
+ 
+ /** Writes the fields.
+  */
+ public static void writeFields(FieldDoc[] fields, Writer outputFile) throws IOException
+ {	 
+	// if constructors is null or there are not constructors dont do anything
+	 if (fields == null) return;
+	 if (fields.length == 0) return;
+		 
+	// Constructs the fancy field summary table, the header row
+	writeHTML("<!-- ======== FIELD SUMMARY ======== --> \n", outputFile);
+	writeHTML("<A NAME=\"field_summary\"><!-- --></A> \n",outputFile);
+	writeHTML("<TABLE BORDER=\"1\" CELLPADDING=\"3\" CELLSPACING=\"0\" WIDTH=\"100%\"> \n",
+			  outputFile);
+	writeHTML("<TR BGCOLOR=\"#CCCCFF\" CLASS=\"TableHeadingColor\"> \n",outputFile);
+	writeHTML(" <TD COLSPAN=2><FONT SIZE=\"+2\"> \n",outputFile);
+	writeHTML(" <B>Field Summary</B></FONT></TD> \n",outputFile);
+	writeHTML(" </TR> \n",outputFile);		 
+	 
+    for (int l=0; l < fields.length ; l++)
+	{	    
+		writeHTML("<TR BGCOLOR=\"white\" CLASS=\"TableRowColor\"> \n",outputFile);
+		writeHTML("<TD ALIGN=\"right\" VALIGN=\"top\" WIDTH=\"1%\"><FONT SIZE=\"-1\"> \n",
+				  outputFile);
+		writeHTML("<CODE>" + fields[l].modifiers() + " " + (fields[l].type()).typeName() 
+				  + "</CODE> \n", outputFile);
+		writeHTML("</FONT></TD> \n",outputFile);
+		writeHTML("<TD><CODE><B>" + fields[l].name()+ "</B></CODE> \n",outputFile);
+		writeHTML(" \n",outputFile);
+		writeHTML("<BR> \n",outputFile); // here goes the comment
+		writeHTML(" </TD> \n",outputFile);
+		writeHTML("</TR> \n",outputFile);
+	}
+
+    writeHTML("</TABLE> \n", outputFile);
+	writeHTML("<BR> \n",outputFile);
+ }
+ 
+ /** Writes the interfaces. 
+  */
+ public static void writeInterfaces(ClassDoc[] interfaces, Writer outputFile) 
+	 throws IOException
+ { 
+	writeHTML("<LI> Interfaces (in implements): </LI>", outputFile);
+	if (interfaces != null)
+	{
+	  writeHTML("<UL> \n", outputFile);
+	  for (int l=0; l< interfaces.length ; l++)
+		  writeHTML("<LI> Interface : " + interfaces[l].name() + " </LI>"
+					, outputFile);
+	  writeHTML("</UL> \n", outputFile);		
+	} // if there are interfaces		 
+	
+ }
+ 
+ /** Writes the methods.
+  */
+ public static void writeMethods(MethodDoc[] methods, Writer outputFile) 
+	 throws IOException
+ {
+	// if there are no methods return
+	if (methods == null) return;
+	if (methods.length == 0) return;
+
+	writeHTML("<!-- ========== METHOD SUMMARY =========== --> \n", outputFile);
+	writeHTML("<A NAME=\"method_summary\"><!-- --></A> \n", outputFile);
+	writeHTML("<TABLE BORDER=\"1\" CELLPADDING=\"3\" CELLSPACING=\"0\" WIDTH=\"100%\"> \n",
+			  outputFile);
+	writeHTML("<TR BGCOLOR=\"#CCCCFF\" CLASS=\"TableHeadingColor\"> \n", outputFile);
+	writeHTML("<TD COLSPAN=2><FONT SIZE=\"+2\"> \n", outputFile);
+	writeHTML("<B>Method Summary</B></FONT></TD> \n", outputFile);
+	writeHTML("</TR> \n", outputFile);
+	
+	// for all the methods 
+    for (int l=0; l< methods.length; l++) 
+	{
+	  writeHTML("<TR BGCOLOR=\"white\" CLASS=\"TableRowColor\"> \n", outputFile);
+	  writeHTML("<TD ALIGN=\"right\" VALIGN=\"top\" WIDTH=\"1%\"><FONT SIZE=\"-1\"> \n", 
+				  outputFile);
+	  writeHTML("<CODE>" + methods[l].modifiers() + " " + (methods[l].returnType()).typeName() 
+				  + "</CODE></FONT></TD> \n", outputFile);
+
+      Parameter[] parameters = methods[l].parameters();
+	  String theSignature = " ( ";
+	   
+      // shows all the arguments of the method
+	   if (parameters != null) 
+	   {
+         for (int k=0; k< parameters.length; k++)
+         {
+			  theSignature = theSignature + parameters[k].typeName() + " " 
+							 + parameters[k].name();
+			  if (k < parameters.length - 1) 
+			   theSignature = theSignature + ", ";			 
+          } // for k all the parameters
+	   } // if there are parameters
+	   
+	   theSignature = theSignature + " ) ";
+   
+	   ClassDoc[] thrownExceptions = methods[l].thrownExceptions();
+	   String theExceptions = ""; 	
+       if (thrownExceptions != null)
+	   { 
+		 if (thrownExceptions.length > 0) theExceptions = "throws ";   
+		 for (int m=0; m < thrownExceptions.length; m++)
+		 {
+			theExceptions = theExceptions + thrownExceptions[m].name() + " ";
+			if (thrownExceptions.length != thrownExceptions.length)
+				theExceptions = theExceptions + ", ";
+		} // for all the thrown exceptions
+			
+	   } // if there are thrown exceptions
+
+	  writeHTML("<TD><CODE><B>"+ methods[l].name() + theSignature + " " + theExceptions 
+				+ " \n", outputFile);
+	  writeHTML("</B></CODE> \n", outputFile);
+	  writeHTML("<BR> \n", outputFile); // &nbsp;&nbsp; here goes the message
+	  writeHTML("</TD> \n", outputFile);
+	  writeHTML("</TR> \n", outputFile);
+	  
+	
+    } // for l the contents of the methods in the class
+		 
+	writeHTML(" </TABLE> \n", outputFile);
+	writeHTML("<BR> \n", outputFile);
+ }
+ 
+/** Writes the inner classes and creates their corresponding file.
+*/ 
+public static void writeInnerclasses(ClassDoc Aclass, Writer outputFile)
+	throws IOException
+{	
+     ClassDoc[] innerclasses = Aclass.innerClasses();
+    if (innerclasses == null) return;
+	if (innerclasses.length == 0) return;
+	
+ 	writeHTML("<!-- ======== INNER CLASS SUMMARY ======== --> \n", outputFile);
+	writeHTML("<A NAME=\"inner_class_summary\"><!-- --></A> \n", outputFile);
+	writeHTML("<TABLE BORDER=\"1\" CELLPADDING=\"3\" CELLSPACING=\"0\" WIDTH=\"100%\"> \n",
+			  outputFile);
+	writeHTML("<TR BGCOLOR=\"#CCCCFF\" CLASS=\"TableHeadingColor\"> \n", outputFile);
+	writeHTML("<TD COLSPAN=2><FONT SIZE=\"+2\"> \n", outputFile);
+	writeHTML("<B>Inner Class Summary</B></FONT></TD> \n", outputFile);
+	writeHTML("</TR> \n", outputFile);
+	
+    // innerclasses detail 
+    for (int i=0; i< innerclasses.length ; i++)
+    {	  
+	  writeHTML("<TR BGCOLOR=\"white\" CLASS=\"TableRowColor\"> \n", outputFile);
+	  writeHTML("<TD ALIGN=\"right\" VALIGN=\"top\" WIDTH=\"1%\"> \n",
+				outputFile);
+	  writeHTML("<FONT SIZE=\"-1\"> \n", outputFile);
+	  writeHTML("<CODE>" + innerclasses[i].modifiers() + "   "+ "</CODE> \n", 
+				outputFile);
+	  writeHTML("</FONT> \n", outputFile);
+	  writeHTML("</TD> \n", outputFile);
+	  writeHTML("<TD> \n", outputFile);
+	  writeHTML("<CODE> \n", outputFile);
+	  writeHTML("<B> \n", outputFile);
+	  writeHTML("<A HREF=\"" + innerclasses[i].name()+".html" + "\"> " + "\n", 
+				outputFile);
+	  writeHTML(innerclasses[i].name() + "\n", outputFile);
+	  writeHTML("</A> \n", outputFile);
+	  writeHTML(" \n", outputFile);
+	  writeHTML("</B> \n", outputFile);
+	  writeHTML("</CODE> \n", outputFile);
+	  writeHTML("<BR> \n", outputFile);  // here goes the message 
+	  writeHTML("</TD> \n", outputFile);
+	  writeHTML("</TR> \n", outputFile);
+	  
+	  // class the function recursively to create the file for the innerclass
+	  writeAClass(innerclasses[i]);
+    }
+
+	writeHTML("</TR> \n", outputFile);
+	writeHTML("</TABLE> \n", outputFile);
+	writeHTML("<BR> \n", outputFile);
+}
+ 
+
+ 
+ // ********************************************************
+ // ************************* Tag management  **************
+ // ********************************************************
+ 
+ /** Valid tag operations.
+  */
+ private static String readOptions(String[][] options) {
+  String tagName = null;
+  for (int i=0; i<options.length ; i++)
+  {
+    String [] opt = options[i];
+    if (opt[0].equals("-tag")) { 
+        tagName= opt[1];
+    }
+  } // for i
+  return tagName;
+ 
+ } // of readOptions
+
+ /** Lengths of the tags ??
+  */
+ public static int optionLength(String option) {
+  if (option.equals("-tag")) { 
+    return 2;
+   }
+  return 0;
+ }
+
+ public static boolean validOptions(String options[][], DocErrorReporter reporter) {
+  boolean foundTagOption = false;
+  for (int i=0; i < options.length; i++) {
+   String[] opt = options[i];
+   if (opt[0].equals("-tag")) {
+      if (foundTagOption) {
+        reporter.printError("Only one -tag option allowed.");
+        return false;
+      } else {
+        foundTagOption = true;
+      }     
+   }   
+  } // for i
+
+  if (!foundTagOption) {
+    reporter.printError("Usage: javadoc -tag mytag -doclet listTags ...");
+   }
+  return foundTagOption;
+ }// of validOptions
+
+ 
+ // ********************************************************
+ // ********************************************************
+ // ********************************************************
+ // Low level file handling
+ 
+ /** Creates the output file.
+  */
+ public static Writer createOutFile(String FileName) throws IOException
+ {
+     Writer outFile = null;       
+	 System.out.println("Create file " + OutputDirectory + FileName + ".html");
+      // Creates the prog.layer file 
+     try {
+       outFile = new FileWriter(OutputDirectory + FileName+".html");
+     } catch (IOException e)
+     {
+        System.out.println("Error while creating the output file");
+	    System.exit(1);       
+     } 
+	 
+	 return outFile;
+  }  // of writeProgLayer
+
+ /** Closes the output file.
+  */
+ public static void closeOutFile(Writer outFile) throws IOException
+ {
+    try {
+     outFile.close();
+    } catch(IOException e) 
+    {
+       System.out.println("Error while closing the output file");
+	System.exit(1);    
+    }
+ } // of closeOutFile
+ 
+
+ /** Writes a string to the output file.
+  */
+ public static void writeHTML(String theLine, Writer theFile) throws IOException
+ {
+    try {
+     theFile.write(theLine);
+    } catch(IOException e) 
+    {
+       System.out.println("Error while writing the output file");
+	System.exit(1);    
+    }
+ }
+
+/** Writes out the content of a program object. Created in the AST_Class rule
+ * of the grammar.
+ */
+ public static void writeAProgram(DOCLETJTS.Lang.ProgramDocJTS Aprogram,
+                                  String _OutputDirectory)
+	throws IOException
+ {
+     OutputDirectory = _OutputDirectory;
+     
+	 Writer outFile = createOutFile((Aprogram.name()).trim());
+	 
+	// Inserts the header stuff
+	writeProgramHeader(Aprogram,outFile);
+	
+	// Inserts the body setup of the program
+	writeProgramBodySetup(Aprogram, outFile);
+	 
+    // Inserts the program name
+ 	writeProgramName(Aprogram, outFile);
+	
+	// Insterts the program relationships & modifiers
+	writeProgramRelationships(Aprogram, outFile);
+			  
+    // writes out the classes
+	writeProgramClasses(Aprogram, outFile);
+
+	// *** appends stuff
+	$TEqn.DocletJTS.appendsProgramContents((DOCLETJTS.Lang.ProgramDocJTS)Aprogram, 
+										  outFile);
+	
+	// **** footer stuff
+    writeProgramFooter(Aprogram, outFile);
+		
+	// closes the output file
+	closeOutFile(outFile); 
+ }
+ 
+ public static void writeProgramHeader(DOCLETJTS.Lang.ProgramDocJTS Aprogram, Writer outFile)
+	 throws IOException
+ {							  
+ 	writeHTML("<HTML> <HEAD></HEAD> \n", outFile);
+    writeHTML("<TITLE> Program "+ Aprogram.name() + "  </TITLE> \n", outFile);
+	writeHTML("<HR> ", outFile);
+ }
+
+ public static void writeProgramFooter(DOCLETJTS.Lang.ProgramDocJTS Aprogram, Writer outFile)
+	 throws IOException
+ {
+    writeHTML("</BODY> </HTML> \n", outFile);
+ }
+ 
+ public static void writeProgramBodySetup(DOCLETJTS.Lang.ProgramDocJTS Aprogram, Writer outFile)
+	 throws IOException
+ {
+     writeHTML("<BODY BGCOLOR=\"white\"> \n", outFile);
+ }
+ 
+ 
+ public static void writeProgramName(DOCLETJTS.Lang.ProgramDocJTS Aprogram, 
+									 Writer outFile)
+	 throws IOException
+ {
+     writeHTML("<H2> <BR> Program " + Aprogram.name()+ " </H2>", outFile); 
+ 
+ }
+ 
+ public static void writeProgramRelationships(DOCLETJTS.Lang.ProgramDocJTS Aprogram,
+											  Writer outFile)
+	 throws IOException
+ {
+	 // Here it is where it writes the package name and the imports part
+	 writeHTML("<DL> <DT> <B> " + Aprogram.name()+ "</B>",
+			   outFile);
+	 if (Aprogram.containingPackage() != null) 
+		 writeHTML("<DT> Package " + (Aprogram.containingPackage()).name(), outFile);
+	 
+	 // Pending the imports packages part
+	 writeHTML("</DL>", outFile);
+	 writeHTML("<HR>", outFile);
+ }
+ 
+ 
+ public static void writeProgramClasses(DOCLETJTS.Lang.ProgramDocJTS Aprogram,
+											  Writer outFile)
+	 throws IOException
+ {
+	 // Calls the writeInnerclasses by creating first fake class and array
+	 DOCLETJTS.Lang.ClassDocJTS tempClass = new DOCLETJTS.Lang.ClassDocJTS("");
+     tempClass.setInnerClasses((List)Aprogram.classes());
+     writeInnerclasses(tempClass, outFile);
+ }
+
+ public static void appendsProgramContents(DOCLETJTS.Lang.ProgramDocJTS Aprogram,
+											  Writer outFile)
+	 throws IOException
+ {
+   
+ }
+ 
+
+
+ } // of class DocletJTS
+ 
+}

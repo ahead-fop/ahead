@@ -1,0 +1,60 @@
+layer FS;
+
+import java.io.*;
+
+import log.Log;
+
+public State_machine FaPltMission extends WeaponMission {
+    States wrffeLoading, wrffeShot, wrffeComplete;
+
+    // If mission is accepted then wait for exclusive control of the gun.
+    Enter wrffeArtyAccepted {
+        getOpfac().missionLock( this );
+    }
+
+    // When its this missions turn, aim and load.
+    Transition wrffeArtyAccepted3 : wrffeArtyAccepted -> wrffeLoading
+        condition ( message instanceof LockGranted )
+        do {
+            getOpfac().timeout( 30F, new LoadTime( getId() ) );
+        }
+
+    // When loading complete, shoot.
+    Transition wrffeLoading1 : wrffeLoading -> wrffeShot
+        condition ( message instanceof LoadTime )
+        do 
+            {
+            getOpfac().timeout( 10F, new CompleteTime( getId() ) );
+            ShotMessage shotMessage = new ShotMessage( getId() );
+            if ( initiatingUnit != null )
+                shotMessage.setInitiatingUnitId( initiatingUnit.intValue() );
+            sendDown( shotMessage );
+        }
+    
+    // When done shooting notify observer.
+    Transition wrffeShot1 : wrffeShot -> wrffeComplete
+        condition ( message instanceof CompleteTime )
+        do 
+            {
+            RoundsCompleteMessage roundsCompleteMessage = new RoundsCompleteMessage( getId() );
+            if ( initiatingUnit != null )
+                roundsCompleteMessage.setInitiatingUnitId( initiatingUnit.intValue() );
+            sendDown( roundsCompleteMessage );
+        }
+        
+    // Allow other missions to Proceed.
+    Enter wrffeComplete {
+        getOpfac().missionFree( this );
+    }
+
+    // When EOM received, send MFR and stop.
+    Transition wrffeComplete1 : wrffeComplete -> stop
+        condition ( message instanceof EomMessage )
+        do
+            {
+            MfrMessage mfrMessage = new MfrMessage( getId() );
+            if ( initiatingUnit != null )
+                mfrMessage.setInitiatingUnitId( initiatingUnit.intValue() );
+            sendDown( mfrMessage );
+        }
+}

@@ -1,0 +1,15 @@
+
+single layer foo;
+
+// defined attributes
+
+left2right Bool bottom;
+right2left Bool search;
+
+// externally defined attributes
+
+
+
+provides right !bottom;
+provides left search;
+

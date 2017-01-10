@@ -1,0 +1,18 @@
++ '[' -z /usr/bin/bash ']'
++ echo '****************jampack path Layer Declaration Regression Test***********'
+****************jampack path Layer Declaration Regression Test***********
++ bash regress-path combine
+composing equation combine ... succeeded
++ bash regress-path comb.ine
+composing equation comb.ine ... succeeded
++ bash regress-one Cons1 Ref1 CR11
+composing Cons1 and Ref1 --> CR11 ... succeeded
++ bash regress-one Cons2 Ref1 CR21
+composing Cons2 and Ref1 --> CR21 ... succeeded
++ bash regress-one Cons1 Ref2 CR12
+composing Cons1 and Ref2 --> CR12 ... succeeded
++ bash regress-one Cons3 Ref3 CR33
+composing Cons3 and Ref3 --> CR33 ... succeeded
++ echo -e '\njampack path Declaration Regression Test succeeded.'
+
+jampack path Declaration Regression Test succeeded.

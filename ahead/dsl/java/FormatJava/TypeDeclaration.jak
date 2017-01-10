@@ -1,0 +1,14 @@
+layer FormatJava;
+
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public refines class TypeDeclaration {
+    public void format( int position ) {
+        this.setComment( CommentUtil.insertLine( this.getComment() ) );
+        newline_routins( position );
+        super.format( position );
+    }
+}

@@ -1,0 +1,16 @@
+layer calcActions;
+import Jakarta.util.*;
+import java.io.*;
+import java.util.*;
+refines class Plus {
+
+    public void execute (Stack S) {
+   
+      Integer arg1 = (Integer) S.pop();
+      Integer arg2 = (Integer) S.pop();
+      int result = arg2.intValue() + arg1.intValue();
+      S.push(new Integer(result));
+
+    }
+
+}

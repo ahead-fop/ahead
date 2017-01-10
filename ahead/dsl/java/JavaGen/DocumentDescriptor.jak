@@ -1,0 +1,74 @@
+layer JavaGen;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.util.*;
+import java.io.*;
+
+// _________________________________________________________________
+
+ /** DocumentDescriptor.java
+ * JEDI Project
+ * Department of Computer Sciences
+ * University of Texas at Austin
+ * Abstract class used to the define the description of document and document
+ * parts for the generation of Document templates.
+ * @author Roberto E. Lopez-Herrejon
+ * Last Update: November 30, 2002
+ * @layer<JavaGen>
+ */
+
+public abstract class DocumentDescriptor {
+    
+    // Name of the Document Descriptor
+    String name;
+    public String getName() {
+        return name;
+    }
+    public void setName( String _name ) {
+        name = _name;
+    }
+
+    // Layout list
+    LinkedList layoutList = new LinkedList();
+
+    // Adds new element to the layout list -> temporarly at the end 
+    public void addLayoutElement( DocumentDescriptor dd ) {
+        layoutList.addLast( dd );
+    }
+
+    // Gets ith element of the layout list
+    public DocumentDescriptor getLayoutElement( DocumentDescriptor dd,
+                           int i ) {
+        return ( DocumentDescriptor )layoutList.get( i );
+    }
+
+    // Insert a new document descriptor as the ith layout element
+    public void insertLayoutElement( DocumentDescriptor dd, int i ) {
+        layoutList.add( i, dd );
+    }
+
+    // Returs the size of the layout
+    public int getSizeLayout() {
+        return layoutList.size();
+    }
+
+    // Returns an element of the list
+    public DocumentDescriptor getLayoutElement( int i ) {
+        return ( DocumentDescriptor )layoutList.get( i );
+    }
+
+    // Related template files for this document
+    String templateFile = "";
+    public String getTemplateFile() {
+        return templateFile;
+    }
+    public void setTemplateFile( String _tf ) {
+        templateFile = _tf;
+    }
+    
+    // Adds the bindings to the class
+    public abstract VelocityContext 
+             addBindings( ProgramElementDocJTS parsedProgramElement, 
+                 VelocityContext context );
+}

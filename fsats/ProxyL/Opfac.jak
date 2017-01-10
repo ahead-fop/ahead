@@ -1,0 +1,13 @@
+layer ProxyL;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+public refines interface Opfac
+        {
+    Proxy getSuperProxy();
+    Proxy getSelfProxy();
+}

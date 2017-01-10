@@ -1,0 +1,173 @@
+## StateMachine.vm
+## JEDI Project
+## HTML Template for a State machine
+## Author: Roberto E. Lopez-Herrejon
+## Last update: November 11, 2002
+
+<HTML> 
+<HEAD>
+</HEAD> 
+<TITLE> State Machine $state.name() </TITLE> 
+
+<BODY BGCOLOR="white"> 
+<H2> 
+   <BR> $state.name() 
+</H2>
+
+ ## -- New grammar updates  @pending
+
+ ## If there is a layer name print it
+ #if ($isQualifiedLayer == "true")
+   <H4>
+     layer &nbsp; $state.getQualifiedLayerName()
+   </H4> 
+ #end 
+
+ ## If there is a source TypeDeclaration 
+ #if($isSourceFlag == "true")
+   SoUrCe &nbsp;
+  
+    ## Checks to see if it has root literal 
+    #if($state.getSourceHasRoot()) 
+      RooT &nbsp;
+    #end 
+    
+    $state.getSourceQualifiedName() &nbsp; 
+   
+    $state.getSourceStringLiteral() &nbsp;
+
+  #end  ## of isSource
+ 
+ ## -- end New grammar updates
+
+
+## ## State relationships   
+ <DL> 
+ <DT> $state.modifiers() 
+	
+   ## ---- New grammars updates
+   #if ($isExtendedFlag == "true")
+     extends	
+   #end 
+
+   ## From Base
+   #if ($isRefinesFlag == "true")
+     refines
+   #end
+
+   ## From Base
+   #if ($isOverridesFlag == "true")
+     overrides	
+   #end
+	
+   ## ---- end of New grammars updates
+
+   state machine 
+   <B> $state.name() </B> 
+  </DT>
+ 
+## ## @pending update for the new grammar
+## #if ($state.extendsName() !="")
+## <DT> extends $state.extendsName() </DT>
+## #end
+
+## ## @pending update for the new grammar
+##  #if ($isClassExtended == "true" )
+## <DT> extends class $state.extendsName() </DT>
+##  #end
+
+## if there are interfaces implemented by this class
+#if ($interfaces == "true")
+ <DT> implements 
+  #foreach($interface in $listInterfaces)
+   $interface.name() &nbsp;  
+  #end
+ </DT>
+#end
+ </DL>
+
+  
+## Writes the description of the state diagrams
+
+## Header comment
+  <P> $generator.descriptionComment($state.inlineTags()) </P> 
+  <P>
+  <DL>
+
+   ## For use with general templates	
+   #set($doc = $state)
+
+   ## Parses deprecated tags
+   #parse("templates/HTML/DeprecatedTags.vm")
+	
+   ## Parses param tags
+   #parse("templates/HTML/ParamTags.vm")
+
+   ## Parses throws tags
+   #parse("templates/HTML/ThrowsTags.vm")
+
+   ## Parsers author tags
+   #parse("templates/HTML/AuthorTags.vm")
+
+   ## Parsers version tags
+   #parse("templates/HTML/VersionTags.vm")
+
+   ## Parses since tags
+   #parse("templates/HTML/SinceTags.vm")
+
+   ## Parses see tags
+   #parse("templates/HTML/SeeTags.vm")
+
+   ## Parses return tags
+   #parse("templates/HTML/ReturnTags.vm")
+
+  </DL>
+ </P>
+
+<HR>  
+
+## Writes out the Root Clause
+#parse ("templates/HTML/RootClause.vm")
+
+## Writes out the otherwise clause
+#parse("templates/HTML/OtherClause.vm")
+
+## Writes out the states clause states
+#parse("templates/HTML/StatesClause.vm")
+
+## Writes out the exit transitions
+#parse("templates/HTML/ExitTransitions.vm")
+
+## Writes out the enter transitions
+#parse("templates/HTML/EnterTransitions.vm")
+
+## Writes out the prepare transitions
+#parse("templates/HTML/PrepareTransitions.vm")
+
+## Writes out the test transitions
+#parse("templates/HTML/TestTransitions.vm")
+
+## Writes out the action transitions
+#parse("templates/HTML/ActionTransitions.vm")
+
+## Writes out the transition declarations
+#parse("templates/HTML/TransitionDeclarations.vm")
+ 
+## Writes out the otherwise transitions
+#parse("templates/HTML/OtherwiseTransitions.vm")
+  
+## These are the AST_Field information
+
+#parse("templates/HTML/InnerClassSummarySm.vm")
+#parse("templates/HTML/MethodDetailsSm.vm")
+#parse("templates/HTML/ConstructorDetailsSm.vm")
+#parse("templates/HTML/FieldDetailsSm.vm")
+
+## @pending update for new grammar
+## ## Extensions
+## #foreach($extension in $extensionsList)
+##  #parse($extension)  
+## #end
+
+</BODY> 
+</HTML> 

@@ -1,0 +1,19 @@
+layer FS;
+
+import fsats.util.DataContainer;
+
+import laydown.*;
+
+import java.util.*;
+
+SoUrCe RooT MessageL "C:!Java!FeatureOrientedProgramming!fsats!MessageL!FlightTime.jak";
+
+/** Message that shot flight is done **/
+public class FlightTime
+        extends BasicTimeout {
+    public EventType getType() {
+        return TimeoutType.flightTime;
+    }
+    public FlightTime( String missionId ) { Super( String )( missionId );
+    }
+}

@@ -1,0 +1,100 @@
+//                              -*- Mode: JTS -*-
+// Version         :
+// Author          : Robert S. MacDonald
+// Last Modified By: Bryan D. Hopkins
+// Last Modified On: Mon May  8 13:08:00 2000
+
+layer MissionWrffeL(F lower)
+realm F
+extends lower
+imports
+    Jakarta.util.Util,
+    java.io.*,
+    F.Libraries.log.Log
+{
+    public static state_diagram MissionImpl
+        refines lower.MissionImpl
+    {
+        states wrffeInitiated, wrffeAssigned, wrffeElevated, wrffeAccepted;
+ 
+        // Take this branch on WR_FFE mission.
+        edge initiatedWrffe : initiated -> wrffeInitiated
+	    conditions getType() == $TEqn.MissionType.wrffe
+            //conditions getType().equals("WR_FFE")
+            do {}
+
+        // Immediately proceed with mission specific transitions.
+        Enter wrffeInitiated { event(null); }
+
+        // Select the best available weapon for this mission.
+        Exit wrffeInitiated 
+        { 
+            getOpfac().ponder(5F);
+            selectBestWeapon(); 
+        }
+
+        // If weapon found then assign the mission to it.
+        edge wrffeInitiated1 : wrffeInitiated -> wrffeAssigned
+            conditions (weaponSelected())
+            do { assignWeapon(); }
+ 
+        // If no weapon found but superior might do then elevate.
+        edge wrffeInitiated2 : wrffeInitiated -> wrffeElevated
+            conditions (!weaponSelected() && canElevate())
+            do { elevate(); }
+ 
+        // If no available weapon then deny mission and stop.
+        edge wrffeInitiated3 : wrffeInitiated -> stop
+            conditions (!weaponSelected() && !canElevate())
+            do { sendDeny("No capable assets."); }
+ 
+        // If weapon denies mission then record the fact and try again.
+        edge wrffeAssigned1 : wrffeAssigned -> wrffeInitiated
+            conditions (message instanceof $TEqn.DenyMessage)
+            do { weaponDenied(); }
+ 
+        // Relay accept and proceed with mission.
+        edge wrffeAssigned2 : wrffeAssigned -> wrffeAccepted
+            conditions (message instanceof $TEqn.AcceptMessage)
+            do
+            {
+                weaponAccepted(($TEqn.AcceptMessage)message);
+                sendAccept();
+            }
+ 
+        // Relay deny and stop.
+        edge wrffeElevated1 : wrffeElevated -> stop
+            conditions (message instanceof $TEqn.DenyMessage)
+            do
+            {
+                sendDeny((($TEqn.DenyMessage)message).getReason());
+            }
+ 
+        // Relay accept and proceed with mission.
+        edge wrffeElevated2 : wrffeElevated -> wrffeAccepted
+            conditions (message instanceof $TEqn.AcceptMessage)
+            do
+            {
+                weaponAccepted(($TEqn.AcceptMessage)message);
+                sendAccept();
+            }
+
+        // Immediately proceed with weapon specific transitions.
+        Enter wrffeAccepted { event(null); }
+    } // MissionImpl
+
+
+    public static state_diagram WeaponMission
+        refines lower.WeaponMission
+    {
+        refines edge wrffeInitiated1 : wrffeInitiated -> wrffeAssigned
+            conditions false do {}
+ 
+        // If weapon selected do weapon specific edges. 
+        edge wrffeInitiated4 : wrffeInitiated -> wrffeAccepted
+            conditions (weaponSelected())
+            do { sendAccept(); }
+    } // weaponMission
+}
+
+

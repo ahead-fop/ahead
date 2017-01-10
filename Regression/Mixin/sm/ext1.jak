@@ -1,0 +1,23 @@
+layer ext1;
+
+import firstPackage.*;
+
+refines State_machine root {
+
+   // from ext 1
+   States d;
+   States e;
+
+   // from ext1
+   Transition e2 : d -> e 
+   condition m!=null
+   do { /* action 2 */ }
+
+   Transition e3 : c -> d
+   condition true
+   do { /* action 3 */ }
+
+   Exit b { /* action a */ }
+}
+   
+

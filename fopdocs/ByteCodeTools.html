@@ -1,0 +1,224 @@
+<style>
+<!--
+ p.MsoNormal
+	{mso-style-parent:"";
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	margin-left:0in; margin-right:0in; margin-top:0in}
+ li.MsoNormal
+	{mso-style-parent:"";
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	margin-left:0in; margin-right:0in; margin-top:0in}
+.style1 {
+	font-family: Arial, Helvetica, sans-serif;
+}
+.style2 {
+	font-family: Arial;
+	color: #0000FF;
+}
+.style3 {
+	font-family: Arial;
+}
+.style4 {
+	font-family: "Courier New", Courier, monospace;
+}
+.style5 {
+	font-family: "Courier New", Courier, monospace;
+	margin-left: .25in;
+}
+-->
+</style>
+
+<title>Byte Code Composer Tools</title>
+
+<table BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
+  <tr>
+    <td WIDTH="78">
+      <font face="Verdana">
+	  <img border="0" src="images/FopButton3.jpg" width="80" height="64">
+      </font>
+    </td>
+    <td WIDTH="688" BGCOLOR="#00FFFF">
+      <h1>
+	<font face="Arial" color="#0000FF">
+	  The Byte Code Composer Tools <br>
+    (Not Yet Finished)</font></h1>
+    </td>
+  </tr>
+</table>
+
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal"><font face="Arial">We want to be able to distribute binary 
+versions of layers (features). Currently, we distribute and compose source code only.&nbsp; 
+The byte code composer tools are a preliminary and experimental first step toward our ultimate goal of 
+distributing binary layers (features).&nbsp; The idea is to translate each jak file into a 
+stylized Java file -- meaning that there are coding and naming conventions in 
+the Java file that will allow us to express (and hence recognize) refines 
+constructs.&nbsp; One tool, <strong>bcjak2java</strong> does this translation.&nbsp; Its command 
+line input is a single Jak file and it produces the stylized Java file as 
+output.</font></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal"><font face="Arial">The basic idea in stylizing is to 
+emulate mixin layers. For stylized Java code to be compiled, we need to create a 
+stub for every class and interface that is the union of all possible methods and 
+members that can appear within it.&nbsp; The tool <strong>bcstubgenerator</strong> performs this 
+task.&nbsp; To translate all Jak files in a directory into Java files, the 
+<strong>bcj2j</strong> 
+script is used. After creating the stub layer, the stylized java classes can be 
+compiled.&nbsp; A script <strong>bccomposer</strong> composes bytecode layers.</font></p>
+<ul>
+  <li>
+<p class="MsoNormal"><font face="Arial"><a href="#bcmixin tool">bcmixin tool</a></font></p>
+  </li>
+	<li>
+<p class="style1"><a href="#how to install">installation (if necessary)</a></p>
+  </li>
+</ul>
+
+<table BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="100%" BGCOLOR="#FFFF00">
+  <tr>
+    <td WIDTH="788"><h2><font color="#0000FF" face="Arial">
+    <a name="bcmixin tool">bcmixin tool</a></font></h2>
+    </td>
+  </tr>
+</table>
+
+<p class="MsoNormal"><font face="Arial">The <b>bcmixin</b> tool is a byte code 
+composition tool for java class files. Its composition rules are similar with 
+the <a href="Mixin.html">mixin tool</a> in AHEAD. &nbsp;The stylized Java code for the 
+<strong>bcmixin</strong> tool are:
+</font></p>
+<ol style="margin-top: 0in; margin-bottom: 0in" start="1" type="1">
+  <li class="MsoNormal"><font face="Arial">the base classes in the layer are 
+  same as the regular java code.</font></li>
+  <li class="MsoNormal"><font face="Arial">the refines classes in the layer are 
+  stylized: <i>class A <b>extends stub.A</b></i>. Here, the “<i>extends stub.A</i>” 
+  is used to make the refinement classes get the references from its parent 
+  classes through the stub layer. Therefore, the refinement class can call its 
+  parent class by the standard super call in Java. And also the refinement 
+  classes can be compiled with the stub directory.</font></li>
+</ol>
+<p class="MsoNormal"><font face="Arial">&nbsp;&nbsp;</font></p>
+<p class="MsoNormal"><font face="Arial"><b>How to run it:</b></font></p>
+<p class="MsoNormal"><font face="Arial">In the <b>ahead/build/bin </b>directory<b> </b>
+(and also in the <b>standalone/bcbinScripts</b>) directory, 
+you will find the 
+following Bash script files:</font></p>
+<ol style="margin-top: 0in; margin-bottom: 0in" start="1" type="1">
+  <li class="MsoNormal"><font face="Arial"><b>bcj2j</b>: a script  to 
+  translate all jak files to java files in the given model (directory) 
+  recursively.<i> </i>&nbsp;It<i> </i>calls the tool <b>bcjak2java</b> in AHEAD tool suite to 
+  do the translation.</font></li>
+  <li class="MsoNormal"><font face="Arial"><b>bcjrename</b>: a script  to 
+  rename all the classes in the given model. It calls the tool <b>jrename</b> in AHEAD tool suite to do the renaming</font></li>
+  <li class="MsoNormal"><font face="Arial"><b>bccompiler</b>: a script  to 
+  compile the given model. It will run the stub generator tool 
+  first, and then rename the java files in each layer, and then compile each 
+  layer</font></li>
+  <li class="MsoNormal"><font face="Arial"><b>bccomposer</b>: a script  to 
+  run the <b>bccomposer</b> driver to compose the given model by the given equation 
+  file and make a jar file from the composed class files.</font></li>
+</ol>
+<p class="MsoNormal"><font face="Arial">&nbsp;</font></p>
+<p class="MsoNormal"><font face="Arial"><b>1. Translate the jak files into java 
+files:</b></font></p>
+<p class="MsoNormal"><font face="Arial">If your model is based on jak files, to 
+run the bcmixin tools, you should translate jak files to java file first. The 
+script file <strong>bcj2j</strong> performs this translation:</font></p>
+<p class="MsoNormal" style="margin-left:.5in;text-indent:.5in">
+<font face="Arial">&gt;<b>bcj2j</b> &lt;model name&gt; </font></p>
+<p class="MsoNormal"><font face="Arial">Here, you should run the <strong>bcj2j</strong> in the 
+directory which includes your model. After  your model is translated into pure 
+java files, then you can use bcmixin tools to compile and compose your model.</font></p>
+<p class="MsoNormal"><font face="Arial">&nbsp;</font></p>
+<p class="MsoNormal"><font face="Arial"><b>2. Run bcmixin tools</b></font></p>
+<p class="MsoNormal"><font face="Arial">You can run bcmixin tools in two modes: 
+by hand or by a script file.</font></p>
+<p class="MsoNormal"><font face="Arial"><b><i>1. By hand:</i></b></font></p>
+<p class="MsoNormal" style="text-indent:.25in"><font face="Arial"><i>To compile 
+your model</i>:</font></p>
+<p class="MsoNormal" style="margin-left:.5in;text-indent:.25in">
+<font face="Arial">1. run <strong>bcstubgenerator</strong>.Main [modelname] to get stub&amp;refine 
+directory</font></p>
+<p class="MsoNormal" style="margin-left:.5in;text-indent:.25in">
+<font face="Arial">2. compile stub&amp;refine using the standard java compiler</font></p>
+<p class="MsoNormal" style="margin-left:.5in;text-indent:.25in">
+<font face="Arial">3. run <strong>bctostub</strong>.Main [stub directory] on stub directory</font></p>
+<p class="MsoNormal" style="margin-left:.5in;text-indent:.25in">
+<font face="Arial">4. run <strong>jrename</strong> to rename all the classes in current model</font></p>
+<p class="MsoNormal" style="margin-left:.5in;text-indent:.25in">
+<font face="Arial">5. on linux, compile each layer with: javac –classpath .:refine:stub &lt;layer_name&gt;/*\$\$.java<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; on windows, compile 
+each layer with javac -classpath .\;refine\;stub &lt;layer_name&gt;/*\$\$.java</font></p>
+<p class="MsoNormal" style="margin-left:.5in;text-indent:.25in">
+&nbsp;</p>
+<p class="MsoNormal" style="text-indent:.25in"><font face="Arial"><i>To compose 
+an executable application from your model:</i></font></p>
+<p class="MsoNormal" style="margin-left:.75in"><font face="Arial">1. run java 
+bcmixin.Main [modelname] [equation file]</font></p>
+<p class="MsoNormal" style="margin-left:.75in"><font face="Arial">2. make an 
+executable jar file</font></p>
+<p class="MsoNormal"><font face="Arial"><b><i>2. By a script file:</i></b></font></p>
+<p class="MsoNormal" style="margin-left:.25in"><font face="Arial">1. run <strong>bcj2j</strong> 
+&lt;model&gt;</font></p>
+<p class="MsoNormal" style="margin-left:.25in"><font face="Arial">2. run the 
+script file bc<i>compiler [modelname</i>] to compile your model.</font></p>
+<p class="MsoNormal" style="margin-left:.25in"><font face="Arial">3. run the 
+script file bc<i>composer [modelname] [equation file]</i> to get an executable 
+jar file from your model by the given equation file.</font></p>
+<p class="MsoNormal" style="margin-left:.25in">&nbsp;</p>
+<p style="margin-left:.25in" align="left"><font face="Arial">Example:</font></p>
+<div align="left">
+	<pre class="style5">cd GPL directory</pre>
+</div>
+<div align="left">
+	<pre style="margin-left: .25in" class="style4">run in bash:</pre>
+</div>
+<div align="left">
+	<pre style="margin-left: .25in"><font class="style4">&gt; rm -r gpl\$\$
+&gt; bcj2j gpl
+&gt; bccompiler gpl
+&gt; bccomposer gpl\$\$ dgraph</font></pre>
+</div>
+
+<table BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="100%" BGCOLOR="#FFFF00">
+  <tr>
+    <td WIDTH="788"><h2><a name="how to install"><font color="#0000FF" face="Arial">
+    H</font><span class="style2">ow to Install</span></a></h2>
+    </td>
+  </tr>
+</table>
+
+<p class="style3">The bytecode tools should be part of the standard ATS 
+distribution.&nbsp; In case they are not, here is how to build the tools:</p>
+<ol style="margin-top: 0in; margin-bottom: 0in" start="2" type="1">
+  <ol style="margin-top: 0in; margin-bottom: 0in" start="1" type="1">
+    <li class="MsoNormal"><font face="Arial"><b>build</b></font></li>
+  </ol>
+</ol>
+<p class="MsoNormal" style="margin-left:1.0in"><font face="Arial">using the 
+build file bctools.xml to build the tools:</font></p>
+<p class="MsoNormal" style="margin-left:1.0in"><font face="Arial"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&gt;ant –f bctools.xml bcmixin&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b>-build the bcmxin tool</font></p>
+<p class="MsoNormal" style="margin-left:1.0in"><font face="Arial"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&gt;ant –f bctools.xml bcstubgenerator&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b>-build the bcstubgenerator 
+tool</font></p>
+<p class="MsoNormal" style="margin-left:1.0in"><font face="Arial"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&gt;ant –f bctools.xml bctostub</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -build the bctostub 
+tool</font></p>
+<p class="MsoNormal" style="margin-left:1.0in"><font face="Arial"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&gt;ant –f bctools.xml&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b>-build all</font></p>
+<p class="MsoNormal"><font face="Arial"><b>&nbsp;</b></font></p>
+<ol style="margin-top: 0in; margin-bottom: 0in" start="2" type="1">
+  <ol style="margin-top: 0in; margin-bottom: 0in" start="2" type="1">
+    <li class="MsoNormal"><font face="Arial"><b>install it</b></font></li>
+  </ol>
+</ol>
+<p class="MsoNormal" style="margin-left:1.0in"><font face="Arial">After build 
+it, put the jar files in the build/lib directory and bcel.jar in the lib 
+directory&nbsp; in your classpath. Also put the 
+AHEAD tools: mmatrix.jar, bcjak2java.jar, mmatrix.jar in your classpath. You also need 
+to put the bin directory in your path so you can run the script files.</font></p>

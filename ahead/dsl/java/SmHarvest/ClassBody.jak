@@ -1,0 +1,43 @@
+layer SmHarvest;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+// of NsmDecl
+
+ /** Handles nested State Machine declarations inside classes.
+  * Note that changes are made to ClassBody instead of ClassBodyDeclaration.
+  * This is because ClassDoc objects are created there.
+  * ClassBodyDeclaration
+  *: LOOKAHEAD( [ AST_Modifiers() ] "state_machine" )
+  *        NestedSmDeclaration
+  * @layer<SmHarvest>
+  */
+   
+public refines class ClassBody {
+    LinkedList listOfStates = new LinkedList();
+       
+    public void execute() {
+ 
+        Super().execute();
+                  
+        // arg[0] OptNode, arg[0].arg[0] AST_FieldDecl
+        AstNode e = arg[0].arg[0];
+        if ( e!=null ) {
+            AstCursor c = new AstCursor(); // c to traverse list
+            for ( c.FirstElement( e ); c.MoreElement(); c.NextElement() ) {
+                if ( c.node instanceof  NSmDecl ) {
+                    listOfStates.add( ( ( NSmDecl )c.node )._harvest_state );
+                }
+                                     
+            } // for all the elements in classbody
+                   
+        } // if there are elements in the ClassBody
+                  
+        _harvest_class.setStates( listOfStates );
+          
+    } // execute
+
+}

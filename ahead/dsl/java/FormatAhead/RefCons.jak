@@ -1,0 +1,28 @@
+layer FormatAhead;
+
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public refines class RefCons {
+    public void format( int position ) {
+        newline_routins( position );
+        arg[0].format( position );
+        ( ( AstToken ) tok[1] ).white_space = "";
+        if ( arg[1].arg[0] == null )
+            ( ( AstToken ) tok[2] ).white_space = "";
+        else {
+            arg[1].arg[0].setComment( " " );
+            arg[1].format( position );
+            ( ( AstToken ) tok[2] ).white_space = " ";
+        }
+        if ( ( arg[2].arg[0] == null ) && ( ( ( AstToken ) tok[4] ).white_space.trim().length() == 0 ) )
+            ( ( AstToken ) tok[4] ).white_space = "";
+        else {
+            position += CommentUtil.TabSpace;
+            arg[2].format( position );
+            position -= CommentUtil.TabSpace;
+            CommentUtil.token_routins( ( AstToken ) tok[4], position );
+        }
+    }
+}

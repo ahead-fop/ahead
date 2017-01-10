@@ -1,0 +1,6 @@
+layer i1;
+
+class foo extends biff { 
+   foo() { Super()(); }
+   void bar() { Super(int).bar(4); }
+}

@@ -1,0 +1,38 @@
+SoUrCe RooT top "root.jak";
+
+abstract State_machine root$$top {
+   Delivery_parameters( M m );
+
+   Otherwise_default { System.out.println(" ignoring " + m.msg ); }
+
+   Enter stop { Goto_state start(m); }
+
+   Transition t1 : * -> stop
+      condition m.msg != M.eom
+      do { System.out.println( "star transition" ); }
+}
+
+SoUrCe  mid "ref.jak";
+
+ State_machine root extends  root$$top  { 
+   Transition t2 : start -> stop
+	condition m.msg == M.initialize
+	do { System.out.println(" received init "); }
+
+   public root() { }
+
+   static int array[] = { M.deny, M.initialize, M.deny, 
+                          M.initialize, M.eom, M.eom };
+
+   public static void main(String args[]) {
+      root sd = new root();
+      int i;
+      M m = new M();
+
+      for (i=0; i<array.length; i++) {
+         m.msg = array[i];
+         sd.delivery(m);
+         System.out.println(sd.getState());
+      }
+   }
+}

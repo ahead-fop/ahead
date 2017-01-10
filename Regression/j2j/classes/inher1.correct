@@ -1,0 +1,72 @@
+// example that forces constructors DOWN the refinement chain
+
+
+
+ abstract class MissionImpl$$MissionL
+        implements Mission
+    {
+        MissionImpl$$MissionL() { /* something */ }
+    }
+
+
+
+ abstract  class MissionImpl$$ProxyL extends MissionImpl$$MissionL 
+        implements Mission
+    {
+      // inherited constructors
+
+
+        MissionImpl$$ProxyL (  ) { super(); }
+    }
+
+
+
+ abstract  class MissionImpl$$MissionAnyL extends MissionImpl$$ProxyL
+        implements Mission
+    {
+
+       public MissionImpl$$MissionAnyL(int i) { /* something new */ }
+      // inherited constructors
+
+
+        MissionImpl$$MissionAnyL (  ) { super(); }
+    }
+
+
+
+ abstract  class MissionImpl$$MissionWrffeL extends MissionImpl$$MissionAnyL
+    {
+      // inherited constructors
+
+
+
+       public MissionImpl$$MissionWrffeL ( int i ) { super(i); }
+        MissionImpl$$MissionWrffeL (  ) { super(); }
+    }
+
+
+
+ abstract  class MissionImpl$$MissionWrffeArtyL extends MissionImpl$$MissionWrffeL 
+    {
+       public MissionImpl$$MissionWrffeArtyL( double d ) {
+           /* something new */
+       }
+      // inherited constructors
+
+
+
+       public MissionImpl$$MissionWrffeArtyL ( int i ) { super(i); }
+        MissionImpl$$MissionWrffeArtyL (  ) { super(); }
+    }
+
+ class MissionImpl$$MissionWrffeMlrsL extends MissionImpl$$MissionWrffeArtyL
+    {
+      // inherited constructors
+
+
+
+       public MissionImpl$$MissionWrffeMlrsL ( int i ) { super(i); }
+       public MissionImpl$$MissionWrffeMlrsL (  double d ) { super(d); }
+        MissionImpl$$MissionWrffeMlrsL (  ) { super(); }
+
+    }

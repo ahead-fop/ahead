@@ -1,0 +1,15 @@
+echo "******** now testing MORTAR & ARTILLERY FO protocol ********"
+java jak2java.Main wrffe_fo.spec
+javac wrffe_fo.java
+java wrffe_mortar_fo > junk
+if ! diff -b junk correct_fo ; then
+   echo failed
+   exit 1
+fi
+
+echo "******** now testing MLRS FO protocol ********"
+java wrffe_mlrs_fo > junk
+if ! diff -b junk correct_fomlrs ; then
+   echo failed
+   exit 1
+fi

@@ -1,0 +1,36 @@
+layer JavaWriter;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+// of Jedi Options
+
+ // **********************************************************************
+ // **********************************************************************
+
+   /** Innerclass used to filter the names of the files that match 
+    * a pattern. 
+    * @layer<JavaWriter>
+    */
+    
+public class filesFilter implements FilenameFilter {
+
+    String pattern;
+
+    public filesFilter( String _pattern ) {
+        pattern = _pattern;
+    }
+
+    public boolean accept( File dir, String name ) 
+    {
+        File theFile = new File( dir, name );
+
+        boolean fileCondition =  theFile.isFile();
+        boolean patternCondition = name.endsWith( pattern );
+
+        return ( fileCondition && patternCondition );
+    }
+}

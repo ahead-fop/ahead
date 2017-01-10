@@ -1,0 +1,24 @@
+#!/bin/bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+echo -e "\n****************SM4 Regression Tests***********\n"
+
+rm -f -- *.ser *.class wrffe_*.java M.java wrffe.java
+
+cp -f -- M.jjava M.java
+cp -f -- wrffe.jjava wrffe.java
+
+javac M.java wrffe.java
+
+FAILURES=0
+for TEST in refined fist fo mortar artillery mlrs repeater inherit star nested; do
+    bash "regress-${TEST}" || let ++FAILURES
+done
+
+if [ "${FAILURES}" -ne 0 ]; then
+    echo "\nSM Regression Tests had ${FAILURES} failures"
+    exit 1
+fi
+
+echo -e "\nSM Regression Tests Succeeded"

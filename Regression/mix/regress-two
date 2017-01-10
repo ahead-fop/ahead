@@ -1,0 +1,15 @@
+#!/bin/bash
+
+echo -n "composing $1 & $2 & $3 -> $4 ... "
+
+(echo ; java mix.Main $1.h $2.h $3.h) 2>&1 | tr -s '\n\r' '\n' > current
+(echo ; cat $4) | tr -s '\n\r' '\n' > correct
+
+if diff -w correct current ; then
+#    rm -f correct current || :
+    echo succeeded
+else
+#    rm -f correct current || :
+    echo failed
+    exit 1
+fi

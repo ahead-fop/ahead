@@ -1,0 +1,11 @@
+
+// tests if layer can be optional
+layer Foo.Bar.Cons2;
+SoUrCe RooT Mixin.Cons2 
+abstract class MyClass$$Mixin$Cons2 extends AstNode { 
+   int one;
+}
+SoUrCe  Mixin.path 
+ class MyClass extends  MyClass$$Mixin$Cons2  { 
+   int foobar;
+}

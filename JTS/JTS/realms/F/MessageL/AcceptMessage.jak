@@ -1,0 +1,88 @@
+package MessageL;
+
+import  
+    fsats.util.DataContainer;
+import 
+    F.Libraries.laydown.*;
+import 
+    java.util.*;
+
+
+
+    /** Message to accept a mission **/
+    public class AcceptMessage 
+        extends MissionStatusMessage 
+    {
+        public EventType getType() { return MessageType.accept; }
+
+	public AcceptMessage(String missionId, String fireMissionType)
+	{
+            super(missionId);
+          AcceptMessageConstructor(missionId, fireMissionType);
+	}
+
+	public void AcceptMessageConstructor(String missionId, String fireMissionType) {
+	    _fireMissionType = fireMissionType;
+
+	   if (_fireMissionType.equals("WR_FFE"))
+		_fireMissionType = "WRFFE";
+      }
+
+	public void setWeaponType(String weaponType)
+	{
+	    _weaponType = weaponType;
+	}
+
+	protected String _fireMissionType;
+	protected String _weaponType;
+	public String getWeaponType() { return _weaponType; }
+        public String getSpecific() { return _weaponType; }
+
+        public DataContainer toFsams()
+        {
+            DataContainer fsams = super.toFsams();
+            fsams.addField(new DataContainer("NAME", "Mission_Assigned"));
+            DataContainer content = fsams.getField("CONTENT");
+            content.addField("Firing_Unit_Type").setValue(_weaponType);
+	    content.addField("Fire_Mission_Type").setValue(_fireMissionType);
+
+            return fsams;
+        }
+
+        public static Message fromFsams(DataContainer fsams)
+        { AcceptMessage m;
+
+            DataContainer content = fsams.getField("CONTENT");
+            m = new AcceptMessage(
+                content.getField("Target_Id").getValue(),
+                content.getField("Fire_Mission_Type").getValue());
+
+	    String firingUnitType = content.getField("Firing_Unit_Type").getValue();
+	    if (firingUnitType!=null && !firingUnitType.equals(""))
+		m.setWeaponType(firingUnitType);
+	    else
+	    {
+		// This was added to so that the Jakarta sim will be able to
+		// recognize the event generated when it receives a Mission_Assigned
+		// message from FSATS.
+		// I don't know whether or not this is really appropriate.
+		// bhopkins - Thu May 25  9:42:00 2000
+		m.setWeaponType("DS_FA_PLT"); 
+	    }
+
+	    String initiatingUnitIdString = content.getField("Initiating_Unit").getField("Unit_Id").getValue();
+	    if (initiatingUnitIdString!=null && !initiatingUnitIdString.equals(""))
+		m.setInitiatingUnitId(Integer.parseInt(initiatingUnitIdString));
+
+	    String initiatingUnitObserverIdString = content.getField("Initiating_Unit").getField("Observer_Id").getValue();
+	    if (initiatingUnitObserverIdString!=null && !initiatingUnitObserverIdString.equals(""))
+		m.setInitiatingUnitObserverId(Integer.parseInt(initiatingUnitObserverIdString));
+
+            m.setSource(LayDown.getSelf().getOpfacByUnit(
+                Integer.parseInt(fsams.getField("FROM").getValue())).getName());
+            m.setDestination(LayDown.getSelf().getOpfacByUnit(
+                Integer.parseInt(fsams.getField("TO").getValue())).getName());
+
+            return m;
+        }
+    }

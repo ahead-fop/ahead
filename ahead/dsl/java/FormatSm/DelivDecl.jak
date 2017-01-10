@@ -1,0 +1,18 @@
+layer FormatSm;
+
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public refines class DelivDecl {
+    public void format( int position ) {
+        newline_routins( position );
+        if ( arg[0].arg[0] == null )
+            ( ( AstToken ) tok[2] ).white_space = "";
+        else {
+            arg[0].arg[0].setComment( " " );
+            arg[0].format( position );
+            ( ( AstToken ) tok[2] ).white_space = " ";
+        }
+    }
+}

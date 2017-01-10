@@ -1,0 +1,37 @@
+layer SourceGen;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.util.*;
+import java.io.*;
+
+ // of StateMachineTemplate
+
+// Class for the Source Document Descriptor
+// _________________________________________________________________
+
+ /** SourceTemplate.java
+ * JEDI Project
+ * Department of Computer Sciences
+ * University of Texas at Austin
+ * @author Roberto E. Lopez-Herrejon
+ * Last Update: November 30, 2002
+ * @layer<SourceGen>
+ */
+
+public class SourceTemplate extends DocumentDescriptor {
+
+    // Adds the bindings to the class
+    public VelocityContext 
+        addBindings( ProgramElementDocJTS parsedProgramElement, 
+                VelocityContext context ) {
+
+        // Adds the source information 
+        String isSourceFlag = "false";
+        if ( parsedProgramElement.getSourceStringLiteral() != "" )
+            isSourceFlag = "true";
+        context.put( "isSourceFlag", isSourceFlag );
+
+        return context;
+    }
+}

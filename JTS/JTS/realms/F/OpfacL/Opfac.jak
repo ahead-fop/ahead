@@ -1,0 +1,19 @@
+package OpfacL;
+
+import  
+    F.Libraries.laydown.OpfacDataWrapper;
+import 
+    F.Libraries.log.Log;
+import 
+    java.util.*;
+import 
+    fsats.util.*;
+
+
+
+    public extends interface Opfac {
+        Object clone(); 
+
+        void sendTo(String to, Message message);
+
+        void timeout(float delay, Timeout event);}

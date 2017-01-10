@@ -1,0 +1,49 @@
+layer SmHarvest;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+// of ExitDecl
+
+/** Es
+ *  | ENTER QName Block:: EnterDecl
+ * @layer<SmHarvest>
+ */
+   
+public refines class EnterDecl {
+    public  TransitionDocJTS enter_transition;
+       
+    public void execute() {
+        // QName
+        String _harvest_transition_name = 
+                ( ( AstToken )arg[0].tok[0] ).tokenName();
+                   
+        Super().execute();
+        LinkedList listOfClasses = new LinkedList();
+                
+        // Block is arg[1]  
+        AstNode e0 = arg[1].arg[0];
+            
+        // System.out.println("Enter 1,0 = " + e0.className());
+            
+        if ( e0 != null )  // if there is something in the block 
+            {
+            // System.out.println("Enter 1,0,0 = " + e0.arg[0].className());
+            listOfClasses =  GlobalWrapper.parseBlock( e0.arg[0] );
+        }
+            
+        enter_transition   =  
+                new  TransitionDocJTS( _harvest_transition_name, 
+                                         listOfClasses );
+
+        // ************ Comment Processing **********************
+        String comment = ( ( AstToken ) tok[0] ).white_space;
+        CommentJedi transitionComment = 
+                 CommentParser.ParseComment( enter_transition, comment );
+        enter_transition.setComment( transitionComment );
+
+    } // of execute
+
+}

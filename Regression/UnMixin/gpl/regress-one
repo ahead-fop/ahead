@@ -1,0 +1,9 @@
+#!/bin/sh
+
+[ -z "${BASH}" ] && exec bash "$0" "$@"
+
+echo Examining $1
+sed -f updates GEN/$1        | tr -s '\n\r' '\n' > correct
+sed -f updates CorrectGEN/$1 | tr -s '\n\r' '\n' > current
+
+diff -w correct current 

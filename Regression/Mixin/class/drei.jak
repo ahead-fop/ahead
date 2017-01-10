@@ -1,0 +1,5 @@
+layer baz.baz.three;
+
+refines class c {
+   int bottom;
+}

@@ -1,0 +1,61 @@
+layer SmHarvest;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+/** Es
+ *| EDGE QName ":" StartName ARROW QName
+ *  CONDITION AST_Exp DO Block :: TransitionDecl
+ * @layer<SmHarvest>
+ */
+   
+public refines class TransitionDecl {
+
+    public  TransitionDeclDocJTS transition_declaration;
+       
+    public void execute() {
+        Super().execute();
+
+        // QName is arg[01]
+        String _harvest_state_name = 
+                ( ( AstToken )arg[0].tok[0] ).tokenName();
+            
+        // StartName is arg[1]
+        String _harvest_start_name = arg[1].toString();
+            
+        // EndName is arg[2]
+        String _harvest_end_name = arg[2].toString();
+            
+        // Conditions is arg[3]
+        String _harvest_conditions = arg[3].toString();
+            
+        //Block is arg[4]
+        LinkedList listOfClasses = new LinkedList();
+        AstNode e0 = arg[4].arg[0];
+
+        if ( e0 != null )  // if there is something in the block 
+            {
+            listOfClasses =  GlobalWrapper.parseBlock( e0.arg[0] );
+        }
+
+        // sets the edge state object appropiately
+        // sets the edge state object appropiately
+        transition_declaration = new  TransitionDeclDocJTS( _harvest_state_name, 
+                                                 listOfClasses );
+        transition_declaration.setStartName( _harvest_start_name );
+        transition_declaration.setEndName( _harvest_end_name );
+        transition_declaration.setConditions( _harvest_conditions );
+
+        // ************ Comment Processing **********************
+        String comment = 
+                ( ( AstToken ) tok[0] ).white_space;
+        CommentJedi stateComment = 
+                 CommentParser.ParseComment( transition_declaration, 
+                                                 comment );
+        transition_declaration.setComment( stateComment );
+
+    } // of execute
+
+}

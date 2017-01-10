@@ -1,0 +1,36 @@
+
+// example that tests errors of multiple constructor defintion
+// and mismatched constructor refinements
+
+SoUrCe RooT L1 "myclass.jak";
+
+abstract class myclass$$L1 {
+        public myclass$$L1() { a=5; }
+ }
+
+SoUrCe  L2 "myclass.jak";
+
+abstract class myclass$$L2 extends myclass$$L1 {
+       refines myclass$$L2(String foo) { b=6; }
+       public myclass$$L2() { b = 6; }
+ }
+
+SoUrCe  L3 "myclass.jak";
+
+abstract class myclass$$L3 extends myclass$$L2 {
+       public myclass$$L3(int i) { c = 4; }
+ }
+
+SoUrCe  L4 "myclass.jak";
+
+abstract class myclass$$L4 extends myclass$$L3 {
+       refines myclass$$L4(String foo) { d = j; }
+ }
+
+SoUrCe  L5 "myclass.jak";
+
+public class myclass extends myclass$$L4 {
+       public myclass$$L5( int d ) {
+           /* something new */
+       }
+    }

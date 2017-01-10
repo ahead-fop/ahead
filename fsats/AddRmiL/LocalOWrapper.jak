@@ -1,0 +1,60 @@
+layer AddRmiL;
+
+import java.io.*;
+
+import java.rmi.*;
+
+import java.rmi.server.UnicastRemoteObject;
+
+import log.Log;
+
+    /** We need to convert between objects that are of type
+OpfacIfcRmi and those that are OpfacIfc
+This object does it - it wraps an OpfacIfcRmi
+object around an OpfacIfc interface
+    **/
+public class LocalOWrapper 
+implements Opfac, java.io.Serializable {
+    OpfacIfcRmi _opfacStub;
+   
+    public LocalOWrapper( OpfacIfcRmi o ) {
+        _opfacStub = o;
+    }
+   
+    public void scriptMessage( MissionId missionId ) {
+        Log.error( "calling ScriptMessage from remote object" );
+        System.exit( 10 );
+    }
+   
+    public void send( Message message, int delay ) {
+        Log.error( "calling send from remote object" );
+        System.exit( 10 );
+    }
+   
+    public String getName() {
+        Log.error( "calling send from remote object" );
+        System.exit( 10 );
+        return null;
+    }
+   
+    public void receive( Message m ) {
+        try {
+            _opfacStub.receive( m );
+        }
+        catch ( RemoteException e ) {
+            Log.error( "receive call failed : " + e );
+            System.exit( 10 );
+        }
+    }
+   
+    public boolean isAlive() {
+        try {
+            return _opfacStub.isAlive();
+        }
+        catch ( RemoteException e ) {
+            Log.error( "isAlive call failed : " + e );
+            System.exit( 10 );
+        }
+        return false;
+    }
+}

@@ -1,0 +1,236 @@
+/* text - this is a terminal layer that simply outputs calls to it */
+
+package p3Lib;
+
+import JakBasic.Lang;
+
+
+public final class text extends BaseDS implements DS {
+   public TopParams tp;
+   environment;
+
+   public text( ) { }
+
+   public DS_Container_Type make_container_type( TopParams t, ContParams c ) {
+      return new text_Container_Type( this, t, c );
+   }
+
+   public DS_Element_Type make_element_type() {
+      return new text_Element_Type( this );
+   }
+
+   public DS_CommonCursor_Type make_commoncursor_type() { 
+      return new text_CommonCursor_Type( this ); 
+   }
+
+   public DS_Cursor_Type make_cursor_type( Usage u ) { 
+      return new text_Cursor_Type( this, u ); 
+   }
+
+   public DrcAttributes drc( DrcAttributes d ) {
+      d.retrieval_layer_present   = false;
+      d.logical_del_layer_present = false;
+      return d;
+   } 
+
+   public void set_keyword( TOP toplayer, TopParams tph ) {
+      tp = tph; 
+      environment parent toplayer;
+   }
+
+   public Object ParseArgs( Lang.AstNode x ) {
+      Object result = null;
+
+      if (x != null  && x.arg[0] != null && x.arg[0].right == null)
+         result = ParseTE.parse(x);
+      if (result == null || !(result instanceof DS))
+         ParseTE.parseError("text layer has no arguments");
+      return this;
+   }
+}
+
+
+
+final class text_Container_Type implements DS_Container_Type {
+   ContParams cp;
+   text       _layer;
+   environment;
+
+   text_Container_Type( DS textlayer, TopParams t, ContParams c ) { 
+      // Step 1: save the arguments as we'll refer to them later
+
+      _layer    = (text) textlayer;
+      cp       = c;
+      _layer.tp = t;
+      environment parent _layer;
+   }
+
+   public void validate() {
+      // do nothing
+   }
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return mth{ /* add data members here */ }mth;
+   }
+
+   public Lang.AST_Stmt containerMethod() {
+     return stm{ /* add container constructor statements here */ }stm;
+   }
+
+   public Lang.AST_Exp is_fullMethod() {
+     Lang.AST_Exp e = exp{ false }exp;
+     return e;
+   }
+   
+   public Lang.AST_Stmt insertMethod(){
+     return stm{         }stm;
+   }
+
+   public Lang.AST_Stmt storageMethod() {
+      return stm{ /* add methods for persistent storage here */ }stm;
+   }
+
+   public Lang.AST_Stmt finishMethod() {
+      return stm{ }stm;
+   }
+   
+   public Lang.AST_Stmt openMethod() {
+      return stm{}stm;
+   }
+
+
+}
+
+
+final class text_Element_Type implements DS_Element_Type {
+   text      _layer;
+   TopParams tp;
+   environment;
+
+   text_Element_Type( DS textlayer ) {
+      _layer = (text) textlayer;
+      tp    = _layer.tp;
+      environment parent _layer;
+   }
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return mth{ }mth;
+   }
+
+   // there are no link statements to generate
+
+   public Lang.AST_Stmt link() {
+      return stm{ /* text layer */ }stm;
+   }
+
+   // there are no element relinking methods to generate
+   // note that we're forced to generate a dummy statement currently
+
+   public Lang.AST_FieldDecl relink(){
+      return mth{ /* remove later */ }mth;
+   }
+
+   // there are no element unlinking methods to generate
+
+   public Lang.AST_FieldDecl unlink(){
+      return mth{ /* remove later */ }mth;
+   }
+
+   // there are no update statements - note that this should
+   // be fixed as we can't input the actual variable names
+
+   public Lang.AST_Stmt upd( int i ) {
+      Lang.AST_QualifiedName n = (Lang.AST_QualifiedName) tp.AST_FieldName[i].clone();
+      return stm{ $id(n) = _newvalue; /* update att here */; }stm;
+   }
+
+}
+
+
+final class text_CommonCursor_Type implements DS_CommonCursor_Type {
+   text _layer;
+   environment;
+
+   text_CommonCursor_Type( DS textlayer ) {
+      _layer = (text) textlayer;
+      environment parent _layer;
+   }
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return mth{ }mth;
+   }
+
+  public Lang.AST_Stmt insertMethod() {
+      return stm{ /* insert - text */ }stm;
+   }
+
+   public Lang.AST_Stmt removeMethod() {
+      return stm{ /* remove - text */ }stm;
+   }
+
+   public Lang.AST_FieldDecl movementMethods() {
+      return mth{ }mth;
+   }
+}
+
+final class text_Cursor_Type implements DS_Cursor_Type {
+   text     _layer;
+   Lang.AST_Exp  pred;
+   environment;
+
+   text_Cursor_Type( DS textlayer, Usage u ) {
+      _layer = (text) textlayer;
+      pred  = u.predicate;
+      environment parent _layer;
+   }
+
+   public Qopt    optimize( Qopt q ) {
+      // text layer always is the retrieval layer
+      q.cost = 0;
+      q.fastest_layer = _layer;
+      return q;
+   }
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return mth{ }mth;
+   }
+
+   public Lang.AST_Stmt cursorMethod() {
+      return stm{ /* text cursor method */ }stm;
+   }
+
+   public Lang.AST_Stmt firstMethod() {
+      return stm{ /* text first method */ }stm;
+   }
+
+   public Lang.AST_Exp moreMethod() {
+      return exp{ /* text more method */ true }exp;
+   }
+
+   public Lang.AST_Stmt noMoreMethod() {
+      return stm{ /* text noMore method */; }stm;
+   }
+
+   public Lang.AST_Stmt nextMethod() {
+      return stm{ /* text next method */; }stm;
+   }
+
+   public Lang.AST_Exp lowerBound( boolean pos ) {
+      return exp{ /* lower bound */ true }exp;
+   }
+
+   public Lang.AST_Exp upperBound( boolean pos ) {
+      return exp{ /* upper bound */ true }exp;
+   }
+
+   public Lang.AST_Exp residual() {
+       Lang.AST_Exp result;
+       if (pred!=null) result = pred ;
+       else      result = exp{ true }exp;
+       return result;
+   }
+
+   public Lang.AST_Stmt removeMethod() {
+      return null; 
+   }
+}

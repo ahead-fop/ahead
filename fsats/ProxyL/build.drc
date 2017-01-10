@@ -1,0 +1,14 @@
+layer ProxyL;
+
+extern outside Int fsatsRank;
+extern outside Bool proxyPresent;
+extern outside Bool opfacPresent;
+extern inside  Bool libraries;
+
+// must be in first rank of layers
+// and must be outside opfac and mission
+
+requires outside fsatsRank == 1 and opfacPresent and missionPresent;
+provides outside proxyPresent;
+requires inside  libraries;
+

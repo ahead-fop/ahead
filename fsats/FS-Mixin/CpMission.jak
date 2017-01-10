@@ -1,0 +1,12 @@
+layer FS;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+SoUrCe RooT BasicL "C:!Java!FeatureOrientedProgramming!fsats!BasicL!CpMission.jak";
+
+/** Generic Field Artillery Element OPFAC. **/
+public State_machine CpMission extends MissionImpl {}

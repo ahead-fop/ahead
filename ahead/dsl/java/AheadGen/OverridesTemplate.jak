@@ -1,0 +1,28 @@
+layer AheadGen;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.util.*;
+import java.io.*;
+
+ // of StateGenerator
+
+// Class for the Ahead Document Descriptors
+ /** OverridesTemplate.java
+ * JEDI Project
+ * Department of Computer Sciences
+ * University of Texas at Austin
+ * @author Roberto E. Lopez-Herrejon
+ * Last Update: November 30, 2002
+ * @layer<AheadGen>
+ */
+
+public class OverridesTemplate extends DocumentDescriptor {
+
+    // Adds the bindings to the class
+    public VelocityContext 
+        addBindings( ProgramElementDocJTS parsedProgramElement, 
+                 VelocityContext context ) {
+        return context;
+    }
+}

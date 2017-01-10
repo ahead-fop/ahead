@@ -1,0 +1,78 @@
+layer FS;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+/** Add proxy to factory.   
+ */
+public class ProxyFactory {
+    private Map prototypes = new HashMap();
+    protected ProxyFactory() 
+        { { { {
+                    register( OpfacType.DIV_FSE_TAC, new DivFseProxy() );
+                    register( OpfacType.BDE_FSE, new BdeFseProxy() );
+                    register( OpfacType.BN_FSE, new BnFseProxy() );
+                    register( OpfacType.FIST, new FistProxy() );
+                    register( OpfacType.FO, new FoProxy() );
+
+                    register( OpfacType.DIVARTY_CP, new CpProxy() );
+                    register( OpfacType.DS_BDE_CP, new CpProxy() );
+                    register( OpfacType.DS_BN_CP, new CpProxy() );
+                    register( OpfacType.GS_BN_CP, new CpProxy() );
+                    register( OpfacType.R_BN_CP, new CpProxy() );
+                    register( OpfacType.MLRS_BN, new CpProxy() );
+
+                    // Added Jan. 3, 2000 - bhopkins -
+                    // in hopes of fixing "No proxy" errors.
+                    register( OpfacType.GSR_FA_PLT, new CpProxy() );
+                    register( OpfacType.GSR_BN_CP, new CpProxy() );
+                    register( OpfacType.CORPS_FSE_MAIN, new CpProxy() );
+
+                    // Added 20 Mar 2000 - bhopkins -
+                    // in hopes of fixing "Cannot create" errors.
+                    register( OpfacType.FA_PLT, new CpProxy() );
+                    register( OpfacType.MECH_FIST, new FistProxy() );
+
+                    register( OpfacType.ARM_FIST, new FistProxy() );
+                } {
+                    register( OpfacType.DS_FA_PLT, new FaPltProxy() );
+                    register( OpfacType.GS_FA_PLT, new FaPltProxy() );
+                    register( OpfacType.R_FA_PLT,  new FaPltProxy() );
+                }
+            } {
+                register( OpfacType.MTR_PLT, new MortarProxy() );
+            }
+        } {
+            register( OpfacType.MLRS_BTRY, new MlrsProxy() );
+        }
+    }
+
+    public Proxy create( String opfacName )
+         {
+        OpfacDataWrapper record = LayDown.getSelf().getOpfac( opfacName );
+        OpfacType opfacType = record==null ? null : OpfacType.fromString( record.getType() );
+        Proxy proxy = null;
+        if ( opfacType == null )
+            Log.error( "No proxy registered for type " + ( record==null ? null : record.getType() ) );
+        else
+            proxy = ( Proxy )prototypes.get( opfacType );
+
+        if( proxy == null )
+            Log.error( "No proxy registered for type " + ( record==null ? null : record.getType() ) );
+        else
+            {
+            proxy = ( Proxy )proxy.clone();
+            proxy.init( record );
+        }
+
+        return proxy;
+    }
+    
+    protected void register( OpfacType opfacType, Proxy prototype )
+        {
+        prototypes.put( opfacType, prototype );
+    }
+}

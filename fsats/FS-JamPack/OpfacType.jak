@@ -1,0 +1,96 @@
+layer FS;
+
+import laydown.*;
+
+import java.util.*;
+
+import laydown.OpfacDataWrapper;
+
+import log.Log;
+
+import fsats.util.*;
+
+public class OpfacType implements OpfacTypeInterface {
+
+    private static Vector values = new Vector();
+
+    public static final OpfacType DIV_FSE_MAIN = new OpfacType( "DIV_FSE_MAIN" );
+    public static final OpfacType DIV_FSE_TAC = new OpfacType( "DIV_FSE_TAC" );
+    public static final OpfacType BDE_FSE = new OpfacType( "BDE_FSE" );
+    public static final OpfacType BN_FSE = new OpfacType( "BN_FSE" );
+    public static final OpfacType FIST = new OpfacType( "FIST" );
+    public static final OpfacType FO = new OpfacType( "FO" );
+    public static final OpfacType DIVARTY_CF = new OpfacType( "DIVARTY_CF" );
+    public static final OpfacType DIVARTY_CP = new OpfacType( "DIVARTY_CP" );
+    public static final OpfacType DS_BDE_CP = new OpfacType( "DS_BDE_CP" );
+    public static final OpfacType DS_BN_CP = new OpfacType( "DS_BN_CP" );
+    public static final OpfacType GS_BN_CP = new OpfacType( "GS_BN_CP" );
+    public static final OpfacType R_BN_CP = new OpfacType( "R_BN_CP" );
+    public static final OpfacType MLRS_BN = new OpfacType( "MLRS_BN" );
+    public static final OpfacType GSR_FA_PLT = new OpfacType( "GSR_FA_PLT" );
+    public static final OpfacType GSR_BN_CP = new OpfacType( "GSR_BN_CP" );
+    public static final OpfacType CORPS_ARTY_CP = new OpfacType( "CORPS_ARTY_CP" );
+    public static final OpfacType CORPS_FSE_MAIN = new OpfacType( "CORPS_FSE_MAIN" );
+    public static final OpfacType FA_PLT = new OpfacType( "FA_PLT" );
+    public static final OpfacType MECH_FIST = new OpfacType( "MECH_FIST" );
+    public static final OpfacType DS_FA_PLT = new OpfacType( "DS_FA_PLT" );
+    public static final OpfacType GS_FA_PLT = new OpfacType( "GS_FA_PLT" );
+    public static final OpfacType R_FA_PLT = new OpfacType( "R_FA_PLT" );
+    public static final OpfacType MTR_PLT = new OpfacType( "MTR_PLT" );
+    public static final OpfacType MLRS_BTRY = new OpfacType( "MLRS_BTRY" );
+    public static final OpfacType MLRS_PLT = new OpfacType( "MLRS_PLT" );
+    public static final OpfacType Q_36 = new OpfacType( "Q_36" );
+    public static final OpfacType Q_37 = new OpfacType( "Q_37" );
+    public static final OpfacType Q_37_TFVAR = new OpfacType( "Q_37_TFVAR" );
+    public static final OpfacType MET_SEC = new OpfacType( "MET_SEC" );
+    public static final OpfacType ATHS = new OpfacType( "ATHS" );
+    public static final OpfacType COLT = new OpfacType( "COLT" );
+    public static final OpfacType FA_BDE_CP = new OpfacType( "FA_BDE_CP" );
+    public static final OpfacType FA_SEC = new OpfacType( "FA_SEC" );
+    public static final OpfacType MLRS_SEC = new OpfacType( "MLRS_SEC" );
+    public static final OpfacType ATHS_TFVAR = new OpfacType( "ATHS_TFVAR" );
+    public static final OpfacType FO_TFVAR = new OpfacType( "FO_TFVAR" );
+    public static final OpfacType MECH_FIST_TFVAR =
+           new OpfacType( "MECH_FIST_TFVAR" );
+    public static final OpfacType COLT_TFVAR = new OpfacType( "COLT_TFVAR" );
+    public static final OpfacType ARM_FIST_TFVAR =
+           new OpfacType( "ARM_FIST_TFVAR" );
+    public static final OpfacType JSTARS = new OpfacType( "JSTARS" );
+    public static final OpfacType Q_36_TFVAR = new OpfacType( "Q_36_TFVAR" );
+    public static final OpfacType ARM_FIST = new OpfacType( "ARM_FIST" );
+
+    public static MessageType fromInt( int index )
+        {
+        return 0<=index && index<values.size() ? ( MessageType )values.elementAt( index ) : null;
+    }
+
+    public static OpfacType fromString( String name )
+        {
+        OpfacType result = null;
+
+        for ( int i=0; i<values.size() && result==null; ++i )
+            if ( values.elementAt( i ).toString().equals( name ) )
+                result = ( OpfacType )values.elementAt( i );
+
+        return result;
+    }
+    private int index;
+    private String name;
+
+    protected OpfacType( String name )
+        {
+        index = values.size();
+        this.name = name;
+        values.add( this );
+    }
+
+    public int toInt()
+        {
+        return index;
+    }
+
+    public String toString()
+        {
+        return name;
+    }
+}

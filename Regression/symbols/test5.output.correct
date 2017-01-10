@@ -1,0 +1,270 @@
+Binding of myFunc in program : MyPackage.outerRefined.memberClass myFunc(float)
+    float bar;
+Binding of Build in myFunc failed
+Binding of Cast to outerRefined in myFunc : Class: outerRefined extends MyPackage.outer
+    Class: memberClass
+        MyPackage.outerRefined.memberClass myFunc(float)
+            float bar;
+        String foo;
+        outerRefined x;
+    Class: nestedTopLevel
+        String string;
+    int bar;
+Binding of new outer() in myFunc : Class: outer
+    double baz;
+    float bar;
+Binding of outer.class in myFunc : Class: Class implements java.io.Serializable
+    boolean isArray()
+    boolean isAssignableFrom(java.lang.Class)
+    boolean isInstance(java.lang.Object)
+    boolean isInterface()
+    boolean isPrimitive()
+    int getModifiers()
+    java.io.InputStream getResourceAsStream(java.lang.String)
+    java.lang.Class forName(java.lang.String)
+    java.lang.Class forName(java.lang.String, boolean, java.lang.ClassLoader)
+    java.lang.Class forName0(java.lang.String, boolean, java.lang.ClassLoader)
+    java.lang.Class getComponentType()
+    java.lang.Class getDeclaringClass()
+    java.lang.Class getPrimitiveClass(java.lang.String)
+    java.lang.Class getSuperclass()
+    java.lang.ClassLoader getClassLoader()
+    java.lang.ClassLoader getClassLoader0()
+    java.lang.Class[] getClasses()
+    java.lang.Class[] getDeclaredClasses()
+    java.lang.Class[] getDeclaredClasses0()
+    java.lang.Class[] getInterfaces()
+    java.lang.Object newInstance()
+    java.lang.Object newInstance0()
+    java.lang.Object[] getSigners()
+    java.lang.Package getPackage()
+    java.lang.String getName()
+    java.lang.String resolveName(java.lang.String)
+    java.lang.String toString()
+    java.lang.reflect.Constructor getConstructor(java.lang.Class[])
+    java.lang.reflect.Constructor getConstructor0(java.lang.Class[], int)
+    java.lang.reflect.Constructor getDeclaredConstructor(java.lang.Class[])
+    java.lang.reflect.Constructor[] getConstructors()
+    java.lang.reflect.Constructor[] getConstructors0(int)
+    java.lang.reflect.Constructor[] getDeclaredConstructors()
+    java.lang.reflect.Field getDeclaredField(java.lang.String)
+    java.lang.reflect.Field getField(java.lang.String)
+    java.lang.reflect.Field getField0(java.lang.String, int)
+    java.lang.reflect.Field[] getDeclaredFields()
+    java.lang.reflect.Field[] getFields()
+    java.lang.reflect.Field[] getFields0(int)
+    java.lang.reflect.Method getDeclaredMethod(java.lang.String, java.lang.Class[])
+    java.lang.reflect.Method getMethod(java.lang.String, java.lang.Class[])
+    java.lang.reflect.Method getMethod0(java.lang.String, java.lang.Class[], int)
+    java.lang.reflect.Method[] getDeclaredMethods()
+    java.lang.reflect.Method[] getMethods()
+    java.lang.reflect.Method[] getMethods0(int)
+    java.net.URL getResource(java.lang.String)
+    java.security.ProtectionDomain getProtectionDomain()
+    java.security.ProtectionDomain getProtectionDomain0()
+    void <clinit>()
+    void <init>()
+    void checkMemberAccess(int, java.lang.ClassLoader)
+    void registerNatives()
+    void setProtectionDomain0(java.security.ProtectionDomain)
+    void setSigners(java.lang.Object[])
+    java.io.ObjectStreamField[] serialPersistentFields;
+    java.lang.RuntimePermission getPDperm;
+    java.security.ProtectionDomain allPermDomain;
+    long serialVersionUID;
+Binding of outerRefined.this.bar in myFunc : int bar;
+Binding of x.new memberClass() in myFunc : Class: memberClass
+    MyPackage.outerRefined.memberClass myFunc(float)
+        float bar;
+    String foo;
+    outerRefined x;
+Binding of bar[5] in myFunc : float bar;
+Binding of myFunc(0.4).foo in myFunc : String foo;
+*** SymbolTable ***
+
+Package: DEFAULT_PACKAGE
+    Class: boolean
+    Class: byte
+    Class: char
+    Class: double
+    Class: float
+    Class: int
+    Class: long
+    Class: short
+    Class: void
+
+    Package: MyPackage
+        Class: outer
+            double baz;
+            float bar;
+        Class: outerRefined extends MyPackage.outer
+            Class: memberClass
+                MyPackage.outerRefined.memberClass myFunc(float)
+                    float bar;
+                String foo;
+                outerRefined x;
+            Class: nestedTopLevel
+                String string;
+            int bar;
+
+    Package: java
+
+        Package: java.io
+            Class: Serializable
+
+        Package: java.lang
+            Class: Class implements java.io.Serializable
+                boolean isArray()
+                boolean isAssignableFrom(java.lang.Class)
+                boolean isInstance(java.lang.Object)
+                boolean isInterface()
+                boolean isPrimitive()
+                int getModifiers()
+                java.io.InputStream getResourceAsStream(java.lang.String)
+                java.lang.Class forName(java.lang.String)
+                java.lang.Class forName(java.lang.String, boolean, java.lang.ClassLoader)
+                java.lang.Class forName0(java.lang.String, boolean, java.lang.ClassLoader)
+                java.lang.Class getComponentType()
+                java.lang.Class getDeclaringClass()
+                java.lang.Class getPrimitiveClass(java.lang.String)
+                java.lang.Class getSuperclass()
+                java.lang.ClassLoader getClassLoader()
+                java.lang.ClassLoader getClassLoader0()
+                java.lang.Class[] getClasses()
+                java.lang.Class[] getDeclaredClasses()
+                java.lang.Class[] getDeclaredClasses0()
+                java.lang.Class[] getInterfaces()
+                java.lang.Object newInstance()
+                java.lang.Object newInstance0()
+                java.lang.Object[] getSigners()
+                java.lang.Package getPackage()
+                java.lang.String getName()
+                java.lang.String resolveName(java.lang.String)
+                java.lang.String toString()
+                java.lang.reflect.Constructor getConstructor(java.lang.Class[])
+                java.lang.reflect.Constructor getConstructor0(java.lang.Class[], int)
+                java.lang.reflect.Constructor getDeclaredConstructor(java.lang.Class[])
+                java.lang.reflect.Constructor[] getConstructors()
+                java.lang.reflect.Constructor[] getConstructors0(int)
+                java.lang.reflect.Constructor[] getDeclaredConstructors()
+                java.lang.reflect.Field getDeclaredField(java.lang.String)
+                java.lang.reflect.Field getField(java.lang.String)
+                java.lang.reflect.Field getField0(java.lang.String, int)
+                java.lang.reflect.Field[] getDeclaredFields()
+                java.lang.reflect.Field[] getFields()
+                java.lang.reflect.Field[] getFields0(int)
+                java.lang.reflect.Method getDeclaredMethod(java.lang.String, java.lang.Class[])
+                java.lang.reflect.Method getMethod(java.lang.String, java.lang.Class[])
+                java.lang.reflect.Method getMethod0(java.lang.String, java.lang.Class[], int)
+                java.lang.reflect.Method[] getDeclaredMethods()
+                java.lang.reflect.Method[] getMethods()
+                java.lang.reflect.Method[] getMethods0(int)
+                java.net.URL getResource(java.lang.String)
+                java.security.ProtectionDomain getProtectionDomain()
+                java.security.ProtectionDomain getProtectionDomain0()
+                void <clinit>()
+                void <init>()
+                void checkMemberAccess(int, java.lang.ClassLoader)
+                void registerNatives()
+                void setProtectionDomain0(java.security.ProtectionDomain)
+                void setSigners(java.lang.Object[])
+                java.io.ObjectStreamField[] serialPersistentFields;
+                java.lang.RuntimePermission getPDperm;
+                java.security.ProtectionDomain allPermDomain;
+                long serialVersionUID;
+            Class: Object
+                boolean equals(java.lang.Object)
+                int hashCode()
+                java.lang.Class getClass()
+                java.lang.Object clone()
+                java.lang.String toString()
+                void <clinit>()
+                void <init>()
+                void finalize()
+                void notify()
+                void notifyAll()
+                void registerNatives()
+                void wait()
+                void wait(long)
+                void wait(long, int)
+            Class: String implements java.io.Serializable, java.lang.Comparable
+                Class: CaseInsensitiveComparator implements java.io.Serializable, java.util.Comparator
+                    int compare(java.lang.Object, java.lang.Object)
+                    void <init>()
+                    void <init>(java.lang.String$1)
+                    long serialVersionUID;
+                boolean endsWith(java.lang.String)
+                boolean equals(java.lang.Object)
+                boolean equalsIgnoreCase(java.lang.String)
+                boolean regionMatches(boolean, int, java.lang.String, int, int)
+                boolean regionMatches(int, java.lang.String, int, int)
+                boolean startsWith(java.lang.String)
+                boolean startsWith(java.lang.String, int)
+                byte[] getBytes()
+                byte[] getBytes(java.lang.String)
+                byte[] getBytes(sun.io.CharToByteConverter)
+                char charAt(int)
+                char[] toCharArray()
+                int compareTo(java.lang.Object)
+                int compareTo(java.lang.String)
+                int compareToIgnoreCase(java.lang.String)
+                int hashCode()
+                int indexOf(int)
+                int indexOf(int, int)
+                int indexOf(java.lang.String)
+                int indexOf(java.lang.String, int)
+                int lastIndexOf(int)
+                int lastIndexOf(int, int)
+                int lastIndexOf(java.lang.String)
+                int lastIndexOf(java.lang.String, int)
+                int length()
+                java.lang.String concat(java.lang.String)
+                java.lang.String copyValueOf(char[])
+                java.lang.String copyValueOf(char[], int, int)
+                java.lang.String intern()
+                java.lang.String replace(char, char)
+                java.lang.String substring(int)
+                java.lang.String substring(int, int)
+                java.lang.String toLowerCase()
+                java.lang.String toLowerCase(java.util.Locale)
+                java.lang.String toString()
+                java.lang.String toUpperCase()
+                java.lang.String toUpperCase(java.util.Locale)
+                java.lang.String trim()
+                java.lang.String valueOf(boolean)
+                java.lang.String valueOf(char)
+                java.lang.String valueOf(char[])
+                java.lang.String valueOf(char[], int, int)
+                java.lang.String valueOf(double)
+                java.lang.String valueOf(float)
+                java.lang.String valueOf(int)
+                java.lang.String valueOf(java.lang.Object)
+                java.lang.String valueOf(long)
+                sun.io.ByteToCharConverter getBTCConverter(java.lang.String)
+                sun.io.CharToByteConverter getCTBConverter(java.lang.String)
+                void <clinit>()
+                void <init>()
+                void <init>(byte[])
+                void <init>(byte[], int)
+                void <init>(byte[], int, int)
+                void <init>(byte[], int, int, int)
+                void <init>(byte[], int, int, java.lang.String)
+                void <init>(byte[], int, int, sun.io.ByteToCharConverter)
+                void <init>(byte[], java.lang.String)
+                void <init>(char[])
+                void <init>(char[], int, int)
+                void <init>(int, int, char[])
+                void <init>(java.lang.String)
+                void <init>(java.lang.StringBuffer)
+                void getBytes(int, int, byte[], int)
+                void getChars(int, int, char[], int)
+                char[] value;
+                int count;
+                int hash;
+                int offset;
+                java.io.ObjectStreamField[] serialPersistentFields;
+                java.lang.ThreadLocal btcConverter;
+                java.lang.ThreadLocal ctbConverter;
+                java.util.Comparator CASE_INSENSITIVE_ORDER;
+                long serialVersionUID;
+*** End SymbolTable ***

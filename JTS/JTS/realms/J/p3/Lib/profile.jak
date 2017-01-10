@@ -1,0 +1,843 @@
+/* profile
+ * this layer collects information about the frequency of different operations 
+ */
+
+
+package p3Lib;
+
+import JakBasic.Lang;
+
+public final class profile extends BaseDS implements DS {
+  
+  public static String DEFAULT_FILENAME = "pro";
+  public TopParams tp;	  
+  environment  cpt_insert,cpt_delete,cpt_cur_used;
+   
+  //name of the file in which the results are kept
+  public String			     	filename;
+  public Lang.AST_Exp           filenm;
+  public Lang.AST_Exp			numb_data; //number of data members
+  
+  
+  public profile( DS lowerlevel ) { 
+    lower = lowerlevel;
+  }
+  
+  public profile( ) { }
+  
+  
+  public DS_Container_Type make_container_type( TopParams t, ContParams c ) {
+    return new profile_Container_Type( this, t, c );
+  }
+  
+  
+  public DS_Element_Type make_element_type( ) {
+    return new profile_Element_Type( this );
+  }
+  
+  
+  public DS_CommonCursor_Type make_commoncursor_type() {
+    return new profile_CommonCursor_Type( this );
+   }
+  
+  
+  public DS_Cursor_Type make_cursor_type( Usage u ) { 
+    return new profile_Cursor_Type( this, u ); 
+  }
+  
+  
+  
+  public DrcAttributes drc( DrcAttributes d ) {
+    // the same key.  If so, flag the error otherwise remember
+    // the annotation
+    
+    d.test_and_set_annotation("profile","----");
+    d.check_annotation("profile", " ");
+    
+    
+    // test preconditions - if error, make primitive attempt at error recovery
+    // profile is not below topmost layers
+    if (d.below_topmost_layers) {
+      DrcAttributes.DrcError("profile below " + d.below_topmost_set);
+    }
+    d = lower.drc(d);
+    
+    // test prerequiste that there be a retrieval layer beneath
+    if (!d.retrieval_layer_present) {
+      DrcAttributes.DrcError( "no retrieval layer beneath profile");
+    }
+    return d;
+    
+  } 
+  
+  
+  public void set_keyword( TOP toplayer, TopParams tph ) {
+    tp = tph;     
+    environment parent toplayer;
+    lower.set_keyword( toplayer, tp );
+  }
+  
+  
+  public Object ParseArgs( Lang.AstNode x ) {
+    // we expect two arguments for this layer the filename 
+    // and the following layers
+    
+    Object result = null;
+    
+    if (x != null && x.arg[0] != null && x.arg[0].right != null
+	&& x.arg[0].right.right == null) {
+      if (x.arg[0].arg[0].arg[0] instanceof Lang.AST_QualifiedName)
+	filename = ((Lang.AST_QualifiedName) x.arg[0].arg[0].arg[0]).GetName();
+      else 
+	ParseTE.parseError("profile layer expecting first argument as file name");
+      result = ParseTE.parse(x.arg[0].right.arg[0]);
+      if (result == null || !(result instanceof DS))
+	ParseTE.parseError("profile layer 2nd argument should be of type DS");
+    }
+    else ParseTE.parseError("profile layer expecting two arguments : filename DS");
+    filenm = Lang.Literal.Make("\"" + filename + "\""); 
+    lower = (DS) result;
+    return this;
+  }
+}
+
+
+
+
+final class profile_Container_Type implements DS_Container_Type {
+  ContParams        cp;
+  profile             _layer;
+  DS_Container_Type lower;
+  environment;
+  
+  profile_Container_Type( DS profilelayer, TopParams t, ContParams c ) { 
+  
+    // Step 1: save the arguments as we'll refer to them later
+    _layer    = (profile) profilelayer;
+    cp       = c;
+    _layer.tp = t;
+    environment parent _layer;
+    
+    // Step 2: create chain of lower level containers
+    lower = _layer.lower.make_container_type( t, cp );
+  }
+  
+  public void validate() {
+    //number of data members
+    _layer.numb_data = Lang.Literal.Make(_layer.tp.NFields);
+    //We check on the file in the retrieving data method
+    lower.validate();
+  }
+  
+  
+  public Lang.AST_FieldDecl dataMembers() {
+    
+	int            	 numb; 
+	Lang.AST_Exp     number;  
+    numb           = _layer.tp.NFields;
+	number         = Lang.Literal.Make(numb);
+	
+	
+	
+    return mth{
+      static public int cpt_insert,cpt_delete; 
+      static public int num= -1;
+      static public int i;
+      static public java.io.BufferedReader din;
+      
+      static public String filenom = $exp(_layer.filenm) + ".sts";
+	  static public String file    = $exp(_layer.filenm) + ".wl" ;
+      
+      //array of counters for the cursors
+      static public int cpt []={1};//the size is changed after
+      
+	  static public int size = $exp(number);
+      //array of booleans to indicate if there is an update on that particular field
+	  static public int up_date[] = new int [size];
+	  
+	  //array of counters for updates
+	  static public int count_update[] = new int [size];
+	  
+	  //name of cursor.sts
+	  static public String name_of_files[] = new String [1];
+      
+      //array of predicate and order given for cursors, size will be changed after
+      static public String order [] = new String [1];
+      
+      static public int count = 0;
+	  static public int total = 0;
+      $mth(lower.dataMembers())
+    }mth;
+  }
+  
+  
+  public Lang.AST_Stmt containerMethod() {
+    return stm{
+      try{ 
+			String lineBuf;
+			int number_tot;
+			int tot_size = 0;
+			java.util.StringTokenizer st;
+			java.io.FileInputStream fin = new java.io.FileInputStream(filenom);
+			din = new java.io.BufferedReader(new java.io.InputStreamReader(fin));
+	
+	
+			//The file has the following structure :|statistics or total number(ins,del,upd,use of curs)
+			//                   					|cpt_insert
+			//					                    |cpt_delete
+			//					                    |update_field 1
+			//					                    |.....
+
+			din.mark(10000);
+			lineBuf = din.readLine();
+			st = new java.util.StringTokenizer(lineBuf,"|");
+			String first_line = st.nextToken();
+
+			//read the number of lines so the # of cursors can be calculated
+			for(;;){
+			  lineBuf = din.readLine();
+			  if ( lineBuf == null ) {  	
+					break;
+				  }
+			  if (lineBuf.length() > 0 && lineBuf.charAt(0) == '|') {
+					count++;
+				  }    
+			} 
+			din.reset();
+			lineBuf = din.readLine();
+			num = count;	
+
+			if (first_line.trim().compareTo("statistics")== 0)
+			{
+			 tot_size = 2;
+			 total = num + size;
+			}
+			else 
+			{
+			 st = new java.util.StringTokenizer(lineBuf,"|");
+			 number_tot = Integer.parseInt(st.nextToken());
+			 tot_size = 2 + size;
+			 num  = number_tot - size;
+			 total = number_tot;
+			} 
+	
+	
+			//temporary arrays to define the size
+			int    cpt_temp   [] =  new int [num-2];
+			String cpt_temp_2 [] = 	new String [num-2];
+			String cpt_temp_3 [] = 	new String [num-2];
+			String cpt_temp_4 [] =  new String [num-2];
+
+			cpt = cpt_temp;//new size for the array of counters for cpt_cur_used and predicates
+			order = cpt_temp_3;
+			name_of_files = cpt_temp_4;
+			for (i=0; i< num-2 ; i++){
+				 cpt[i]= 0;
+				 order[i]= " ";
+				 name_of_files[i]= " ";
+			}
+			i = 2;
+
+			for (int j=0; j< size ; j++){
+				count_update[j]= 0;//no stat
+				up_date[j]= 0;//no updates
+			}
+
+
+			if (num <= 0)
+			  throw new java.io.IOException();
+	
+			//read the counters for insert and delete actions
+
+			for (int k = 0; k < tot_size; k++){
+			  lineBuf= din.readLine();
+			  st = new java.util.StringTokenizer(lineBuf,"|");
+			  if (k==0){
+				cpt_insert = Integer.parseInt(st.nextToken());
+			  }
+			  else {  
+				if (k == 1)
+				   cpt_delete = Integer.parseInt(st.nextToken());
+				else 
+				   count_update[k-2]= Integer.parseInt(st.nextToken());			  			  
+				   }    
+			}
+			fin.close();
+	
+    } catch (java.io.IOException ioe) {
+	System.err.println("Error : " + ioe);
+	System.exit(1);
+    }
+      $stm(lower.containerMethod());
+    }stm;
+  }
+  
+  
+  public Lang.AST_Exp is_fullMethod() {
+    return lower.is_fullMethod();
+  }
+  
+  public Lang.AST_Stmt insertMethod() {
+    return stm{
+      cpt_insert++;
+      $stm(lower.insertMethod());
+    }stm;
+  }
+  
+  public Lang.AST_Stmt storageMethod() {
+  //the close method at this level ensures that the value of counters are written back to 
+  // a file and it creates the workload file.
+  
+  String            	 name;
+  String             	 type; 
+  Lang.AST_Exp      	 data;
+  Lang.AstProperties     props; 
+  Lang.AST_QualifiedName fname;
+  Lang.AST_QualifiedName ftype;
+  String            	 Line = "";    
+  Lang.AST_Exp      	 typequat = null;
+  int               	 ind,last, First_parent,nextind2,last2,beginIndex2,deb2;
+  String            	 equat,anc2;
+  Lang.AST_Exp           updte;
+  String                 upd = " ";
+
+    
+  	
+	
+  //we retrieve the data members name and types
+    for (int i = 0; i < _layer.tp.NFields; i++ ) 
+	{
+        //transform the AST_QualifiedName into a String
+        fname    = (Lang.AST_QualifiedName)_layer.tp.AST_FieldName[i].clone();
+        ftype    = (Lang.AST_QualifiedName)_layer.tp.AST_FieldType[i].clone();
+        props    = Lang.AstProperties.open();
+        fname.print(props);
+        name     = props.close();
+        props    = Lang.AstProperties.open();
+        ftype.print(props);
+        type     = props.close();
+			
+        //we create the update worklaod output		
+        upd = upd + "          update " + fname + ";";
+     
+        //we retrieve the type equation
+	  
+        ind      = (_layer.tp.TypeEquat).indexOf(',',0);
+        last     = (_layer.tp.TypeEquat).lastIndexOf(')');
+	    First_parent = (_layer.tp.TypeEquat).indexOf('(',0);
+        if ( (_layer.tp.TypeEquat).substring(0,First_parent).trim().compareTo("profile")== 0)
+	  	     equat    = (_layer.tp.TypeEquat).substring(ind+1,last);
+		else 
+		     equat    = (_layer.tp.TypeEquat).substring(0,last+1);
+   
+        //search for " and add one if necessary so that we have a correct string  
+        nextind2 = equat.indexOf("\"",0);
+        beginIndex2 = 0;
+        last2 = equat.lastIndexOf("\"",equat.length()-1);
+      
+        while ((nextind2!= -1) && (nextind2<=last2)) {
+	       anc2 = equat.substring(beginIndex2,nextind2) ;
+	       equat = anc2  + "\\" + "\"" + equat.substring(nextind2+1);
+	       deb2 = nextind2 + 2;
+	       nextind2 = equat.indexOf("\"",deb2);
+	       last2 = equat.lastIndexOf("\"",equat.length());
+        }			
+
+        typequat = Lang.Literal.Make("\"" + equat + "\"");
+      
+        //if there is a dot in the type we only keep the last part of the typename
+        //that is java.lang.String becomes String
+        if (type.lastIndexOf(".")!= -1)
+	        type = type.substring(type.lastIndexOf(".")+1);
+        Line = Line + "          " + name + "            " + type + "       1;";
+    } 	 
+    
+    Line = "\"" + Line + "\"";
+    data = Lang.Literal.Make(Line);
+	updte = Lang.Literal.Make ("\"" + upd + "\"");		
+
+	
+	
+    return stm{
+	int card = 0;
+	card = cardpers;
+	$stm(lower.storageMethod()); 
+	try {
+		  java.io.FileOutputStream fout = new java.io.FileOutputStream(filenom);
+		  java.io.BufferedWriter out = 
+		    new java.io.BufferedWriter (new java.io.OutputStreamWriter (fout));
+		  
+		  int counter;
+		  String stringtoWrite = "|" + total;
+		  out.write(stringtoWrite,0,stringtoWrite.length());
+		  out.newLine();
+		  out.flush();	
+		  for (int j=0;j< size+2;j++){
+		    if (j==0) counter = cpt_insert;
+		    else if (j==1) counter = cpt_delete;
+		    else {
+				   counter = count_update[j-2];
+				 
+				 }
+		    stringtoWrite = "|" + counter;		 
+		    out.write(stringtoWrite,0,stringtoWrite.length());
+		    out.newLine(); 
+		    out.flush();	
+		  }
+		  out.close();
+		  din.close();
+		  fout.close();
+		} 
+		catch(java.io.IOException ioe) {
+		  System.err.println("Error : " + ioe);
+		  System.exit(1);
+		}
+      
+    try {
+	     for (int p = 0;p<i-2;p++)
+		 {
+		  java.io.FileOutputStream fout = new java.io.FileOutputStream(name_of_files[p]);
+		  java.io.BufferedWriter out = 
+		        new java.io.BufferedWriter (new java.io.OutputStreamWriter (fout));
+		  
+		  int counter;
+		  counter = cpt[p];
+		  String stringtoWrite = "|" + counter;		 
+		  out.write(stringtoWrite,0,stringtoWrite.length());
+		  out.newLine(); 
+		  out.flush();	
+		
+		  out.close();
+		  din.close();
+		  fout.close();
+		 }
+		} 
+		catch(java.io.IOException ioe) {
+		  System.err.println("Error : " + ioe);
+		  System.exit(1);
+		}
+
+
+    //create a file that can be used as an input for the pdw	
+    //open and write the workload data in the file 	 
+    try {
+ 	     java.io.FileOutputStream fworkload = new java.io.FileOutputStream(file);
+ 	     java.io.BufferedWriter outworkload = 
+ 	      new java.io.BufferedWriter (new java.io.OutputStreamWriter (fworkload));
+ 	     int    start1,start2,start;
+ 	     int    index1,index2;
+ 	     int    counter;
+	     String update_st;
+ 	  
+ 	     String stringtoWrite = "cardinality = " + card + ";";
+ 	     outworkload.write(stringtoWrite,0,stringtoWrite.length());
+ 	     outworkload.newLine();
+ 	     outworkload.newLine();
+ 	     outworkload.flush();
+ 	     stringtoWrite = "data = { ";
+ 	     outworkload.write(stringtoWrite,0,stringtoWrite.length());
+ 	     outworkload.newLine();
+ 	     outworkload.flush();
+ 	     stringtoWrite = "#         ID           TYPE        CARDINALITY ";
+ 	     outworkload.write(stringtoWrite,0,stringtoWrite.length());
+ 	     outworkload.newLine();
+ 	     outworkload.flush();
+ 	     stringtoWrite = "#---------------------------------------------------";
+ 	     outworkload.write(stringtoWrite,0,stringtoWrite.length());
+ 	     outworkload.newLine();
+ 	     outworkload.flush();
+ 	   
+ 	     //add the data information here line by line
+ 	     index1 = $exp(data).indexOf(';',0);
+ 	     start = 0;
+ 	     while(index1 != -1){
+ 	       stringtoWrite = $exp(data).substring(start,index1+1);
+ 	       outworkload.write(stringtoWrite,0,stringtoWrite.length());
+ 	       outworkload.newLine();
+ 	       outworkload.flush();
+ 	       start = index1 +1;
+ 	       index1=$exp(data).indexOf(';',index1+1);
+ 	     }
+ 	     stringtoWrite = "  }";
+ 	     outworkload.write(stringtoWrite,0,stringtoWrite.length());
+ 	     outworkload.newLine();
+ 	     outworkload.newLine();
+ 	     outworkload.flush();
+ 	     stringtoWrite = "workload = { ";
+ 	     outworkload.write(stringtoWrite,0,stringtoWrite.length());
+ 	     outworkload.newLine();
+ 	     outworkload.flush();
+ 	     stringtoWrite = "#         CATEGORY          FREQUENCY ";
+ 	     outworkload.write(stringtoWrite,0,stringtoWrite.length());
+ 	     outworkload.newLine();
+ 	     outworkload.flush();
+ 	     stringtoWrite = "#---------------------------------------------------";
+ 	     outworkload.write(stringtoWrite,0,stringtoWrite.length());
+ 	     outworkload.newLine();
+ 	     outworkload.flush();
+ 	     
+ 	     //add workload here
+ 	     stringtoWrite = "           insertion        " + cpt_insert + ";";
+ 	     outworkload.write(stringtoWrite,0,stringtoWrite.length());
+ 	     outworkload.newLine();
+ 	     outworkload.flush();
+ 	     stringtoWrite = "           deletion        " + cpt_delete + ";";
+ 	     outworkload.write(stringtoWrite,0,stringtoWrite.length());
+ 	     outworkload.newLine();
+ 	     outworkload.flush();
+ 	    
+ 	     //add for each cursor the counter associated with the predicates
+      
+	     update_st = $exp(updte);
+         index1 = update_st.indexOf(';',0); 
+	     start = 0;
+ 	
+	     for (int j=0;j < size;j++)
+	     {
+	      counter = count_update[j];
+	      //writes update in file but has to separate them before and check if the boolean is true
+	      if (index1 != -1)
+		  {
+	    	if ((up_date[j]==1) || (counter != 0)){
+	           stringtoWrite = update_st.substring(start,index1) + "     " + counter + ";" ;
+	           outworkload.write(stringtoWrite,0,stringtoWrite.length());
+	           outworkload.newLine();
+	           outworkload.flush();
+	   	    }
+	        start = index1 +1;
+  	        index1= update_st.indexOf(';',index1+1);
+ 	       } 
+	      }
+	
+	      for (int j=2;j< num;j++){
+ 	        counter = cpt[j-2];
+ 	        index2 = order[j-2].indexOf(';',0);
+ 	        start2 = 0;
+ 	        //writes order by and predicate if there exists
+ 	        if (index2 != -1){
+ 	            stringtoWrite = "ret        " + order[j-2].substring(start2,index2) + "     " + counter + ";" ;
+ 	            outworkload.write(stringtoWrite,0,stringtoWrite.length());
+ 	            outworkload.newLine();
+ 	            outworkload.flush();
+ 	         }
+ 	       }
+ 
+ 	       stringtoWrite = "  }";
+ 	       outworkload.write(stringtoWrite,0,stringtoWrite.length());
+ 	       outworkload.newLine();
+ 	       outworkload.newLine();
+ 	       outworkload.flush();
+ 	       stringtoWrite = " Equation = " + $exp(typequat) + ";";
+ 	       outworkload.write(stringtoWrite,0,stringtoWrite.length());
+ 	       outworkload.newLine();
+ 	       outworkload.flush();		 
+ 	       outworkload.close();
+ 	       fworkload.close();
+ 	  } 
+ 	  catch(java.io.IOException ioe) {
+ 	    System.err.println("Error : " + ioe);
+ 	    System.exit(1);
+ 	  }
+     	
+  }stm;  
+  
+    
+  }
+  
+    
+  public Lang.AST_Stmt finishMethod(){
+   return lower.finishMethod();
+  }
+  
+  public Lang.AST_Stmt openMethod(){
+   return lower.openMethod();
+  } 
+  
+}
+
+
+
+
+final class profile_Element_Type implements DS_Element_Type {
+  profile _layer;
+  DS_Element_Type lower;
+  environment;
+  
+  
+  profile_Element_Type( DS profilelayer ) {
+    _layer = (profile) profilelayer;
+    lower = _layer.lower.make_element_type();
+    environment parent _layer;
+  }
+  
+  // generate data members of transformed element class 
+  
+  public Lang.AST_FieldDecl dataMembers() {
+    return mth{
+      
+      $mth(lower.dataMembers())
+    }mth;
+  }
+  
+  
+  // link statements as part of element constructors
+  public Lang.AST_Stmt link() {
+    return lower.link(); //nothing to add at this point    
+  }
+  
+  
+  // link to head of the list
+  public Lang.AST_FieldDecl relink() {
+    return lower.relink();//nothing to add at this point
+  }
+  
+  
+  // remove from list
+  public Lang.AST_FieldDecl unlink() {
+    return lower.unlink();
+  }
+  
+  
+  // can update attributes at will
+  
+  public Lang.AST_Stmt upd( int fieldno ) {
+    Lang.AST_Exp    num;
+	num = Lang.Literal.Make(fieldno);
+    
+    return stm{
+           cont.count_update[$exp(num)]++;
+   		   $stm(lower.upd( fieldno ));
+    }stm;
+}
+}
+
+
+final class profile_CommonCursor_Type implements DS_CommonCursor_Type {
+  profile _layer;
+  DS_CommonCursor_Type lower;
+  environment;
+  
+  profile_CommonCursor_Type( DS profilelayer ) {
+    _layer = (profile) profilelayer;
+    lower = _layer.lower.make_commoncursor_type();
+    environment parent _layer;
+  }
+  
+  public Lang.AST_FieldDecl dataMembers() {
+    return lower.dataMembers();
+  }
+  
+  public Lang.AST_Stmt insertMethod(){
+  return stm{
+        cont.cpt_insert++;
+		$stm(lower.insertMethod());
+    }stm;
+  }
+  
+  public Lang.AST_Stmt removeMethod() {
+    return stm{
+      //each time a remove operation is performed the counter is increased
+      cont.cpt_delete++;
+      $stm(lower.removeMethod());
+    }stm;
+  }
+  
+  public Lang.AST_FieldDecl movementMethods() {
+    return lower.movementMethods();
+  }
+}
+
+
+final class profile_Cursor_Type implements DS_Cursor_Type {
+  profile          _layer;
+  DS_Cursor_Type  lower;
+  Usage           us;
+  environment;
+  
+  profile_Cursor_Type( DS profilelayer, Usage u ) {
+    us = u;
+    _layer = (profile) profilelayer;
+    lower = _layer.lower.make_cursor_type( u );
+    environment parent _layer;
+  }
+  
+  
+  public Qopt optimize( Qopt q ) {
+    q = lower.optimize(q);
+    return q;
+  }
+  
+  public Lang.AST_FieldDecl dataMembers() {
+    return mth{
+      static public int cpt_cur_used;
+	  static int        version = 1;//allows to count the # of instances of a class??
+      static int        indice  = 0;//allow us to distinguish cursors            
+      $mth(lower.dataMembers( ))
+  
+    }mth;
+  }
+  
+  public Lang.AST_Stmt cursorMethod() {
+    Lang.AstProperties    propset;
+    String			      Result;
+    String                Result2,anc;
+    Lang.AST_Exp          ord;
+    Lang.AST_Exp          temp;
+    Lang.AST_Exp          updte;
+	Lang.AST_Exp          name;
+    int                   index,deb,nextind,beginIndex,last;
+    String                update_stg = " " ;
+	String                name_of_curs;
+	
+	
+	//get name of cursor
+	name_of_curs = "\"" + us.cursName + "\"" ;
+	name = Lang.Literal.Make(name_of_curs);
+
+    for (int j=0;j<_layer.tp.NFields;j++) {
+      if (us.upd[j]) {
+	   update_stg = update_stg + "1;";
+	  }
+	  else 
+	   update_stg = update_stg + "0;";
+    }
+	update_stg = "\"" + update_stg + "\"" ;
+	updte = Lang.Literal.Make(update_stg);
+    
+    //we build the predicate/order by string to write
+    propset = Lang.AstProperties.open();
+	temp = us.predicate;	
+	
+	if (temp == null) Result = "";
+    else {
+      temp.print(propset);
+      Result = propset.close();
+      
+      //search for " and add one if necessary so that we have a correct string  
+      nextind = Result.indexOf("\"",0);
+      beginIndex=0;
+      last =Result.lastIndexOf("\"",Result.length()-1);
+      
+      while ((nextind!= -1) && (nextind<=last)) {
+	    anc = Result.substring(beginIndex,nextind) ;
+ 	    Result = anc  + "\\" + "\"" + Result.substring(nextind+1);
+	    deb = nextind+2;
+	    nextind = Result.indexOf("\"",deb);
+	    last =Result.lastIndexOf("\"",Result.length());
+      }
+      //we end up with a correct string for the predicate
+      Result =  "where " + Result + " ";  
+    }
+    
+    if (us.order == -1) {
+	   if (temp == null) {
+	      ord =  Lang.Literal.Make("\"" + ";" + "\"");
+	   }
+	   else ord = Lang.Literal.Make("\"" + Result + ";" + "\"");
+    }
+    else {
+      index = us.order;
+      Result2 = _layer.tp.FieldName[index];
+      if (us.forward) ord = Lang.Literal.Make("\"" + Result + "orderby " + Result2 + ";" + "\"") ;
+      else ord = Lang.Literal.Make("\"" + Result + "orderby -" + Result2 + ";" + "\"") ;
+    }
+	
+	
+	
+    return stm{ 
+      $stm(lower.cursorMethod());  
+	
+     try{
+	String                    lineBuf;
+	String                    upd = " ";
+	int                       ind, strt;
+	String                    updte_strg;
+	java.util.StringTokenizer st;
+	String                    name_file;
+	java.io.BufferedReader    dino;
+
+	name_file = $exp(name) +  ".sts";
+	java.io.FileInputStream fino = new java.io.FileInputStream(name_file);
+	dino = new java.io.BufferedReader(new java.io.InputStreamReader(fino));
+	
+	
+	//fill the arrays for the counter, predicate and order.  
+	if ((cont.i)>(cont.num)) throw new java.io.IOException();
+	if (version==1) 
+	{
+	  lineBuf = dino.readLine();
+	  st = new java.util.StringTokenizer(lineBuf,"|");
+	  cpt_cur_used=Integer.parseInt(st.nextToken());
+	  indice = cont.i-2;
+	  cont.i++;
+	  cont.order[indice]= $exp(ord);
+	  cont.name_of_files[indice]= name_file;
+	}
+	version++; 
+	updte_strg = $exp(updte);
+	strt = 0;
+	ind = updte_strg.indexOf(';',0); 
+	for (int j = 0; j< cont.size; j++)
+	{	 
+	 if (ind != -1){
+		upd = updte_strg.substring(strt,ind);
+	    strt = ind +1;
+  	    ind= updte_strg.indexOf(';',ind+1);
+ 	    } 
+     if ( upd.trim().compareTo("1")== 0)
+	   cont.up_date[j]= 1; 
+	} 
+	
+	 }  
+    catch (java.io.IOException ioe) {
+	System.err.println("Errorbis : " + ioe);
+	System.exit(1);
+     }
+    }stm;
+  }
+  
+  
+  public Lang.AST_Stmt firstMethod() {
+    return stm{
+      cpt_cur_used++;
+      cont.cpt[indice]=cpt_cur_used;
+      $stm(lower.firstMethod( ));
+    }stm;
+  }
+  
+  public Lang.AST_Exp moreMethod() {
+    return lower.moreMethod();
+  }
+  
+  public Lang.AST_Stmt noMoreMethod() {
+    return lower.noMoreMethod();
+  }
+  
+  
+  public Lang.AST_Stmt nextMethod()  { 
+    return lower.nextMethod();
+  }
+  
+  
+  public Lang.AST_Exp lowerBound( boolean pos ) {
+    return lower.lowerBound(pos);
+  }
+  
+  public Lang.AST_Exp upperBound( boolean pos ) {
+    return lower.upperBound(pos);
+  }
+  
+  public Lang.AST_Exp residual() {
+    return lower.residual();
+  }
+  
+  
+  public Lang.AST_Stmt removeMethod() {
+       return stm{
+	         //each time a remove operation is performed the counter is increased
+	         cont.cpt_delete++;
+	         $stm(lower.removeMethod());
+    }stm;
+ }		 
+}
+

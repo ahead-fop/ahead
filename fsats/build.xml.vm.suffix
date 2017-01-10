@@ -1,0 +1,427 @@
+#*
+ * This is "build.xml.vm.suffix", one of a set of files used to generate Ant
+ * build files in a composition.  It's *not* the only building block and you
+ * should not read this file in isolation.  In particular, you should read the
+ * documentation header in "build.xml.vm.prefix".
+ *
+ * Assuming that you have ...
+ * 
+ * This file is the last part of a template that is to be expanded by Velocity.
+ * The first two parts, "build.xml.vm.prefix" and "build.xml.vm", serve largely
+ * to provide definitions for this part which generates a "build.xml" file as
+ * output.  Several Velocity variables are defined in "build.xml.vm.prefix".
+ *
+ * Additional variables are provided by the composer in the Velocity "context"
+ * when it runs Velocity.  The "context" is a set of Java objects that may be
+ * accessed as Velocity variables during macro expansion.  The standard set of
+ * "context" variables are:
+ *
+ * - sources .. an unmodifiable java.util.List of all source java.io.Files;
+ * - system ... an unmodifiable java.util.Map listing all known properties;
+ * - target ... a java.io.File describing the target file.
+ *
+ * These objects may be accessed via their methods as defined in the Java API.
+ * Some cautions are in order, though.  First, it's inadvisable to modify the
+ * the filesystem using the java.io.File objects.  Doing so may cause the
+ * composer to become error-prone.  Second, exception-handling in Velocity is
+ * almost non-existent so it's inadvisable to do anything that is likely to
+ * cause an exception.  The safest actions to take are those that simply read
+ * information.
+ *
+ * You should also notice that there are comments in this file and the other
+ * building blocks.  First, there are the Velocity comments.  These are either
+ * comment blocks (like this one) beginning with "#*" and ending with "*#".
+ * Then, there are comment lines beginning with "##".  *None* of the Velocity
+ * comments will be copied to the generated Ant build files.  On the other
+ * hand, there are also XML comment blocks that begin with "<!--" and end with
+ * "-->".  Velocity treats these as it does any other text region -- it
+ * applies macro expansion and copies the result into the generated files.
+ * ========================================================================= **
+*#
+#set( $project = $target.absoluteFile.parent )
+#set( $package = $target.absoluteFile.parentFile.name )
+##
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- CAUTION!  This is an automatically generated Ant build file intended  -->
+<!-- to be used by the Ant program to build the target objects in this	   -->
+<!-- directory.  Before trying to run a build, be sure that Ant is	   -->
+<!-- installed and available to you.                                       -->
+<!-- 									   -->
+<!-- Further, this file may require non-standard Ant tasks in order to	   -->
+<!-- run.  For example, converting Jak files to Java and extracting API	   -->
+<!-- documentation from Jak files are non-standard tasks.  These tasks are -->
+<!-- packaged in jar files available as part of the AHEAD distribution in  -->
+<!-- the AHEAD "lib" directory.  They must be installed somewhere for Ant  -->
+<!-- to find them.  There are three possible ways to do this:              -->
+<!-- 									   -->
+<!-- * Copy the AHEAD jars to the "lib" sub-directory of Ant's home;       -->
+<!-- 									   -->
+<!-- * Define property "dir.tools.lib" to be a directory with the jars;    -->
+<!-- 									   -->
+<!-- * Define property "dir.tools" to be the AHEAD installation directory. -->
+<!-- 									   -->
+<!-- Now you're ready to start a build.  The simplest way to build is to   -->
+<!-- change to the directory containing this Ant build and enter the	   -->
+<!-- command "ant" with no arguments.  Assuming there are no errors in the -->
+<!-- build sequence, that'll build everything this build file targets.	   -->
+<!-- 									   -->
+<!-- Alternatively, you may enter a command of the form "ant <target> ..." -->
+<!-- where "<target> ..." is replaced by any sequence of the targets	   -->
+<!-- listed below.  All dependencies will also be generated.               -->
+<!-- 									   -->
+<!-- * all ......... builds everything targeted in this build file.	   -->
+<!-- * clean ....... deletes junk files (but not all generated files).	   -->
+<!-- * initialize .. prints informative messages about build.		   -->
+<!-- * jak2java .... converts Jak files to Java.			   -->
+<!-- * jar ......... puts final class and properties files into a jar.	   -->
+<!-- * java2class .. compiles Java files to class files.		   -->
+<!-- * jedi ........ extract API documentation from Jak and Java files.    -->
+<!-- * prepare ..... creates the working build directories.		   -->
+#if( $isConfigured && $mainName.length() > 0 )
+<!-- * run ......... executes the main class in the generated playground.  -->
+#end
+<!-- 									   -->
+<!-- Other targets may be defined, but the above are the "public targets". -->
+<!-- 									   -->
+<!-- For more advanced build options, enter the command "ant -help".       -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+<project name="${project}" default="all">
+
+ <description>
+ Project "${project}", generated by the composer.
+ </description>
+
+    <!-- ================================================================= -->
+    <!-- Project-level properties to define build parameters.              -->
+    <!-- ================================================================= -->
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- Project name, title, version, etc., for generating messages:      -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <property name="project.name"       value="${project}"/>
+
+    <property
+        name="project.owner"
+        value="The University of Texas at Austin"/>
+
+    <property
+        name="project.title"
+        value="Composer Target ${project}"/>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- Target directories and files to be built:                         -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <property name="dir.build"		location="${basedir}/build"/>
+    <property name="dir.build.api"	location="${dir.build}/api"/>
+    <property name="dir.build.classes"	location="${dir.build}/classes"/>
+
+    <property name="jar.build"		location="${dir.build}/project.jar"/>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- External tools:                                                   -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <property name="dir.ant"		location="${ant.home}"/>
+    <property name="dir.ant.lib"	location="${dir.ant}/lib"/>
+
+    <property name="dir.tools"		location="${basedir}/../.."/>
+    <property name="dir.tools.lib"	location="${dir.tools}/lib"/>
+
+    <!-- - - - - - - - - - - - - - - - - -->
+    <!-- Tools search path is, first, to -->
+    <!-- look in "dir.tools.lib", then   -->
+    <!-- in Ant installation directory.  -->
+    <!-- - - - - - - - - - - - - - - - - -->
+
+    <path id="id.path.class">
+        <fileset dir="${dir.tools.lib}" includes="**/*.jar"/>
+
+        <fileset dir="${dir.ant.lib}" includes="**/*.jar">
+            <none>
+                <present targetdir="${dir.tools.lib}"/>
+            </none>
+        </fileset>
+    </path>
+
+    <property name="path.class" refid="id.path.class"/>
+
+    <taskdef
+        name="jak2java"
+        classname="jak2java.DeriveAntTask"
+        classpath="${path.class}"/>
+
+    <taskdef
+        name="unmixin"
+        classname="unmixin.DeriveAntTask"
+        classpath="${path.class}"/>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- Compile-time flags:                                               -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <property name="javac.debug"        value="true"/>
+    <property name="javac.deprecate"	value="false"/>
+    <property name="javac.optimize"	value="false"/>
+
+    <!-- ================================================================= -->
+    <!-- TARGETS:                                                          -->
+    <!-- ================================================================= -->
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "all" target (the default) builds everything up to the jar.   -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="all" depends="jar"/>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "clean" target deletes junk files.  Arguably it should really -->
+    <!-- delete all files derived after composition.  However, that's not  -->
+    <!-- what it does, since it's not easy to distinguish files that are   -->
+    <!-- generated by derivation (and can be deleted) from those that are  -->
+    <!-- generated by composition.  It is possible to remember those files -->
+    <!-- formed by composition (by annotating the "build.xml.vm" files),   -->
+    <!-- then deleting every other file.  However, that would delete those -->
+    <!-- files that were manually added by the developer(s).  Also bad!    -->
+    <!-- At the moment, there is no clear solution to this problem.        -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="clean" depends="initialize">
+
+        <patternset id="clean.patterns">
+            <exclude name="**/CVS/**"/>
+
+            <include name="**/*~"/>
+            <include name="**/%*%"/>
+            <include name="**/*.bak"/>
+            <include name="**/*.BAK"/>
+            <include name="**/*.pyc"/>
+            <include name="**/*.pyo"/>
+            <include name="**/core"/>
+        </patternset>
+
+        <delete includeEmptyDirs="true" quiet="true">
+            <fileset defaultexcludes="no" dir="${basedir}">
+                <patternset refid="clean.patterns"/>
+            </fileset>
+
+            <fileset dir="${dir.build}"/>
+        </delete>
+
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "initialize" target calculates a set of initial dynamic build -->
+    <!-- properties such as timestamps and copyrights.  It also prints an  -->
+    <!-- informative message about the build.                              -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="initialize">
+
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <!-- Define timestamps about the current time:                 -->
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <tstamp>
+            <format property="initialize.date" pattern="yyyy-MM-dd"/>
+            <format property="initialize.time" pattern="HH:mm:ss"/>
+            <format property="initialize.year" pattern="yyyy"/>
+        </tstamp>
+
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <!-- Calculate range of years to put into copyright notice:    -->
+        <!-- * cr.alpha ....... first year source was created;         -->
+        <!-- * cr.omega ....... last year source was modified;         -->
+        <!-- * cr.range ....... range of years for copyright.          -->
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <property name="cr.alpha" value="1999"/>
+
+        <condition property="cr.range" value="${cr.alpha}">
+            <equals arg1="${cr.alpha}" arg2="${initialize.year}"/>
+        </condition>
+
+        <condition property="cr.range" value="${cr.alpha}-${initialize.year}">
+            <not>
+                <equals arg1="${cr.alpha}" arg2="${initialize.year}"/>
+            </not>
+        </condition>
+
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <!-- Create copyright messages:                                -->
+        <!-- * copyright.base ... text with year(s) and owner;         -->
+        <!-- * copyright.html ... for inclusion into HTML documents;   -->
+        <!-- * copyright.text ... for inclusion into text documents.   -->
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <property name="copyright.base" value="${cr.range} ${project.owner}"/>
+        <property name="copyright.html" value="&#169; ${copyright.base}"/>
+        <property name="copyright.text" value="(C) ${copyright.base}"/>
+
+        <echo message="${project.title}"/>
+        <echo message="${copyright.text}"/>
+        <echo message=""/>
+        <echo message="Build begins ${initialize.date} ${initialize.time}"/>
+
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "jak2java" target translates all Jak files to Java sources.   -->
+    <!-- This target is provided *even* if there are no Jak files!         -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="jak2java" depends="prepare">
+
+	<jak2java
+	    srcdir="${basedir}"
+	    includes="**/*.jak"
+	    failonerror="true"
+	    listfiles="false"/>
+
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "jar" target assembles all class and resource files into a    -->
+    <!-- Java archive file in the base directory.                          -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="jar" depends="java2class">
+
+#if( $jarManifestFile.length() > 0 )
+        <jar jarfile="${jar.build}" manifest="${jarManifestFile}">
+#else
+        <jar jarfile="${jar.build}">
+#end
+	    <fileset dir="${dir.build.classes}"/>
+	</jar>
+
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "java2class" target compiles Java sources to class files and  -->
+    <!-- copies property files, if any, to the classes build directory.    -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="java2class" depends="jak2java">
+
+        <path id="path.java2class">
+	    <fileset dir="${basedir}" includes="**/*.jar"/>
+	    <pathelement location="${dir.build.classes}"/>
+        </path>
+
+        <javac
+	    classpathref="path.java2class"
+            debug="${javac.debug}"
+            deprecation="${javac.deprecate}"
+            destdir="${dir.build.classes}"
+	    includes="**/*.java"
+            optimize="${javac.optimize}"
+            srcdir="${basedir}"/>
+
+        <copy taskname="resource" todir="${dir.build.classes}">
+            <fileset
+	        dir="${basedir}"
+		excludes="${dir.build}/**/*.properties"
+		includes="**/*.properties"/>
+        </copy>
+
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "jedi" target extracts API documentation from Jak files.  It  -->
+    <!-- is provided *even* if there are no Jak files!  When there are no  -->
+    <!-- Jak files, this target is a no-op.                                -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="jedi" depends="prepare">
+
+	<exec executable="jedi" taskname="jedi">
+	    <arg value="-e"/>
+	    <arg value="jak"/>
+	    <arg value="-o"/>
+	    <arg file="${dir.build.api}"/>
+	    <arg value="-p"/>
+	    <arg file="${basedir}"/>
+	</exec>
+
+#if( $javaDirectoriesList.size() > 0)
+	<exec executable="jedi" taskname="jedi">
+	    <arg value="-e"/>
+	    <arg value="java"/>
+	    <arg value="-o"/>
+	    <arg file="${dir.build.api}"/>
+	    <arg value="-p"/>
+#foreach( $directory in $javaDirectoriesList )
+            <arg file="$directory"/>
+#end
+	</exec>
+#end
+
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "prepare" target creates all build directories, if any.       -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="prepare" depends="initialize">
+
+	<mkdir dir="${dir.build}"/>
+	<mkdir dir="${dir.build.api}"/>
+	<mkdir dir="${dir.build.classes}"/>
+
+    </target>
+
+#if( $isConfigured && $mainName.length() > 0 )
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "run" target executes the Main class in the project.          -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="run">
+
+        <path id="path.run">
+	    <fileset dir="${basedir}" includes="**/*.jar"/>
+        </path>
+
+	<java
+            classname="${package}.${mainName}"
+            classpathref="path.run"
+	    dir="playground"
+            fork="true">
+
+	    <sysproperty key="fsats.home" file="playground"/>
+        </java>
+
+    </target>
+#end
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "unmixin" task propagates local edits to Jak files back to    -->
+    <!-- the original Jak sources that were used in this composition.      -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="unmixin" depends="initialize">
+
+	<unmixin
+	    srcdir="${basedir}"
+	    includes="**/*.jak"
+	    failonerror="true"
+	    listfiles="true"/>
+
+    </target>
+
+</project>
+#*
+ * ========================================================================= **
+ * Emacs Editor Set-Up:
+ *
+ * Local Variables:
+ * mode:                           XML
+ * fill-column:                     79
+ * sgml-ignore-undefined-elements: nil
+ * sgml-indent-data:                 t
+ * sgml-indent-step:                 4
+ * End:
+ * ========================================================================= **
+*#

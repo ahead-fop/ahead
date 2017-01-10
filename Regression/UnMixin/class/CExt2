@@ -1,0 +1,8 @@
+layer CExt2;
+
+refines class MyClass implements java.io.Serializable {
+    overrides void foo() throws AnotherException;
+    overrides void barrr();
+    new int biff( int i );
+    overrides float biff();
+}

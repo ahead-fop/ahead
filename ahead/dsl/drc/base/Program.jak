@@ -1,0 +1,26 @@
+layer core;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+public refines class Program {
+    public void reduce() {
+
+        // Step 1: harvest layer name and then create
+        //         layer object
+
+        arg[0].reduce();
+        layr = new  llayer( AspectDecl.layerName, 
+                                  AspectDecl.isConstant,
+                                  AspectDecl.isSingle ) ;
+
+        // Step 2: harvest attribute declarations and rule declarations
+        //         do this after layr is instantiated, as the harvesting
+        //         adds information to layr.
+
+        arg[1].reduce();
+        arg[2].reduce();
+    }
+}

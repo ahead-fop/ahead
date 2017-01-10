@@ -1,0 +1,18 @@
+package p3Lib;
+
+import JakBasic.Lang;
+
+
+public interface TOP {
+  environment;
+
+  TOP_Container_Type    make_container_type( atop a, ContParams c, Lang.AST_TypeNameList interfaces );
+
+  TOP_Element_Type      make_element_type();
+
+  TOP_CommonCursor_Type make_commoncursor_type();
+
+  TOP_Cursor_Type       make_cursor_type( String classname, Lang.AST_ParList pl, Usage u );  // pred differentiates cursor types
+
+  DrcAttributes         drc( DrcAttributes d );
+}

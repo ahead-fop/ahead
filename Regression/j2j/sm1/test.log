@@ -1,0 +1,41 @@
++ '[' -z /usr/bin/bash ']'
++ echo '****************jak2java Constructor Inheritance Regression Tests***********'
+****************jak2java Constructor Inheritance Regression Tests***********
++ rm -f -- '*.java' '*.ser'
++ bash regress-one MissionImpl
+translating MissionImpl ... succeeded
++ bash regress-one MessageType
+translating MessageType ... succeeded
++ rm -f -- '*.java' '*.ser'
++ echo -e '\nj2j Constructor Inheritance Regression Tests succeeded.'
+
+j2j Constructor Inheritance Regression Tests succeeded.
++ echo '****************jak2java comment test ***********'
+****************jak2java comment test ***********
++ bash regress-one rootc-extc-mixin
+translating rootc-extc-mixin ... succeeded
++ bash regress-one rootc-extc-jampack
+translating rootc-extc-jampack ... succeeded
++ rm -f -- '*.java' 'root$$rootc.ser' root.ser
++ echo -e '\nj2j comment tests succeeded.'
+
+j2j comment tests succeeded.
++ echo '****************jak2java goto_state test ***********'
+****************jak2java goto_state test ***********
++ bash regress-one sm
+translating sm ... succeeded
++ echo -e '\nj2j comment tests succeeded.'
+
+j2j comment tests succeeded.
++ echo '****************jak2java enter-proceed tests ***********'
+****************jak2java enter-proceed tests ***********
++ bash regress-one both
+translating both ... succeeded
++ bash regress-one b2
+translating b2 ... succeeded
++ echo -e '\nj2j enter-proceed tests succeeded.'
+
+j2j enter-proceed tests succeeded.
++ bash regress-semantics
+jampack and mixin star-semantics test ... succeeded
++ rm -f -- M.java jp.java mx.java foo.ser 'root$$top.ser' root.ser sm.ser M.class 'root$$top$1.class' 'root$$top$2.class' 'root$$top$3.class' 'root$$top$disp.class' 'root$$top.class' 'root$1.class' 'root$2.class' 'root$3.class' 'root$disp.class' root.class

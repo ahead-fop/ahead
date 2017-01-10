@@ -1,0 +1,66 @@
+layer SmAPI;
+
+import java.io.*;
+import java.util.*;
+
+/**
+ com.sun.javadoc.*,
+        sun.tools.java.*,
+        com.sun.tools.javadoc.*,
+
+* @layer<SmAPI>
+*/
+
+  /** JEDI
+ * ClassDocJTS in SmAPI.java
+ * University of Texas at Austin
+ * Department of Computer Sciences
+ * Product-line Architecture Research Group
+ * @rationale This class is included because states can be nested inside
+ * a class.
+ * @author Roberto E. Lopez-Herrejon
+ * @version 1.0
+ * @since November 8, 2002
+*/
+
+public refines class ClassDocJTS {
+
+    /** List of states that can be contained in a class.
+    * @layer<SmAPI>
+    */
+    LinkedList states;
+
+    /** Default constructor.  
+     * @layer<SmAPI>
+     */
+    public void ClassDocJTSConstructor()  
+    {
+        Super().ClassDocJTSConstructor();
+        this.states = new LinkedList();
+    }
+
+    /** Constructor with class name. 
+     * @layer<SmAPI>
+     */
+    public void ClassDocJTSConstructor( String name ) 
+    {
+        Super( String ).ClassDocJTSConstructor( name );
+        this.states = new LinkedList();
+    }
+
+    /** Returns the states of the class.
+    * @layer<SmAPI>
+    */
+    public LinkedList states() {
+        return states;
+    }
+
+    /** Sets the states of the class
+    * @layer<SmAPI>
+    */
+    public void setStates( LinkedList _states )
+    {
+        states = _states;
+    }
+
+}

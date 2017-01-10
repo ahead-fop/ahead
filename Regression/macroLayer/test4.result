@@ -1,0 +1,13 @@
+// This file tests reading a persistent macro
+
+public class test4 {
+     fooType[] fooSort( fooType[] array) {
+	System.println("Called sort macro");
+	return(array);
+    }
+
+    static public void main(String[] args) {
+	int[] iarray = new int[5];
+	fooSort(iarray);
+    }
+}

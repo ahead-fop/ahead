@@ -1,0 +1,349 @@
+#!/bin/sh
+#   
+# Runs regression tests on module "JTS" using tests from module "Regression".
+# Produces a summary report which is emailed to specified users.  Detailed
+# output from tests is produced, but not emailed.  The following environment
+# variables must be set:
+#
+# * ANT_HOME .... base directory of Ant installation;
+# * CLASSPATH ... the Java search path for classes being tested;
+# * JCC_HOME .... base directory of JavaCC installation;
+# * JAVA_HOME ... base directory of Java installation.
+#
+# Usage:  summary
+#=============================================================================#
+
+[ -z "${BASH}" ] && exec bash "$0" "$@"
+
+#=============================================================================#
+# Script initialization, include command search path:
+#
+set -e					# Shell aborts on unhandled errors
+#set -x					# and prints individual commands.
+
+PATH="/usr/bin"				# Start with "safe" directories.
+PATH="${PATH}:/bin"
+export PATH
+
+PROG="summary"				# Default program name.
+PROGRAM="${0##*/}"			# Actual program name taken from base
+PROGRAM="${PROGRAM:-${PROG}}"		# name of calling script, if possible.
+
+ulimit -c 0 &> /dev/null || :		# Don't allow core files.
+
+#-----------------------------------------------------------------------------#
+# What system is script running on?
+# * cygwin ---- predicate to check whether script is running under CygWin;
+#
+SYSTEM="$(uname -mnprs)"
+echo "SYSTEM: ${SYSTEM}"
+
+case "${SYSTEM}" in
+    CYGWIN*)
+	function cygwin() { true  ; }
+	;;
+    *)
+	function cygwin() { false ; }
+	;;
+esac
+
+#-----------------------------------------------------------------------------#
+# Error message helper functions:
+# * error -----	puts labelled message on stderr & is otherwise like "echo";
+# * fatal ----- exits with failure status after printing error message.
+#
+function error() { echo 1>&2 -n "${PROGRAM}: " ; echo 1>&2 $@ ;}
+function fatal() { error $@ ; exit 1 ;}
+
+#-----------------------------------------------------------------------------#
+# Add third-party tools to command search path:
+#
+[ -d "${ANT_HOME}" ] || fatal "ANT_HOME is not a directory"
+PATH="${PATH}:${ANT_HOME}/bin"
+
+[ -d "${JAVA_HOME}" ] || fatal "JAVA_HOME is not a directory"
+PATH="${PATH}:${JAVA_HOME}/bin"
+
+[ -d "${JCC_HOME}" ] || fatal "JCC_HOME is not a directory"
+PATH="${PATH}:${JCC_HOME}/bin"
+
+export PATH
+
+echo
+echo "ANT_HOME=${ANT_HOME}"
+echo "JAVA_HOME=${JAVA_HOME}"
+echo "JCC_HOME=${JCC_HOME}"
+
+#-----------------------------------------------------------------------------#
+# Argument parsing:
+# (currently the only argument is a directory to hold XML test files)
+#
+if [ "$#" -gt 0 ]; then
+    TESTDIR="${1}"
+else
+    TESTDIR="."
+fi
+
+[ -d "${TESTDIR}" ] || fatal "${TESTDIR}" is not a directory
+
+#-----------------------------------------------------------------------------#
+# Build list of email recipients:
+#
+if [ -z "${EMAIL}" ]; then
+    EMAIL=( {dsb,sarvela}@cs.utexas.edu rick@cat.utexas.edu )
+fi
+
+#uname -a || :
+#who am i || :
+
+#=============================================================================#
+# Define formatting helper functions:
+#
+ANTLINE=66				# Output line length for Ant output.
+BIGLINE=79				# Maximum length of output lines.
+
+# Define filler pattern for use between columns of a report:
+#
+FILLER="."
+while [ "${#FILLER}" -lt "${BIGLINE}" ]; do
+    FILLER="${FILLER}${FILLER}"
+done
+
+# Use the GNU "time" program to measure elapsed time:
+#
+function elapsed() {
+    FILE="${1}"
+    shift
+    if cygwin ; then
+	echo "0.00" > "${FILE}"
+	"$@"
+    else
+	command time --format=%e -o "${FILE}" "$@"
+    fi
+}
+
+# Return filler string of length specified in first argument:
+#
+function filler() {
+    [ "$1" -gt 0 ] && echo "${FILLER:0:$1}" || echo "${FILLER:0:1}"
+}
+
+# Print two-column status line, putting filler between columns $1 and $2:
+#
+function fillLine() {
+    MAXLINE="${3}"
+    let PADDING="MAXLINE-${#1}-${#2}-2" || :
+    echo "$1" $(filler "${PADDING}") "$2"
+}
+
+# Filter stdinp, converting "<>&" to HTML entities:
+#
+function htmlFilter() {
+    sed -e 's/&/\&amp;/g' | sed -e 's/</\&lt;/g' -e 's/>/\&gt;/g'
+}
+
+# Produce HTML output quoting a given text file:
+#
+function htmlQuote() {
+    TEXT="${1}"
+    cat <<-EOF
+	<html>
+	<head><title>${TEXT}</title></head>
+	<body>
+	<h1>${TEXT}</h1>
+	<pre>
+	$(htmlFilter < "${TEXT}")
+	</pre>
+	</body>
+	</html>
+	EOF
+}
+
+# Date & Time, nicely formatted:
+#
+function timestamp() {
+    date +'%Y/%m/%d %H:%M:%S'
+}
+
+#=============================================================================#
+# Test initialization:
+# (cleanup generated files, get timestamp, etc.)
+#
+TIME_BGN="$(timestamp)"
+
+TEMP="/tmp/elapsed.tmp.$$"
+
+REGRESS_LOG="${TESTDIR}/regress.log"
+SUMMARY_TXT="${TESTDIR}/summary.txt"
+
+rm --force -- "${REGRESS_LOG}" "${SUMMARY_TXT}"
+
+#-----------------------------------------------------------------------------#
+# Check CLASSPATH:
+#
+[ -n "${CLASSPATH}" ] || fatal "CLASSPATH is not defined"
+
+SEPARATOR="$(cygwin && echo ';' || echo ':')"
+
+echo
+echo "CLASSPATH:"
+for ITEM in ${CLASSPATH//${SEPARATOR}/ } ; do
+    echo "* ${ITEM}"
+done
+echo
+
+#=============================================================================#
+# Test initialization:
+#
+FAILURE=0
+SUCCESS=0
+TIMEOUT=0
+
+#-----------------------------------------------------------------------------#
+# Find all tests in JTS and run them, recording exit status:
+# (JTS tests are all run via "ant")
+#
+TITLE="Sub-directories in <code>JTS</code> (tested via '<kbd>ant test</kbd>'"
+echo -e "\n${TITLE}:" >> "${REGRESS_LOG}"
+
+# original line
+#TESTDIRS=( JTS/JTS/realms/B JTS/composer )
+TESTDIRS=( )
+for DIR in ${TESTDIRS[@]} ; do
+
+    if (cd "${DIR}" ; elapsed "${TEMP}" ant test >test.log 2>&1) ; then
+	let SUCCESS=SUCCESS+1 || :
+	FAILED="0"
+	STATUS="ok"
+    else
+	let FAILURE=FAILURE+1 || :
+	FAILED="1"
+	STATUS="failed"
+    fi
+
+    ELAPSED="$(tail -n 1 "${TEMP}")"
+    LABEL="${DIR#JTS/}"
+    LABEL="${LABEL#JTS/}"
+
+    fillLine "* ${LABEL}" "${STATUS}" "${BIGLINE}" >> "${REGRESS_LOG}"
+    fillLine "${LABEL}" "${STATUS}" "${ANTLINE}"
+
+    mkdir --parents -- "${TESTDIR}/${DIR}"
+    htmlQuote "${DIR}/build.xml" > "${TESTDIR}/${DIR}.html"
+    htmlQuote "${DIR}/test.log"  > "${TESTDIR}/${DIR}.out.html"
+
+    DOTPATH="${DIR//[\/\\\\]/.}"
+    cat > "${TESTDIR}/TEST-${DOTPATH}.xml" <<-EOF
+	<?xml version="1.0"?>
+	<testsuite
+	    errors="0"
+	    failures="${FAILED}"
+	    name="${DOTPATH}"
+	    tests="1"
+	    time="${ELAPSED}">
+
+	    <properties/>
+	    <testcase name="ant test" time="${ELAPSED}"/>
+	    <system-err/>
+	    <system-out/>
+	</testsuite>
+	EOF
+
+done
+
+#-----------------------------------------------------------------------------#
+# Find all test scripts in Regression and run them, recording exit status:
+#
+TITLE="Sub-directories in <code>Regression</code>"
+echo -e "\n${TITLE}:" >> "${REGRESS_LOG}"
+
+REGRESS=( $(find Regression -name CVS -prune -o -type d -print | sort -f) )
+for DIR in ${REGRESS[@]} ; do
+
+    [[ "${DIR}" == Regression/p3* && -n "${EXCLUDE_P3}" ]] && continue
+
+    if [ -f "${DIR}/build.xml" -a "${DIR}" != "Regression" ]; then
+	COMMAND="ant"
+	SCRIPT="${DIR}/build.xml"
+    elif [ -f "${DIR}/regress" ]; then
+	COMMAND="bash -x regress"
+	SCRIPT="${DIR}/regress"
+    else
+	continue
+    fi
+
+    if (cd "${DIR}" ; elapsed "${TEMP}" ${COMMAND} >test.log 2>&1) ; then
+	let SUCCESS=SUCCESS+1 || :
+	FAILED="0"
+	STATUS="ok"
+    else
+	let FAILURE=FAILURE+1 || :
+	FAILED="1"
+	STATUS="failed"
+    fi
+
+    ELAPSED="$(tail -n 1 "${TEMP}")"
+    LABEL="${SCRIPT##Regression/}"
+
+    fillLine "* ${LABEL}" "${STATUS}" "${BIGLINE}" >> "${REGRESS_LOG}"
+    fillLine "${LABEL}" "${STATUS}" "${ANTLINE}"
+
+    mkdir --parents -- "${TESTDIR}/${DIR}"
+    htmlQuote "${SCRIPT}"       > "${TESTDIR}/${DIR}.html"
+    htmlQuote "${DIR}/test.log" > "${TESTDIR}/${DIR}.out.html"
+
+    DOTPATH="${DIR//[\/\\\\]/.}"
+    cat > "${TESTDIR}/TEST-${DOTPATH}.xml" <<-EOF
+	<?xml version="1.0"?>
+	<testsuite
+	    errors="0"
+	    failures="${FAILED}"
+	    name="${DOTPATH}"
+	    tests="1"
+	    time="${ELAPSED}">
+
+	    <properties/>
+	    <testcase name="${COMMAND}" time="${ELAPSED}"/>
+	    <system-err/>
+	    <system-out/>
+	</testsuite>
+	EOF
+
+  done
+
+#-----------------------------------------------------------------------------#
+# Test finalization (get timestamp):
+#
+TEST_END="$(timestamp)"
+
+rm --force -- "${TEMP}"
+
+#-----------------------------------------------------------------------------#
+# Summarize and email report to specified users, if any, else exit:
+#
+exit
+
+[ "${#EMAIL[@]}" -gt 0 ] || exit
+
+(   # Summarize in subshell so all standard output goes into report:
+
+    TEST="JTS/Regression Test Results"
+    fillLine "${TEST}" "started ${TIME_BGN}" "${BIGLINE}"
+
+    STATUS=""
+    ((FAILURE)) && STATUS="${STATUS:+${STATUS}; }${FAILURE} tests failed"
+    ((TIMEOUT)) && STATUS="${STATUS:+${STATUS}; }${TIMEOUT} tests timed out"
+    ((SUCCESS)) && STATUS="${STATUS:+${STATUS}; }${SUCCESS} tests succeeded"
+    echo -e "\n${STATUS}."
+
+    cat "${REGRESS_LOG}"
+
+    echo -e "\nTest Files and Space Used:"
+    du -bhHs ~+/* | sed -e 's/^/* /'
+
+    echo
+    fillLine "${TEST}" "completed ${TIME_END}" "${BIGLINE}"
+
+) > "${SUMMARY_TXT}"
+
+mail -s "[TEST] Summary for JTS" "${EMAIL[@]}" < "${SUMMARY_TXT}"

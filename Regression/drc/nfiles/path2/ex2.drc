@@ -1,0 +1,6 @@
+layer ;
+
+extern outside Int a;
+extern outside Int b;
+
+requires outside a < 30 and b >=10;

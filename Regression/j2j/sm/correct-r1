@@ -1,0 +1,21 @@
+Transition e1
+entering one
+one
+preparing one
+exiting one
+Transition e2
+entering one
+one
+preparing one
+otherwise one
+ignoring  message 24
+one
+preparing one
+exiting one
+Transition e2
+entering one
+one
+preparing one
+exiting one
+Transition e3
+stop

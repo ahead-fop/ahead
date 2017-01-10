@@ -1,0 +1,14 @@
+package ArtilleryL;
+
+
+
+
+    public extends class OpfacFactory 
+    {
+	protected void OpfacFactoryConstructor() {
+            Base().OpfacFactoryConstructor();
+	    register( OpfacType.DS_FA_PLT, new FaPltOpfac());
+	    register( OpfacType.GS_FA_PLT, new FaPltOpfac());
+	    register( OpfacType.R_FA_PLT,  new FaPltOpfac());
+      }
+    }

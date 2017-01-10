@@ -1,0 +1,10 @@
+layer FS;
+
+SoUrCe RooT ArtilleryL "C:!Java!FeatureOrientedProgramming!fsats!ArtilleryL!FaPltOpfac.jak";
+
+public class FaPltOpfac extends WeaponOpfac {
+    public Mission newMission() 
+        {
+        return new FaPltMission();
+    }
+}

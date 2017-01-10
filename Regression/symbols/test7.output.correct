@@ -1,0 +1,14 @@
+Binding of '5': Class: int
+
+Binding of '3+2': Class: int
+
+Binding of 'a || b': Class: boolean
+
+Binding of '5 * 2.5': Class: float
+
+Binding of '5.7 >> 3': Class: float
+
+Binding of 'a << 4': Class: char
+
+Binding of '-a': Class: int
+

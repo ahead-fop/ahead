@@ -1,0 +1,316 @@
+/* inbetween is a layer that factors out logic that deals
+   with the positioning of a cursor after an element deletion.
+   Basically, a global boolean "inbetween" - a variable that
+   can be seen by all layers - is added to the cursor class.
+   When an element is deleted, the retrieval layer will (a)
+   delete the element, and (b) position the cursor on the next
+   element to be retrieved.  (Normally (b) is determined first,
+   as deleting an element can completely reorganize the data 
+   structure).  To indicate that the cursor really is positioned
+   on the next element (so that an advance does nothing), 
+   the booleean variable inbetween is checked.  If inbetween is
+   false, a normal advance is performed.  If inbetween is true,
+   then no advance is performed and inbetween is cleared.
+
+   Inbetween layer is used under the following conditions:
+
+   (1) it is needed to support the Java enumeration interface.
+
+   (2) it is needed to support deletion operations for unstable
+       layers.  A stable data structure is one where the deletion
+       of an element does not reorganize the data structure, so
+       that following a pointer from a deleted element will 
+       produce the next correct element.  lists and maybe
+       arrays will have this property.  Most data structures,
+       such as binary trees and ordered lists, are unstable.
+       If you don't know for sure, assume a data structure is
+       unstable.
+
+   At present, inbetween is intended to be an "implicit" layer,
+   i.e., one like top2ds and qualify is automatically added.
+*/
+
+package p3Lib;
+
+import JakBasic.Lang;
+
+
+public final class inbetween extends BaseDS implements DS {
+   //public DS                lower;
+   environment              ;
+   TopParams                tp;
+   
+   public inbetween( DS lowerlevel ) { 
+      lower = lowerlevel;
+   }
+
+   public inbetween( ) { }
+
+   public DS_Container_Type make_container_type( TopParams t, ContParams c ) {
+      return new inbetween_Container_Type( this, t, c );
+   }
+
+   public DS_Element_Type make_element_type( ) {
+      return new inbetween_Element_Type( this );
+   }
+
+   public DS_CommonCursor_Type make_commoncursor_type() {
+      return new inbetween_CommonCursor_Type( this );
+   }
+
+   public DS_Cursor_Type make_cursor_type( Usage u ) { 
+        return new inbetween_Cursor_Type( this, u ); 
+   }
+
+   public DrcAttributes drc( DrcAttributes d ) {
+       d = lower.drc(d);
+       if (!d.qualify_present) 
+          DrcAttributes.DrcError("no qualify layer below inbetween");
+       return d;
+   } 
+
+   public void set_keyword( TOP toplayer, TopParams tph ) {
+      tp = tph;     
+      environment parent toplayer;
+      lower.set_keyword( toplayer, tp );
+   }
+
+   public Object ParseArgs( Lang.AstNode x ) {
+      Object result = null;
+      
+      if (x != null && x.arg[0] != null && x.arg[0].right == null)
+         result = ParseTE.parse(x.arg[0].arg[0]);
+      if (result == null || !(result instanceof DS))
+         ParseTE.parseError("dlist layer expecting single argument of type DS");
+      lower = (DS) result;
+      return this;
+   }
+}
+
+final class inbetween_Container_Type implements DS_Container_Type {
+   ContParams        cp;
+   inbetween         _layer;
+   DS_Container_Type lower;
+   environment;
+
+   inbetween_Container_Type( DS inbetweenlayer, TopParams t, ContParams c ) { 
+      // Step 1: save the arguments as we'll refer to them later
+
+      _layer    = (inbetween) inbetweenlayer;
+      cp       = c;
+      _layer.tp = t;
+      environment parent _layer;
+
+      // Step 2: create chain of lower level containers
+
+      lower = _layer.lower.make_container_type( t, cp );
+   }
+
+   public void validate() {
+      lower.validate();
+   } 
+
+   public Lang.AST_FieldDecl dataMembers() {
+       return lower.dataMembers();
+   }
+
+   public Lang.AST_Stmt containerMethod() {
+       return lower.containerMethod();
+   }
+
+   public Lang.AST_Exp is_fullMethod() {
+      return lower.is_fullMethod();
+   }
+   
+   public Lang.AST_Stmt insertMethod(){
+     return lower.insertMethod();
+   }
+
+   public Lang.AST_Stmt storageMethod() {
+      return lower.storageMethod();
+   }
+
+   public Lang.AST_Stmt finishMethod() {
+      return lower.finishMethod();
+   }
+   
+   public Lang.AST_Stmt openMethod(){
+      return lower.openMethod();
+   } 
+
+}
+
+
+final class inbetween_Element_Type implements DS_Element_Type {
+   inbetween          _layer;
+   DS_Element_Type  lower;
+   environment;
+
+   inbetween_Element_Type( DS inbetweenlayer ) {
+      _layer    = (inbetween) inbetweenlayer;
+      lower    = _layer.lower.make_element_type();
+      environment parent _layer;
+   }
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return lower.dataMembers();
+   }
+
+   // link is part of element constructors
+
+   public Lang.AST_Stmt link() {
+      return lower.link();
+   }
+
+   public Lang.AST_FieldDecl relink() {
+      return lower.relink();
+   }
+
+   public Lang.AST_FieldDecl unlink() {
+      return lower.unlink();
+   }
+
+   public Lang.AST_Stmt upd( int fieldno ) {
+     return lower.upd(fieldno);
+   }
+   
+}
+
+final class inbetween_CommonCursor_Type implements DS_CommonCursor_Type {
+   inbetween _layer;
+   DS_CommonCursor_Type lower;
+   environment   current_element, next_element;
+
+   inbetween_CommonCursor_Type( DS inbetweenlayer ) {
+      _layer = (inbetween) inbetweenlayer;
+      lower = _layer.lower.make_commoncursor_type();
+      environment parent _layer;
+   }
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return lower.dataMembers();
+   }
+
+   public Lang.AST_Stmt insertMethod( ) {
+         return lower.insertMethod( );
+   }
+
+   public Lang.AST_Stmt removeMethod() {
+
+      // note: we do nothing here for the "generic" removal.
+      //       if we do add anything, it will be in the form of a 
+      //       customized removal for the cursor - see removeMethod() below
+
+      return lower.removeMethod();
+   }
+
+   public Lang.AST_FieldDecl movementMethods() {
+      return lower.movementMethods();
+   }
+}
+
+final class inbetween_Cursor_Type implements DS_Cursor_Type {
+
+    inbetween        _layer;
+    DS_Cursor_Type   lower;
+    boolean          add_inbetween_code;
+    environment;
+
+    inbetween_Cursor_Type( DS inbetweenlayer, Usage u ) {
+
+       _layer = (inbetween) inbetweenlayer;
+       lower = _layer.lower.make_cursor_type( u );
+       environment parent _layer;
+    }
+
+    public Qopt optimize( Qopt q ) {
+       q = lower.optimize(q);
+       add_inbetween_code = q.requires_inbetween;
+       return q;
+    }
+
+    public Lang.AST_FieldDecl dataMembers() {
+       if (add_inbetween_code)
+          return mth{
+       boolean Inbetween;
+       $mth(lower.dataMembers())
+          }mth;
+       else
+          return lower.dataMembers();
+    }
+
+    public Lang.AST_Stmt cursorMethod() {
+      return lower.cursorMethod();
+    }
+
+    public Lang.AST_Stmt firstMethod() {
+      if (add_inbetween_code)
+         return stm{
+            Inbetween = false;
+            $stm(lower.firstMethod());
+                }stm;
+      else
+         return lower.firstMethod();
+    }
+
+    public Lang.AST_Exp moreMethod() {
+      return lower.moreMethod();
+    }
+
+    public Lang.AST_Stmt noMoreMethod() {
+      return lower.noMoreMethod();
+    }
+
+    public Lang.AST_Stmt nextMethod()  {
+      if (add_inbetween_code)
+         return stm{
+            if (Inbetween)
+               Inbetween = false;
+            else {
+               $stm(lower.nextMethod());
+            }
+                }stm;
+      else
+         return lower.nextMethod();
+    }
+
+    public Lang.AST_Exp lowerBound( boolean pos ) {
+      return lower.lowerBound( pos );
+    }
+
+    public Lang.AST_Exp upperBound( boolean pos ) {
+      return lower.upperBound( pos );
+    }
+
+    public Lang.AST_Exp residual() {
+      return lower.residual();
+    }
+
+    public Lang.AST_Stmt removeMethod() {
+
+      // here's where we generate a customized removal method
+      // we can't use the generic method as it doesn't solve the
+      // problem of how to advance after a deletion.
+
+      /* ONE PROBLEM HERE
+       * If already inbetween, we should not allow the user to call this remove() method
+       * again, right?
+       * Report error when Inbetween = true?
+       */
+
+      if (add_inbetween_code)
+         return stm{
+      CElemTyp current_element = obj;
+      CElemTyp next_element;
+
+      $stm(lower.nextMethod());  // find the next element (past the one to be deleted)
+      next_element = obj;
+      obj = current_element;     // now proceed to delete the element
+      super.remove();
+      Inbetween = true;
+      obj = next_element;        // position cursor on next element
+          }stm;
+
+      return null;
+   }
+}

@@ -1,0 +1,8 @@
+C R C1 
+Line range (-1, -1)
+public  endMods 
+ beginNest
+        M R foo() int 
+        Line range (6, 8)
+        static  endMods 
+ endNest

@@ -1,0 +1,5 @@
+// tests if layer can be optional
+
+class MyClass extends AstNode { 
+   int one;
+}

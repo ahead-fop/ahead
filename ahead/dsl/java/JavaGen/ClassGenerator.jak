@@ -1,0 +1,527 @@
+layer JavaGen;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.util.*;
+import java.io.*;
+
+/** Generates an HMTL file for a Java Class. 
+ * @layer<JavaGen>
+ */
+  
+public class ClassGenerator {
+
+    // *******************************************************************
+    // *******************************************************************
+    // *******************************************************************
+    // **************** New form of generating the context and all ******
+
+      // **************************************************************
+      // ************ Generation of Templates *************************
+
+      /** Gets the results for the base case of the recursive call 
+       * @layer<JavaGen>
+       */
+    public static void GenerateBaseCase( DocumentDescriptor dd ) {
+        VelocityContext context = new VelocityContext();
+            
+        Template template = null;
+
+        try {
+            String source_name = "SourceTemplates/"+ dd.getName() + ".vm";
+
+            // @debug -> remove once tested
+            // System.out.println("Doc template = " + source_name);
+            
+            // --- new
+            // Initializing Velocity properties
+            final String PROPERTIES = "jedi.properties" ;
+            String name = System.getProperty( PROPERTIES, PROPERTIES ) ;
+
+            // Velocity Engine variable
+            VelocityEngine ve = new VelocityEngine();
+
+            InputStream stream = 
+                                    ClassLoader.getSystemResourceAsStream( name ) ;
+            if ( stream == null ) {
+                ve.init();
+            }
+            else {
+                Properties properties = new Properties() ;
+                properties.load( stream ) ;
+                stream.close() ;
+                ve.init( properties );
+            }
+            // -- end new
+                        
+            // @debug
+            // System.out.println("Before Creation Base ");
+
+            // Old deprecated version 
+            // Velocity.init("velocity.properties");            
+            // -- end of Old
+
+            context.put( "basetemplate",source_name );
+            
+            // @debug
+            //System.out.println("After putting base template in context");
+            
+            template = ve.getTemplate( "SourceTemplates/BaseCase.vm" );
+
+            // @debug
+                                                 
+            // @debug -> remove once tested
+            // System.out.println("After getting template ");
+
+            String OutputDirectory="TargetTemplates";
+                        
+            File theFile = new File( new File( OutputDirectory ), 
+                                                            dd.getName() + ".vm" );
+            
+            // @debug
+            // System.out.println("After getting file");
+
+            // Render the template for the context into a string
+            // Original Code next
+            FileWriter fw = new FileWriter( theFile );
+            template.merge( context, fw );
+            
+            // @debug
+            // System.out.println("After merging with template");
+
+            fw.flush();
+            fw.close();
+        }
+        catch( Exception e ) {
+            System.out.println( "Exception in Template creation " + e );
+        }
+    }
+    // of BaseCase generation
+    
+       /** Generates new velocity templates base on the document
+        * descriptions. They are output in the TargetTemplates directory
+        * @layer<JavaGen>
+        */
+    public static void GenerateTemplates( DocumentDescriptor dd ) {
+        
+        // Exit case of the recursion
+        // If the current drescriptor does not have further layout
+        // Simply copy it somehow over the TargetTemplates
+        int layoutSize = dd.getSizeLayout();
+
+        if ( layoutSize ==0 ) { // No further elements
+            GenerateBaseCase( dd );
+            return;
+        } // of base case, no more elements in the layout
+        
+        // First Create a LinkedList with the name of the 
+        // Templates to include for now, just for testing purposes
+        LinkedList templatesList = new LinkedList();
+
+        for( int i=0; i < layoutSize; i++ ) {
+            DocumentDescriptor ldd = ( DocumentDescriptor )dd.getLayoutElement( i );
+            GenerateTemplates( ldd );
+            templatesList.addLast( "TargetTemplates/" + ldd.getName() + ".vm" );
+        }
+        
+        // Once all its layout elements have been generated then it is turn
+        // for its own creation
+        VelocityContext context = new VelocityContext();
+        
+        Template template = null;
+
+        try {
+             // --- new
+            // Initializing Velocity properties
+            final String PROPERTIES = "jedi.properties" ;
+            String name = System.getProperty( PROPERTIES, PROPERTIES ) ;
+
+            // Velocity Engine variable
+            VelocityEngine ve = new VelocityEngine();
+
+            InputStream stream = ClassLoader.getSystemResourceAsStream( name );
+            if ( stream == null ) {
+                ve.init();
+            }
+            else {
+                Properties properties = new Properties() ;
+                properties.load( stream ) ;
+                stream.close() ;
+                ve.init( properties );
+            }
+            // -- end new
+
+            // Old version            
+            // Velocity.init("velocity.properties");             
+            // --- Old version            
+
+            context.put( "layoutList",templatesList );
+            String doc_name = dd.getName();
+            template=ve.getTemplate( "SourceTemplates/"+doc_name+ ".vm" );
+ 
+            String OutputDirectory="TargetTemplates";
+            File theFile = new File( new File( OutputDirectory ), 
+                                                    doc_name + ".vm" );
+
+            // Render the template for the context into a string
+            // Original Code next
+            FileWriter fw = new FileWriter( theFile );
+            template.merge( context, fw );
+            fw.flush();
+            fw.close();
+        }
+        catch( Exception e ) {
+            System.out.println( "Exception in Template creation " + e );
+        }
+    
+    } // of GenerateTemplates
+
+    // **************************************************************
+    // ********** Creates the document Template for a Class *********
+
+    public static  ClassTemplate createClassDocument() {
+
+        // General tags Documents
+        DeprecatedTagTemplate deprecatedTags = new DeprecatedTagTemplate();
+        deprecatedTags.setName( "DeprecatedTags" );
+        deprecatedTags.setTemplateFile( "SourceTemplates/DeprecatedTags.vm" );
+
+        AuthorTagTemplate authorTags = new AuthorTagTemplate();
+        authorTags.setName( "AuthorTags" );
+        authorTags.setTemplateFile( "SourceTemplates/AuthorTags.vm" );
+
+        VersionTagTemplate versionTags = new VersionTagTemplate();
+        versionTags.setName( "VersionTags" );
+        versionTags.setTemplateFile( "SourceTemplates/VersionTags.vm" );
+
+        SinceTagTemplate sinceTags = new SinceTagTemplate();
+        sinceTags.setName( "SinceTags" );
+        sinceTags.setTemplateFile( "SourceTemplates/SinceTags.vm" );
+
+        SeeTagTemplate seeTags = new SeeTagTemplate();
+        seeTags.setName( "SeeTags" );
+        seeTags.setTemplateFile( "SourceTemplates/SeeTags.vm" );
+
+        ParamTagTemplate paramTags = new ParamTagTemplate();
+        paramTags.setName( "ParamTags" );
+        paramTags.setTemplateFile( "SourceTemplates/ParamTags.vm" );
+
+        ThrowsTagTemplate throwsTags = new ThrowsTagTemplate();
+        throwsTags.setName( "ThrowsTags" );
+        throwsTags.setTemplateFile( "SourceTemplates/ThrowsTags.vm" );
+
+        ReturnTagTemplate returnTags = new ReturnTagTemplate();
+        returnTags.setName( "ReturnTags" );
+        throwsTags.setTemplateFile( "SourceTemplates/ReturnTags.vm" );
+
+        // Creates a class Document object and adds there
+        // the corresponding layout objects
+        ClassTemplate cd = new  ClassTemplate();
+        cd.setName( "Class" );
+        cd.setTemplateFile( "SourceTemplates/Class.vm" );
+
+        // **** Layout of a Class Document
+
+        // ClassHead Object
+        ClassHeadTemplate cht = new ClassHeadTemplate();
+        cht.setName( "Class_Head" );
+        cht.setTemplateFile( "SourceTemplates/Class_Head.vm" );
+
+        // ClassTitle Object
+        ClassTitleTemplate ctt = new ClassTitleTemplate();
+        ctt.setName( "Class_Title" );
+        ctt.setTemplateFile( "SourceTemplates/Class_Title.vm" );
+        
+        // ClassBody Object
+        ClassBodyTemplate cbt =new ClassBodyTemplate();
+        cbt.setName( "Class_Body" );
+        cbt.setTemplateFile( "SourceTemplates/Class_Body.vm" );
+        
+        // Adds the objects to the layout of the class
+        cd.addLayoutElement( cht );
+        cd.addLayoutElement( ctt );
+        cd.addLayoutElement( cbt );
+
+        // ****** Layout of ClassBody
+
+        // Defines the ClassToObject Tag
+        ClassToDoc ctdoc = new ClassToDoc();
+        ctdoc.setName( "ClassToDoc" );
+        ctdoc.setTemplateFile( "SourceTemplates/ClassToDoc.vm" );
+
+        // Defines the objects inside a ClassBody
+        // Class/Interface Label
+        ClassInterfaceTemplate cit = new ClassInterfaceTemplate();
+        cit.setName( "Class_Interface" );
+        cit.setTemplateFile( "SourceTemplates/Class_Interface.vm" );
+
+        // Relationships
+        ClassRelationshipsTemplate crt = new ClassRelationshipsTemplate();
+        crt.setName( "Class_Relationships" );
+        crt.setTemplateFile( "SourceTemplates/Class_Relationships.vm" );
+
+        // ClassInterface
+        ClassInterfaceSmallTemplate citr = new ClassInterfaceSmallTemplate();
+        citr.setName( "Class_InterfaceSmall" );
+        citr.setTemplateFile( "SourceTemplates/Class_InterfaceSmall.vm" );
+
+        // Add Elements to ClassRelationships Layout
+        // crt.addLayoutElement(rt);                 // Refines
+        // crt.addLayoutElement(ot);                // Override
+        crt.addLayoutElement( citr ); // class/interface
+
+        // *******************************************************
+        // Header
+        ClassHeaderTemplate ch = new ClassHeaderTemplate();
+        ch.setName( "Class_Header" );
+        ch.setTemplateFile( "SourceTemplates/Class_Header.vm" );
+
+        // Summaries
+        FieldSummaryTemplate fst = new FieldSummaryTemplate();
+        fst.setName( "FieldSummary" );
+        fst.setTemplateFile( "SourceTemplates/FieldSummary.vm" );
+
+        ConstructorSummaryTemplate cst = new ConstructorSummaryTemplate();
+        cst.setName( "ConstructorSummary" );
+        cst.setTemplateFile( "SourceTemplates/ConstructorSummary.vm" );
+
+        MethodSummaryTemplate mst = new MethodSummaryTemplate();
+        mst.setName( "MethodSummary" );
+        mst.setTemplateFile( "SourceTemplates/MethodSummary.vm" );
+        
+        // Details
+        FieldDetailsTemplate fdt = new FieldDetailsTemplate();
+        fdt.setName( "FieldDetails" );
+        fdt.setTemplateFile( "SourceTemplates/FieldDetails.vm" );
+
+        ConstructorDetailsTemplate cdt = new ConstructorDetailsTemplate();
+        cdt.setName( "ConstructorDetails" );
+        cdt.setTemplateFile( "SourceTemplates/ConstructorDetails.vm" );
+
+        MethodDetailsTemplate mdt = new MethodDetailsTemplate();
+        mdt.setName( "MethodDetails" );
+        mdt.setTemplateFile( "SourceTemplates/MethodDetails.vm" );
+
+        // Adds the objects to the layout of the ClassBody
+        cbt.addLayoutElement( ctdoc ); // ClassToDoc
+        cbt.addLayoutElement( cit ); // ClassInterface
+
+        // ****** @extension
+        // cbt.addLayoutElement(lt);         // Layer
+        // cbt.addLayoutElement(st);         // Source
+        // ******
+
+        cbt.addLayoutElement( crt ); // Relationships
+        cbt.addLayoutElement( ch ); // Header
+        cbt.addLayoutElement( fst ); // Summaries
+        cbt.addLayoutElement( cst );
+        cbt.addLayoutElement( mst );
+        cbt.addLayoutElement( fdt ); // Details
+        cbt.addLayoutElement( cdt );
+        cbt.addLayoutElement( mdt );
+
+        // ****** Layout of Class_Relationships
+        // ****** Layout of Class_Header  -> @pending parse & include tags
+        
+        // ****** Layout of Class FieldSummary
+        FieldSummaryHeaderTemplate fsht = new FieldSummaryHeaderTemplate();
+        fsht.setName( "FieldSummaryHeader" );
+        fsht.setTemplateFile( "SourceTemplates/FieldSummaryHeader.vm" );
+        
+        FieldSummaryContentsTemplate fsct = new FieldSummaryContentsTemplate();
+        fsct.setName( "FieldSummaryContents" );
+        fsct.setTemplateFile( "SourceTemplates/FieldSummaryContents.vm" );
+
+        // Adds the objects to FieldSummary Layout
+        fst.addLayoutElement( fsht );
+        fst.addLayoutElement( fsct );
+        
+        // ****** Layout of Class ConstructorSummary
+        // ****** Layout of Class MethodSummary
+
+        // ****** Layout of Class FieldDetails
+        FieldDetailsHeaderTemplate fdh = new FieldDetailsHeaderTemplate();
+        fdh.setName( "FieldDetailsHeader" );
+        fdh.setTemplateFile( "SourceTemplates/FieldDetailsHeader.vm" );
+        
+        FieldDetailsContentsTemplate fdc = new FieldDetailsContentsTemplate();
+        fdc.setName( "FieldDetailsContents" );
+        fdc.setTemplateFile( "SourceTemplates/FieldDetailsContents.vm" );
+
+        // Adds the objects to FieldDetails Layout
+        fdt.addLayoutElement( fdh );
+        fdt.addLayoutElement( fdc );
+
+        // ***** Layout of FieldDetailsContents
+        FieldDetailDescription fdd = new FieldDetailDescription();
+        fdd.setName( "FieldDetailDescription" );
+        fdd.setTemplateFile( "SourceTemplates/FieldDetailDescription.vm" );
+        
+        // Adds the objects to FieldDetailLayout
+        fdc.addLayoutElement( fdd );
+        fdc.addLayoutElement( ctdoc );
+        fdc.addLayoutElement( deprecatedTags );
+        fdc.addLayoutElement( authorTags );
+        fdc.addLayoutElement( versionTags );
+        fdc.addLayoutElement( sinceTags );
+        fdc.addLayoutElement( seeTags );
+
+        // @pending -> this should be in constructor and method details
+        // Incorrectly put here by now only to have it copied to target
+        // templates directory
+        fdc.addLayoutElement( paramTags );
+        fdc.addLayoutElement( throwsTags );
+        fdc.addLayoutElement( returnTags );
+
+        // ****** Layout of Class ConstructorDetails
+        // ****** Layout of Class MethodDetails
+
+        cd.extendsClassDocument();
+
+        // Returns the class template object
+        return cd;
+
+    }
+    // of CreateClassDocument
+
+       /** Fall back method for the extensions to the document layout 
+        * @layer<JavaGen>
+        */
+    public static void extendsClassDocument( DocumentDescriptor dd ) {}
+    
+    // **************************************************************
+    // ****** Generate the context for a particular class   *********
+
+    /** Generates the Context for a Class Document. 
+     * @param The class object that was parsed.
+     * @param The Descriptor for the class document.
+     * @param The context that is build up 
+     * @layer<JavaGen>
+     */
+    public static VelocityContext GenerateContext( ProgramElementDocJTS parsedProgramElement,
+                   DocumentDescriptor dd,              
+                   VelocityContext context ) {
+        
+        // Gets the number of layout elements in the document
+        int layoutSize = dd.getSizeLayout();
+
+        // In any case, base or recursive the bindings of the current
+        // Document Descriptor have to be added
+        context = dd.addBindings( parsedProgramElement, context );
+
+        if ( layoutSize == 0 ) { // base case, no further elements
+            // context = dd.addBindings(parsedProgramElement, context);
+            return context;
+        }
+
+        // For all the elements in the layout of the document recurse
+        for( int i=0; i< layoutSize; i++ ) {
+            DocumentDescriptor ldd = 
+                                 ( DocumentDescriptor )dd.getLayoutElement( i );
+            context = GenerateContext( parsedProgramElement, ldd, context );
+        }
+
+        // Returns the context
+        return context;
+
+    }
+    // end of generateClassContext 
+
+       // **************************************************************
+       // ***************** Generate a Class Document ******************
+ 
+      /** Generates the output file based on the context and template 
+        *    descriptor. 
+        * @layer<JavaGen>
+        */
+    public static void GenerateDocument( VelocityContext context, 
+                         DocumentDescriptor dd,
+                         String outputFile ) 
+    {
+        try {
+            // --- new
+            // Initializing Velocity properties
+            final String PROPERTIES = "jedi.properties" ;
+            String name = System.getProperty( PROPERTIES, PROPERTIES ) ;
+
+            // Velocity Engine variable
+            VelocityEngine ve = new VelocityEngine();
+
+            InputStream stream =             ClassLoader.getSystemResourceAsStream( name ) ;
+            if ( stream == null ) {
+                ve.init();
+            }
+            else {
+                Properties properties = new Properties() ;
+                properties.load( stream ) ;
+                stream.close() ;
+                ve.init( properties );
+            }
+                // -- end new
+
+                 // -- Old 
+                // Velocity.init("velocity.properties");            
+            // --- end old
+
+            String doc_name = dd.getName();
+            Template template = ve.getTemplate( "TargetTemplates/" 
+                                                   + doc_name + ".vm" );
+            // String OutputDirectory=".";
+            File theFile=new File( new File( GlobalWrapper.OutputDirectory ), 
+                                            outputFile + ".html" );
+
+            // Render the template for the context into a string
+            // Original Code next
+            FileWriter fw = new FileWriter( theFile );
+            template.merge( context, fw );
+            fw.flush();
+            fw.close();
+        }
+        catch( Exception e ) {
+            System.out.println( "Exception in Class creation " + e );
+        }
+
+    // @debug -> remove once tested
+    // System.out.println("Document Created " + outputFile);
+
+    } // end of GenerateClassDocument
+
+    // New version of GenerateClass    
+    public static void GenerateClass( ClassDocJTS _class,
+                    ClassTemplate classDocument ) 
+        throws Exception {
+  
+        System.out.println( "Class/Interface Name = " + _class.name() );
+
+        // Create the Document Descriptor for a Class
+        // @pending -> this should be done only once per generation
+        // once tested remove from here and accomodate it correspondingly        
+        // ClassTemplate classDocument = createClassDocument();
+
+        // @debug ->        
+        // System.out.println("Class Document generated ");
+        
+        // Generates the templates for the Class in TargetTemplates Dir
+        // GenerateTemplates(classDocument);
+
+        // @debug        
+        // System.out.println("Class Templates generated ");
+        
+        // Generates the context to fill up the class template
+        VelocityContext context = new VelocityContext();
+        context = GenerateContext( _class, classDocument, context );
+
+        // @debug
+        // System.out.println("Class Context generated ");
+        
+        // Generate ClassDocument with context, template, output file
+        String outputFile = _class.name();
+        GenerateDocument( context, classDocument, outputFile );
+
+    } // of GenerateClass
+
+// *******************************************************************
+// *******************************************************************
+// *******************************************************************
+
+}

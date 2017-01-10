@@ -1,0 +1,32 @@
+layer AheadGen;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.util.*;
+import java.io.*;
+
+/** RefinesTemplate.java
+* JEDI Project
+* Department of Computer Sciences
+* University of Texas at Austin
+* @author Roberto E. Lopez-Herrejon
+* Last Update: November 30, 2002
+* @layer<AheadGen>
+*/
+
+public class RefinesTemplate extends DocumentDescriptor {
+
+    // Adds the bindings to the class
+    public VelocityContext 
+        addBindings( ProgramElementDocJTS parsedProgramElement, 
+                VelocityContext context ) {
+
+        // Refines for UnmodifiedTypeExtensions
+        String isRefinesFlag = "false";
+        if ( parsedProgramElement.isRefines() )
+            isRefinesFlag = "true";
+        context.put( "isRefinesFlag", isRefinesFlag );
+
+        return context;
+    }
+}

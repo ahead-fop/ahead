@@ -1,0 +1,24 @@
+layer M2D2Java;
+
+refines class ImplClause {
+
+   public void extract( context c ) {
+      AstCursor curs = new AstCursor();
+      String className = c.getClassName();
+
+      // Step 1: iterate over each AST_TypeName
+
+      for (curs.FirstElement(arg[0]); curs.MoreElement(); curs.NextElement()) {
+
+         // Step 1.1: declare implementing class
+
+         String inc = ((AST_TypeName) curs.node.arg[0]).GetName();
+         inc = ImpQual.fullPath(inc,c);
+
+         // Step 1.2: declare class, class-implements
+
+         c.Footer.add(
+           RubyInstCreator.createClassImplements(className, inc));
+      }
+   }
+}

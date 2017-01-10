@@ -1,0 +1,39 @@
+refines class AstNode {
+    public void execute() {
+        int i;
+
+        if ( arg == null )
+            return;
+        for ( i=0; i<arg.length; i++ )
+            if ( arg[i]!=null )
+                arg[i].execute();
+    }
+}
+
+refines class AstList {
+    public void execute() {
+        AstNode l;
+
+        if ( arg[0]==null )
+            return;
+        for ( l = arg[0]; l!=null; l = l.right ) {
+            if ( l.arg[0] == null )
+                continue;
+            l.arg[0].execute();
+        }
+    }
+}
+
+refines class AstListNode {
+    public void execute() {
+        Util.fatalError( "AstListNode.execute() method should not be called" );
+    }
+}
+
+refines class AstOptNode {
+    public void execute() {
+        if ( arg[0]!=null )
+            arg[0].execute();
+ 
+    }
+}

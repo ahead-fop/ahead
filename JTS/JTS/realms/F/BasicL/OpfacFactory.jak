@@ -1,0 +1,45 @@
+package BasicL;
+
+import  
+    java.util.*;
+import 
+    F.Libraries.laydown.*;
+import 
+    F.Libraries.log.Log;
+
+
+
+    public extends class OpfacFactory 
+    {
+	protected OpfacFactory() 
+        {
+          OpfacFactoryConstructor();
+	}
+	protected void OpfacFactoryConstructor() {
+	    register(OpfacType.DIV_FSE_TAC, new DivFseOpfac() );
+	    register(OpfacType.BDE_FSE, new BdeFseOpfac() );
+	    register(OpfacType.BN_FSE, new BnFseOpfac() );
+	    register(OpfacType.FIST, new FistOpfac() );
+	    register(OpfacType.FO, new FoOpfac() );
+
+	    register(OpfacType.DIVARTY_CP, new CpOpfac() );
+	    register(OpfacType.DS_BDE_CP, new CpOpfac() );
+	    register(OpfacType.DS_BN_CP, new CpOpfac() );
+	    register(OpfacType.GS_BN_CP, new CpOpfac() );
+	    register(OpfacType.R_BN_CP, new CpOpfac() );
+	    register(OpfacType.MLRS_BN, new CpOpfac() );
+
+            // Added 3 Jan 2000 - bhopkins -
+            // in hopes of fixing "Cannot create" errors.
+            register(OpfacType.GSR_FA_PLT, new CpOpfac() );
+            register(OpfacType.GSR_BN_CP, new CpOpfac() );
+            register(OpfacType.CORPS_FSE_MAIN, new CpOpfac() );
+
+            // Added 20 Mar 2000 - bhopkins -M
+            // in hopes of fixing "Cannot create" errors.
+            register(OpfacType.FA_PLT, new CpOpfac() );
+            register(OpfacType.MECH_FIST, new FistOpfac() );
+
+	    register(OpfacType.ARM_FIST, new FistOpfac() );
+      }
+    }

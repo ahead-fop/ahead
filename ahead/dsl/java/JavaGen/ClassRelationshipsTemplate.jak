@@ -1,0 +1,41 @@
+layer JavaGen;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.util.*;
+import java.io.*;
+
+// _________________________________________________________________
+ /** ClassRelationshipsTemplate.java
+ * JEDI Project
+ * Department of Computer Sciences
+ * University of Texas at Austin
+ * @author Roberto E. Lopez-Herrejon
+ * Last Update: November 30, 2002
+ * @layer<JavaGen>
+ */
+
+public class ClassRelationshipsTemplate extends DocumentDescriptor {
+
+    // Adds the bindings to the class
+    public VelocityContext 
+        addBindings( ProgramElementDocJTS parsedProgramElement, 
+                VelocityContext context ) {
+
+        // The super class name reference
+        ClassDocJTS parsedClass = 
+                ( ClassDocJTS )parsedProgramElement;
+        context.put( "superclass",parsedClass.superclass() );
+        
+        // The interfaces that it implements
+        ClassDocJTS[] theInterfaces = parsedClass.interfaces();
+        String interfacesFlag = "false";
+        if ( theInterfaces.length > 0 )
+            interfacesFlag = "true";
+        context.put( "interfaces", interfacesFlag );
+        context.put( "listInterfaces", theInterfaces );
+
+        return context;
+    }
+    
+}

@@ -1,0 +1,24 @@
++ '[' -z /usr/bin/bash ']'
++ echo '****************SM Regression Test***********'
+****************SM Regression Test***********
++ bash regress-one ext11 ext14 resulte11e14
+composing ext11 & ext14 -> resulte11e14 ... succeeded
++ bash regress-one root11 ext14 resultr11e14
+composing root11 & ext14 -> resultr11e14 ... succeeded
++ bash regress-one ext111 ext114 resulte111e114
+composing ext111 & ext114 -> resulte111e114 ... succeeded
++ bash regress-one root1 ext12 resultr1e12
+composing root1 & ext12 -> resultr1e12 ... succeeded
++ bash regress-one ext12 ext12 resulte12e12
+composing ext12 & ext12 -> resulte12e12 ... succeeded
++ bash regress-one ext1 ext11 resulte1e11
+composing ext1 & ext11 -> resulte1e11 ... succeeded
++ bash regress-two one two three rall
+composing one & two & three -> rall ... succeeded
++ bash leftassoc one two three rall
+testing left-associativity (one & two) & three -> rall ... succeeded
++ bash rightassoc one two three rall
+testing right-associativity one & (two & three) -> rall ... succeeded
++ echo -e '\nSm Composition Regression Test succeeded.'
+
+Sm Composition Regression Test succeeded.

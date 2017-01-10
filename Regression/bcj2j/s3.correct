@@ -1,0 +1,94 @@
+class  s1 extends stub.s1 implements java.io.Serializable {
+            
+   final static int unneeded = stateNumGenerator++;
+      // delivery method
+
+   public void delivery(  M m ) {      
+      if (current_state == unneeded) { unneeded_prepare(m); unneeded_branches(m); return; }
+      super.delivery( m );
+   }
+
+   // getState method
+
+   public String getState() {
+      if (current_state == unneeded) return "unneeded";
+      return super.getState();
+   }
+   void one_enter_user(  M m ) {   one_enter_user$$s14(m); System.out.println("entering one");
+   }
+   final void one_enter_user$$s14(  M m ) {; }
+   void one_exit(  M m ) {   one_exit$$s15(m); System.out.println("exiting one"); }
+   final void one_exit$$s15(  M m ) {; }
+   void one_otherwise( M m) { otherwise_Default(m);}
+   void one_prepare(  M m ) {   one_prepare$$s13(m); System.out.println("preparing one"); }
+   final void one_prepare$$s13(  M m ) {; }
+   void start_enter_user(  M m ) {   start_enter_user$$s11(m); System.out.println("entering start");
+   }
+   final void start_enter_user$$s11(  M m ) {; }
+   void start_exit(  M m ) {   start_exit$$s12(m); System.out.println("exiting start"); }
+   final void start_exit$$s12(  M m ) {; }
+   void start_otherwise( M m) { otherwise_Default(m);}
+   void start_prepare(  M m ) {   start_prepare$$s10(m); System.out.println("preparing start"); }
+   final void start_prepare$$s10(  M m ) {; }
+   void stop_enter_user(  M m ) {   stop_enter_user$$s113(m); System.out.println("entering stop");
+   }
+   final void stop_enter_user$$s113(  M m ) {; }
+   void stop_exit(  M m ) {   stop_exit$$s114(m); System.out.println("exiting stop"); }
+   final void stop_exit$$s114(  M m ) {; }
+   void stop_otherwise( M m) { otherwise_Default(m);}
+   void stop_prepare(  M m ) {   stop_prepare$$s112(m); System.out.println("preparing stop"); }
+   final void stop_prepare$$s112(  M m ) {; }
+   void three_enter_user(  M m ) {   three_enter_user$$s110(m); System.out.println("entering three");
+   }
+   final void three_enter_user$$s110(  M m ) {; }
+   void three_exit(  M m ) {   three_exit$$s111(m); System.out.println("exiting three"); }
+   final void three_exit$$s111(  M m ) {; }
+   void three_otherwise( M m) { otherwise_Default(m);}
+   void three_prepare(  M m ) {   three_prepare$$s19(m); System.out.println("preparing three"); }
+   final void three_prepare$$s19(  M m ) {; }
+   void two_enter_user(  M m ) {   two_enter_user$$s17(m); System.out.println("entering two");
+   }
+   final void two_enter_user$$s17(  M m ) {; }
+   void two_exit(  M m ) {   two_exit$$s18(m); System.out.println("exiting two"); }
+   final void two_exit$$s18(  M m ) {; }
+   void two_otherwise( M m) { otherwise_Default(m);}
+   void two_prepare(  M m ) {   two_prepare$$s16(m); System.out.println("preparing two"); }
+   final void two_prepare$$s16(  M m ) {; }
+
+   // methods for state unneeded
+
+   void unneeded_branches(  M m ) {
+      if ( useless_test(m) ) { unneeded_exit(m); useless_action(m); unneeded_enter(m); return; }
+      if (starBranches( m ) ) unneeded_otherwise( m );
+   }
+   void unneeded_enter(  M m ) {
+      current_state = unneeded;
+      dispatch = new disp() { public void exit(  M m ) { unneeded_exit( m ); } };
+
+      unneeded_enter_user(m);
+    }
+   void unneeded_enter_user(  M m ) { ;
+   }
+   void unneeded_exit(  M m ) { ; }
+   void unneeded_otherwise( M m) { otherwise_Default(m);}
+   void unneeded_prepare(  M m ) { ; }
+
+   // methods for transition useless
+
+   void useless_action( M m) {  }
+   boolean useless_test(  M m ) { return  true; }
+
+   static int array[] = { M.one, M.two, M.two, M.two, M.three, M.eom };
+
+   public static void main(String args[]) {
+      s1 sd = new s1();
+      int i;
+      M m = new M();
+
+      for (i=0; i<array.length; i++) {
+         m.msg = array[i];
+         sd.delivery(m);
+         System.out.println(sd.getState());
+      }
+   }
+        }

@@ -1,0 +1,20 @@
+import java.lang.Exception;
+
+public class dparseException extends Exception {
+
+    public dparseException() {
+        Super( String )( "dparse Error" );
+    }
+
+    public dparseException( String message ) {
+        Super( String )( "dparse Error: " + message );
+    }
+
+    public dparseException( String message, Throwable cause ) {
+        Super( String,Throwable )( "dparse Error: " + message, cause );
+    }
+
+    public dparseException( Throwable cause ) {
+        Super( Throwable )( cause );
+    }
+}

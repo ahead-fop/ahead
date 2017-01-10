@@ -1,0 +1,37 @@
+
+#! JavaM => metamodels/JavaM.ecore 
+
+
+layer = JavaM::Layer.new(:name => 'test', :identifier => 'layer') 
+package_used = JavaM::Package.new(:name => 'used', :identifier => 'used', :ownerLayer => layer)
+package_feature = JavaM::Package.new(:name => 'test', :identifier => 'feature', , :ownerLayer => layer)
+
+# thro.jak
+
+feature_foo = JavaM::Class.new(:name => 'foo', :identifier => 'feature.foo', :visibility => 'package', :isRefinement => false, :owner => package_feature)
+java_lang_Exception = JavaM::Class.new(:name => 'Exception', :identifier => 'java.lang.Exception', :owner => package_used)
+java_lang_RuntimeException = JavaM::Class.new(:name => 'RuntimeException', :identifier => 'java.lang.RuntimeException', :owner => package_used)
+
+#  implicitly imported files
+
+primitiveType_void = JavaM::PrimitiveType.new(:name =>'void', :identifier =>'void', :owner => package_used)
+primitiveType_int = JavaM::PrimitiveType.new(:name =>'int', :identifier =>'int', :owner => package_used)
+feature_a = JavaM::Class.new(:name => 'a', :identifier => 'feature.a', :owner => package_used)
+
+# thro.jak
+
+method_feature_foo_inc12 = JavaM::Method.new(:name => 'feature.foo.inc()', :identifier => 'feature.foo.inc()', :type => primitiveType_void, :nesting => 0, :visibility => 'package', :body => " { }", :ownerClass => feature_foo)
+method_feature_foo_inc12.throws << feature_a
+method_feature_foo_inc12.throws << java_lang_Exception
+
+method_feature_foo_bin12 = JavaM::Method.new(:name => 'feature.foo.bin()', :identifier => 'feature.foo.bin()', :type => primitiveType_void, :nesting => 0, :visibility => 'package', :body => " {}", :ownerClass => feature_foo)
+method_feature_foo_bin12.throws << java_lang_RuntimeException
+
+constructor_feature_foo_foo12 = JavaM::Constructor.new(:name => 'feature.foo.foo()', :identifier => 'feature.foo.foo()', :type => feature_foo, :nesting => 0, :visibility => 'package', :isRefinement => 'false', :body => "{}", :ownerClass => feature_foo)
+constructor_feature_foo_foo12.throws << feature_a
+constructor_feature_foo_foo12.throws << java_lang_Exception
+
+constructor_feature_foo_foo1int2 = JavaM::Constructor.new(:name => 'feature.foo.foo(int)', :identifier => 'feature.foo.foo(int)', :type => feature_foo, :nesting => 0, :visibility => 'package', :isRefinement => 'false', :body => "{}", :ownerClass => feature_foo)
+parameter_feature_foo_foo1int2_x = JavaM::Parameter.new(:name => 'feature.foo.foo(int).x', :identifier => 'feature.foo.foo(int).x', :type => primitiveType_int, :nesting => 0, :ownerConstructor => constructor_feature_foo_foo1int2)
+constructor_feature_foo_foo1int2.throws << java_lang_RuntimeException
+

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+echo -n "$1..."
+
+(echo ; cat $1.correct) | tr -s '\n\r' '\n' > correct
+
+java jrename.Main -s $1.java > junk 2>&1 
+cat junk | tr -s '\n\r' '\n' > current || exit 1
+
+if diff -b -B correct current ; then
+    rm -f -r correct current junk || :
+    echo succeeded
+else
+    rm -f -r correct current junk || :
+    echo failed
+    exit 1
+fi

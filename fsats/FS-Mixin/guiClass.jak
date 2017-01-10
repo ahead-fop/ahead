@@ -1,0 +1,11 @@
+layer FS;
+
+import laydown.*;
+
+import java.util.*;
+
+SoUrCe RooT GuiL "C:!Java!FeatureOrientedProgramming!fsats!GuiL!guiClass.jak";
+
+public class guiClass {
+    static fsats.guiIf.UIModel gui = new fsats.gui.GUI();
+}

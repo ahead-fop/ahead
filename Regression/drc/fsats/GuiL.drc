@@ -1,0 +1,11 @@
+single layer GuiL;
+
+extern outside Int  fsatsRank;
+extern outside Bool missionPresent;
+extern outside Bool missionanyPresent;
+extern inside  Bool libraries;
+
+
+requires outside missionPresent and fsatsRank == 3 and missionanyPresent;
+provides outside fsatsRank == 4;
+requires inside  libraries;

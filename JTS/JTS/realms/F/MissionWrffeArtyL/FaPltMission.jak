@@ -1,0 +1,58 @@
+package MissionWrffeArtyL;
+
+import 
+    Jakarta.util.Util;
+import 
+    java.io.*;
+import 
+    F.Libraries.log.Log;
+
+ // FoMission
+
+
+    public extends state_machine FaPltMission
+    {
+        states wrffeLoading, wrffeShot, wrffeComplete;
+
+        // If mission is accepted then wait for exclusive control of the gun.
+        Enter wrffeArtyAccepted { getOpfac().missionLock(this); }
+
+        // When its this missions turn, aim and load.
+        edge wrffeArtyAccepted3 : wrffeArtyAccepted -> wrffeLoading
+            conditions (message instanceof LockGranted)
+            do { getOpfac().timeout(30F, new LoadTime(getId())); }
+
+        // When loading complete, shoot.
+        edge wrffeLoading1 : wrffeLoading -> wrffeShot
+            conditions (message instanceof LoadTime)
+            do 
+            { 
+                getOpfac().timeout(10F, new CompleteTime(getId())); ShotMessage shotMessage = new ShotMessage(getId());
+		if (initiatingUnit != null)
+		    shotMessage.setInitiatingUnitId(initiatingUnit.intValue());
+                sendDown(shotMessage);
+            }
+    
+        // When done shooting notify observer.
+        edge wrffeShot1 : wrffeShot -> wrffeComplete
+            conditions (message instanceof CompleteTime)
+            do 
+	    { RoundsCompleteMessage roundsCompleteMessage = new RoundsCompleteMessage(getId());
+		if (initiatingUnit != null)
+		    roundsCompleteMessage.setInitiatingUnitId(initiatingUnit.intValue());
+		sendDown(roundsCompleteMessage);
+	    }
+        
+        // Allow other missions to proceed.
+        Enter wrffeComplete { getOpfac().missionFree(this); }
+
+        // When EOM received, send MFR and stop.
+        edge wrffeComplete1 : wrffeComplete -> stop
+            conditions (message instanceof EomMessage)
+            do
+	    { MfrMessage mfrMessage = new MfrMessage(getId());
+		if (initiatingUnit != null)
+		    mfrMessage.setInitiatingUnitId(initiatingUnit.intValue());
+		sendDown(mfrMessage);
+	    }
+    }

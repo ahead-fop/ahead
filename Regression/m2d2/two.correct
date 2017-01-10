@@ -1,0 +1,9 @@
+Exception in thread "main" Jakarta.util.ExitError: more than one Jak or Java file in a physical file
+	at Jakarta.util.Util.fatalError(Util.java:71)
+	at m2d2.TypeDeclaration.extract(TypeDeclaration.java:21)
+	at m2d2.AstList.extract(AstList.java:402)
+	at m2d2.AstOptNode.extract(AstOptNode.java:135)
+	at m2d2.program.extract(program.java:64)
+	at m2d2.Main.processing(Main.java:945)
+	at m2d2.Main.driver(Main.java:873)
+	at m2d2.Main$$kernel.main(Main.java:249)

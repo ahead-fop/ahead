@@ -1,0 +1,17 @@
+
+#! JavaM => metamodels/JavaM.ecore 
+
+
+layer = JavaM::Layer.new(:name => 'test', :identifier => 'layer') 
+package_used = JavaM::Package.new(:name => 'used', :identifier => 'used', :ownerLayer => layer)
+package_feature = JavaM::Package.new(:name => 'test', :identifier => 'feature', , :ownerLayer => layer)
+
+# cls.jak
+
+feature_cls = JavaM::Class.new(:name => 'cls', :identifier => 'feature.cls', :visibility => 'public', :isRefinement => false, :owner => package_feature)
+
+#  implicitly imported files
+
+
+# cls.jak
+

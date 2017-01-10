@@ -1,0 +1,19 @@
+#!/bin/bash
+[ -z "$BASH" ] && exec bash "$0" "$@"
+
+echo "****************SM Regression Test***********"
+
+bash regress-one ext11 ext14 resulte11e14 \
+&& bash regress-one root11 ext14 resultr11e14 \
+&& bash regress-one ext111 ext114 resulte111e114 \
+&& bash regress-one root1 ext12 resultr1e12 \
+&& bash regress-one ext12 ext12 resulte12e12 \
+&& bash regress-one ext1 ext11 resulte1e11 \
+&& bash regress-one root1 ext1 resultr1e1 \
+&& bash regress-one root2 ext2 resultr2e2 \
+&& bash regress-one root3 ext3 resultr3e3 \
+&& bash regress-one root1 ext4 resultr1e4 \
+&& bash regress-one root1 ext5 resultr1e5 \
+|| exit 1
+
+echo -e "\nSm Composition Regression Test succeeded."

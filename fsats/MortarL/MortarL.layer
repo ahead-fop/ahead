@@ -1,0 +1,44 @@
+//                              -*- Mode: JTS -*-
+// Version         : 1.1
+// Author          : Robert S. MacDonald
+// Last Modified By: Bryan D. Hopkins
+// Last Modified On: Mon May  1 16:18:2000
+
+layer MortarL ( F lower )
+realm F
+extends lower 
+{
+    public static state_diagram MortarMission refines $TEqn.WeaponMission {}
+    public static class MortarOpfac extends $TEqn.WeaponOpfac 
+    { 
+        public $TEqn.Mission newMission() 
+        {
+            return new $TEqn.MortarMission(); 
+        }
+    }
+    public static class MortarProxy extends $TEqn.WeaponProxy 
+    { 
+        public int typePrecedence() { return 4; }
+
+        public boolean canShoot($TEqn.Mission mission)
+        {
+            return 
+                !mission.getTarget().getType().equals("ARMOR")
+                    && super.canShoot(mission);
+        }
+    }
+
+    public static class OpfacFactory extends lower.OpfacFactory {
+	protected OpfacFactory() {
+	    register($TEqn.OpfacType.MTR_PLT, new $TEqn.MortarOpfac() );
+	}
+    }
+
+    public static class ProxyFactory extends lower.ProxyFactory {
+	protected ProxyFactory() {
+	    register($TEqn.OpfacType.MTR_PLT, new $TEqn.MortarProxy());
+	}
+    }
+}
+
+

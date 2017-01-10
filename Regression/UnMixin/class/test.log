@@ -1,0 +1,16 @@
++ '[' -z /usr/bin/bash ']'
++ echo '****************Class Regression Test***********'
+****************Class Regression Test***********
++ bash regress-one CBase0 CExt1 rc01
+uncomposing rc01 into CBase0 & CExt1 ...succeeded
++ bash regress-one CExt1 CExt1 rc11
+uncomposing rc11 into CExt1 & CExt1 ...succeeded
++ bash regress-one CExt1 CExt2 rc12
+uncomposing rc12 into CExt1 & CExt2 ...succeeded
++ bash regress-one CBase3 CExt3 rc33
+uncomposing rc33 into CBase3 & CExt3 ...succeeded
++ bash regress-two one two three rall
+uncomposing rall into one & two & three...succeeded
++ echo -e '\nClass Composition Regression Test succeeded.'
+
+Class Composition Regression Test succeeded.

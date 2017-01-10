@@ -1,0 +1,11 @@
+package MortarL;
+
+
+
+
+    public extends class OpfacFactory {
+	protected void OpfacFactoryConstructor() {
+            Base().OpfacFactoryConstructor();
+	    register( OpfacType.MTR_PLT, new MortarOpfac() );
+      }
+    }

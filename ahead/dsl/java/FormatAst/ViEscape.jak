@@ -1,0 +1,13 @@
+layer FormatAst;
+
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public refines class ViEscape {
+    public void format( int position ) {
+        inline_routins( position );
+        processParentheses();
+        super.format( position );
+    }
+}

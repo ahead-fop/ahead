@@ -1,0 +1,3 @@
+jampack: Cmidmodserror.java:5: Error new method b() in refinement is overriding method in base
+jampack: Cmidmodserror.java:4: Error override method d() in refinement does not override method in base
+jampack: Summary 2 errors

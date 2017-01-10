@@ -1,0 +1,30 @@
+layer Cmid;
+
+import java.util.*;
+
+refines class top implements java.io.Serializable {
+
+   static int i$$Cmid,j$$Cmid;
+
+   static int i$$Cmid2,j$$Cmid2;
+
+   static { i$$Cmid = 4; }
+
+   static { i$$Cmid2 = 4; }
+   int ii$$Cmid,jj$$Cmid;
+   int ii$$Cmid2,jj$$Cmid2;
+
+   final float bar$$Cmid( float x ) { 
+       Super(float).bar(x);
+       return (float) 4.0; 
+   }
+
+   float bar( float x ) { 
+       bar$$Cmid(x);
+       return (float) 4.0; 
+   }
+
+   void foo$$Cmid(float x, float y) { /* do something */ }
+
+   void foo$$Cmid2(float x, float y) { /* do something */ }
+}

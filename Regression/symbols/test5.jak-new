@@ -1,0 +1,108 @@
+
+import Jakarta.symtab.*;
+import Jakarta.util.Util;
+import jak.Lang;
+import java.io.PrintWriter;
+
+public class test5 {
+    private static PrintWriter pw = new PrintWriter(System.out);
+
+    public static void main(String[] args) {
+	Lang.AST_Program prg = prg{
+	    package MyPackage;
+
+	    public class outerRefined extends outer {
+		int bar;
+
+		static public class nestedTopLevel {
+		    String string;
+		}
+
+		public class memberClass {
+		    String foo;
+		    outerRefined x;
+		    public memberClass myFunc(float bar) {}
+		}
+	    }
+
+	    class outer {
+		float bar;
+		double baz;
+	    }
+	}prg;
+
+	Symtab st = Lang.Symtab.instance();
+
+	// Build symbol table
+	prg.buildSymbolTable();
+
+	// Perform lookup's from within the scope of the function myFunc
+	ClassInfo memberClass = 
+	    (ClassInfo) st.lookup("MyPackage.outerRefined.memberClass");
+
+	Scope function;
+	try {
+	    function = memberClass.findMethod("myFunc", "F");
+	}
+	catch (BadSymbolNameException e) {
+	    Util.fatalError(e);
+	    function = null;
+	}
+
+	show((Declaration) function, "myFunc", "program");
+
+
+	// Test import from default package (should fail
+	final String mf = "myFunc";
+	Declaration dcl = st.lookup("Build", function);
+	show(dcl, "Build", mf);
+
+	Scope outerRefined =
+	    (Scope) st.lookup("MyPackage.outerRefined");
+
+	// Test cast expression
+	dcl = st.lookup("(outerRefined) x", function);
+	show(dcl, "Cast to outerRefined", mf);
+
+	// Test allocation expression
+	dcl = st.lookup("new outer()", function);
+	show(dcl, "new outer()", mf);
+
+	// Test type.class expression
+	dcl = st.lookup("outer.class", function);
+	show(dcl, "outer.class", mf);
+
+	// Test outerRefined.this.bar expression
+	dcl = st.lookup("outerRefined.this.bar", function);
+	show(dcl, "outerRefined.this.bar", mf);
+
+	// Test x.new memberClass()
+	dcl = st.lookup("x.new memberClass()", function);
+	show(dcl, "x.new memberClass()", mf);
+
+	// Test array access (not really correct)
+	dcl = st.lookup("bar[5]", function);
+	show(dcl, "bar[5]", mf);
+
+	// Test field access after method call
+	dcl = st.lookup("myFunc(0.4).foo", function);
+	show(dcl, "myFunc(0.4).foo", mf);
+
+
+	// Dump symbol table
+	pw.println("*** SymbolTable ***");
+	st.dump(pw);
+	pw.println("*** End SymbolTable ***");
+
+	pw.close();
+    }
+
+    private static void show(Declaration dcl, String phrase, String whereAt) {
+	if (dcl == null)
+	    pw.println("Binding of " + phrase + " in " + whereAt + " failed");
+	else {
+	    pw.print("Binding of " + phrase + " in " + whereAt + " : ");
+	    dcl.dump(pw, 0);
+	}
+    }
+}

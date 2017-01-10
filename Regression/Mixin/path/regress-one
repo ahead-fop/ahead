@@ -1,0 +1,17 @@
+#!/bin/bash
+
+echo -n "composing $1 and $2 --> $3 ... "
+
+cd ../..
+
+(echo ; java mixin.Main -a Foo.Bar Mixin/path/$1.jak Mixin/path/$2.jak) 2>&1 | sed -f Mixin/path/updates | tr -s '\n\r' '\n' > Mixin/path/current
+(echo ; cat Mixin/path/$3) | sed -f Mixin/path/updates  | tr -s '\n\r' '\n' > Mixin/path/correct
+
+if diff -w Mixin/path/correct Mixin/path/current ; then
+    rm -f Mixin/path/correct Mixin/path/current || :
+    echo succeeded
+else
+    rm -f Mixin/path/correct Mixin/path/current || :
+    echo failed
+    exit 1
+fi

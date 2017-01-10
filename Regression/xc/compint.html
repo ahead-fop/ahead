@@ -1,0 +1,151 @@
+<method layers >  layers method
+  <li><font face="Arial">CompInt -- compresses interface extension
+    hierarchies</font></li>
+<call layers >
+</method> end layers method
+
+<method chapterLinks > chapterLinks method
+  <li><font face="Arial"><a href="#Specifying Interfaces and Interface Extensions">Interface extension specifications</a></font></li>
+<call chapterLinks >
+</method> end chapterLinks method
+
+<method chapters >
+<h2><font face="Arial" color="#0000FF"><a name="Specifying Interfaces and Interface Extensions">Specifying Interfaces and Interface
+Extensions</a></font></h2>
+<p><font face="Arial">PJ expects a file containing a base interface to have the
+following format:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package &lt;package-name&gt;;</font></pre>
+  <pre><font face="Courier New">[&lt;import-statements&gt;]</font></pre>
+  <pre><font face="Courier New">&lt;java-interface-declaration&gt;</font></pre>
+</blockquote>
+<p><font face="Arial">Note:</font></p>
+<ul>
+  <li><font face="Arial">a package name is required.&nbsp; It is the name
+    of the layer to which this interface belongs.</font></li>
+  <li><font face="Arial">import statements are optional.</font></li>
+  <li><font face="Arial">a standard Java interface specification is expected,
+    with no nested interfaces, nested class declarations.</font></li>
+  <li><font face="Arial">only one interface can be defined per file.&nbsp;
+    Unlike Java which allows more than one interface declaration per file (and
+    at most one file is &quot;public&quot;), PJ assumes only one interface
+    definition per file.</font></li>
+</ul>
+<p><font face="Arial">An interface extension file has the following format:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package &lt;package-name&gt;;</font></pre>
+  <pre><font face="Courier New">[&lt;import-statements&gt;]</font></pre>
+  <pre><font face="Courier New">[&lt;modifiers&gt;] extends interface &lt;name&gt; [ extends &lt;interface-list&gt; ] { [body] }</font></pre>
+</blockquote>
+<p><font face="Arial">Note:</font></p>
+<ul>
+  <li><font face="Arial">a package name is required.&nbsp; It is the name
+    of the layer to which this interface belongs.</font></li>
+  <li><font face="Arial">import statements are optional.</font></li>
+  <li><font face="Arial">note the special syntax for interface extensions.</font></li>
+  <li><font face="Arial">only one interface extension can be defined per file;
+    there can be no other declarations.</font></li>
+</ul>
+<h3><font face="Arial" color="#0000FF">Rules of Composition</font></h3>
+<p><font face="Arial">Composition of a base interface with an extension (or an
+extension interface with another extension interface) follows simple rules:</font></p>
+<ul>
+  <li><font face="Arial">base (or initial extension) must have the same name as
+    interface that is to extend it.</font></li>
+  <li><font face="Arial">modifiers of the base and extension are merged (without
+    duplication).</font></li>
+  <li><font face="Arial">extends clause lists are merged (without duplication).</font></li>
+  <li><font face="Arial">bodies are merged (without duplication)</font></li>
+  <li><font face="Arial">with option -t, list of field declarations are <a href="#typeSorting">type
+    sorted</a> (constants first, methods second).</font></li>
+</ul>
+<p><font face="Arial">An example of a base interface file and an extension
+interface file are:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package IBase1;
+
+import x.y.z.*;
+import java.io.Serializable;
+
+interface MyInt extends FooInterface {
+    int Silent = 0;
+    void foo() throws AFit;
+    SomeType bar( int x );
+}</font></pre>
+  <hr>
+  <pre><font face="Courier New">package Iext1;
+
+<span style="background-color: #FFFF00">import java.io.Serializable;</span>
+
+<span style="background-color: #FFFF00">public transient</span> extends interface MyInt extends <span style="background-color: #FFFF00">yyy, java.io.Serializable</span> {
+   <span style="background-color: #FFFF00">int Terse = 2;</span>
+   void foo() throws <span style="background-color: #FFFF00">SomeException</span>;
+   <span style="background-color: #FFFF00">int increment( int i );</span>
+}</font></pre>
+</blockquote>
+<p><font face="Arial">The result of their composition is shown below.&nbsp;
+Highlighted in <span style="background-color: #FFFF00"> yellow</span> are additions made by the MyInt extension.</font></p>
+<blockquote>
+  <pre>package IBase1;
+
+import x.y.z.*;
+<span style="background-color: #FFFF00">import java.io.Serializable;</span>
+
+<span style="background-color: #FFFF00">public transient</span> interface MyInt extends FooInterface, <span style="background-color: #FFFF00">yyy, java.io.Serializable</span> {
+    int Silent = 0;
+    <span style="background-color: #FFFF00">int Terse = 2;</span>
+    void foo() throws AFit<span style="background-color: #FFFF00">, SomeException</span>;
+    SomeType bar( int x );
+    <span style="background-color: #FFFF00">int increment( int i );</span>
+}</pre>
+</blockquote>
+<p><b><a name="typeSorting"></a>Type sorting</b> is a linear
+algorithm (which is invoked by the -t option to PJ) that sorts the declarations
+within an interface.&nbsp; To understand the motivation for type sorting,
+consider the result of the above composition if type sorting is not used (see
+below): it is a jungle of definitions that are hard to understand.&nbsp; Type
+sorting collects all variable definitions together in one spot and method
+definitions in another, and makes a small contribution to generated code
+beautification.</p>
+<blockquote>
+<pre><font face="Courier New">public transient interface MyInt extends FooInterface, yyy, java.io.Serializable {
+    int Silent = 0;
+    void foo() throws AFit, SomeException;
+    SomeType bar( int x );
+    int Terse = 2;
+    int increment( int i );
+}</font></pre>
+</blockquote>
+<p><font face="Arial">Again, it is possible to compose two interface extension
+files to produce a composite extension file.&nbsp; Remember: a base file is a
+&quot;constant&quot; and an extension file is a &quot;function&quot; in GenBorg.&nbsp;
+So composing a constant with a function (e.g., f(a)) produces a constant --
+i.e., composing a base interface with an extension produces a composite base interface.&nbsp; Similarly, composing a function in GenBorg
+with another function yields a function.&nbsp; That is, composing an interface
+extension with another interface extension yields a composite interface
+extension.</font></p>
+<h3><font face="Arial" color="#0000FF">The New and Overrides Modifiers</font></h3>
+<p><font face="Arial">A convenient and optional feature is to designate methods
+of an extension by the modifiers &quot;new&quot; or &quot;overrides&quot;.&nbsp;
+&quot;new&quot; means that the extension is defining a new method whose name
+should not be used by a method in the base interface.&nbsp;
+&quot;overrides&quot; means that the extension is defining an extension to a
+previously defined method. PJ generates an error if it detects that the
+conditions for &quot;new&quot; or &quot;overrides&quot; are not satisfied.&nbsp;
+As an example:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package Iext0;
+
+extends interface MyInt extends java.io.Serializable {
+    <span style="background-color: #FFFF00">overrides</span> void foo() throws SomeException;
+    <span style="background-color: #FFFF00">new</span> void barrr();
+}</font></pre>
+</blockquote>
+<p><font face="Arial">The above interface defines a new method (barrr) that and
+overrides a previously defined method (foo)</font></p>
+<p><font face="Arial">The use of &quot;new&quot; and &quot;overrides&quot; makes
+a useful contribution to avoiding inadvertent capture; these modifiers should be
+used to guarentee that a method being defined by an extension is in fact a new
+method or does override an existing method.</font></p>
+<call chapters >
+</method> end chapters method

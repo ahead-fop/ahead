@@ -1,0 +1,17 @@
+layer Number;
+
+// ***********************************************************************
+   
+public refines class Graph {
+
+    // Executes Number Vertices
+    public void run( Vertex s )
+     {
+        NumberVertices();
+        Super( Vertex ).run( s );
+    }
+
+    public void NumberVertices() {
+        GraphSearch( new NumberWorkSpace() );
+    }
+}

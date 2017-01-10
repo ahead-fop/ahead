@@ -1,0 +1,14 @@
+layer MissionL;
+
+import  
+    java.util.*;
+import 
+    log.Log;
+
+
+
+    /** Base implementation of an active mission for a particular OPFAC **/
+    public State_machine MissionImpl extends class common
+        implements Mission
+    {
+    }

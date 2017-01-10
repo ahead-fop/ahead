@@ -1,0 +1,14 @@
+package ProxyL;
+
+import  
+    java.util.*;
+import  
+    F.Libraries.laydown.*;
+import  
+    F.Libraries.log.Log;
+
+
+
+
+    public extends interface Opfac
+        { Proxy getSuperProxy(); Proxy getSelfProxy();}

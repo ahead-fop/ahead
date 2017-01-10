@@ -1,0 +1,24 @@
+echo "************ Now testing WRFFE_MORTAR_FIST, WRFFE_ARTILLERY_FIST ****"
+java jak2java.Main wrffe_fist.spec
+javac wrffe_fist.java
+java wrffe_mortar_fist > junk
+if ! diff -b junk correct_fist ; then
+   echo failed
+   exit 1
+fi
+
+echo "************ Now testing WRFFE_MLRS_FIST ****"
+java wrffe_mlrs_fist > junk
+
+if ! diff -b junk correct_fomlrs ; then
+   echo failed
+   exit 1
+fi
+
+echo "************* Now testing WRFFE_MORTAR_FIST_ERROR ****"
+java wrffe_mortar_fist_error > junk
+
+if ! diff -b junk correct_m_f_error ; then
+   echo failed
+   exit 1
+fi

@@ -1,0 +1,7 @@
+layer MortarL;
+
+public refines class OpfacFactory {
+    refines OpfacFactory() {
+        register( OpfacType.MTR_PLT, new MortarOpfac() );
+    }
+}

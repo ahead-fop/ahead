@@ -1,0 +1,32 @@
+original employee data
+
+empno = 10000 age = 60 dept = Biology name = Akers, Mark
+empno = 10070 age = 22 dept = CompSci name = Andrews, Kay
+empno = 10020 age = 21 dept = Biology name = Alexander, Joe
+empno = 10010 age = 40 dept = Physics name = Akin, Monica
+empno = 10050 age = 42 dept = Biology name = Akerson, Suzanne
+empno = 10040 age = 53 dept = Astrono name = Akerson, Mary
+empno = 10060 age = 61 dept = CompSci name = Andrews, John
+empno = 10030 age = 23 dept = Biology name = Akerson, Gwyn
+dept() == Biology && name() == Akerson, Gwyn && age > 20
+empno = 10030 age = 23 dept = Biology name = Akerson, Gwyn
+read again
+empno = 10030 age = 23 dept = Biology name = Akerson, Gwyn
+delete name() == Akerson, Gwyn && age <40 ++ delete
+
+
+empno = 10030 age = 23 dept = Biology name = Akerson, Gwyn
+dept() == Biology && name() == Akerson, Gwyn && age > 20
+
+retrieve employees from Biology
+empno = 10050 age = 42 dept = Biology name = Akerson, Suzanne
+empno = 10020 age = 21 dept = Biology name = Alexander, Joe
+empno = 10000 age = 60 dept = Biology name = Akers, Mark
+
+
+retrieve employees from CompSci
+empno = 10060 age = 61 dept = CompSci name = Andrews, John
+empno = 10070 age = 22 dept = CompSci name = Andrews, Kay
+
+
+Done

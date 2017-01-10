@@ -1,0 +1,838 @@
+// -*- Mode: Java -*- 
+
+// options {
+//     DEBUG_PARSER=true;
+// }
+
+PARSER_BEGIN(BaliParser)
+
+package Bali;
+
+import JakBasic.Lang;
+
+public class BaliParser {
+    // Accumulation buffer for use by find* methods (see JAVACODE segments)
+    static StringBuffer buffer = new StringBuffer(4096);
+
+    // This method accumulates the whitespace and token text into the
+    // StringBuffer 'buffer'.
+    static void accumulate(Token tok) {
+	int start;
+	Token special;
+
+        // System.out.println("\naccumulate token: '"+tok.toString()+"'");
+
+	// Save starting position in the StringBuffer
+	start = buffer.length();
+
+	// Add special tokens, reverse order.
+	special = tok.specialToken;
+	while (special != null) {
+            // System.out.println("special: '"+special.toString()+"'");
+	    buffer.insert(start, special.toString());
+	    special = special.specialToken;
+	}
+
+	// Now add the token (tok) last
+	buffer.append(tok.toString());
+    }
+
+
+    // This method builds an AstToken from a Token. It uses the StringBuffer
+    // 'buffer'.
+    static Lang.AstToken t2at(Token tok) {
+	Token special;
+	String bstr;
+
+	buffer.setLength(0);
+	special = tok.specialToken;
+	while (special != null) {
+	    buffer.insert(0, special.toString());
+	    special = special.specialToken;
+	}
+
+	bstr = buffer.substring(0, buffer.length());
+	buffer.setLength(0);
+	return(new Lang.AstToken().setParms(bstr, tok.image, tok.endLine));
+    }
+
+
+    public static void main(String[] args) {
+	BaliParser parser;
+
+	if (args.length != 1) {
+	    System.err.println("Usage: java BaliParser <file>");
+	    System.exit(10);
+	}
+
+	try {
+	    parser = new BaliParser(new java.io.FileInputStream(args[0]));
+	}
+	catch (java.io.FileNotFoundException e) {
+	    System.err.println("File " + args[0] + " not found.");
+	    return;
+	}
+
+	try {
+	    parser.BaliInput();
+	    System.err.println("Program " + args[0] + " parsed successfully.");
+	}
+	catch (ParseException e) {
+	    System.err.println(e.getMessage());
+	    System.err.println("Parse errors encountered.");
+	}
+    }
+}
+
+PARSER_END(BaliParser)
+
+SPECIAL_TOKEN :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+| "\f"
+}
+
+/* COMMENTS */
+
+MORE :
+{
+  "//" : IN_SINGLE_LINE_COMMENT
+|
+  <"/**" ~["/"]> { input_stream.backup(1); } : IN_FORMAL_COMMENT
+|
+  "/*" : IN_MULTI_LINE_COMMENT
+}
+
+<IN_SINGLE_LINE_COMMENT>
+SPECIAL_TOKEN :
+{
+  <SINGLE_LINE_COMMENT: "\n" | "\r" | "\r\n" > : DEFAULT
+}
+
+<IN_FORMAL_COMMENT>
+SPECIAL_TOKEN :
+{
+  <FORMAL_COMMENT: "*/" > : DEFAULT
+}
+
+<IN_MULTI_LINE_COMMENT>
+SPECIAL_TOKEN :
+{
+  <MULTI_LINE_COMMENT: "*/" > : DEFAULT
+}
+
+<IN_SINGLE_LINE_COMMENT,IN_FORMAL_COMMENT,IN_MULTI_LINE_COMMENT>
+MORE :
+{
+  < ~[] >
+}
+
+
+TOKEN :
+{
+	<LBRACE: "{">
+|
+	<RBRACE: "}">
+|
+	<LANGBRACK: "<">
+|
+	<RANGBRACK: ">">
+|
+	<OPENPAREN: "(">
+|
+	<CLOSEPAREN: ")">
+|
+	<CODE: "code">
+|
+	<_OPTIONS: "options">
+|
+	<_REQUIRE: "require">
+|
+	<_LOOKAHEAD: "LOOKAHEAD">
+|
+	<_IGNORE_CASE: "IGNORE_CASE">
+|
+	<_PARSER_BEGIN: "PARSER_BEGIN">
+|
+	<_PARSER_END: "PARSER_END">
+|
+	<_JAVACODE: "JAVACODE">
+|
+	<_TOKEN: "TOKEN">
+|
+	<_SPECIAL_TOKEN: "SPECIAL_TOKEN">
+|
+	<_MORE: "MORE">
+|
+	<_SKIP: "SKIP">
+|
+	<_TOKEN_MGR_DECLS: "TOKEN_MGR_DECLS">
+|
+	<_EOF: "EOF">
+}
+
+
+TOKEN :
+{
+	<BALI_TOKEN: <UPPERCASE> (<UPPERCASE> | <DIGIT>)*>
+|
+	<#UPPERCASE: ["A"-"Z", "_", "$"]>
+|
+	<#LETTER: ["a"-"z", "A"-"Z", "_", "$"]>
+|
+	<#DIGIT: ["0"-"9"]>
+|
+	<STRING:
+		"\""
+		( (~["\"","\\","\n","\r"])
+		| ("\\"
+		    ( ["n","t","b","r","f","\\","'","\""]
+		    | ["0"-"7"] ( ["0"-"7"] )?
+		    | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+		    )
+		  )
+		)*
+		"\""
+	>
+|
+	<IDENTIFIER: <LETTER> (<LETTER>|<DIGIT>)*>
+|
+	<INTEGER: (<DIGIT>)+>
+}
+
+//**************************************************
+// These methods used to prevent parsing Java and other sections
+//**************************************************
+JAVACODE
+void findBlockStart() {
+    Token tok;
+    int line = 0;
+
+    tok = getNextToken();	// consume all tokens
+    line = tok.beginLine;
+    accumulate(tok);
+    while (tok.kind != LBRACE) {
+	tok = getNextToken();
+	if (tok.kind == 0)
+	    throw new ParseException("From line " + line +
+				     ":EOF reached before finding '{'");
+	accumulate(tok);
+    }
+}
+
+JAVACODE
+String findBlockEnd() {
+    Token tok;
+    int nesting = 1;
+    String result;
+    boolean first = true;
+    int line = 0;
+
+    while (true) {
+	tok = getToken(1);	// peek at next token
+	if (first) {
+	    line = tok.beginLine;
+	    first = false;
+	}
+	if (tok.kind == LBRACE)
+	    nesting++;
+	else if (tok.kind == RBRACE) {
+	    nesting--;
+	    if (nesting == 0)
+		break;
+	}
+	else if (tok.kind == 0)
+	    throw new ParseException("From line " + line +
+				     ":EOF reached before finding '}'");
+	accumulate(tok);
+	tok = getNextToken();
+    }
+    result = buffer.substring(0, buffer.length());
+    buffer.setLength(0);
+    return(result);
+}
+
+JAVACODE
+String findCloseParen() {
+    Token tok;
+    int nesting = 1;
+    String result;
+    boolean first = true;
+    int line = 0;
+
+    while (true) {
+	tok = getToken(1);
+	if (first) {
+	    line = tok.beginLine;
+	    first = false;
+	}
+	if (tok.kind == OPENPAREN)
+	    nesting++;
+	else if (tok.kind == CLOSEPAREN) {
+	    nesting--;
+	    if (nesting == 0)
+		break;
+	}
+	else if (tok.kind == 0)
+	    throw new ParseException("From line " + line +
+				     ":EOF reached before finding ')'");
+	accumulate(tok);
+	tok = getNextToken();
+    }
+    result = buffer.substring(0, buffer.length());
+    buffer.setLength(0);
+    return(result);
+}
+
+
+JAVACODE
+String findRAngleBracket() {
+    Token tok;
+    int nesting = 1;
+    String result;
+    boolean first = true;
+    int line = 0;
+
+    while (true) {
+	tok = getToken(1);
+	if (first) {
+	    line = tok.beginLine;
+	    first = false;
+	}
+	if (tok.kind == LANGBRACK)
+	    nesting++;
+	else if (tok.kind == RANGBRACK) {
+	    nesting--;
+	    if (nesting == 0)
+		break;
+	}
+	else if (tok.kind == 0)
+	    throw new ParseException("From line " + line +
+				     ":EOF reached before finding '>'");
+	accumulate(tok);
+	tok = getNextToken();
+    }
+    result = buffer.substring(0, buffer.length());
+    buffer.setLength(0);
+    return(result);
+}
+
+
+//**************************************************
+// Productions start here
+//**************************************************
+
+//**************************************************
+BaliInput BaliInput() :
+{
+    Options opts = null;
+    ParserCode pcode = null;
+    Rules rules = null;
+    Lang.AstOptNode opto, optpc, optr;
+}
+{
+	[ opts=Options() ] [ pcode=ParserCode() ] [ rules=Rules() ] <EOF>
+	    { opto = new Lang.AstOptNode().setParms(opts);
+	      optpc = new Lang.AstOptNode().setParms(pcode);
+	      optr = new Lang.AstOptNode().setParms(rules);
+	      return(new BaliInput().setParms(opto, optpc, optr)); }
+}
+
+
+//**************************************************
+Rules Rules() :
+{
+    Rules list = new Rules();
+    Production prod;
+}
+{
+	(prod=Production() { list.add(new RulesElem().setParms(prod)); } )+
+	    { return(list); }
+}
+
+
+//**************************************************
+Options Options() :
+{ String s; }
+{
+	<_OPTIONS> "{" s=findBlockEnd() "}" <_OPTIONS>
+	    { return(new Options().setParms(s)); }
+}
+
+
+//**************************************************
+ParserCode ParserCode() :
+{ String s; }
+{
+	<CODE> "{" s=findBlockEnd() "}" <CODE>
+	    { return(new ParserCode().setParms(s)); }
+}
+
+
+//**************************************************
+Production Production() :
+{ Production node; }
+{
+	LOOKAHEAD(1)
+	//
+	// Since JAVACODE is both a JavaCC reserved word and a Java
+	// identifier, we need to give preference to
+	// "JavacodeProduction" over "BaliProduction".
+	//
+	node=JavacodeProduction() { return(node); }
+|
+	LOOKAHEAD(1)
+	//
+	// Since SKIP, TOKEN, etc. are both JavaCC reserved words and
+	// Java identifiers, we need to give preference to
+	// "RegularExprProduction" over "BaliProduction".
+	//
+	node=RegularExprProduction() { return(node); }
+|
+	LOOKAHEAD(1)
+	//
+	// Handles "require" statements:
+	//
+	node=RequireProduction() { return(node); }
+|
+	LOOKAHEAD(1)
+	// This handles the old-style Bali lexical spec consisting
+	// of simply a string followed by a token name.
+	node = SimpleProduction() { return(node); }
+|
+	LOOKAHEAD(1)
+	//
+	// Since TOKEN_MGR_DECLS is both a JavaCC reserved word and a
+	// Java identifier, we need to give preference to
+	// "TokenMgrDecls" over "BaliProduction".
+	//
+	node=TokenMgrDecls() { return(node); }
+|
+	node=BaliProduction() { return(node); }
+}
+
+
+//**************************************************
+BaliProduction BaliProduction() :
+{
+    Token id;
+    TailList list;
+}
+{
+	id=<IDENTIFIER> ":" list=TailList() ";"
+		{ return(new BaliProduction().setParms(t2at(id), list)); }
+}
+
+
+//**************************************************
+TailList TailList() :
+{
+    TailList tlist = new TailList();
+    Clause clause;
+    Token tok;
+}
+{
+	clause=Clause()
+	    { tlist.add(new TailListElem().setParms(null, clause)); }
+	( tok="|" clause=Clause()
+	    { tlist.add(new TailListElem().setParms(t2at(tok), clause)); }
+	)*
+		{ return(tlist); }
+}
+
+
+//**************************************************
+Clause Clause() :
+{
+    Lookahead la = null;
+    Tail t;
+    Lang.AstOptNode on = new Lang.AstOptNode();
+}
+{
+	[ la=Lookahead() ] t=Tail()
+		{ return(new Clause().setParms(on.setParms(la), t)); }
+}
+
+
+//**************************************************
+Lookahead Lookahead() :
+{ String s; }
+{
+	<_LOOKAHEAD> "(" s=findCloseParen() ")"
+	    { return(new Lookahead().setParms(s)); }
+}
+
+
+//**************************************************
+Tail Tail() :
+{
+    Pattern pat;
+    Primitive prim;
+    RuleName rn;
+    Tail t;
+    Lookahead la = null;
+    Lang.AstOptNode opt = new Lang.AstOptNode();
+}
+{
+	// SimpleList
+	"(" [ la=Lookahead() ] prim=Primitive() ")" "+"
+	    { return(new SimpleList().setParms(opt.setParms(la), prim)); }
+|
+	// ComplexList or NamedRule
+	LOOKAHEAD(2)
+	prim=Primitive() t=CLorNR(prim)
+	    { return(t); }
+|
+	// UnNamedRule
+	rn=RuleName()
+	    { return(new UnNamedRule().setParms(rn)); }
+}
+
+Tail CLorNR(Primitive prim) :
+{
+    Pattern pat = null;
+    Token tok;
+    Primitive prim2, prim3;
+    Lookahead la = null;
+    Lang.AstOptNode opt = new Lang.AstOptNode();
+}
+{
+	"(" [ la=Lookahead() ] prim2=JavaCCToken() prim3=Primitive() ")" "*"
+	    {
+	      opt.setParms(la);
+	      return(new ComplexList().setParms(prim, opt, prim2, prim3)); }
+|
+	[ pat=Pattern() ] "::" tok=<IDENTIFIER>
+	    { 
+	      if (pat == null)
+		  pat = new Pattern();
+	      pat.addHead(new PatternElem().setParms(prim));
+	      return(new NamedRule().setParms(pat, t2at(tok)));
+	    }
+}
+
+
+//**************************************************
+Pattern Pattern() :
+{
+    Pattern pat = new Pattern();
+    Primitive prim;
+}
+{
+	(prim=Primitive() { pat.add(new PatternElem().setParms(prim)); } )+
+		{ return(pat); }
+}
+
+
+//**************************************************
+Primitive Primitive() :
+{
+    Primitive prim;
+    Token tok;
+    Lookahead la;
+}
+{
+	prim=RuleName() { return(prim); }
+|
+	prim=JavaCCToken() { return(prim); }
+|
+	LOOKAHEAD( "[" <_LOOKAHEAD> )
+	"[" la=Lookahead() prim=Primitive() "]"
+		{ return(new LAPrim().setParms(la, prim)); }
+|
+	"[" prim=Primitive() "]"
+		{ return(new OptPrim().setParms(prim)); }
+}
+
+
+//**************************************************
+JavaCCToken JavaCCToken() :
+{
+    Token tok;
+}
+{
+	tok=<BALI_TOKEN> { return(new PrimToken().setParms(t2at(tok))); }
+|
+	tok=<STRING> { return(new PrimString().setParms(t2at(tok))); }
+}
+
+//**************************************************
+RuleName RuleName() :
+{
+    Token id;
+}
+{
+	id=<IDENTIFIER> { return(new RuleName().setParms(t2at(id))); }
+}
+
+
+//**************************************************
+// From JavaCC.jj
+//**************************************************
+
+
+JavacodeProduction JavacodeProduction() :
+{
+    Block b;
+}
+{
+	"JAVACODE" b=Block()
+		{ return(new JavacodeProduction().setParms(b)); }
+}
+
+
+Block Block() :
+{
+    String s;
+}
+{
+	findBlockStart() s=findBlockEnd() "}"
+		{ return(new Block().setParms(s)); }
+}
+
+
+RegExprProd RegularExprProduction() :
+{
+    boolean cf = false;
+    RegexSpecList rslist;
+    String states = null;
+    int k;
+}
+{
+	[ States() ]
+	k=RegexprKind() [ cf=CaseFlag() ] ":"
+	"{" rslist=RegexSpecList() "}"
+		{ states=buffer.substring(0, buffer.length());
+		  buffer.setLength(0);
+		  return(new RegExprProd().setParms(states, k, cf, rslist)); }
+}
+
+
+// This production accumulates in the StringBuffer 'buffer'.
+void States() :
+{}
+{
+    LOOKAHEAD(2) "<" "*" ">"	{ buffer.append("<*>"); }
+    | "<" { buffer.append("<"); } StateList() ">" { buffer.append(">"); }
+}
+
+
+// This production accumulates in the StringBuffer 'buffer'.
+void StateList() :
+{
+    Token tok;
+}
+{
+    tok=<BALI_TOKEN> { accumulate(tok); }
+    ( "," tok=<BALI_TOKEN> { buffer.append(","); accumulate(tok); } )*
+}
+
+
+int RegexprKind() :
+{}
+{
+	<_TOKEN> { return(0); }
+|
+	<_SPECIAL_TOKEN> { return(1); }
+|
+	<_SKIP> { return(2); }
+|
+	<_MORE> { return(3); }
+}
+
+
+// This production accumulates in the StringBuffer 'buffer'. It also returns
+// a boolean to indicate it's presence in the embedded string.
+boolean CaseFlag() :
+{}
+{
+    "[" <_IGNORE_CASE> "]" { return(true); }
+}
+
+
+RegexSpecList RegexSpecList() :
+{
+    RegexSpecList list = new RegexSpecList();
+    RegexprSpec spec;
+    Token bar;
+}
+{
+    spec=RegexprSpec()
+	{ list.add(new RegexSpecListElem().setParms(null, spec)); }
+    ( bar="|" spec=RegexprSpec()
+        { list.add(new RegexSpecListElem().setParms(t2at(bar), spec)); } )*
+	{ return(list); }
+}
+
+
+RequireProduction RequireProduction() :
+{
+    RequireRuleList r ;
+}
+{
+    <_REQUIRE> r=RequireRuleList() ";"
+	{ return new RequireProduction().setParms (r) ; }
+}
+
+RequireRuleList RequireRuleList() :
+{
+    RequireRuleList list = new RequireRuleList () ;
+    RequireRule rule ;
+    Token comma ;
+}
+{
+    rule=RequireRule()
+	{ list.add (new RequireRuleListElem().setParms (null, rule)) ; }
+    (comma="," rule=RequireRule()
+        { list.add (new RequireRuleListElem().setParms(t2at(comma),rule)); } )*
+	{ return(list); }
+}
+
+RequireRule RequireRule() :
+{
+    Token tok ;
+    RequireType type = null ;
+    Lang.AstOptNode opt ;
+}
+{
+    tok=<IDENTIFIER>
+    [ type=RequireType() ]
+	{
+	    opt = new Lang.AstOptNode().setParms (type) ;
+	    return new RequireRule().setParms (t2at(tok), opt) ;
+	}
+}
+
+RequireType RequireType() :
+{
+    Token tok ;
+}
+{
+    "->" tok=<IDENTIFIER>
+	{ return new RequireType().setParms (t2at(tok)) ; }
+}
+
+TokenMgrDecls TokenMgrDecls() :
+{
+    Block b;
+}
+{
+	<_TOKEN_MGR_DECLS> ":" b=Block()
+		{ return(new TokenMgrDecls().setParms(b)); }
+}
+
+
+RegexprSpec RegexprSpec() :
+{
+    RegExpr re;
+    Block b = null;
+    OptState s = null;
+    Lang.AstOptNode optb = new Lang.AstOptNode();
+    Lang.AstOptNode opts = new Lang.AstOptNode();
+}
+{
+	re=RegularExpression() [ LOOKAHEAD(<LBRACE>) b=Block() ]
+		[ s=OptState() ]
+		{ return(new RegexprSpec().setParms(re,
+						    optb.setParms(b),
+						    opts.setParms(s))); }
+}
+
+
+OptState OptState() :
+{
+    Token st = null;
+}
+{
+    ":" st=<BALI_TOKEN> { return(new OptState().setParms(t2at(st))); }
+}
+
+
+RegExpr RegularExpression() :
+{
+    Token tok;
+    OptLabel l = null;
+    Lang.AstOptNode optl;
+    CmpREChoice cc;
+}
+{
+	tok=<STRING> { return(new REString().setParms(t2at(tok))); }
+|
+	LOOKAHEAD(3)
+	"<" [ l=OptLabel() ] cc=ComplexRegExprChoices()
+		{ optl = new Lang.AstOptNode().setParms(l);
+		  return(new LTokenDef().setParms(optl, cc)); }
+|
+	LOOKAHEAD(2)
+	"<" tok=<BALI_TOKEN> ">"
+	    { return(new TokenExpansion().setParms(t2at(tok))); }
+|
+	"<" <_EOF> ">" { return(new Eof()); }
+}
+
+
+// These choices are broken up into simple strings and more complex
+// regular expressions. This is done so that when we mere grammars,
+// we can sort the lexical phrases such that the simple strings are
+// given preference over more complex expressions (like IDENTIFIERS).
+CmpREChoice ComplexRegExprChoices() :
+{
+    Token s;
+    String str;
+}
+{
+    LOOKAHEAD(2)
+    s=<STRING> ">"
+	{ return(new StringChoice().setParms(s)); }
+|
+    str=findRAngleBracket() ">"
+	{ return(new NonStringChoice().setParms(str)); }
+}
+
+
+OptLabel OptLabel() :
+{
+    Token tok;
+    boolean privateLabel = false;
+}
+{
+    [ "#" { privateLabel = true; } ] tok=<BALI_TOKEN> ":"
+	{ return(new OptLabel().setParms(privateLabel, t2at(tok))); }
+}
+
+RegExprProd SimpleProduction() :
+{
+    OptLabel l;
+    Token s, o;
+    LTokenDef ltd;
+    StringChoice sc;
+    Lang.AstOptNode opt1, opt2;
+    RegexprSpec REspec;
+    RegexSpecList list;
+    RegExprProd REprod;
+}
+{
+    s=<STRING> o=<BALI_TOKEN>
+	{
+	    l = new OptLabel().setParms(false, t2at(o));
+	    sc = new StringChoice().setParms(s);
+	    opt1 = new Lang.AstOptNode().setParms(l);
+	    ltd = new LTokenDef().setParms(opt1, sc);
+	    opt1 = new Lang.AstOptNode().setParms(null);
+	    opt2 = new Lang.AstOptNode().setParms(null);;
+	    REspec = new RegexprSpec().setParms(ltd, opt1, opt2);
+	    list = new RegexSpecList();
+	    list.add(new RegexSpecListElem().setParms(null, REspec));
+	    REprod = new RegExprProd().setParms("", (int) 0, false, list);
+	    return(REprod);
+	}
+}
+
+// Catch-all token
+TOKEN :
+{
+	<OTHER: ~[]>
+}

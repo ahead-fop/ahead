@@ -1,0 +1,6 @@
+layer i1;
+
+refines class foo { 
+   refines foo(int x, float y) { stuff; }
+   void bar() { Super(int, float).bar(4, 5.3); }
+}

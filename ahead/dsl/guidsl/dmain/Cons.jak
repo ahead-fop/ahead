@@ -1,0 +1,14 @@
+layer dmain;
+
+import Jakarta.util.*;
+import java.io.*;
+import java.util.*;
+
+abstract refines class Cons {
+
+    public void visit( Visitor v ) {
+
+        v.action( this );
+    }
+
+}

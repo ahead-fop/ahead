@@ -1,0 +1,15 @@
+layer one;
+
+SoUrCe RooT one "root0.jak";
+
+abstract class root$$one {
+   root$$one( int x, double y, String z ) {}
+}
+
+SoUrCe  two "root1.jak";
+
+ class root extends  root$$one  {
+   root( int x, float y, String z ) {
+      this(x+1,(double)y+2.0,"xxx"+z);  
+   }
+}

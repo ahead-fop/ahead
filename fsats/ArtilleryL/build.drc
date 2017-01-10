@@ -1,0 +1,10 @@
+layer ArtilleryL;
+
+extern outside Bool basicPresent;
+extern outside Int  fsatsRank;
+extern outside Bool artilleryPresent;
+extern outside Bool weaponPresent;
+
+requires outside fsatsRank == 2 and basicPresent;
+provides outside artilleryPresent and weaponPresent;
+

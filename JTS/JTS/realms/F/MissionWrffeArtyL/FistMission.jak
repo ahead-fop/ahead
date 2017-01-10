@@ -1,0 +1,33 @@
+package MissionWrffeArtyL;
+
+import 
+    Jakarta.util.Util;
+import 
+    java.io.*;
+import 
+    F.Libraries.log.Log;
+
+ // BnFseMission
+
+
+    public extends state_machine FistMission
+    {
+        // Don't wait for MFR on EOM.
+        /*REFINES EDGE no longer supported.  
+   Move predicate or body into method, and extend method. 
+Refines edge wrffeArtyAccepted1 : wrffeArtyAccepted -> wrffeArtyEnding
+            conditions false do {} */
+
+        
+        // Relay EOM to gun and stop.
+        edge wrffeArtyAccepted3 : wrffeArtyAccepted -> stop
+            conditions (message instanceof EomMessage)
+            do { sendUp(( Message)message.clone()); }
+
+        // net effect of the Refines clause above is to have a false 
+        // edge condition
+
+        public boolean wrffeArtyAccepted1Test(Event message) {
+           return false;
+        }
+    }

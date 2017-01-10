@@ -1,0 +1,509 @@
+/* predindx - takes two arguments, a predicate and a type expression.
+              predindx creates a doubly-linked list and maintains 
+              elements on this list that satisfies the predicate.
+              It also performs some fancy query manipulation - i.e.,
+              if the indexed predicate is P (which could have multiple
+              conjuncts) and the cursor selection predicate is A && P && B,
+              the residual is A && B. */
+
+package p3Lib;
+
+import JakBasic.Lang;
+
+
+public final class predindx extends BaseDS implements DS {
+   //public DS                lower;
+   public Lang.AST_Exp           indexed_pred;
+   public Lang.AST_Exp           tpred;           // translated indexed_pred
+   public TopParams         tp;
+   environment              first, last, left, right, adv, start, back, end,
+                            pi_relink, pi_unlink;
+   
+   public predindx( DS lowerlevel ) { 
+      lower = lowerlevel;
+   }
+
+   public predindx( ) { }
+
+   public DS_Container_Type make_container_type( TopParams t, ContParams c ) {
+      return new predindx_Container_Type( this, t, c );
+   }
+
+   public DS_Element_Type make_element_type( ) {
+      return new predindx_Element_Type( this );
+   }
+
+   public DS_CommonCursor_Type make_commoncursor_type() {
+      return new predindx_CommonCursor_Type( this );
+   }
+
+   public DS_Cursor_Type make_cursor_type( Usage u ) { 
+        return new predindx_Cursor_Type( this, u ); 
+   }
+
+   public DrcAttributes drc( DrcAttributes d ) {
+      // predindx is not exactly a retrieval layer when it comes to
+      // design rule checking - it only can store a *subset* of the
+      // elements in a container
+      
+      d.test_and_set_annotation("predindx", "----");
+
+      if (!d.below_topmost_layers) {
+         d.below_topmost_layers = true;
+         d.below_topmost_set    = "predindx";
+      }
+      return lower.drc(d);
+   } 
+
+   public void set_keyword( TOP toplayer, TopParams tph ) {
+      range r = new range ("!dummy");
+
+      tp = tph;     
+      tpred = r.Translate( null, tp, indexed_pred );
+      environment parent toplayer;
+      lower.set_keyword( toplayer, tp );
+   }
+
+   public Object ParseArgs( Lang.AstNode x ) {
+      Object result = null;
+      int    i;
+
+      if (x != null && x.arg[0] != null && x.arg[0].right != null 
+          && x.arg[0].right.right == null) {
+         if (!(x.arg[0].arg[0] instanceof Lang.AST_Exp))
+            ParseTE.parseError(
+              "predindx layer expecting first argument to be a predicate");
+         indexed_pred = (Lang.AST_Exp) x.arg[0].arg[0];
+         result = ParseTE.parse(x.arg[0].right.arg[0]);
+         if (result == null || !(result instanceof DS) )
+            ParseTE.parseError(
+              "predindx layer 2nd argument should be of type DS");
+      }
+      else
+         ParseTE.parseError(
+           "predindx layer expecting two arguments : predicate DS");
+      lower = (DS) result;
+      return this;
+   }
+}
+
+final class predindx_Container_Type implements DS_Container_Type {
+   ContParams        cp;
+   predindx          _layer;
+   DS_Container_Type lower;
+   environment;
+
+   predindx_Container_Type( DS predindxlayer, TopParams t, ContParams c ) { 
+      // Step 1: save the arguments as we'll refer to them later
+
+      _layer    = (predindx) predindxlayer;
+      cp       = c;
+      _layer.tp = t;
+      environment parent _layer;
+
+      // Step 2: create chain of lower level containers
+
+      lower = _layer.lower.make_container_type( t, cp );
+   }
+
+   public void validate() {
+
+      /*  here we could check to see if the predicate references 
+          valid fields, but hey, why not ignore it? Until we actually
+          have some type checking capability, there's not much we can
+          do.*/
+
+      lower.validate();
+   } 
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return mth{
+   CElemTyp first, last;
+   $mth(lower.dataMembers())
+      }mth;
+   }
+
+   public Lang.AST_Stmt containerMethod() {
+     return stm{
+     first = last = null;
+     $stm(lower.containerMethod());
+     }stm;
+   }
+
+   public Lang.AST_Exp is_fullMethod() {
+     return lower.is_fullMethod();
+   }
+   
+   public Lang.AST_Stmt insertMethod(){
+     return lower.insertMethod();
+   }
+
+   public Lang.AST_Stmt storageMethod() {
+      return lower.storageMethod();
+   }
+
+   public Lang.AST_Stmt finishMethod() {
+      return lower.finishMethod();
+   }
+
+   public Lang.AST_Stmt openMethod() {
+      return lower.openMethod();
+   }
+}
+
+
+final class predindx_Element_Type implements DS_Element_Type {
+   predindx         _layer;
+   DS_Element_Type  lower;
+   environment;
+
+   predindx_Element_Type( DS predindxlayer ) {
+      _layer    = (predindx) predindxlayer;
+      lower    = _layer.lower.make_element_type();
+      environment parent _layer;
+   }
+
+   // generate data members of transformed element class 
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return mth{
+   CElemTyp left, right;
+   $mth(lower.dataMembers())
+       }mth;
+   }
+
+   // link is part of element constructors
+
+   public Lang.AST_Stmt link() {
+      return stm{
+      pi_relink();
+      $stm(lower.link());
+      }stm;
+   }
+
+   public Lang.AST_FieldDecl relink() {
+      return mth{
+   final void pi_relink() {
+      if ($exp(_layer.tpred) ) {
+         left = null;
+         if (cont.last == null) cont.last = this;
+         right = cont.first;
+         cont.first = this;
+         if (right != null) right.left = this;
+      }
+   }
+
+   $mth(lower.relink())
+      }mth;
+   }
+
+   public Lang.AST_FieldDecl unlink() {
+      return mth{
+   final void pi_unlink() {  // unqualified unlink
+      if (left != null) left.right = right;
+      if (right != null) right.left = left;
+      if (cont.first == this) cont.first = right;
+      if (cont.last == this) cont.last = left;
+   }
+
+   $mth(lower.unlink())
+      }mth;
+   }
+
+
+   // Note: one *might* make updates faster.  It will require knowing whether
+   //       an element is on a predindx list or not (probably will require
+   //       a boolean.  If this is available, one can do a case analysis
+   //       to perform unlinking only when necessary and relinking only when
+   //       necessary.
+
+   // Note: another possibility for improving the performance of predindx
+   //       is in conjunction with hashcmp.  Right now, we would have to
+   //       significantly restructure our layering for dealing with updates
+   //       and insertions to transform predicates (such as index_pred) that
+   //       are local to a layer.
+
+   public Lang.AST_Stmt upd( int fieldno ) {
+          int  pred_attributes = 1;
+	 	  Lang.AstProperties     props; 
+	      String            index_pred;
+	 		
+	 	  //If the update is on one of the attributes of the predicate 
+	 	  props = Lang.AstProperties.open();
+	 	  (_layer.indexed_pred).print(props);
+	 	  index_pred = props.close();//this is the indexed predicate
+	 			 
+	       //let's find if the updated attribute is in the predicate 
+	 	  if (index_pred.indexOf(_layer.tp.FieldName[fieldno])==-1) {
+	 	     pred_attributes=0;//it isn't in the predicate
+	 	   }
+	 	  else pred_attributes = 1;	   
+	                
+	       if (pred_attributes == 1) 
+	             return stm{ 
+	               pi_unlink();
+	               $stm(lower.upd( fieldno ));
+	               pi_relink();
+	             }stm;
+	       else return lower.upd( fieldno );
+	      
+   }
+}
+
+final class predindx_CommonCursor_Type implements DS_CommonCursor_Type {
+   predindx _layer;
+   DS_CommonCursor_Type lower;
+   environment;
+
+   predindx_CommonCursor_Type( DS predindxlayer ) {
+      _layer = (predindx) predindxlayer;
+      lower = _layer.lower.make_commoncursor_type();
+      environment parent _layer;
+   }
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return lower.dataMembers();
+   }
+
+   public Lang.AST_Stmt insertMethod( ) {
+         return lower.insertMethod( );
+   }
+
+   public Lang.AST_Stmt removeMethod() {
+      return stm{
+      obj.pi_unlink();
+      $stm(lower.removeMethod());
+      }stm;
+   }
+
+   public Lang.AST_FieldDecl movementMethods() {
+      return lower.movementMethods();
+   }
+}
+
+final class predindx_Cursor_Type extends RetSometimes implements DS_Cursor_Type {
+   predindx         _layer;
+   boolean          forward;
+   Lang.AST_Exp     cursor_pred;
+   Usage            us;
+   Lang.AST_Exp     resid;
+   environment;
+  
+
+   predindx_Cursor_Type( DS predindxlayer, Usage u ) {
+      _layer = (predindx) predindxlayer;
+      forward = u.forward;
+      cursor_pred = u.predicate;
+      lower = _layer.lower.make_cursor_type( u );
+      environment parent _layer;
+	  us = u;
+   }
+
+   public void optimizeAction( Qopt q ) {
+      int index_pred_attributes[]= new int[_layer.tp.NFields];
+	  boolean           updbool = false;
+	  Lang.AstProperties     props; 
+      String            index_pred;
+	  int               num=-1;
+   
+   
+   
+      // Step 1: determine if the indexed_pred is included in pred.
+      //         If so, this layer can be used
+
+      if (IsPredicateIncluded(_layer.indexed_pred, cursor_pred)) {
+         if (q.cost > Qopt.PREDINDX_LOCATE) {
+            q.fastest_layer = _layer;
+            q.cost = Qopt.PREDINDX_LOCATE;
+            resid = FactorPredicate(_layer.indexed_pred, cursor_pred);
+         }
+      }
+	  
+	  
+	  //If the update is on one of the attributes of the predicate 
+	  	 //we are going to use a temporary buffer  (cf the Halloween problem)
+	  	 props = Lang.AstProperties.open();
+	  	 (_layer.indexed_pred).print(props);
+	  	 index_pred = props.close();//this is the indexed predicate
+	  	 
+	  	 //let's find the attributes in the indexed predicate
+	  	  for (int j=0;j<_layer.tp.NFields;j++) {
+	  	     // essai[j] = index_pred + _layer.tp.FieldName[j];
+	  	 	  if (index_pred.indexOf(_layer.tp.FieldName[j])==-1) {
+	  	 	       //compare this with the attributes of the index predicate
+	  	 	 	   index_pred_attributes[j]=0;//it isn't in the predicate
+	  	 	       }
+	  		  else index_pred_attributes[j]=1;	   
+	        }
+	  	 
+	  	 for (int k=0;k<_layer.tp.NFields;k++) {
+	  	  if (us.upd[k] && (index_pred_attributes[k]==1)) {
+	  	 	   updbool = true;//update on one of the attributes of the indexed predicate
+	  		   num=k;
+	  		   break;
+	  	       }
+	        }
+	  	  
+	  	 if (updbool == true)
+	  	     {
+	  		 q.requires_skip   = true;
+	           q.requires_buffering = updbool;
+	           q.requires_sorting = false;//( us.order != -1 ) && ( us.order != _layer.keyid );
+	           q.requires_inbetween = false; 
+	  		 }
+	   
+	  
+	  
+	  
+	  
+   }
+
+   public DS thisLayer() {
+      return _layer;
+   }
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return lower.dataMembers();
+   }
+
+   public Lang.AST_Stmt cursorMethod() {
+      return lower.cursorMethod();
+   }
+
+   public Lang.AST_Stmt firstMth() {
+      if (forward)
+         return stm{ obj = cont.first; }stm;
+      else
+         return stm{ obj = cont.last; }stm;
+   }
+
+   public Lang.AST_Exp moreMth() {
+      return exp{ obj != null }exp;
+   }
+
+   public Lang.AST_Stmt noMoreMth() {
+      return stm{ obj = null; }stm;
+   }
+
+   public Lang.AST_Stmt nextMth()  {
+      if (forward)
+         return stm{ obj = obj.right; }stm;
+      else
+         return stm{ obj = obj.left; }stm;
+   }
+
+   // return translated residual predicate
+   // Note: in the case that there is no residual, a null pointer
+   // is returned rather than exp{true}exp.  this should make
+   // it easier to do optimizations
+   
+   public Lang.AST_Exp lowerBoundExp( boolean pos ) {
+      return null;
+   }
+
+   public Lang.AST_Exp upperBoundExp( boolean pos ) {
+      return null;
+   }
+
+   public Lang.AST_Exp residualExp() {
+      return resid;
+   }
+
+   public Lang.AST_Stmt removeMethod() {
+      return lower.removeMethod();
+   }
+
+   boolean IsClauseIncluded( Lang.AST_Exp k, Lang.AST_Exp p ) {
+      Lang.AstCursor c = new Lang.AstCursor();
+
+      // conjunctive predicate is of the form clause1 && clause2 && ...
+
+      for (c.First(p); c.More(); c.PlusPlus()) {
+
+         // skip over && nodes
+
+         if (c.node instanceof Lang.CondAndExpr)
+            continue;
+
+         // not an && node - must be a clause; perform equality test
+
+         if (c.node.Equ(k))
+            return true;
+
+         // skip rest of clause - don't want to search it!
+
+         c.Sibling();
+      }
+      return false;
+   }
+
+   boolean IsPredicateIncluded( Lang.AST_Exp kk, Lang.AST_Exp p ) {
+      Lang.AstCursor c = new Lang.AstCursor();
+
+      // both predicates are of the form clause1 && clause2 && ...
+
+      for (c.First(kk); c.More(); c.PlusPlus()) {
+
+          // skip over && nodes
+
+         if (c.node instanceof Lang.CondAndExpr)
+            continue;
+
+         // not an && node - must be a clause; perform inclusion test
+
+         if (!IsClauseIncluded((Lang.AST_Exp) c.node, p))
+            return false;
+
+         // now skip the rest of the clause - don't want to search it!
+
+         c.Sibling();
+      }
+      return true;
+   }
+
+   Lang.AST_Exp FactorPredicate( Lang.AST_Exp kk, Lang.AST_Exp p ) {
+     Lang.AstCursor c      = new Lang.AstCursor();
+     Lang.AST_Exp   result;
+     Lang.AstNode x;
+
+      // Assumes kk is included in p
+
+      // Step 1: initialize result
+ 
+      result = null;
+
+      // Step 2: foreach clause g in the predicate, if it is NOT included in kk,
+      //         then add a clone of it to result
+
+      for (c.First(p); c.More(); c.PlusPlus()) {
+
+         // skip over && nodes
+
+         if (c.node instanceof Lang.CondAndExpr)
+            continue;
+	 if (c.node instanceof Lang.MoreCondAndExpr)
+	     c.PlusPlus();
+
+	 if (c.node instanceof Lang.CAEBod)
+	     x = c.node.arg[0];
+	 else
+	     x = c.node;
+
+         // not an && node - must be a clause; perform inclusion test
+
+         if (!IsClauseIncluded((Lang.AST_Exp) x, kk)) {
+            if (result == null) 
+               result = (Lang.AST_Exp) x.clone();
+            else
+               result = exp{ $exp(result) && $exp((Lang.AST_Exp) x.clone()) }exp;
+         }
+
+         // Skip over rest of clause - don't want to search it!
+
+         c.Sibling();
+      }
+      return result;
+   }
+      
+}
+

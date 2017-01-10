@@ -1,0 +1,80 @@
+layer core;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+public refines class Attribute {
+
+    public int lineNum() {
+        return ( ( AstToken ) tok[0] ).lineNum();
+    }
+
+    public void reduce() {
+        predicate p;
+        boolean predicatePresent = false;
+
+        // Step 1: harvest some, but not all, parameters of the
+        //         attribute declaration, and add a provisional
+        //         definition to the symbol table.  we do this so
+        //         that type checking a predicate will work -- 
+        //         an attribute has to be defined for type checking
+        //         to work, even though the attribute itself may
+        //         may not be fully defined.
+
+        String typname = tok[0].tokenName();
+        String attname = tok[1].tokenName();
+        common c = getObj( typname );
+        boolean bot = ( arg[1] instanceof  Synthetic );
+        boolean imp = ( arg[0].arg[0] != null );
+
+        Element e = new  Element( imp, bot, typname, attname, 
+                                             null, c, false );
+        symtab.add( attname, e );
+        
+        // Step 2: Now process the predicate -- when predicates are
+        //         created, they are typechecked -- i.e., all attributes
+        //         that are referenced are validated against entries in
+        //         the symbol table
+
+        if ( arg[2].arg[0] == null )
+            p = new  predicate();
+        else {
+            arg[2].arg[0].reduce();
+            p =  Predikate.p;
+            predicatePresent = true;
+        }
+
+        // Step 3: both import and initvalue are not allowed
+        //         assume that the attribute is extern
+
+        if ( predicatePresent && imp ) {
+            AstNode.error( tok[0],
+                           "attribute " + attname +  
+                       " cannot have initial value if it is extern" );
+            p = new  predicate();
+            predicatePresent = false;
+        }
+
+        // Step 4: update entry in symbol table with actual predicate
+         
+        e.p = p;
+
+        // Step 5: now check $TEqn.predicate so that it doesn't reference
+        //         any other attribute/element other than e
+
+        if ( predicatePresent )
+            p.initCheck( e );
+    }
+
+    common getObj( String typName ) {
+        if ( typName.equals( "Int" ) )
+            return new  Int( "" );
+        else
+            if ( typName.equals( "Bool" ) )
+                return new  Bool( "" );
+        AstNode.error( tok[0], "cannot recognize DRC type: " + typName );
+        return new  Int( "" );
+    }
+}

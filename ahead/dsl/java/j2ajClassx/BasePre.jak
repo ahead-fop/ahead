@@ -1,0 +1,34 @@
+/** @author Roberto E. Lopez-Herrejon */
+
+layer j2ajClassX;
+
+public refines class BasePre {
+    public void reduce2java( AstProperties props ) {
+
+         // Checks to see if it is inside an aspect
+        String isAspect = (String) props.getProperty("Aspect");
+        if (isAspect!=null) {
+
+        // Super should be converted to a proceed call
+        // with corresponding argument names
+        props.print(" proceed ");
+
+        // We raised the flag to signal a Super
+        // This will is needed to add the extra parameter required for
+        // the target pointcut
+        props.setProperty("SuperCall", "true");
+
+        // Note: Here I think we have a problem with calling
+        // supers from other method as there is not way
+        // to proceed to there!!! (are there any cases like this
+        // in AHEAD?
+
+        } else {
+           // Not part of an aspect, simply translate to little super
+           // Followed by the name of the method it is calling
+           props.print(" super.");
+           arg[1].reduce2java (props); // QName
+        }
+
+    }
+}

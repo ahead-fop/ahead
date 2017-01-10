@@ -1,0 +1,16 @@
+
+// This file tests writing a persistent (public) macro
+public macro SORT(AST_QualifiedName sortname, AST_QualifiedName elemtype)
+    mth{ elemtype[] sortname(elemtype[] array) {
+	System.println("Called sort macro");
+	return(array);
+    } }mth
+
+public class test3 {
+    #SORT(id{ fooSort }id, fooType)
+
+    static public void main(String[] args) {
+	int[] iarray = new int[5];
+	fooSort(iarray);
+    }
+}

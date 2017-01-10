@@ -1,0 +1,8 @@
+echo "************ WRFFE ARTILLERY *************"
+java jak2java.Main wrffe_artillery.spec
+javac wrffe_artillery.java
+java wrffe_artillery > junk
+if ! diff -b junk correct_artillery ; then
+   echo failed
+   exit 1
+fi

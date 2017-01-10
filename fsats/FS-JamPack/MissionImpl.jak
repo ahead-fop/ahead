@@ -1,0 +1,450 @@
+layer FS;
+
+import java.util.*;
+
+import log.Log;
+
+import laydown.*;
+
+import java.io.*;
+
+/** Base implementation of an active mission for a particular OPFAC **/
+public State_machine MissionImpl
+        implements Mission {
+    Delivery_parameters( Event message );
+
+    Unrecognizable_state 
+        {
+        Log.error( toString()+" invalid state "+current_state );
+    }
+    // What to do if there is no transition for an event. 
+    Otherwise_default
+        {
+        if ( message instanceof InitiateMessage )
+            {
+            DenyMessage denyMessage = new DenyMessage( getId(), "Duplicate id" );
+            if ( initiatingUnit != null )
+                denyMessage.setInitiatingUnitId( initiatingUnit.intValue() );
+            getOpfac().sendTo( ( ( Message )message ).getSource(), 
+                    denyMessage );
+        }
+        else
+            Log.warn( ""+this+" unexpected event: "+message );
+    }
+
+    States checkDuplicates, initiated;
+    States wrffeInitiated, wrffeAssigned, wrffeElevated, wrffeAccepted;
+    States wrffeMortarAccepted;
+    States wrffeArtyAccepted, wrffeArtyEnding;
+    States wrffeMlrsAccepted;
+
+    // On Initiate initiate a mission then check for duplicate targets.
+    Transition start1 : start -> checkDuplicates
+        condition ( message instanceof InitiateMessage )
+        do
+            {
+            InitiateMessage m = ( InitiateMessage )message;
+            if ( m.getInitiatingUnitId() != null )
+                initiated( m.getSource(), m.getMissionData(), m.getInitiatingUnitId() );
+            else
+                initiated( m.getSource(), m.getMissionData() );
+        }
+
+    // On Target initiate a mission.
+    Transition start2 : start -> initiated
+        condition ( message instanceof TargetEvent )
+        do
+            {
+            TargetEvent m = ( TargetEvent )message;
+            if ( getOpfac() instanceof FoOpfac )
+                initiated( "", m.getMissionData(), new Integer( getOpfac().getUnit() ) );
+            else
+                if ( initiatingUnit != null )
+                    initiated( "", m.getMissionData(), initiatingUnit );
+                else
+                    initiated( "", m.getMissionData() );
+        }
+
+    // Immediately check for duplicates.
+    Enter checkDuplicates {
+        delivery( null );
+    }
+
+    Prepare checkDuplicates  // was Exit in prototype
+        {
+        getOpfac().ponder( 5F );
+        isDuplicate=getOpfac().hasDuplicate( this );
+    }
+
+    // If duplicate then deny mission and stop.
+    Transition checkDuplicates1 : checkDuplicates -> stop
+        condition isDuplicate
+        do 
+            {
+            sendDeny( "Duplicate target" );
+        }
+
+    // If not duplicate then initiate mission.
+    Transition checkDuplicates2 : checkDuplicates -> initiated
+        condition !isDuplicate
+        do {}
+
+    // Proceed with mission type selection Transitions. 
+    Enter initiated {
+        delivery( null );
+    }
+ 
+    // Take this branch on WR_FFE mission.
+    Transition initiatedWrffe : initiated -> wrffeInitiated
+        condition getType() == MissionType.wrffe
+        //condition getType().equals("WR_FFE")
+        do {}
+
+    // Immediately Proceed with mission specific transitions.
+    Enter wrffeInitiated {
+        delivery( null );
+    }
+
+    // Select the best available weapon for this mission.
+    Prepare wrffeInitiated  // was Exit in prototype
+        {
+        getOpfac().ponder( 5F );
+        selectBestWeapon();
+    }
+
+    // If weapon found then assign the mission to it.
+    Transition wrffeInitiated1 : wrffeInitiated -> wrffeAssigned
+        condition ( weaponSelected() )
+        do {
+            assignWeapon();
+        }
+ 
+    // If no weapon found but superior might do then elevate.
+    Transition wrffeInitiated2 : wrffeInitiated -> wrffeElevated
+        condition ( !weaponSelected() && canElevate() )
+        do {
+            elevate();
+        }
+ 
+    // If no available weapon then deny mission and stop.
+    Transition wrffeInitiated3 : wrffeInitiated -> stop
+        condition ( !weaponSelected() && !canElevate() )
+        do {
+            sendDeny( "No capable assets." );
+        }
+ 
+    // If weapon denies mission then record the fact and try again.
+    Transition wrffeAssigned1 : wrffeAssigned -> wrffeInitiated
+        condition ( message instanceof DenyMessage )
+        do {
+            weaponDenied();
+        }
+ 
+    // Relay accept and Proceed with mission.
+    Transition wrffeAssigned2 : wrffeAssigned -> wrffeAccepted
+        condition ( message instanceof AcceptMessage )
+        do
+            {
+            weaponAccepted( ( AcceptMessage )message );
+            sendAccept();
+        }
+ 
+    // Relay deny and stop.
+    Transition wrffeElevated1 : wrffeElevated -> stop
+        condition wrffeInitiated1Test( message )
+        do
+            {
+            sendDeny( ( ( DenyMessage )message ).getReason() );
+        }
+ 
+    // Relay accept and Proceed with mission.
+    Transition wrffeElevated2 : wrffeElevated -> wrffeAccepted
+        condition ( message instanceof AcceptMessage )
+        do
+            {
+            weaponAccepted( ( AcceptMessage )message );
+            sendAccept();
+        }
+
+    // Immediately Proceed with weapon specific transitions.
+    Enter wrffeAccepted {
+        delivery( null );
+    }
+
+    // Take this branch if accepting weapon is a mortar.
+    Transition wrffeAcceptedMortar : wrffeAccepted -> wrffeMortarAccepted
+        condition getWeaponType().equals( "MTR_PLT" )
+        do {}
+
+    // Relay EOM to gun and stop.
+    Transition wrffeMortarAccepted1 : wrffeMortarAccepted -> stop
+        condition wrffeMortarAccepted1Test( message )
+        do {
+            wrffeMortarAccepted1Action( message );
+        }
+
+    // Relay Shot and RoundsComplete to observer.
+    Transition wrffeMortarAccepted2 : wrffeMortarAccepted -> wrffeMortarAccepted
+        condition wrffeMortarAccepted2Test( message )
+        do {
+            wrffeMortarAccepted2Action( message );
+        }
+        
+    // Proceed with this branch if a gun accepted the mission.
+    Transition wrffeAcceptedArty : wrffeAccepted -> wrffeArtyAccepted
+        condition ( getWeaponType().equals( "DS_FA_PLT" )
+                || getWeaponType().equals( "GS_FA_PLT" )
+                || getWeaponType().equals( "R_FA_PLT" ) )
+        do {}
+
+    // Relay EOM to gun and wait for MFR.
+    Transition wrffeArtyAccepted1 : wrffeArtyAccepted -> wrffeArtyEnding
+        condition wrffeArtyAccepted1Test( message )
+        do {
+            sendUp( ( Message )message.clone() );
+        }
+        
+    // Relay Shot and RoundsComplete to observer.
+    Transition wrffeArtyAccepted2 : wrffeArtyAccepted -> wrffeArtyAccepted
+        condition wrffeArtyAccepted2Test( message )
+        do {
+            wrffeArtyAccepted2Action( message );
+        }
+        
+    // Relay MFR to BN_FSE and stop.
+    Transition wrffeArtyEnding1 : wrffeArtyEnding -> stop
+        condition ( message instanceof MfrMessage )
+        do {
+            wrffeArtyEnding1Action( message );
+        }
+
+    // Take this branch when mission accepted by MLRS.
+    Transition wrffeAcceptedMlrs : wrffeAccepted -> wrffeMlrsAccepted
+        condition ( getWeaponType().equals( "MLRS_BTRY" ) )
+        do {}
+
+    // Relay MFR and stop.
+    Transition wrffeMlrsAccepted1 : wrffeMlrsAccepted -> stop
+        condition wrffeMlrsAccepted1Test( message )
+        do {
+            wrffeMlrsAccepted1Action( message );
+        }
+
+    protected Opfac opfac;
+    protected String missionId;
+    protected MissionData missionData = null;
+    private Set denied = new HashSet();
+
+    protected boolean isDuplicate=false;
+
+    protected String downstream=null;
+    protected String upstream=null;
+    protected Proxy bestWeapon=null;
+    protected String weaponType;
+
+    protected Integer initiatingUnit;
+
+    public MissionImpl() {
+        current_state=start;
+    }
+
+    protected void assignWeapon()
+        {
+        upstream=bestWeapon.getName();
+        sendInitiate();
+    }
+
+    protected boolean canElevate()
+        {
+        return getOpfac().canElevate( ( Mission )this );
+    }
+
+    protected void elevate()
+        {
+        upstream = getOpfac().getSuperProxy().getName();
+        sendInitiate();
+    }
+
+    public String getId() {
+        return missionId;
+    }
+
+    public Opfac getOpfac() {
+        return opfac;
+    }
+
+    public Target getTarget()
+        {
+        return missionData==null ? null : missionData.getTarget();
+    }
+
+    public MissionType getType() 
+        {
+        return missionData==null ? null : missionData.getType();
+    }
+
+    protected String getWeaponType() 
+        {
+        return 
+                weaponType==null
+                    ? getOpfac().getSelfProxy().getType().toString()
+                    : weaponType;
+    }
+        
+    public boolean hasDenied( String opfacName )
+        {
+        return denied.contains( opfacName );
+    }
+    
+    public Mission init( Opfac opfac, String missionId )
+    {
+        this.opfac = opfac;
+        this.missionId = missionId;
+        return ( Mission )this;
+    }
+
+    protected void initiated( String from, MissionData missionData )
+    {
+        this.missionData = missionData;
+        downstream = from;
+    }
+
+    protected void initiated( String from, MissionData missionData,
+                 Integer initiatingUnit )
+        {
+        this.missionData = missionData;
+        downstream = from;
+        this.initiatingUnit = initiatingUnit;
+    }
+
+    public boolean isDuplicate( Mission mission )
+        {
+        return 
+                getTarget().getType().equals( mission.getTarget().getType() )
+                    && getTarget().getLocation().distanceTo( mission.getTarget().getLocation() )<=100F;
+    }
+
+    /** Discard current asset and go to next highest ranked **/
+    public void proxyDeny( String opfacName ) 
+        {
+        denied.add( opfacName );
+    }
+
+    protected void selectBestWeapon()
+        {
+        SelectedProxy p = 
+                getOpfac().getSelfProxy().getBestWeapon( ( Mission )this );
+        bestWeapon = p==null ? null : p.getVia();
+    }
+
+    protected void sendAccept()
+        {
+        AcceptMessage m = new AcceptMessage( missionId, missionData.getType().toString() );
+        m.setWeaponType( getWeaponType() );
+
+        if ( initiatingUnit != null )
+            m.setInitiatingUnitId( initiatingUnit.intValue() );
+
+        sendDown( m );
+    }
+
+    protected void sendDeny( String reason )
+        {
+        DenyMessage m = new DenyMessage( missionId, reason );
+        if ( initiatingUnit != null )
+            m.setInitiatingUnitId( initiatingUnit.intValue() );
+        sendDown( m );
+    }
+
+    protected void sendDown( Message message )
+        {
+        getOpfac().sendTo( downstream, message );
+    }
+
+    protected void sendInitiate()
+        {
+        InitiateMessage m = new InitiateMessage( missionId, missionData );
+
+        if ( initiatingUnit != null )
+            m.setInitiatingUnitId( initiatingUnit.intValue() );
+
+        sendUp( m );
+    }
+
+    protected void sendUp( Message message )
+        {
+        getOpfac().sendTo( upstream, message );
+    }
+
+    /** Standard string conversion **/
+    public String toString() 
+        {
+        return "mission "+missionId+" opfac "+opfac.getName();
+    }
+
+    protected void weaponAccepted( AcceptMessage message )
+        {
+        weaponType = message.getWeaponType();
+    }
+
+    protected void weaponDenied()
+        {
+        proxyDeny( bestWeapon.getName() );
+    }
+
+    protected boolean weaponSelected()
+        {
+        return bestWeapon!=null;
+    }
+
+    public boolean wrffeArtyAccepted1Test( Event message ) {
+        return ( message instanceof EomMessage );
+    }
+
+    public void wrffeArtyAccepted2Action( Event message ) {
+        sendDown( ( Message )message.clone() );
+    }
+
+    public boolean wrffeArtyAccepted2Test( Event message ) {
+        return ( message instanceof ShotMessage )
+                || ( message instanceof RoundsCompleteMessage );
+    }
+
+    // Added
+
+    public void wrffeArtyEnding1Action( Event message ) {
+        sendDown( ( Message )message.clone() );
+    }
+
+    // added
+    public boolean wrffeInitiated1Test( Event message ) {
+        return ( message instanceof DenyMessage );
+    }
+
+    // added
+    public void wrffeMlrsAccepted1Action( Event message ) {
+        sendDown( ( Message )message.clone() );
+    }
+
+    public boolean wrffeMlrsAccepted1Test( Event message ) {
+        return ( message instanceof MfrMessage );
+    }
+
+    // added
+    public void wrffeMortarAccepted1Action( Event message ) {
+        sendUp( ( Message )message.clone() );
+    }
+
+    public boolean wrffeMortarAccepted1Test( Event message ) {
+        return ( message instanceof EomMessage );
+    }
+
+    public void wrffeMortarAccepted2Action( Event message ) {
+        sendDown( ( Message )message.clone() );
+    }
+
+    public boolean wrffeMortarAccepted2Test( Event message ) {
+        return ( message instanceof ShotMessage )
+                || ( message instanceof RoundsCompleteMessage );
+    }
+}

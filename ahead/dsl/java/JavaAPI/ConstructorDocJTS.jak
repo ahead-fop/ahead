@@ -1,0 +1,59 @@
+layer JavaAPI;
+
+import java.io.*;
+import java.util.*;
+
+ // end of ClassDocJTS
+
+// _________________________________________________________________
+
+ /** JEDI project
+ * ConstructorJTS_Java.java
+ * University of Texas at Austin
+ * Department of Computer Sciences
+ * Product-line Architecture Research Group
+ * @author Roberto E. Lopez-Herrejon
+ * @version 1.1
+ * @since November 25, 2002
+ * @layer<JavaAPI>
+ */
+
+public class ConstructorDocJTS extends  ExecutableMemberDocJTS {
+
+    /** Returns the qualified name of the Constructor.
+     * Current implementation returns empty string ???
+     * @layer<JavaAPI>
+     */
+    public String qualifiedName() {
+        return "";
+    }
+  
+    /** Additional constructor. 
+     * @layer<JavaAPI>
+     */
+    public ConstructorDocJTS( String _name ) {
+        name = _name;
+    }
+
+    /** Returns the name of the constructor. 
+     * @layer<JavaAPI>
+     */
+    public String name() {
+        return super.name();
+    }
+
+    /** Always returns true because this is a constructor. 
+     * @layer<JavaAPI>
+     */
+    public boolean isConstructor() {
+        return true;
+    }
+
+    /** Sets the name of the Constructor. 
+     * @layer<JavaAPI>
+     */
+    public void setName( String _name ) {
+        super.setName( _name );
+    }
+
+}

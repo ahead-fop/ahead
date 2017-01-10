@@ -1,0 +1,81 @@
+layer JavaHarvest;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+
+    /** UnmodifiedClassDeclaration
+: "class" QName [ ExtendsClause ] [ ImplementsClause ] ClassBody
+::UmodClassDecl
+;
+    * @layer<JavaHarvest>
+    */
+    
+public refines class UmodClassDecl {
+    public String _harvest_name;
+    public  ClassDocJTS _harvest_class;
+    public void execute() 
+    {
+        Super().execute();
+            
+        // arg[0] class name
+        _harvest_name = ( ( AstToken )arg[0].tok[0] ).tokenName();
+          
+        // arg[1] extends clause
+        ClassDocJTS extendsClass;
+        AstNode e1 = arg[1].arg[0];
+        if ( e1 != null )
+                {
+            extendsClass = 
+                             ClassDocJTS.ClassDocJTSFactory();
+            extendsClass.ClassDocJTSConstructor( e1.arg[0].toString() );
+        }
+        else {
+            extendsClass = 
+                                     ClassDocJTS.ClassDocJTSFactory();
+            extendsClass.ClassDocJTSConstructor( "Object" );
+        }
+
+        // arg[2] implements clause
+        // Sets the implemented interfaces
+        AstNode   e2 = arg[2].arg[0];
+          
+        LinkedList interfaces = new LinkedList();
+            
+        // If there are implemented interfaces then add them
+        if ( e2!=null ) {
+            interfaces = ( ( ImplClause )e2 ).implementedInterfaces;
+        }
+
+        // arg[3] ClassBody, we get the class harvested in ClassBody
+        _harvest_class = ( ( ClassBody )arg[3] )._harvest_class;
+            
+        // adjust the inner names of the innerelements
+        ClassDocJTS[] innerclasses = 
+                _harvest_class.innerClasses();
+        for( int i=0; i < innerclasses.length; i++ )
+            {
+            innerclasses[i].setName( _harvest_name + "." +  
+                                                            innerclasses[i].name() );
+        }
+
+        // Sets the corresponding values of the class
+        _harvest_class.setName( _harvest_name );
+        _harvest_class.setSuperClass( extendsClass );
+        _harvest_class.setInterfaces( interfaces );
+          
+        // ************ Comment Processing *************************
+        String comment = ( ( AstToken ) tok[0] ).white_space;
+        CommentJedi classComment = 
+                CommentParser.ParseComment( _harvest_class, comment );
+        _harvest_class.setComment( classComment );
+
+    // **  Generates the HTML file for a class.
+    //try{
+    //    HTMLGenerator.GenerateHTML.GenerateClass(_harvest_class);
+    // }catch(Exception e) { }
+
+    } // of execute
+}

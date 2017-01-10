@@ -1,0 +1,6 @@
+// tests integer range equality conditions
+
+layer simp0;
+
+outside Int a;
+outside Int b;

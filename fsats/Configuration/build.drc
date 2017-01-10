@@ -1,0 +1,8 @@
+single layer Configuration;
+
+extern outside Int  fsatsRank;
+extern outside Bool localOrRemotePresent;
+extern inside  Bool configurationPresent;
+
+requires outside fsatsRank == 4 and localOrRemotePresent;
+provides inside configurationPresent;

@@ -1,0 +1,20 @@
+layer M2D2Java;
+
+refines class VarDecl {
+
+   String GetName() {
+      DecNameDim dnd = ((DecNameDim) arg[0]);
+      return dnd.GetName();
+   }
+
+   String GetDims() {
+      DecNameDim dnd = ((DecNameDim) arg[0]);
+      return dnd.GetDims();
+   }
+
+   String GetAsgn() {
+      if (arg[1].arg[0]!=null)
+         return arg[1].arg[0].toString();
+      return "";
+   }
+}

@@ -1,0 +1,30 @@
+
+// example that forces propagation of constructors UP the refinement chain
+// but also checks that multiple copies of the same constructor are not
+// forced
+
+
+
+abstract class MessageType$$FsatsL extends EventType implements MessageTypeInterface {
+      // inherited constructors
+
+      MessageType$$FsatsL( String v0) { super(  v0); }}
+
+
+
+
+public abstract  class MessageType extends MessageType$$FsatsL
+        implements MessageTypeInterface
+    {
+
+        protected MessageType(String name)
+        {
+            super(name);
+          MessageTypeConstructor(name);
+        }
+
+        protected MessateType(String name, int cons ){
+            super(name);
+            /* something with cons */
+        }
+    }

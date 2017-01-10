@@ -1,0 +1,12 @@
+layer FormatSmx;
+
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public refines class UmodSmExt {
+    public void format( int position ) {
+        inline_routins( position );
+        super.format( position );
+    }
+}

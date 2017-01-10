@@ -1,0 +1,30 @@
+layer Weighted;
+
+// *************************************************************************
+  
+public refines class Edge {
+    public int weight;
+        
+    public void EdgeConstructor( Vertex the_start,  Vertex the_end, 
+                int the_weight ) {
+        Super( Vertex, Vertex ).EdgeConstructor( the_start,the_end );
+        weight = the_weight;
+    }
+        
+    // Constructor Loophole removed
+    // public void EdgeConstructor($TEqn.Vertex the_start, 
+    //                    $TEqn.Vertex the_end) {
+    // Super($TEqn.Vertex, $TEqn.Vertex).EdgeConstructor(the_start,the_end);
+    // }
+                 
+    public void adjustAdorns( Edge the_edge ) {
+        weight = the_edge.weight;
+        Super( Edge ).adjustAdorns( the_edge );
+    }
+        
+    public void display() {
+        System.out.print( " Weight=" + weight );
+        Super().display();
+    }
+
+}

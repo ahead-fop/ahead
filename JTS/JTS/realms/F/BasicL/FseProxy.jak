@@ -1,0 +1,18 @@
+package BasicL;
+
+import  
+    java.util.*;
+import 
+    F.Libraries.laydown.*;
+import 
+    F.Libraries.log.Log;
+
+
+    public class FseProxy extends ProxyImpl 
+    { 
+        public void init(OpfacDataWrapper record)
+        {
+            super.init(record);
+            addAssets(LayDown.getSelf().getSupporterNames(getName()));
+        }
+    }

@@ -1,0 +1,24 @@
+<!-- ++ Refinements needed to add feature G -->
+<xr:refine xmlns:xr="http://www.atarix.org/xmlRefinement" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.atarix.org/xmlRefinement">
+	<xr:at select="//table[@id='mainlayout']">
+		<xr:append>
+			<tr>
+				<td>
+					<div class="GPL_TEXT">
+The Edge-List (EL) data structure reifies Neighbors and Edges so that
+the are represented by explicit objects and classes.  Doing so improves 
+the performance of algorithms that explicitly manipulate edges, but because
+of the overhead for materializing edges, graph load time may increase
+noticably.  All algorithms will likely perform well (although simple
+algorithms that merely traverse nodes may be slowed slightly.
+</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" alt="FOP" src="images/G.jpg" width="626" height="300" />
+				</td>
+			</tr>
+		</xr:append>
+	</xr:at>
+</xr:refine>

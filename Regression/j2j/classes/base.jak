@@ -1,0 +1,7 @@
+layer test;
+
+class base extends y {
+   base(int a) { super(a); }   // ok to have such things in base classes
+   base(string a) { Super(string)(a); }
+   base() { super(); }
+}

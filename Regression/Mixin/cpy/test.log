@@ -1,0 +1,10 @@
++ '[' -z /usr/bin/bash ']'
++ echo '****************Copy Regression Test***********'
+****************Copy Regression Test***********
++ bash cpytst
+succeeded
++ bash regress-one CB0 CE1 long
+composing CB0 & CE1 -> long ... succeeded
++ echo -e '\nCopy Regression Test succeeded.'
+
+Copy Regression Test succeeded.

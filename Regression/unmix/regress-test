@@ -1,0 +1,9 @@
+#!/bin/bash
+
+cat $1 | tr -s '\n\r' '\n' > correct
+cat $1.cpp | tr -s '\n\r' '\n' > current
+
+if ! diff -w correct current ; then
+   echo "failed diff on $1"
+   exit 1
+fi

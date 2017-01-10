@@ -1,0 +1,33 @@
+package MessageL;
+
+import  
+    fsats.util.DataContainer;
+import 
+    F.Libraries.laydown.*;
+import 
+    java.util.*;
+
+
+
+
+    /** Message to start a new mission **/
+    public class TargetEvent
+        extends BasicEvent 
+    {
+        public EventType getType() { return EventType.target; }
+
+	public TargetEvent(String missionId, MissionData missionData)
+	{
+	    super(missionId);
+          TargetEventConstructor(missionId, missionData);
+	}
+
+	public void TargetEventConstructor(String missionId, MissionData missionData) {
+	    this.missionData = missionData;
+      }
+      
+	protected MissionData missionData;
+	public MissionData getMissionData() { return missionData; }
+
+        public String getSpecific() { return ""+missionData; }
+    }

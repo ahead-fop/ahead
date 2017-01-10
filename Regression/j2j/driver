@@ -1,0 +1,18 @@
+#!/bin/bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+FAILURES=0
+
+unset -v BEFORE
+for DIR in classes staticmeth GPL interfaces sm sm1 ast gscope ; do
+    [ -n "${BEFORE}" ] && echo -e "${BEFORE}" || BEFORE='\n'
+    (cd "${DIR}" ; bash regress) || let ++FAILURES
+done
+
+if ((FAILURES)); then
+    echo -e "${BEFORE}jak2java Regression Tests Completed with ${FAILURES} FAILURES"
+    exit 1
+fi
+
+echo -e "${BEFORE}jak2java Regression Tests Completed Successfully"

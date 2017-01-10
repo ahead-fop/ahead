@@ -1,0 +1,134 @@
+package NetworkWithTransmitL;
+
+import 
+    java.util.*;
+import 
+    fsats.doe.*;
+import 
+    fsats.util.*;
+import 
+    F.Libraries.log.Log;
+import 
+    F.Libraries.laydown.*;
+
+
+
+    public class TmtContainerHandler
+        extends DoeObject
+        implements ObjectInstanceListener
+    {
+        /**
+         * NetworkImpl object for which the TmtContainerHandler
+         * serves as a bridge to the TMT_TRANSLATOR.
+         **/
+        protected NetworkImpl networkImpl;
+
+        /** DOE object ID for the TMT_TRANSLATOR object. **/
+        protected DoeObjectID tmtTranslatorID;
+
+        /** Constructor */
+        public TmtContainerHandler( NetworkImpl netImpl)
+        {
+            // Registers self with DOE.
+            // I am not sure what the doeName should be, so I am making it random.
+            super(new DoeObjectID(DoeObjectClass.JTS_NETWORK,
+                                  (int)(Math.random()*100)+1));
+          TmtContainerHandlerConstructor(netImpl);
+        }
+
+        /** Constructor */
+        public void TmtContainerHandlerConstructor( NetworkImpl netImpl) {
+
+            // Saves a reference to the NetworkImpl object.
+            networkImpl = netImpl;
+
+            // Causes self to be notified when a TMT_TRANSLATOR
+            // object comes into existence.
+            Doe.getInstance().addObjectInstanceListener(
+                DoeObjectClass.TMT_TRANSLATOR, this);
+
+            start();
+      }
+
+        /**
+         * Implements objectAdded() in interface ObjectInstanceListener.
+         * This method listens for TMT_TRANSLATOR objects,
+         * and when one is found, it registers itself as simulator
+         * with the TMT_TRANSLATOR object for all simulated OPFACs.
+         */
+        public void objectAdded(DoeObjectID objectID)
+        {
+            tmtTranslatorID = objectID;
+
+            Iterator i = LayDown.getSelf().getAllOpfacs().iterator();
+            while(i.hasNext())
+            {
+                OpfacDataWrapper opfac = (OpfacDataWrapper)i.next();
+                if(networkImpl.getSite().equals(opfac.getSite()) &&
+                   networkImpl.getProcessId().equals(opfac.getProcessId()))
+                    sendSetSimulatorObjectMsg(opfac.getUnit());
+            }
+        }
+
+        /**
+         * Implements objectRemoved() in interface ObjectInstanceListener.
+         * This method listens for TMT_TRANSLATOR objects going out of existence.
+         * When one does, the reference pointing to its DOE object ID is set to null.
+         */
+        public void objectRemoved(DoeObjectID objectID)
+        {
+            tmtTranslatorID = null;
+        }
+
+        /**
+         * Puts the incoming message in a DOE message
+         * and relays it to the TMT_TRANSLATOR object.
+         */
+        public void send( Message message)
+        {
+            if(tmtTranslatorID != null && !(message instanceof MfrMessage))
+            {
+                DoeMessage msg = new DoeMessage(getObjectID(),
+                                                tmtTranslatorID,
+                                                DoeMessageKey.TRANSMIT_TMT_CONTAINER,
+                                                message.toFsams());
+                msg.send();
+            }
+        }
+
+        /**
+         * Implements the abstract superclass method DoeObject.handleMsg().
+         * This method handles messages received from the TMT_TRANSLATOR.
+         * The method gets the FSAMS message data container from the
+         * incoming DOE message and converts the FSAMS message data container
+         * into a Message.  The Message is then sent to the NetworkImpl object.
+         */
+        public void handleMsg(DoeMessage msg)
+        {
+            if(msg.getKey().equals(DoeMessageKey.RECEIVE_TMT_CONTAINER))
+            {
+                Message m = MessageType.fromAnyFsams(msg.getData());
+                networkImpl.handleIncomingMsg(m);
+            }
+        }
+
+        // Registers self as simulator with the TMT_TRANSLATOR object
+        // for OPFAC of specified unit number.
+        private void sendSetSimulatorObjectMsg(int opfacUnit)
+        {
+            DataContainer container = new DataContainer("DATA");
+            container.addField(new DataContainer("UNIT_NUMBER", ""+opfacUnit));
+            DataContainer doeIdField = new DataContainer("DOE_ID");
+            doeIdField.addField(new DataContainer("CLASS",
+                                                  getObjectID().getObjectClass()));
+            doeIdField.addField(new DataContainer("NAME",
+                                                  ""+getObjectID().getObjectName()));
+            container.addField(doeIdField);
+	    container.addField(new DataContainer("USES_FSAMS", "TRUE"));
+            DoeMessage msg = new DoeMessage(getObjectID(),
+                                            tmtTranslatorID,
+                                            DoeMessageKey.SET_SIMULATOR_OBJECT,
+                                            container);
+            msg.send();
+        }
+    }

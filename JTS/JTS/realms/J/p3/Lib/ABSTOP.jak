@@ -1,0 +1,24 @@
+package p3Lib;
+
+import JakBasic.Lang;
+
+
+public interface ABSTOP {
+  environment;
+
+  Lang.AST_Class generate_Abs_Container_Type( Lang.AST_Modifiers m, String Cname, TopParams tp );
+
+  Lang.AST_Class generate_Abs_Cursor_Type( Lang.AST_Modifiers m, String Kname );
+
+  //  Lang.AST_FieldDecl generate_decl(int convent, String TypName, String EltName);
+
+  // Lang.AST_FieldDecl generate_cons(int convent, String nom, String[][] attributes,int num);
+
+  TopParams getTopParams();
+
+  ABSTOP    singleton();     // get atop singleton
+
+  TOP       getTeqn();       // get type equation
+
+  void      setTeqn( TOP teqn );  // set type equation
+}

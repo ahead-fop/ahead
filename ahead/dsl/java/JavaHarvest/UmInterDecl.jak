@@ -1,0 +1,114 @@
+layer JavaHarvest;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+
+// ******
+
+/** UnmodifiedInterfaceDeclaration
+ *: "interface" QName [ IntExtClause ]
+ *"{" [ InterfaceMemberDeclarations ] "}"::UmInterDecl
+ * ;
+ * @layer<JavaHarvest>
+ */
+   
+public refines class UmInterDecl {
+    public String _harvest_name;
+    public  ClassDocJTS _harvest_class;
+      
+    public LinkedList listOfMethods = new LinkedList();
+    public LinkedList listOfInnerClasses = new LinkedList();
+    public LinkedList listOfFields = new LinkedList();
+ 
+    public void execute() {
+        Super().execute();
+        _harvest_name = ( ( AstToken )arg[0].tok[0] ).tokenName();
+        _harvest_class= ClassDocJTS.ClassDocJTSFactory();
+        _harvest_class.ClassDocJTSConstructor( _harvest_name );
+                  
+        // Traverses the AST_FieldDecl to get the methods, nestedclasses,
+        // interfaces, etc
+        AstCursor c = new AstCursor(); // c to traverse list
+  
+        // Interface member declarations
+        AstNode   e = arg[2].arg[0]; // e instanceOf Lang.AstList
+           
+        if ( e != null ) {
+            for ( c.FirstElement( e ); c.MoreElement(); c.NextElement() ) 
+                           {
+                // System.out.println("Interface member " + c.node.className());
+                             // Method part of an interface 
+                if ( c.node instanceof MDecl ) {
+                    MethodDocJTS met = 
+                                        ( ( MthDector ) ( ( MethodDcl )c.node.arg[0] ).arg[2] )._harvest_method;
+                    listOfMethods.add( met );
+                }
+                                                  
+                // Nested class inside an interface
+                if ( c.node instanceof NCDecl ) {
+                    ClassDocJTS cls = 
+                        ( ( UmodClassDecl ) ( ( NClassDecl )c.node.arg[0] ).arg[1] )._harvest_class;
+                    cls.setName( _harvest_name + "." + cls.name() );
+                    listOfInnerClasses.add( cls );
+                }
+                                                  
+                // Nested interface
+                if ( c.node instanceof NIDecl ) {
+                    ClassDocJTS cls = 
+             ( ( UmInterDecl ) ( ( NInterDecl )c.node.arg[0] ).arg[1] )._harvest_class;
+                    cls.setName( _harvest_name + "." + cls.name() );
+                    listOfInnerClasses.add( cls );
+                }
+                                                  
+                // Field inside an interface
+                if ( c.node instanceof FDecl ) {
+                    LinkedList tempList = 
+                                                              ( ( FldVarDec )c.node.arg[0] ).fieldsList;
+                                                                                  
+                    for( int i=0; i< tempList.size(); i++ ) {
+                        // default all the fields of an interface are public
+                        // static and final
+                        FieldDocJTS theField = 
+                                                                              ( FieldDocJTS )tempList.get( i );
+                        theField.setPublic( true );
+                        theField.setFinal( true );
+                        theField.setStatic( true );
+                                                                                                                          
+                        listOfFields.add( theField );
+                    }
+                } // of FDecl
+                                      
+            } // end of for
+        } // if there are not members
+                   
+        // Sets the methods for the class
+        _harvest_class.setMethods( listOfMethods );
+        _harvest_class.setInnerClasses( listOfInnerClasses );
+        _harvest_class.setInterfaces( new LinkedList() );
+        _harvest_class.setConstructors( new LinkedList() );
+        _harvest_class.setFields( listOfFields );
+        _harvest_class.setInterface( true );
+        _harvest_class.setContainingPackage( GlobalWrapper.containingPackage );
+                   
+        // adds the Extend Class at the Interface
+        // Arg[1] IntExtClause is optional that's why we get the child
+        AstNode   e1 = arg[1].arg[0];
+           
+        if ( e1 != null ) {
+            ClassDocJTS Klass = 
+                         ClassDocJTS.ClassDocJTSFactory();
+            Klass.ClassDocJTSConstructor( e1.arg[0].toString() );
+            _harvest_class.setSuperClass( Klass );
+        }
+
+        // ************ Comment Processing ********************************
+        String comment = ( ( AstToken ) tok[0] ).white_space;
+        CommentJedi classComment = 
+               CommentParser.ParseComment( _harvest_class, comment );
+        _harvest_class.setComment( classComment );
+           
+    } // of execute
+}

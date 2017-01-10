@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+base=""
+for i in $* ; do
+    if [ "$base" = "" ]; then
+	base=$i
+    else
+	if ! diff $base/$base.b $i/$i.b > /dev/null ; then
+	    echo "$base and $i don't match"
+	fi
+    fi
+done

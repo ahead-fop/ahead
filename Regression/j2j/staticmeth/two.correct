@@ -1,0 +1,35 @@
+
+// tests the refinement of static methods
+
+
+
+abstract class two$$L1 extends EventType {
+   public static void main(String[] args ) { 
+      EventType.main(null);
+      System.out.println( "L1 " );
+   }
+}
+
+
+
+abstract  class two$$L2 extends two$$L1 {
+   public static void main(String[] args ) { 
+      two$$L1.main(null);
+      System.out.println( "L2 " );
+   }
+}
+
+
+
+
+abstract  class two$$L3 extends two$$L2 { }
+
+
+
+
+public abstract  class two extends two$$L3 {
+   public static void main(String[] args) {
+      two$$L3.main(null);
+      System.out.println( "two ");
+   }
+}

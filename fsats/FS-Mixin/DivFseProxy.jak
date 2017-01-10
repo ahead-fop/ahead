@@ -1,0 +1,11 @@
+layer FS;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+SoUrCe RooT BasicL "C:!Java!FeatureOrientedProgramming!fsats!BasicL!DivFseProxy.jak";
+
+public class DivFseProxy extends FseProxy {}

@@ -1,0 +1,111 @@
+layer FS;
+
+import laydown.*;
+
+import java.util.*;
+
+import fsats.util.DataContainer;
+
+SoUrCe RooT FsatsL "C:!Java!FeatureOrientedProgramming!fsats!FsatsL!MessageType.jak";
+
+abstract class MessageType$$FsatsL extends EventType implements MessageTypeInterface {}
+
+SoUrCe  MessageL "C:!Java!FeatureOrientedProgramming!fsats!MessageL!MessageType.jak";
+
+public abstract class MessageType extends MessageType$$FsatsL
+        implements MessageTypeInterface {
+    private int index;
+
+    private static Vector values = new Vector();
+
+    protected MessageType( String name )
+        {
+            Super( String )( name );
+        index = values.size();
+        values.add( this );
+    }
+
+    public int toInt()
+        {
+        return index;
+    }
+
+    public static EventType fromString( String name )
+        {
+        MessageType result = null;
+
+        for ( int i=0; i<values.size() && result==null; ++i )
+            if ( values.elementAt( i ).toString().equals( name ) )
+                result = ( MessageType )values.elementAt( i );
+
+        return result;
+    }
+
+    public static MessageType fromInt( int index )
+        {
+        return 0<=index && index<values.size() ? ( MessageType )values.elementAt( index ) : null;
+    }
+
+    public abstract Message fromFsams( DataContainer fsams );
+
+    public static Message fromAnyFsams( DataContainer fsams )
+        {
+        return ( ( MessageType )fromString( fsams.getField( "NAME" ).getValue() ) ).fromFsams( fsams );
+    }
+
+    public static final MessageType initiate = new MessageType( "Initiate" ) {
+        public Message fromFsams( DataContainer fsams )
+            {
+            return InitiateMessage.fromFsams( fsams );
+        }
+    };
+
+    public static final MessageType accept = new MessageType( "Mission_Assigned" ) {
+        public Message fromFsams( DataContainer fsams )
+            {
+            return AcceptMessage.fromFsams( fsams );
+        }
+    };
+
+    public static final MessageType deny = new MessageType( "Deny" ) {
+        public Message fromFsams( DataContainer fsams )
+            {
+            return DenyMessage.fromFsams( fsams );
+        }
+    };
+
+    public static final MessageType shot = new MessageType( "Shot" ) {
+        public Message fromFsams( DataContainer fsams )
+            {
+            return ShotMessage.fromFsams( fsams );
+        }
+    };
+
+    public static final MessageType splash = new MessageType( "Splash" ) {
+        public Message fromFsams( DataContainer fsams )
+            {
+            return SplashMessage.fromFsams( fsams );
+        }
+    };
+
+    public static final MessageType roundsComplete = new MessageType( "Rounds_Complete" ) {
+        public Message fromFsams( DataContainer fsams )
+            {
+            return RoundsCompleteMessage.fromFsams( fsams );
+        }
+    };
+
+    public static final MessageType eom = new MessageType( "End_of_Mission" ) {
+        public Message fromFsams( DataContainer fsams )
+            {
+            return EomMessage.fromFsams( fsams );
+        }
+    };
+
+    public static final MessageType mfr = new MessageType( "Mission_Fired_Report" ) {
+        public Message fromFsams( DataContainer fsams )
+            {
+            return MfrMessage.fromFsams( fsams );
+        }
+    };
+}

@@ -1,0 +1,10 @@
+single layer OpfacL;
+
+extern outside Int fsatsRank;
+extern outside Bool opfacPresent;
+extern outside Bool fsatsPresent;
+extern inside  Bool libraries;
+
+requires outside fsatsRank == 1 and fsatsPresent;
+provides outside opfacPresent;
+requires inside  libraries;

@@ -1,0 +1,884 @@
+//                              -*- Mode: Java -*-
+// Version         :
+// Author          : Robert S. MacDonald
+// Last Modified By: 
+// Last Modified On: Thu Jan 25 15:09:13 2001
+
+layer MessageL ( F lower )
+realm F
+extends lower
+imports 
+    fsats.util.DataContainer,
+    F.Libraries.laydown.*,
+    java.util.*
+{
+    /** Any event that can occur to an opfac. */
+    public interface Event
+        extends java.io.Serializable, Cloneable
+    {
+        /** Get message type. */
+        EventType getType();
+
+        /** Get mission identifier. */
+        String getMissionId();
+
+        Object clone();
+    }
+
+    /** A tactical message received event. */
+    public interface Message
+        extends lower.Message
+    {
+        /** Get/set message source opfac. */
+	String getSource();
+	void setSource(String newval);
+
+        /** Get/set message destination opfac. */
+	String getDestination();
+	void setDestination(String newval);
+
+        /** Get a representation of message specific information. */
+        String getSpecific();
+
+        DataContainer toFsams();
+    }
+
+    /** A timeout expiration event. */
+    public interface Timeout
+        extends $TEqn.Event
+    {
+        /** Cancel a timeout. */
+        void cancel();
+
+        /** Test if timeout has been canceled. */
+        boolean isCancelled();
+    }
+
+
+    /** Any event type that can occur to an opfac. */
+/* removed -- adds nothing
+    public interface EventTypeInterface
+        extends lower.EventTypeInterface {}
+*/
+
+    /** An enumerated tactical message type. */
+    public interface MessageTypeInterface
+        extends lower.MessageTypeInterface
+    {
+        /** Create a Message from an FSAMS message. **/
+        Message fromFsams(DataContainer fsams);
+    }
+
+    /** An enumerated timeout expiration event type. */
+/* removed -- adds nothing
+    public interface TimeoutTypeInterface
+        extends lower.TimeoutTypeInterface {}
+*/
+
+    public static class EventType
+        extends lower.EventType
+        implements EventTypeInterface
+    {
+        private String name;
+
+        // added -- Java claims it needs it in the unpacked
+        // version
+
+        protected EventType() {
+            this.name = null;
+        }
+
+        protected EventType(String name)
+        {
+            this.name = name;
+        }
+
+        public String toString()
+        {
+            return name;
+        }
+
+        // deleted -- never called, but its presence precludes
+        // the unpacked version from compiling.  Don't know how
+        // this .layer file compiled in the first place.  Must be
+        // an obscure javac error
+/*
+	public static EventType fromString(String name)
+	{
+	    EventType type = null;
+
+	    if (name.equals("target"))
+		type = EventType.target;
+	    else if (name.equals("lockGranted"))
+		type = EventType.lockGranted;
+
+	    return type;
+	}
+*/
+
+        public static final EventType target = new EventType("target");
+
+        public static final EventType lockGranted = new EventType("lockGranted");
+    }
+
+    public static class MessageType
+        extends Lang.EventType
+        implements MessageTypeInterface
+    {
+        private int index;
+
+        private static Vector values = new Vector();
+
+        protected MessageType(String name)
+        {
+            super(name);
+
+            index = values.size();
+            values.add(this);
+        }
+
+        public int toInt()
+        {
+            return index;
+        }
+
+        public static EventType fromString(String name)
+        {
+            MessageType result = null;
+
+            for (int i=0; i<values.size() && result==null; ++i)
+                if (values.elementAt(i).toString().equals(name))
+                    result = (MessageType)values.elementAt(i);
+
+            return result;
+        }
+
+        public static MessageType fromInt(int index)
+        {
+            return 0<=index && index<values.size() ? (MessageType)values.elementAt(index) : null;
+        }
+
+        public Message fromFsams(DataContainer fsams) {
+           System.err.println("fromFsams"); System.exit(1); return null;
+        }
+
+        public static Message fromAnyFsams(DataContainer fsams)
+        {
+            return ((MessageType)fromString(fsams.getField("NAME").getValue())).fromFsams(fsams);
+        }
+
+        public static final MessageType initiate = new MessageType("Initiate")
+        {
+            public Message fromFsams(DataContainer fsams)
+            {
+                return InitiateMessage.fromFsams(fsams);
+            }
+        };
+
+        public static final MessageType accept = new MessageType("Mission_Assigned")
+        {
+            public Message fromFsams(DataContainer fsams)
+            {
+                return AcceptMessage.fromFsams(fsams);
+            }
+        };
+
+        public static final MessageType deny = new MessageType("Deny")
+        {
+            public Message fromFsams(DataContainer fsams)
+            {
+                return DenyMessage.fromFsams(fsams);
+            }
+        };
+
+        public static final MessageType shot = new MessageType("Shot")
+        {
+            public Message fromFsams(DataContainer fsams)
+            {
+                return ShotMessage.fromFsams(fsams);
+            }
+        };
+
+        public static final MessageType splash = new MessageType("Splash")
+        {
+            public Message fromFsams(DataContainer fsams)
+            {
+                return SplashMessage.fromFsams(fsams);
+            }
+        };
+
+        public static final MessageType roundsComplete = new MessageType("Rounds_Complete")
+        {
+            public Message fromFsams(DataContainer fsams)
+            {
+                return RoundsCompleteMessage.fromFsams(fsams);
+            }
+        };
+
+        public static final MessageType eom = new MessageType("End_of_Mission")
+        {
+            public Message fromFsams(DataContainer fsams)
+            {
+                return EomMessage.fromFsams(fsams);
+            }
+        };
+
+        public static final MessageType mfr = new MessageType("Mission_Fired_Report")
+        {
+            public Message fromFsams(DataContainer fsams)
+            {
+                return MfrMessage.fromFsams(fsams);
+            }
+        };
+    }
+
+    public static class TimeoutType
+        extends $TEqn.EventType
+        implements TimeoutTypeInterface
+    {
+        private int index;
+
+	private static Vector values = new Vector();
+
+	public int toInt()
+        {
+            return index;
+        }
+
+        protected TimeoutType(String name)
+        {
+            super(name);
+
+            index = values.size();
+            values.add(this);
+        }
+
+        public static EventType fromString(String name)
+        {
+            TimeoutType result = null;
+
+            for (int i=0; i<values.size() && result==null; ++i)
+                if (values.elementAt(i).toString().equals(name))
+                    result = (TimeoutType)values.elementAt(i);
+
+            return result;
+        }
+
+        public static TimeoutType fromInt(int index)
+        {
+            return 0<=index && index<values.size() ? (TimeoutType)values.elementAt(index) : null;
+        }
+
+        public static final TimeoutType flightTime = new TimeoutType("flightTime");
+
+        public static final TimeoutType loadTime = new TimeoutType("loadTime");
+
+        public static final TimeoutType completeTime = new TimeoutType("completeTime");
+
+        public static final TimeoutType watchTime = new TimeoutType("watchTime");
+    }
+
+    public static abstract class BasicEvent
+        implements Event
+    {
+	protected String missionId;
+      	public String getMissionId() { return missionId; }
+
+        public String toString() { return getType()+" "+missionId; }
+
+        protected BasicEvent(String missionId) { this.missionId=missionId; }
+
+        public Object clone() 
+        { 
+            Object o = null;
+            try { o=super.clone(); } catch (Exception e) {}
+            return o;
+        }
+    }
+
+    public static abstract class BasicMessage
+        extends $TEqn.BasicEvent
+        implements Message
+    {
+	protected String source = "";
+	public String getSource() { return source; }
+	public void setSource(String newval) { source = newval; }
+        
+	protected String destination = "";
+	public String getDestination() { return destination; }
+	public void setDestination(String newval) { destination = newval; }
+
+	protected Integer initiatingUnitObserverId;
+	public Integer getInitiatingUnitObserverId() { return initiatingUnitObserverId; }
+	protected Integer initiatingUnitId;
+	public Integer getInitiatingUnitId() { return initiatingUnitId; }
+
+	public void setInitiatingUnitId(int initiatingUnitId)
+	{
+	    this.initiatingUnitId = new Integer(initiatingUnitId);
+	}
+
+	public void setInitiatingUnitObserverId(int initiatingUnitObserverId)
+	{
+	    this.initiatingUnitObserverId = new Integer(initiatingUnitObserverId);
+	}
+
+        public String getSpecific() { return ""; }
+
+        public String toString() 
+        { 
+            return 
+                super.toString()+" "+
+                    source+"->"+destination+" "+getSpecific(); 
+        }
+
+        protected BasicMessage(String missionId) { super(missionId); }
+
+        public DataContainer toFsams()
+        {
+            DataContainer fsams = new DataContainer("Message");
+            DataContainer content = fsams.addField("CONTENT");
+            fsams.addField("PROTOCOL").setValue("FSAMS");
+            fsams.addField("FROM").setValue(""+((OpfacDataWrapper)LayDown.getSelf().
+                                                getOpfac(getSource())).getUnit());
+            fsams.addField("TO").setValue(""+((OpfacDataWrapper)LayDown.getSelf().
+                                              getOpfac(getDestination())).getUnit());
+
+	    DataContainer initiatingUnit = new DataContainer("Initiating_Unit");
+	    if (initiatingUnitObserverId != null)
+		initiatingUnit.addField("Observer_Id").setValue(initiatingUnitObserverId.toString());
+	    if (initiatingUnitId != null)
+		initiatingUnit.addField("Unit_Id").setValue(initiatingUnitId.toString());
+
+	    if (initiatingUnitObserverId!=null || initiatingUnitId!=null)
+		content.addField(initiatingUnit);
+
+            return fsams;
+        }
+
+        /*
+        public static Message fromFsams(DataContainer fsams)
+        {
+            Message m;
+            m = InitiateMessage.fromFsams(fsams);
+            if (m!=null) return m;
+            m = MissionStatusMessage.fromFsams(fsams);
+            return m;
+        }
+        */
+    }
+
+    public static abstract class BasicTimeout
+        extends $TEqn.BasicEvent
+        implements Timeout
+    {
+        protected boolean cancelled=false;
+
+        public void cancel() { cancelled=true; }
+
+        public boolean isCancelled() { return cancelled; }
+
+        protected BasicTimeout(String missionId) { super(missionId); }
+    }
+
+
+    /** Message to start a new mission **/
+    public static class TargetEvent
+        extends $TEqn.BasicEvent 
+    {
+        public EventType getType() { return EventType.target; }
+
+	public TargetEvent(String missionId, MissionData missionData)
+	{
+	    super(missionId);
+	    this.missionData = missionData;
+	}
+      
+	protected MissionData missionData;
+	public MissionData getMissionData() { return missionData; }
+
+        public String getSpecific() { return ""+missionData; }
+    }
+
+    /** Message to start a new mission **/
+    public static class InitiateMessage 
+        extends $TEqn.BasicMessage 
+    {
+        public $TEqn.EventType getType() { return $TEqn.MessageType.initiate; }
+
+	public InitiateMessage(String missionId, $TEqn.MissionData missionData)
+	{
+	    super(missionId);
+	    this.missionData = missionData;
+	}
+      
+	protected $TEqn.MissionData missionData;
+	public $TEqn.MissionData getMissionData() { return missionData; }
+        public String getSpecific() { return ""+missionData; }
+
+        public DataContainer toFsams()
+        {
+            DataContainer fsams = super.toFsams();
+	    DataContainer content = fsams.getField("CONTENT");
+            fsams.addField("NAME").setValue("Initiate");
+	    DataContainer targetId = content.addField("Target_Id");
+	    targetId.setValue(getMissionId());
+            DataContainer target = content.addField("Target");
+
+            Target targetInfo = missionData.getTarget();
+
+	    if (targetInfo.getType() != null)
+		target.addField("Type").setValue(targetInfo.getType().toString());
+            DataContainer location = target.addField("Location");
+            location.addField("Latitude").setValue(
+                Double.toString(targetInfo.getLocation().getLatitude()));
+            location.addField("Longitude").setValue(
+                Double.toString(targetInfo.getLocation().getLongitude()));
+
+            content.addField("Fire_Mission_Type").
+                setValue(missionData.getType().toString());
+
+	    //content.addField("FFE1_Munition").setValue("HEA");
+	    //content.addField("FFE1_Fuze").setValue("PDA");
+	    //content.addField("FFE2_Munition").setValue("HEA");
+	    //content.addField("FFE2_Fuze").setValue("PDA");
+
+            return fsams;
+        }
+
+        public static Message fromFsams(DataContainer fsams)
+        {
+            $TEqn.InitiateMessage m;
+
+            MissionData missionData = null;
+            DataContainer content = fsams.getField("CONTENT");
+            DataContainer target = content.getField("Target");
+	    DataContainer targetId = content.getField("Target_Id");
+            DataContainer location = target.getField("Location");
+            Location loc = new LocationLatLong(
+                Float.parseFloat(location.getField("Latitude").getValue()),
+                Float.parseFloat(location.getField("Longitude").getValue()));
+            Target targ = new $TEqn.TargetImpl(
+                target.getField("Type").getValue(),
+                loc);
+            missionData = new $TEqn.MissionDataImpl(
+                $TEqn.MissionType.fromString(content.getField("Fire_Mission_Type").getValue()),
+                targ);
+
+	    m = new $TEqn.InitiateMessage(targetId.getValue(), missionData);
+
+	    String initiatingUnitIdString = content.getField("Initiating_Unit").getField("Unit_Id").getValue();
+	    if (initiatingUnitIdString!=null && !initiatingUnitIdString.equals(""))
+		m.setInitiatingUnitId(Integer.parseInt(initiatingUnitIdString));
+
+	    String initiatingUnitObserverIdString = content.getField("Initiating_Unit").getField("Observer_Id").getValue();
+	    if (initiatingUnitObserverIdString!=null && !initiatingUnitObserverIdString.equals(""))
+		m.setInitiatingUnitObserverId(Integer.parseInt(initiatingUnitObserverIdString));
+
+            m.setSource(LayDown.getSelf().getOpfacByUnit(
+                Integer.parseInt(fsams.getField("FROM").getValue())).getName());
+            m.setDestination(LayDown.getSelf().getOpfacByUnit(
+                Integer.parseInt(fsams.getField("TO").getValue())).getName());
+
+            return m;
+        }
+    }
+
+    public static abstract class MissionStatusMessage
+        extends $TEqn.BasicMessage
+    {
+	public MissionStatusMessage(String missionId) { super(missionId); }
+
+        public DataContainer toFsams()
+        {
+            DataContainer fsams = super.toFsams();
+            DataContainer content = fsams.addField("CONTENT");
+            content.addField("Target_Id").setValue(getMissionId());
+            return fsams;
+        }
+
+        /*
+        public static Message fromFsams(DataContainer fsams)
+        {
+            Message m;
+            m = AcceptMessage.fromFsams(fsams);
+            if (m!=null) return m;
+            m = DenyMessage.fromFsams(fsams);
+            if (m!=null) return m;
+            m = ShotMessage.fromFsams(fsams);
+            if (m!=null) return m;
+            m = SplashMessage.fromFsams(fsams);
+            if (m!=null) return m;
+            m = RoundsCompleteMessage.fromFsams(fsams);
+            if (m!=null) return m;
+            m = MfrMessage.fromFsams(fsams);
+            if (m!=null) return m;
+            m = EomMessage.fromFsams(fsams);
+
+            return m;
+        }
+        */
+    }
+
+    /** Message to deny a mission **/
+    public static class DenyMessage 
+        extends $TEqn.MissionStatusMessage 
+    {
+        public EventType getType() { return MessageType.deny; }
+
+	public DenyMessage(String missionId, String reason) 
+        { 
+            super(missionId); 
+            this.reason = reason;
+        }
+
+        protected String reason;
+        public String getReason() { return reason; }
+        public String getSpecific() { return "'"+reason+"'"; }
+
+        public DataContainer toFsams()
+        {
+            DataContainer fsams = super.toFsams();
+            fsams.addField(new DataContainer("NAME", "Deny"));
+            DataContainer content = fsams.getField("CONTENT");
+            content.addField("Reason").setValue(reason);
+            return fsams;
+        }
+
+        public static Message fromFsams(DataContainer fsams)
+        {
+            Message m;
+
+            DataContainer content = fsams.getField("CONTENT");
+	    m = new DenyMessage(
+		content.getField("Target_Id").getValue(),
+		content.getField("Reason").getValue());
+            m.setSource(LayDown.getSelf().getOpfacByUnit(
+                Integer.parseInt(fsams.getField("FROM").getValue())).getName());
+            m.setDestination(LayDown.getSelf().getOpfacByUnit(
+                Integer.parseInt(fsams.getField("TO").getValue())).getName());
+
+            return m;
+        }
+    }
+
+    /** Message to accept a mission **/
+    public static class AcceptMessage 
+        extends $TEqn.MissionStatusMessage 
+    {
+        public EventType getType() { return MessageType.accept; }
+
+	public AcceptMessage(String missionId, String fireMissionType)
+	{
+            super(missionId);
+	    _fireMissionType = fireMissionType;
+
+	   if (_fireMissionType.equals("WR_FFE"))
+		_fireMissionType = "WRFFE";
+	}
+
+	public void setWeaponType(String weaponType)
+	{
+	    _weaponType = weaponType;
+	}
+
+	protected String _fireMissionType;
+	protected String _weaponType;
+	public String getWeaponType() { return _weaponType; }
+        public String getSpecific() { return _weaponType; }
+
+        public DataContainer toFsams()
+        {
+            DataContainer fsams = super.toFsams();
+            fsams.addField(new DataContainer("NAME", "Mission_Assigned"));
+            DataContainer content = fsams.getField("CONTENT");
+            content.addField("Firing_Unit_Type").setValue(_weaponType);
+	    content.addField("Fire_Mission_Type").setValue(_fireMissionType);
+
+            return fsams;
+        }
+
+        public static Message fromFsams(DataContainer fsams)
+        {
+            $TEqn.AcceptMessage m;
+
+            DataContainer content = fsams.getField("CONTENT");
+            m = new AcceptMessage(
+                content.getField("Target_Id").getValue(),
+                content.getField("Fire_Mission_Type").getValue());
+
+	    String firingUnitType = content.getField("Firing_Unit_Type").getValue();
+	    if (firingUnitType!=null && !firingUnitType.equals(""))
+		m.setWeaponType(firingUnitType);
+	    else
+	    {
+		// This was added to so that the Jakarta sim will be able to
+		// recognize the event generated when it receives a Mission_Assigned
+		// message from FSATS.
+		// I don't know whether or not this is really appropriate.
+		// bhopkins - Thu May 25  9:42:00 2000
+		m.setWeaponType("DS_FA_PLT"); 
+	    }
+
+	    String initiatingUnitIdString = content.getField("Initiating_Unit").getField("Unit_Id").getValue();
+	    if (initiatingUnitIdString!=null && !initiatingUnitIdString.equals(""))
+		m.setInitiatingUnitId(Integer.parseInt(initiatingUnitIdString));
+
+	    String initiatingUnitObserverIdString = content.getField("Initiating_Unit").getField("Observer_Id").getValue();
+	    if (initiatingUnitObserverIdString!=null && !initiatingUnitObserverIdString.equals(""))
+		m.setInitiatingUnitObserverId(Integer.parseInt(initiatingUnitObserverIdString));
+
+            m.setSource(LayDown.getSelf().getOpfacByUnit(
+                Integer.parseInt(fsams.getField("FROM").getValue())).getName());
+            m.setDestination(LayDown.getSelf().getOpfacByUnit(
+                Integer.parseInt(fsams.getField("TO").getValue())).getName());
+
+            return m;
+        }
+    }
+
+    /** Message to announce firing **/
+    public static class ShotMessage 
+        extends $TEqn.MissionStatusMessage 
+    {
+        public EventType getType() { return MessageType.shot; }
+	public ShotMessage(String missionId)
+	{
+	    super(missionId);
+	}
+
+        public DataContainer toFsams()
+        {
+            DataContainer fsams = super.toFsams();
+            fsams.addField(new DataContainer("NAME", "Shot"));
+
+            return fsams;
+        }
+
+        public static Message fromFsams(DataContainer fsams)
+        {
+            $TEqn.ShotMessage m;
+
+            DataContainer content = fsams.getField("CONTENT");
+            m = new $TEqn.ShotMessage(content.getField("Target_Id").getValue());
+
+	    String initiatingUnitIdString = content.getField("Initiating_Unit").getField("Unit_Id").getValue();
+	    if (initiatingUnitIdString!=null && !initiatingUnitIdString.equals(""))
+		m.setInitiatingUnitId(Integer.parseInt(initiatingUnitIdString));
+
+	    String initiatingUnitObserverIdString = content.getField("Initiating_Unit").getField("Observer_Id").getValue();
+	    if (initiatingUnitObserverIdString!=null && !initiatingUnitObserverIdString.equals(""))
+		m.setInitiatingUnitObserverId(Integer.parseInt(initiatingUnitObserverIdString));
+
+            m.setSource(LayDown.getSelf().getOpfacByUnit(
+                Integer.parseInt(fsams.getField("FROM").getValue())).getName());
+            m.setDestination(LayDown.getSelf().getOpfacByUnit(
+                Integer.parseInt(fsams.getField("TO").getValue())).getName());
+
+            return m;
+        }
+    }
+
+    /** Message to relay information about a shot **/
+    public static class SplashMessage 
+        extends $TEqn.MissionStatusMessage 
+    {
+        public EventType getType() { return MessageType.splash; }
+	public SplashMessage(String missionId)
+	{
+	    super(missionId);
+	}
+
+        public DataContainer toFsams()
+        {
+            DataContainer fsams = super.toFsams();
+            fsams.addField(new DataContainer("NAME", "Splash"));
+
+            return fsams;
+        }
+
+        public static Message fromFsams(DataContainer fsams)
+        {
+            $TEqn.SplashMessage m;
+
+            DataContainer content = fsams.getField("CONTENT");
+            m = new $TEqn.SplashMessage(content.getField("Target_Id").getValue());
+
+	    String initiatingUnitIdString = content.getField("Initiating_Unit").getField("Unit_Id").getValue();
+	    if (initiatingUnitIdString!=null && !initiatingUnitIdString.equals(""))
+		m.setInitiatingUnitId(Integer.parseInt(initiatingUnitIdString));
+
+	    String initiatingUnitObserverIdString = content.getField("Initiating_Unit").getField("Observer_Id").getValue();
+	    if (initiatingUnitObserverIdString!=null && !initiatingUnitObserverIdString.equals(""))
+		m.setInitiatingUnitObserverId(Integer.parseInt(initiatingUnitObserverIdString));
+
+            m.setSource(LayDown.getSelf().getOpfacByUnit(
+                Integer.parseInt(fsams.getField("FROM").getValue())).getName());
+            m.setDestination(LayDown.getSelf().getOpfacByUnit(
+                Integer.parseInt(fsams.getField("TO").getValue())).getName());
+
+            return m;
+        }
+    }
+
+    /** Message to announce end of firing  **/
+    public static class RoundsCompleteMessage 
+        extends $TEqn.MissionStatusMessage 
+    {
+        public EventType getType() { return MessageType.roundsComplete; }
+	public RoundsCompleteMessage(String missionId)
+	{
+	    super(missionId);
+	}
+
+        public DataContainer toFsams()
+        {
+            DataContainer fsams = super.toFsams();
+            fsams.addField(new DataContainer("NAME", "Rounds_Complete"));
+
+            return fsams;
+        }
+
+        public static Message fromFsams(DataContainer fsams)
+        {
+            $TEqn.RoundsCompleteMessage m;
+
+            DataContainer content = fsams.getField("CONTENT");
+            m = new $TEqn.RoundsCompleteMessage(
+                content.getField("Target_Id").getValue());
+
+	    String initiatingUnitIdString = content.getField("Initiating_Unit").getField("Unit_Id").getValue();
+	    if (initiatingUnitIdString!=null && !initiatingUnitIdString.equals(""))
+		m.setInitiatingUnitId(Integer.parseInt(initiatingUnitIdString));
+
+	    String initiatingUnitObserverIdString = content.getField("Initiating_Unit").getField("Observer_Id").getValue();
+	    if (initiatingUnitObserverIdString!=null && !initiatingUnitObserverIdString.equals(""))
+		m.setInitiatingUnitObserverId(Integer.parseInt(initiatingUnitObserverIdString));
+
+            m.setSource(LayDown.getSelf().getOpfacByUnit(
+                Integer.parseInt(fsams.getField("FROM").getValue())).getName());
+            m.setDestination(LayDown.getSelf().getOpfacByUnit(
+                Integer.parseInt(fsams.getField("TO").getValue())).getName());
+
+            return m;
+        }
+    }
+
+    /** Message to terminate a mission **/
+    public static class EomMessage 
+        extends $TEqn.MissionStatusMessage 
+    {
+        public EventType getType() { return MessageType.eom; }
+	public EomMessage(String missionId) { super(missionId); }
+
+        public DataContainer toFsams()
+        {
+            DataContainer fsams = super.toFsams();
+            fsams.addField(new DataContainer("NAME", "End_of_Mission"));
+
+            return fsams;
+        }
+
+        public static Message fromFsams(DataContainer fsams)
+        {
+            $TEqn.EomMessage m;
+
+            DataContainer content = fsams.getField("CONTENT");
+            m = new EomMessage(content.getField("Target_Id").getValue());
+
+	    String initiatingUnitIdString = content.getField("Initiating_Unit").getField("Unit_Id").getValue();
+	    if (initiatingUnitIdString!=null && !initiatingUnitIdString.equals(""))
+		m.setInitiatingUnitId(Integer.parseInt(initiatingUnitIdString));
+
+	    String initiatingUnitObserverIdString = content.getField("Initiating_Unit").getField("Observer_Id").getValue();
+	    if (initiatingUnitObserverIdString!=null && !initiatingUnitObserverIdString.equals(""))
+		m.setInitiatingUnitObserverId(Integer.parseInt(initiatingUnitObserverIdString));
+
+            m.setSource(LayDown.getSelf().getOpfacByUnit(
+                Integer.parseInt(fsams.getField("FROM").getValue())).getName());
+            m.setDestination(LayDown.getSelf().getOpfacByUnit(
+                Integer.parseInt(fsams.getField("TO").getValue())).getName());
+
+            return m;
+        }
+    }
+
+    /** Message to relay weapon status **/
+    public static class MfrMessage 
+        extends $TEqn.MissionStatusMessage 
+    {
+        public EventType getType() { return MessageType.mfr; }
+	public MfrMessage(String missionId) { super(missionId); }
+
+        public DataContainer toFsams()
+        {
+            DataContainer fsams = super.toFsams();
+            fsams.addField(new DataContainer("NAME", "Mission_Fired_Report"));
+
+            return fsams;
+        }
+
+        public static Message fromFsams(DataContainer fsams)
+        {
+            $TEqn.MfrMessage m;
+
+            DataContainer content = fsams.getField("CONTENT");
+            m = new MfrMessage(content.getField("Target_Id").getValue());
+            m.setSource(LayDown.getSelf().getOpfacByUnit(
+                Integer.parseInt(fsams.getField("FROM").getValue())).getName());
+            m.setDestination(LayDown.getSelf().getOpfacByUnit(
+                Integer.parseInt(fsams.getField("TO").getValue())).getName());
+
+	    String initiatingUnitIdString = content.getField("Initiating_Unit").getField("Unit_Id").getValue();
+	    if (initiatingUnitIdString!=null && !initiatingUnitIdString.equals(""))
+		m.setInitiatingUnitId(Integer.parseInt(initiatingUnitIdString));
+
+	    String initiatingUnitObserverIdString = content.getField("Initiating_Unit").getField("Observer_Id").getValue();
+	    if (initiatingUnitObserverIdString!=null && !initiatingUnitObserverIdString.equals(""))
+		m.setInitiatingUnitObserverId(Integer.parseInt(initiatingUnitObserverIdString));
+
+            return m;
+        }
+    }
+
+    /** Message that shot flight is done **/
+    public static class FlightTime
+        extends $TEqn.BasicTimeout 
+    {
+        public EventType getType() { return TimeoutType.flightTime; }
+	public FlightTime(String missionId) { super(missionId); }
+    }
+
+    /** Message that weapon loading is done **/
+    public static class LoadTime
+        extends $TEqn.BasicTimeout 
+    {
+        public EventType getType() { return TimeoutType.loadTime; }
+	public LoadTime(String missionId) { super(missionId); }
+    }
+
+    /** Message that weapon firing is done **/
+    public static class CompleteTime
+        extends $TEqn.BasicTimeout 
+    {
+        public EventType getType() { return TimeoutType.completeTime; }
+	public CompleteTime(String missionId) { super(missionId); }
+    }
+
+    /** Time that observer watches for fall of shot. */
+    public static class WatchTime
+        extends $TEqn.BasicTimeout 
+    {
+        public EventType getType() { return TimeoutType.watchTime; }
+	public WatchTime(String missionId) { super(missionId); }
+    }
+
+    /** Notifies a mission that its lock on an opfac has been granted. */
+    public static class LockGranted
+        extends $TEqn.BasicEvent
+    {
+        public EventType getType() { return EventType.lockGranted; }
+        public LockGranted(String missionId) { super(missionId); }
+    }
+}
+

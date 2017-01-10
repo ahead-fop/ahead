@@ -1,0 +1,25 @@
+#!/bin/sh
+
+[ -z "$BASH" ] && exec bash "$0" "$@"
+
+echo "****************XC Regression Test***********"
+
+bash regress-one 1 2 result12 \
+&& bash regress-one 2 3 result23 \
+|| exit 1
+
+echo -n "composing" {PJBase,Comp{Int,Class,Sm},localid}.html
+echo -n "->" PJresult.html "..."
+
+java XC.Main2 \
+    PJBase.html CompInt.html CompClass.html CompSm.html localid.html \
+    > /dev/null
+
+if diff -wB result.html PJresult.html ; then
+    echo "succeeded"
+else
+    echo "failed"
+    exit 1
+fi
+
+echo "**************** XC regression tests succeeded *********"

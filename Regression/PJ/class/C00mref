@@ -1,0 +1,1 @@
+ jampack: C00.java Warning cannot use Super outside of a refines type declaration -- use 'super' instead jampack: mref.java Error method biff cannot both refine (Super) and invoke super jampack: mref.java Error method baz cannot both refine (Super) and invoke super 

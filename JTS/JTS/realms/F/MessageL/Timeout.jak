@@ -1,0 +1,21 @@
+package MessageL;
+
+import  
+    fsats.util.DataContainer;
+import 
+    F.Libraries.laydown.*;
+import 
+    java.util.*;
+
+
+
+    /** A timeout expiration event. */
+    public interface Timeout
+        extends Event
+    {
+        /** Cancel a timeout. */
+        void cancel();
+
+        /** Test if timeout has been canceled. */
+        boolean isCancelled();
+    }

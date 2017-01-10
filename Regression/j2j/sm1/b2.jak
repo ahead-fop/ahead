@@ -1,0 +1,15 @@
+layer b2;
+
+State_machine sm {
+    Delivery_parameters ( Event e );
+
+    States a;
+
+    Enter a {
+        enterBase();
+    }
+    Enter a {
+        Proceed( e );
+        enterRef();
+    }
+}

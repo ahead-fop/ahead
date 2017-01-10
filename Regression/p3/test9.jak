@@ -1,0 +1,14 @@
+// testing backward retreival
+
+interface empty { };
+
+container<emp> empcont;
+
+cursor<empcont> empcursor;
+
+container empcont1 extends empcont implements empty
+   using odlist( age, malloc( ) );
+
+cursor old(empcont1 e) where age() > 40 && age() < 50 orderby -;
+
+cursor all(empcont1 e) orderby -;

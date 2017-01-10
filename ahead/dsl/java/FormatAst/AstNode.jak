@@ -1,0 +1,18 @@
+layer FormatAst;
+
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public abstract refines class AstNode {
+      
+    // This provides an uniform way to process ast-nodes of the 
+    // following construct:
+    // AstToken "(" AstNode ")" ... 
+    public void processParentheses() {
+        arg[0].setComment( " " );
+        ( ( AstToken ) tok[1] ).white_space = "";
+        ( ( AstToken ) tok[2] ).white_space = " ";
+    }
+      
+}

@@ -1,0 +1,20 @@
+layer FormatJava;
+
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public refines class ClsBody {
+    public void format( int position ) {
+        this.setComment( " " );
+        if ( ( arg[0].arg[0] == null ) && ( ( ( AstToken ) tok[1] ).white_space.trim().length() == 0 ) )
+            ( ( AstToken ) tok[1] ).white_space = "";
+        else {
+            position += CommentUtil.TabSpace;
+            super.format( position );
+            position -= CommentUtil.TabSpace;
+            CommentUtil.token_routins( ( AstToken ) tok[1], position );
+        }
+    }
+}

@@ -1,0 +1,62 @@
++ '[' -z /usr/bin/bash ']'
++ echo '****************jak2java Class Regression Test***********'
+****************jak2java Class Regression Test***********
++ rm '*.java'
+rm: cannot remove `*.java': No such file or directory
++ bash regress-one SourceErr
+translating SourceErr ... succeeded
++ bash regress-one rootm
+translating rootm ... succeeded
++ bash regress-one rootj
+translating rootj ... succeeded
++ bash regress-one jnk0
+translating jnk0 ... succeeded
++ bash regress-one jnk
+translating jnk ... succeeded
++ bash regress-one base
+translating base ... succeeded
++ bash regress-one sig
+translating sig ... succeeded
++ bash regress-one dbl
+translating dbl ... succeeded
++ bash regress-one inher1
+translating inher1 ... succeeded
++ bash regress-one inher2
+translating inher2 ... succeeded
++ bash regress-one inher3
+translating inher3 ... succeeded
++ bash regress-one inher4
+translating inher4 ... succeeded
++ bash regress-one statik1
+translating statik1 ... succeeded
++ bash regress-one sig
+translating sig ... succeeded
++ bash regress-one dbl
+translating dbl ... succeeded
++ bash regress-one inher1
+translating inher1 ... succeeded
++ bash regress-one inher2
+translating inher2 ... succeeded
++ bash regress-one inher3
+translating inher3 ... succeeded
++ bash regress-one inher4
+translating inher4 ... succeeded
++ bash regress-one statik1
+translating statik1 ... succeeded
++ bash regress-one MessageType
+translating MessageType ... succeeded
++ bash regress-one Mt2
+translating Mt2 ... succeeded
++ bash regress-one Mt3
+translating Mt3 ... succeeded
++ bash regress-one Mt4
+translating Mt4 ... succeeded
++ bash regress-one Mt5
+translating Mt5 ... succeeded
++ bash regress-one Ex1
+translating Ex1 ... succeeded
++ bash regress-one Ex2
+translating Ex2 ... succeeded
++ echo -e '\nj2j Class Regression Test succeeded.'
+
+j2j Class Regression Test succeeded.

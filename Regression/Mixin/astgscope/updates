@@ -1,0 +1,7 @@
+/SoUrCe/s/".*//
+/class/s/abstract/public/
+/ .*.jak/s///
+/Exception in thread/d
+/Jakarta\.util/d
+/mixin: Summary/d
+/mixin\./d

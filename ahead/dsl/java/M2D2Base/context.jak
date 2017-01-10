@@ -1,0 +1,35 @@
+layer M2D2Base;
+
+// context objects hold context information
+// during the parse/processing of a jak file
+
+class context {
+
+   private String packageName = null;
+   private String className = null;
+   private String memberName = null;
+
+   m2d2result Header = new m2d2result();
+   m2d2result Footer = new m2d2result();
+   boolean isClass = false;
+   boolean isConstructor = false;
+   String  fileName = null;
+
+   void out() {
+      Header.put(null);
+      Footer.put(null);
+   }
+
+   void setPackageName(String p) { packageName=p; }
+   String getPackageName() { return packageName; }
+
+   void setClassName(String localName) { 
+      className = packageName + "." + localName;
+   }
+   String getClassName() { return className; }
+
+   void setMemberName(String localName) { 
+      memberName = className + "." + localName;
+   }
+   String getMemberName() { return memberName; }
+}

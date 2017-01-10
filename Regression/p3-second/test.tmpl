@@ -1,0 +1,48 @@
+interface empty { };
+
+container<emp> empcontainer;
+
+cursor<empcontainer> empcursor;
+
+P3debug static container empcont extends empcontainer implements empty
+        using TE;
+
+cursor   cur_all1(empcont e);
+
+cursor   cur_all2(empcont e) 
+         update dept 
+         orderby empno;
+
+cursor	cur_all3(empcont e)
+			update age;
+
+cursor   cur_point1(empcont e) 
+         where age() == 24 
+         orderby -empno;
+
+cursor   cur_point2(empcont e, String n) 
+         deletion 
+         where name() == n 
+         orderby empno;
+
+cursor   cur_point3(empcont e) 
+         deletion 
+         where dept() == "Computer Science" 
+         orderby -name;
+
+cursor   cur_range1(empcont e) 
+         where age() > 30 && age() < 40 && name() >= "H" 
+         orderby name;
+
+cursor   cur_range2(empcont e, int x) 
+         update dept 
+         where empno() > x && empno() < x + 100
+         orderby -empno; 
+
+cursor   cur_range3(empcont e) 
+         update age 
+         where age() <= 23 
+         orderby empno;
+
+cursor	cur_neq(empcont e)
+			where age() > 0 && age() < 200 && age() != 100;

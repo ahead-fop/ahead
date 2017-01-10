@@ -1,0 +1,19 @@
+layer FS;
+
+import fsats.util.DataContainer;
+
+import laydown.*;
+
+import java.util.*;
+
+SoUrCe RooT MessageL "C:!Java!FeatureOrientedProgramming!fsats!MessageL!CompleteTime.jak";
+
+/** Message that weapon firing is done **/
+public class CompleteTime
+        extends BasicTimeout {
+    public EventType getType() {
+        return TimeoutType.completeTime;
+    }
+    public CompleteTime( String missionId ) { Super( String )( missionId );
+    }
+}

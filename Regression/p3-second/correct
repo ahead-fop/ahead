@@ -1,0 +1,1856 @@
+
+ Original employee data (order: empno) 
+
+    10101  ,  31  ,  Biology           ,  Ashley, Anne
+    10102  ,  42  ,  Biology           ,  Gaudet, Laura
+    10103  ,  57  ,  Biology           ,  Gill, Sharon
+    10104  ,  47  ,  Biology           ,  Clawson, Tina
+    10105  ,  27  ,  Biology           ,  Cotrell, Georgia
+    10106  ,  45  ,  Biology           ,  Jones, Janie
+    10107  ,  64  ,  Biology           ,  Burdine, Charles
+    10108  ,  43  ,  Biology           ,  Pierins, Bill
+    10109  ,  58  ,  Biology           ,  Barbosa, Tammy
+    10110  ,  43  ,  Biology           ,  White, Patty
+    10111  ,  40  ,  Biology           ,  Ladner, Beth
+    10112  ,  24  ,  Biology           ,  Glover, Ross
+    10113  ,  50  ,  Biology           ,  Dyer, Elizabeth
+    10114  ,  57  ,  Biology           ,  Dow, Ann
+    10115  ,  41  ,  Biology           ,  Below, Linda
+    10116  ,  54  ,  Biology           ,  Dell, Al
+    10117  ,  66  ,  Biology           ,  Bergin, Vicky
+    10118  ,  52  ,  Biology           ,  Guerry, Linda
+    10119  ,  32  ,  Biology           ,  Skelly, Greg
+    10120  ,  26  ,  Biology           ,  Lipscomb, Lois
+    10121  ,  35  ,  Biology           ,  Duke, Janet
+    10122  ,  30  ,  Biology           ,  Biery, Linda
+    10123  ,  54  ,  Biology           ,  Zygmunt, Amy
+    10124  ,  21  ,  Biology           ,  Williams, Larry
+    10125  ,  45  ,  Biology           ,  Terwelp, Diane
+    10126  ,  61  ,  Biology           ,  Trommer, Pat
+    10127  ,  30  ,  Biology           ,  Padilla, Gina
+    10128  ,  20  ,  Biology           ,  Walser, Maryanne
+    10129  ,  58  ,  Biology           ,  Clifton, Georgia
+    10201  ,  31  ,  Computer Science  ,  Palousek, Cheryl
+    10202  ,  69  ,  Computer Science  ,  Romberg, John
+    10203  ,  27  ,  Computer Science  ,  Jackson, Ron
+    10204  ,  48  ,  Computer Science  ,  Parr, June
+    10205  ,  32  ,  Computer Science  ,  Myler, Danny
+    10206  ,  54  ,  Computer Science  ,  Williams, David
+    10207  ,  29  ,  Computer Science  ,  Wright, Madalyn
+    10208  ,  63  ,  Computer Science  ,  Beller, Karen
+    10209  ,  54  ,  Computer Science  ,  Garreh, Mary
+    10210  ,  23  ,  Computer Science  ,  Pfeil, Barbara
+    10211  ,  49  ,  Computer Science  ,  Merferd, Dannie
+    10212  ,  34  ,  Computer Science  ,  Hartness, Glen
+    10213  ,  59  ,  Computer Science  ,  Schoonmaker, Dathy
+    10214  ,  68  ,  Computer Science  ,  Westerfield, Mary
+    10215  ,  62  ,  Computer Science  ,  Foss, Brenda
+    10216  ,  42  ,  Computer Science  ,  Vick, Kathleen
+    10217  ,  31  ,  Computer Science  ,  Tolbot, Mary
+    10218  ,  45  ,  Computer Science  ,  Webb, Susie
+    10219  ,  24  ,  Computer Science  ,  Wiseman, Addie
+    10220  ,  59  ,  Computer Science  ,  Batory, Don
+    10221  ,  22  ,  Computer Science  ,  Dabbs, Bob
+    10222  ,  52  ,  Computer Science  ,  Murr, C.E.
+    10223  ,  41  ,  Computer Science  ,  Chen, Gang
+    10224  ,  49  ,  Computer Science  ,  Signor, Beth
+    10225  ,  57  ,  Computer Science  ,  Garcia, Gilbert
+    10226  ,  51  ,  Computer Science  ,  Barclay, Jim
+    10227  ,  48  ,  Computer Science  ,  Delp, Joan
+    10228  ,  65  ,  Computer Science  ,  Gregory, Angela
+    10229  ,  61  ,  Computer Science  ,  Hanson, Fran
+    10230  ,  44  ,  Computer Science  ,  Obrien, Jan
+    10231  ,  63  ,  Computer Science  ,  Golver, Ross
+    10232  ,  56  ,  Computer Science  ,  Dunn, Nikki
+    10233  ,  39  ,  Computer Science  ,  Gammon, Elizabeth
+    10234  ,  37  ,  Computer Science  ,  Wills, Donna
+    10235  ,  40  ,  Computer Science  ,  Papa, Lorraine
+    10301  ,  65  ,  Anthropology      ,  Darling, Donna
+    10302  ,  47  ,  Anthropology      ,  Holden, Heather
+    10303  ,  46  ,  Anthropology      ,  Goodwin, Diane
+    10304  ,  67  ,  Anthropology      ,  Swope, Jeanie
+    10305  ,  41  ,  Anthropology      ,  Dixon, Royce
+    10306  ,  69  ,  Anthropology      ,  Braun, John
+    10307  ,  22  ,  Anthropology      ,  Durst, Pam
+    10308  ,  37  ,  Anthropology      ,  Kupits, Steve
+    10309  ,  60  ,  Anthropology      ,  Reese, Anita
+    10310  ,  39  ,  Anthropology      ,  Wiggins, Terry
+    10311  ,  61  ,  Anthropology      ,  Dent, Dennis
+    10312  ,  58  ,  Anthropology      ,  Donovan, Pat
+    10313  ,  45  ,  Anthropology      ,  Brooks, Pat
+    10314  ,  56  ,  Anthropology      ,  Schwertner, Sherri
+    10315  ,  52  ,  Anthropology      ,  Leonpacher, Jennifer
+    10316  ,  59  ,  Anthropology      ,  Casey, Jan
+    10317  ,  32  ,  Anthropology      ,  Mustin, A.K.
+    10318  ,  49  ,  Anthropology      ,  Sullivan, Evie
+    10319  ,  62  ,  Anthropology      ,  Mims, Shirley
+    10320  ,  53  ,  Anthropology      ,  Mciver, Janice
+    10321  ,  48  ,  Anthropology      ,  Ivy, Mary
+    10322  ,  34  ,  Anthropology      ,  Stone, Roberta
+    10323  ,  43  ,  Anthropology      ,  Pace, Kahryn
+    10324  ,  47  ,  Anthropology      ,  Patterson, Nancy
+    10325  ,  37  ,  Anthropology      ,  Salone, Susan
+    10326  ,  43  ,  Anthropology      ,  Lyon, Michael
+    10327  ,  59  ,  Anthropology      ,  Williamson, Tricia
+    10328  ,  36  ,  Anthropology      ,  Cross, Chris
+    10329  ,  53  ,  Anthropology      ,  Planta, Joyce
+    10330  ,  24  ,  Anthropology      ,  Packherser, Vickie
+    10331  ,  69  ,  Anthropology      ,  McKnight, Hoanne
+    10401  ,  61  ,  Architecture      ,  Perry, Karen
+    10402  ,  40  ,  Architecture      ,  Thompson, Nicole
+    10403  ,  60  ,  Architecture      ,  Smith, Don
+    10404  ,  50  ,  Architecture      ,  Matthews, Jill
+    10405  ,  26  ,  Architecture      ,  Mutter, Les
+    10406  ,  62  ,  Architecture      ,  Davis, Alice
+    10407  ,  38  ,  Architecture      ,  Hunt, Jane
+    10408  ,  33  ,  Architecture      ,  Stinson, Greg
+    10409  ,  38  ,  Architecture      ,  Longley, Mark
+    10410  ,  36  ,  Architecture      ,  Earl, Jerry
+    10411  ,  28  ,  Architecture      ,  Zogg, John
+    10412  ,  34  ,  Architecture      ,  Williams, Cynthia
+    10413  ,  63  ,  Architecture      ,  Holt, Brian
+    10414  ,  58  ,  Architecture      ,  Sanders, Mike
+    10415  ,  61  ,  Architecture      ,  Webster, Mark
+    10416  ,  41  ,  Architecture      ,  Blagg, Kathy
+    10417  ,  44  ,  Architecture      ,  Hadaway, Beverly
+    10418  ,  39  ,  Architecture      ,  Atherton, Susan
+    10419  ,  26  ,  Architecture      ,  Wolf, Ann
+    10420  ,  58  ,  Architecture      ,  Johle, Sandy
+    10421  ,  23  ,  Architecture      ,  Harms, Fontaine
+    10422  ,  53  ,  Architecture      ,  Luther, Mary
+    10423  ,  65  ,  Architecture      ,  Durand, Catherine
+    10424  ,  20  ,  Architecture      ,  Richardson, Elizabeth
+    10425  ,  53  ,  Architecture      ,  Bourne, Katleen
+    10426  ,  42  ,  Architecture      ,  Harrison, John
+    10501  ,  28  ,  Chemistry         ,  Gil, Belinda
+    10502  ,  47  ,  Chemistry         ,  Byors, Anne
+    10503  ,  51  ,  Chemistry         ,  Akin, Monica
+    10504  ,  68  ,  Chemistry         ,  Sonna, Caruth
+    10505  ,  34  ,  Chemistry         ,  Gary, Jim
+    10506  ,  48  ,  Chemistry         ,  Sorrell, Nathalie
+    10507  ,  37  ,  Chemistry         ,  Waring, Melinda
+    10508  ,  54  ,  Chemistry         ,  Houston, Katherine
+    10509  ,  37  ,  Chemistry         ,  Ayad, Vic
+    10510  ,  32  ,  Chemistry         ,  Lalinas, Felipe
+    10511  ,  57  ,  Chemistry         ,  Janicek, Nancy
+    10512  ,  42  ,  Chemistry         ,  Carr, Virginia
+    10513  ,  36  ,  Chemistry         ,  Mason, Glen
+    10514  ,  52  ,  Chemistry         ,  Smith, Bill
+    10515  ,  69  ,  Chemistry         ,  Chapa, Carola
+    10516  ,  61  ,  Chemistry         ,  Leonard, Niki
+    10517  ,  38  ,  Chemistry         ,  Shaw, Camille
+    10518  ,  64  ,  Chemistry         ,  Reid, Jennifer
+    10519  ,  41  ,  Chemistry         ,  Baker, Kathy
+    10520  ,  51  ,  Chemistry         ,  Nix, Toni
+    10521  ,  33  ,  Chemistry         ,  Linn, Emma
+    10522  ,  38  ,  Chemistry         ,  Suess, Ellen
+    10523  ,  30  ,  Chemistry         ,  Lively, Mary
+    10524  ,  30  ,  Chemistry         ,  Mersky-Poole, Ruth
+    10525  ,  61  ,  Chemistry         ,  Muennink, Pat
+    10526  ,  63  ,  Chemistry         ,  Hernandez, Brenda
+    10527  ,  50  ,  Chemistry         ,  Reece, Johanna
+    10528  ,  27  ,  Chemistry         ,  Numley, Rhonda
+    10529  ,  30  ,  Chemistry         ,  Derosa, Steven
+    10601  ,  32  ,  English           ,  Brooks, Leslie
+    10602  ,  36  ,  English           ,  Linn, Brenda
+    10603  ,  20  ,  English           ,  Loayza, Katherine
+    10604  ,  35  ,  English           ,  VanMechelen, Lucky
+    10605  ,  32  ,  English           ,  Schweitzer, Virginia
+    10606  ,  51  ,  English           ,  Stalle, Monet
+    10607  ,  29  ,  English           ,  Vaughn, Charles
+    10608  ,  25  ,  English           ,  Fenelon, Mike
+    10609  ,  25  ,  English           ,  Leff, Nancy
+    10610  ,  34  ,  English           ,  Cordes, John
+    10611  ,  55  ,  English           ,  Wheeler, Elaine
+    10612  ,  63  ,  English           ,  Mayfield, Julie
+    10613  ,  55  ,  English           ,  Ybarra, Maria
+    10614  ,  69  ,  English           ,  Hebbe, Joseph
+    10615  ,  36  ,  English           ,  Denton, Judy
+    10616  ,  40  ,  English           ,  Nunn, Kay
+    10617  ,  20  ,  English           ,  Mellencamp, Lisa
+    10618  ,  63  ,  English           ,  Frost, Tina
+    10619  ,  46  ,  English           ,  Emmert, Deanna
+    10620  ,  27  ,  English           ,  Turney, Connie
+    10621  ,  24  ,  English           ,  Nixon, Mary
+    10622  ,  57  ,  English           ,  Schacherl, Carol
+    10623  ,  55  ,  English           ,  Holbert, John
+    10624  ,  63  ,  English           ,  Kuperman, Helene
+    10625  ,  35  ,  English           ,  Eger, Audrey
+    10626  ,  39  ,  English           ,  MacLennan, Kerry
+    10627  ,  44  ,  English           ,  Greenberg, Lawrence
+    10628  ,  49  ,  English           ,  Worsham, Dennis
+    10629  ,  38  ,  English           ,  BoneBrake, Veronica
+    10630  ,  67  ,  English           ,  Shults, Carry
+    10631  ,  44  ,  English           ,  Ibanez, Jerry
+    10632  ,  30  ,  English           ,  Musgrave, Todd
+    10633  ,  62  ,  English           ,  Klugman, Rick
+    10634  ,  30  ,  English           ,  Dyer, Claire
+    10635  ,  49  ,  English           ,  Cardenas, Libby
+    10636  ,  35  ,  English           ,  Trimble, Cathy
+    10637  ,  54  ,  English           ,  Walker, Pat
+    10638  ,  39  ,  English           ,  Henglein, Mary
+    10639  ,  67  ,  English           ,  Peirce, Tommy
+    10640  ,  24  ,  English           ,  Lawson, Kathy
+    10641  ,  51  ,  English           ,  Nelson, Nelda
+    10642  ,  62  ,  English           ,  Dunkelberg, Janet
+    10643  ,  29  ,  English           ,  Braodrick, Ingrid
+    10644  ,  29  ,  English           ,  Linder-Tate, Janis
+    10645  ,  51  ,  English           ,  Malitz, David
+    10646  ,  42  ,  English           ,  Caserta, Cynthia
+    10647  ,  47  ,  English           ,  Edwards, Jola
+    10701  ,  59  ,  Philosophy        ,  Whitten, Lynn
+    10702  ,  47  ,  Philosophy        ,  Deutchman, Cherie
+    10703  ,  58  ,  Philosophy        ,  Zeek, Tonda
+    10704  ,  54  ,  Philosophy        ,  Harms, John
+    10705  ,  28  ,  Philosophy        ,  Goad, Clayton
+    10706  ,  30  ,  Philosophy        ,  Bayne, Bette
+    10707  ,  50  ,  Philosophy        ,  Galbreath, Bret
+    10708  ,  39  ,  Philosophy        ,  House, Debbie
+    10709  ,  36  ,  Philosophy        ,  Whitten, Virginia
+    10710  ,  43  ,  Philosophy        ,  Mersky, Deena
+    10711  ,  32  ,  Philosophy        ,  Hardesty, Ava
+    10712  ,  37  ,  Philosophy        ,  Stokes, Gay
+    10713  ,  64  ,  Philosophy        ,  Perry, Sue
+    10714  ,  54  ,  Philosophy        ,  Perez, Leola
+    10715  ,  43  ,  Philosophy        ,  Tillinghast, Kathy
+    10716  ,  47  ,  Philosophy        ,  Chen, Gang
+    10717  ,  22  ,  Philosophy        ,  Wright, Judith
+    10718  ,  51  ,  Philosophy        ,  Ellis, John
+    10719  ,  27  ,  Philosophy        ,  Pasta, Plus
+    10720  ,  66  ,  Philosophy        ,  Shell, Ford
+    10721  ,  29  ,  Philosophy        ,  Smith, Donna
+    10722  ,  30  ,  Philosophy        ,  Lara, Pamela
+    10723  ,  22  ,  Philosophy        ,  Hardwich, Karen
+    10724  ,  35  ,  Philosophy        ,  Kelly, Teri
+    10725  ,  55  ,  Philosophy        ,  Shaunessy, Michele
+    10726  ,  49  ,  Philosophy        ,  Ferrell, Melinda
+    10727  ,  35  ,  Philosophy        ,  Radcliff, Katheryn
+    10728  ,  38  ,  Philosophy        ,  Slusser, Cathy
+    10729  ,  41  ,  Philosophy        ,  Vanderkolk, Mark
+    10730  ,  47  ,  Philosophy        ,  Sottile, Joy
+    10731  ,  26  ,  Philosophy        ,  Blizzard, Roy
+    10732  ,  21  ,  Philosophy        ,  Swenson, Kayla
+    10733  ,  44  ,  Philosophy        ,  Weber, Pam
+    10801  ,  25  ,  Latin Studies     ,  Pellinat, Martin
+    10802  ,  34  ,  Latin Studies     ,  Graff, Bill
+    10803  ,  35  ,  Latin Studies     ,  Spurr, Sharon
+    10804  ,  59  ,  Latin Studies     ,  Tomlin, Phil
+    10805  ,  56  ,  Latin Studies     ,  Safady, Ronda
+    10806  ,  26  ,  Latin Studies     ,  Muskrella, John
+    10807  ,  50  ,  Latin Studies     ,  Rider, Bobby
+    10808  ,  26  ,  Latin Studies     ,  Gore, Nancy
+    10809  ,  23  ,  Latin Studies     ,  Wiman, Janet
+    10810  ,  47  ,  Latin Studies     ,  Daugherty, Patty
+    10811  ,  65  ,  Latin Studies     ,  Cummings, Laura
+    10812  ,  34  ,  Latin Studies     ,  Myers, Cecil
+    10813  ,  43  ,  Latin Studies     ,  Beegs, Chris
+    10814  ,  52  ,  Latin Studies     ,  Erard, Carol
+    10815  ,  40  ,  Latin Studies     ,  Neunhoffer, Neal
+    10816  ,  68  ,  Latin Studies     ,  Barry, Pat
+    10817  ,  58  ,  Latin Studies     ,  Grieg, Robbie
+    10818  ,  27  ,  Latin Studies     ,  Traweek, Kathy
+    10819  ,  45  ,  Latin Studies     ,  Rhodes, Jody
+    10820  ,  25  ,  Latin Studies     ,  Hawkins, Catherine
+    10821  ,  56  ,  Latin Studies     ,  Graham, Sam
+    10822  ,  66  ,  Latin Studies     ,  Jobe, Mike
+    10823  ,  51  ,  Latin Studies     ,  Estill, Ronald
+    10824  ,  20  ,  Latin Studies     ,  Solter, Eddie
+    10825  ,  48  ,  Latin Studies     ,  Kendrick, Joann
+    10826  ,  36  ,  Latin Studies     ,  Arimes, Sharon
+    10827  ,  36  ,  Latin Studies     ,  Ward, Melissa
+    10828  ,  40  ,  Latin Studies     ,  Miller, Lisa
+    10829  ,  32  ,  Latin Studies     ,  Beerman, Norma
+    10830  ,  49  ,  Latin Studies     ,  Lesso, Anne
+    10831  ,  69  ,  Latin Studies     ,  White, Michael
+    10832  ,  32  ,  Latin Studies     ,  Johanson, Barbara
+    10833  ,  21  ,  Latin Studies     ,  Jones, Mary
+    10834  ,  38  ,  Latin Studies     ,  Johns, Leslie
+    10835  ,  63  ,  Latin Studies     ,  Eads, Vivian
+    10836  ,  64  ,  Latin Studies     ,  Moores, Leslie
+    10837  ,  29  ,  Latin Studies     ,  Spellman, Mary
+    10901  ,  45  ,  Electrical Eng.   ,  O'Conner, Gail
+    10902  ,  65  ,  Electrical Eng.   ,  Claire, Rachel
+    10903  ,  58  ,  Electrical Eng.   ,  Rioroan, Patrick
+    10904  ,  67  ,  Electrical Eng.   ,  Paul, Sandra
+    10905  ,  32  ,  Electrical Eng.   ,  Rider, Kathy
+    10906  ,  57  ,  Electrical Eng.   ,  Smith, Rod
+    10907  ,  64  ,  Electrical Eng.   ,  Greig, Lindsey
+    10908  ,  56  ,  Electrical Eng.   ,  Murphy, Michael
+    10909  ,  64  ,  Electrical Eng.   ,  Garcia, Lupe
+    10910  ,  53  ,  Electrical Eng.   ,  Booher, Doug
+    10911  ,  32  ,  Electrical Eng.   ,  Tammadge, Terry
+    10912  ,  31  ,  Electrical Eng.   ,  Edgin, Penny
+    10913  ,  67  ,  Electrical Eng.   ,  Sottile, Beth
+    10914  ,  56  ,  Electrical Eng.   ,  Wofford, Deborah
+    10915  ,  41  ,  Electrical Eng.   ,  Keene, Sally
+    10916  ,  32  ,  Electrical Eng.   ,  Comton, Camille
+    10917  ,  66  ,  Electrical Eng.   ,  Raatz, Ricky
+    10918  ,  22  ,  Electrical Eng.   ,  Tolar, Lori
+    10919  ,  65  ,  Electrical Eng.   ,  Griffin, Nancy
+    10920  ,  21  ,  Electrical Eng.   ,  Pharr, John
+    10921  ,  51  ,  Electrical Eng.   ,  Quirk, Christopher
+    10922  ,  67  ,  Electrical Eng.   ,  Berferet, Suzanne
+    10923  ,  38  ,  Electrical Eng.   ,  Udell, Joe
+    10924  ,  52  ,  Electrical Eng.   ,  Spontak, Dede
+    10925  ,  29  ,  Electrical Eng.   ,  Russell, Kittie
+    10926  ,  23  ,  Electrical Eng.   ,  Kerr, Joyce
+    10927  ,  34  ,  Electrical Eng.   ,  Gieseck, Terri
+    10928  ,  36  ,  Electrical Eng.   ,  McQuerry, Kati
+    10929  ,  37  ,  Electrical Eng.   ,  Schulze, Debbie
+    10930  ,  58  ,  Electrical Eng.   ,  Reynolds, Morna
+    11001  ,  20  ,  Liberal Arts      ,  Alexander, Joe
+    11002  ,  48  ,  Liberal Arts      ,  Balagia, Jack
+    11003  ,  64  ,  Liberal Arts      ,  Thomas, Tina
+    11004  ,  54  ,  Liberal Arts      ,  Beckner, B.M.
+    11005  ,  39  ,  Liberal Arts      ,  Wilchar, Ginger
+    11006  ,  50  ,  Liberal Arts      ,  Buckley, Carolyn
+    11007  ,  43  ,  Liberal Arts      ,  Scheynailder, Mark
+    11008  ,  41  ,  Liberal Arts      ,  Murrell, Adam
+    11009  ,  31  ,  Liberal Arts      ,  Klingman, Darwin
+    11010  ,  45  ,  Liberal Arts      ,  Anderson, Suzanne
+    11011  ,  30  ,  Liberal Arts      ,  Lim, Sook
+    11012  ,  41  ,  Liberal Arts      ,  Ham, Tracy
+    11013  ,  36  ,  Liberal Arts      ,  Fagen, Joe
+    11014  ,  31  ,  Liberal Arts      ,  Jones, Lisa
+    11015  ,  54  ,  Liberal Arts      ,  Sanchez, Aurora
+    11016  ,  62  ,  Liberal Arts      ,  Percifull, Becky
+    11017  ,  46  ,  Liberal Arts      ,  Dabbs, Larry
+    11018  ,  21  ,  Liberal Arts      ,  Kinsley, Barbara
+    11019  ,  52  ,  Liberal Arts      ,  Goldman, Linda
+    11020  ,  66  ,  Liberal Arts      ,  Rhode, Marcia
+    11021  ,  38  ,  Liberal Arts      ,  Moores, Julie
+    11022  ,  31  ,  Liberal Arts      ,  Graham, Bill
+    11023  ,  53  ,  Liberal Arts      ,  Dabbs, Bryan
+    11024  ,  60  ,  Liberal Arts      ,  McConnell, Carol
+    11025  ,  62  ,  Liberal Arts      ,  Batory, Don
+    11026  ,  48  ,  Liberal Arts      ,  Clark, Charles
+    11027  ,  26  ,  Liberal Arts      ,  Fuller, Jill
+    11028  ,  43  ,  Liberal Arts      ,  Daily, John
+    11029  ,  53  ,  Liberal Arts      ,  Weichert, Margaret
+    11030  ,  26  ,  Liberal Arts      ,  Zahn, Cayce
+    11031  ,  63  ,  Liberal Arts      ,  Tims, Mary
+    11032  ,  29  ,  Liberal Arts      ,  Boone, Bebe
+    11033  ,  43  ,  Liberal Arts      ,  Wilkins, Rosemary
+    11034  ,  25  ,  Liberal Arts      ,  Andrews, John
+    11035  ,  41  ,  Liberal Arts      ,  Coleman, Bill
+    11101  ,  34  ,  Pre-medicine      ,  Kelly, Kim
+    11102  ,  33  ,  Pre-medicine      ,  Flores, Valentina
+    11103  ,  47  ,  Pre-medicine      ,  Avera, Jean
+    11104  ,  56  ,  Pre-medicine      ,  Kwisely, Mark
+    11105  ,  47  ,  Pre-medicine      ,  Jenkins, Marcella
+    11106  ,  35  ,  Pre-medicine      ,  Poorman, Katie
+    11107  ,  48  ,  Pre-medicine      ,  Penn, Virginia
+    11108  ,  64  ,  Pre-medicine      ,  Smith, David
+    11109  ,  42  ,  Pre-medicine      ,  Doughtery, Priscilla
+    11110  ,  60  ,  Pre-medicine      ,  Benecke, Kathleen
+    11111  ,  35  ,  Pre-medicine      ,  Tassin, Felix
+    11112  ,  59  ,  Pre-medicine      ,  Watson, Deborah
+    11113  ,  52  ,  Pre-medicine      ,  Coedes, John
+    11114  ,  56  ,  Pre-medicine      ,  Nietfell, Craig
+    11115  ,  27  ,  Pre-medicine      ,  Perry, Betty
+    11116  ,  48  ,  Pre-medicine      ,  Corder, Jeanne
+    11117  ,  60  ,  Pre-medicine      ,  Luke, Joe
+    11118  ,  56  ,  Pre-medicine      ,  Bundy, Stevie
+    11119  ,  23  ,  Pre-medicine      ,  Black, Beverly
+    11120  ,  39  ,  Pre-medicine      ,  Mussett, Brett
+    11121  ,  41  ,  Pre-medicine      ,  Rose, Jerry
+    11122  ,  63  ,  Pre-medicine      ,  Mikeska, Mary
+    11123  ,  55  ,  Pre-medicine      ,  Staat, Katherine
+    11124  ,  60  ,  Pre-medicine      ,  Hanisen, Grace
+    11125  ,  32  ,  Pre-medicine      ,  Bell, Brenda
+    11126  ,  48  ,  Pre-medicine      ,  Hayes, Helen
+    11127  ,  45  ,  Pre-medicine      ,  Willis, Shirley
+    11128  ,  42  ,  Pre-medicine      ,  Lamb, Bridget
+    11129  ,  51  ,  Pre-medicine      ,  Heberly, Jill
+    11130  ,  37  ,  Pre-medicine      ,  Perry, George
+    11201  ,  51  ,  History           ,  Tobloka, Rick
+    11202  ,  34  ,  History           ,  Ney, Diana
+    11203  ,  34  ,  History           ,  Shawn, Any
+    11204  ,  49  ,  History           ,  Giddings, Monica
+    11205  ,  66  ,  History           ,  Duwe, Blair
+    11206  ,  61  ,  History           ,  Armbrust, Cheryl
+    11207  ,  20  ,  History           ,  Pfeil, Betsy
+    11208  ,  48  ,  History           ,  Durham, Carolyn
+    11209  ,  59  ,  History           ,  McMichael, Kim
+    11210  ,  51  ,  History           ,  Green, Carolyn
+    11211  ,  20  ,  History           ,  Carlson, Judy
+    11212  ,  21  ,  History           ,  Wilson, Ann
+    11213  ,  68  ,  History           ,  Doury, Jennifer
+    11214  ,  27  ,  History           ,  McBrayer, Susan
+    11215  ,  60  ,  History           ,  Wikstrom, Chrysa
+    11216  ,  39  ,  History           ,  Canipe, Sharon
+    11217  ,  61  ,  History           ,  Jefferies, Tricia
+    11218  ,  30  ,  History           ,  Richardson, Carol
+    11219  ,  64  ,  History           ,  Carmichael, Ronda
+    11220  ,  52  ,  History           ,  Smith, Mary
+    11221  ,  25  ,  History           ,  Pilney, Mary
+    11222  ,  35  ,  History           ,  Schreffler, Kay
+    11223  ,  22  ,  History           ,  Ricker, Patricia
+    11224  ,  52  ,  History           ,  Martin, Cindy
+    11225  ,  40  ,  History           ,  Gulla, Susan
+    11226  ,  43  ,  History           ,  Jefferies, Carla
+    11227  ,  23  ,  History           ,  Puentes, Carlos
+    11228  ,  38  ,  History           ,  Washburn, Christy
+    11229  ,  56  ,  History           ,  Pepin, Pat
+    11230  ,  49  ,  History           ,  White, Wynette
+    11231  ,  34  ,  History           ,  Behrend, Sam
+    11232  ,  43  ,  History           ,  Miller, Jill
+    11233  ,  21  ,  History           ,  Willcott, Murphy
+    11234  ,  21  ,  History           ,  Davis, David
+    11235  ,  60  ,  History           ,  Clarkson, Cheryl
+    11236  ,  57  ,  History           ,  Beeson, John
+    11237  ,  34  ,  History           ,  Fullilove, Gena
+    11238  ,  59  ,  History           ,  Johnson, Cynthia
+    11239  ,  50  ,  History           ,  Bindock, James
+    11240  ,  49  ,  History           ,  Shead, Linda
+    11301  ,  58  ,  Zoology           ,  Lockwood, James
+    11302  ,  35  ,  Zoology           ,  Stockton, Barbara
+    11303  ,  44  ,  Zoology           ,  Olvera, Elsa
+    11304  ,  33  ,  Zoology           ,  Braodrick, Linda
+    11305  ,  23  ,  Zoology           ,  McGinty, Ann
+    11306  ,  43  ,  Zoology           ,  Bradshaw, Mary
+    11307  ,  32  ,  Zoology           ,  Tighe, Rosemary
+    11308  ,  20  ,  Zoology           ,  Crouch, Marla
+    11309  ,  43  ,  Zoology           ,  McCann, Jana
+    11310  ,  66  ,  Zoology           ,  Bergeron, Ronnie
+    11311  ,  46  ,  Zoology           ,  Ray, Vicki
+    11312  ,  37  ,  Zoology           ,  Haralson, Lisa
+    11313  ,  60  ,  Zoology           ,  Henson, Diana
+    11314  ,  47  ,  Zoology           ,  Dixon-Eden, Pamela
+    11315  ,  60  ,  Zoology           ,  Williams, Susan
+    11316  ,  28  ,  Zoology           ,  Koskinsy, Frances
+    11317  ,  68  ,  Zoology           ,  Wipperman, Wendy
+    11318  ,  61  ,  Zoology           ,  Vyner, Jeff
+    11319  ,  66  ,  Zoology           ,  Fowler, Kay
+    11320  ,  53  ,  Zoology           ,  Maund, Yvonne
+    11321  ,  51  ,  Zoology           ,  Souther, Greg
+    11322  ,  22  ,  Zoology           ,  Harrison, Jaylene
+    11323  ,  31  ,  Zoology           ,  Epstein, Nancy
+    11324  ,  51  ,  Zoology           ,  Zinnecker, Steve
+    11325  ,  58  ,  Zoology           ,  Eudy, Barbara
+    11326  ,  25  ,  Zoology           ,  Wilson, Karen
+    11327  ,  33  ,  Zoology           ,  Moynahan, Jan
+    11328  ,  36  ,  Zoology           ,  Byrd, Sharon
+    11329  ,  38  ,  Zoology           ,  Sifuentes, Liz
+    11330  ,  38  ,  Zoology           ,  Garza, Debbie
+    11331  ,  32  ,  Zoology           ,  Holland, Jay
+    11332  ,  67  ,  Zoology           ,  Luedke, Lori
+    11333  ,  38  ,  Zoology           ,  Stevens, Marla
+    11334  ,  59  ,  Zoology           ,  Akers, Mark
+    11401  ,  52  ,  Mechanical Eng.   ,  Ellis, Carolyn
+    11402  ,  42  ,  Mechanical Eng.   ,  Kinard, Jeanette
+    11403  ,  43  ,  Mechanical Eng.   ,  Davis, Jeanette
+    11404  ,  25  ,  Mechanical Eng.   ,  Reece, Marsha
+    11405  ,  26  ,  Mechanical Eng.   ,  Massat, Gerhard
+    11406  ,  65  ,  Mechanical Eng.   ,  Perez, Missy
+    11407  ,  69  ,  Mechanical Eng.   ,  Bassion, Susan
+    11408  ,  40  ,  Mechanical Eng.   ,  Anderson, Gwyn
+    11409  ,  49  ,  Mechanical Eng.   ,  Cannon, Erika
+    11410  ,  20  ,  Mechanical Eng.   ,  Root, Janie
+    11411  ,  45  ,  Mechanical Eng.   ,  Taylor, Cathy
+    11412  ,  41  ,  Mechanical Eng.   ,  Andrews, Kay
+    11413  ,  64  ,  Mechanical Eng.   ,  Simmons, E.R.
+    11414  ,  44  ,  Mechanical Eng.   ,  Bosworth, Michael
+    11415  ,  65  ,  Mechanical Eng.   ,  Smith, Jeff
+    11416  ,  36  ,  Mechanical Eng.   ,  Mersky, Lisa
+    11417  ,  25  ,  Mechanical Eng.   ,  Batory, Don
+    11418  ,  51  ,  Mechanical Eng.   ,  Watkins, Larry
+    11419  ,  43  ,  Mechanical Eng.   ,  Moe, Charlene
+    11420  ,  25  ,  Mechanical Eng.   ,  Fine, Judy
+    11421  ,  36  ,  Mechanical Eng.   ,  Pryor, Dwight
+    11422  ,  20  ,  Mechanical Eng.   ,  Weatherford, Ann
+    11423  ,  51  ,  Mechanical Eng.   ,  Mavil, Andrea
+    11424  ,  29  ,  Mechanical Eng.   ,  Morris, Linda
+    11425  ,  32  ,  Mechanical Eng.   ,  Cantu, Cindy
+    11426  ,  30  ,  Mechanical Eng.   ,  Murphy, Andy
+    11501  ,  30  ,  Computer Eng.     ,  Millhollow, Gail
+    11502  ,  26  ,  Computer Eng.     ,  Mendenhall, Laura
+    11503  ,  57  ,  Computer Eng.     ,  Clements, Rick
+    11504  ,  59  ,  Computer Eng.     ,  Gore, Donna
+    11505  ,  44  ,  Computer Eng.     ,  Mathews, Jerry
+    11506  ,  48  ,  Computer Eng.     ,  Paladino, Maureen
+    11507  ,  68  ,  Computer Eng.     ,  Flores, Gina
+    11508  ,  42  ,  Computer Eng.     ,  Hefter, Katie
+    11509  ,  39  ,  Computer Eng.     ,  Vance, Mary
+    11510  ,  42  ,  Computer Eng.     ,  Mercer, Orelia
+    11511  ,  31  ,  Computer Eng.     ,  Kym, Kerin
+    11512  ,  58  ,  Computer Eng.     ,  Manchester, Jane
+    11513  ,  48  ,  Computer Eng.     ,  Stone, Tracy
+    11514  ,  42  ,  Computer Eng.     ,  Yeager, Chris
+    11515  ,  44  ,  Computer Eng.     ,  Castello, Mary
+    11516  ,  34  ,  Computer Eng.     ,  Dabney, Brad
+    11517  ,  56  ,  Computer Eng.     ,  Johnson, Mary
+    11518  ,  43  ,  Computer Eng.     ,  Mussman, David
+    11519  ,  69  ,  Computer Eng.     ,  Carlin, Jennefer
+    11520  ,  49  ,  Computer Eng.     ,  Garza, Quen
+    11521  ,  53  ,  Computer Eng.     ,  Thompson, Margaret
+    11522  ,  35  ,  Computer Eng.     ,  Kinsley, Nanou
+    11523  ,  31  ,  Computer Eng.     ,  Snow, Brenda
+    11524  ,  45  ,  Computer Eng.     ,  Weirich, Roma
+    11525  ,  50  ,  Computer Eng.     ,  Burt, Ruby
+    11526  ,  58  ,  Computer Eng.     ,  Thoresrud, Carole
+    11527  ,  25  ,  Computer Eng.     ,  Percorella, Leo
+    11528  ,  56  ,  Computer Eng.     ,  Montgomedry, Cheryle
+    11529  ,  49  ,  Computer Eng.     ,  Davis, Tony
+    11530  ,  23  ,  Computer Eng.     ,  Barber, Gretchen
+    11531  ,  68  ,  Computer Eng.     ,  Reagor, Barbara
+    11532  ,  31  ,  Computer Eng.     ,  Hibbitts, Laura
+    11533  ,  53  ,  Computer Eng.     ,  Morales, Marilou
+    11534  ,  28  ,  Computer Eng.     ,  Priesnetz, Joe
+    11601  ,  48  ,  Archeology        ,  Kraft, Karen
+    11602  ,  32  ,  Archeology        ,  Myers, Bill
+    11603  ,  27  ,  Archeology        ,  Werrbach, Gail
+    11604  ,  36  ,  Archeology        ,  Hebbe, Ann
+    11605  ,  48  ,  Archeology        ,  Lewis, Debra
+    11606  ,  45  ,  Archeology        ,  Friedland, Leonard
+    11607  ,  25  ,  Archeology        ,  Escobedo, Olga
+    11608  ,  44  ,  Archeology        ,  Gall, Sandy
+    11609  ,  22  ,  Archeology        ,  Vanderford, Frankie
+    11610  ,  43  ,  Archeology        ,  David, Sandra
+    11611  ,  67  ,  Archeology        ,  Nelson, David
+    11612  ,  63  ,  Archeology        ,  Stenicka, Kitzi
+    11613  ,  53  ,  Archeology        ,  Schwartz, Barbara
+    11614  ,  34  ,  Archeology        ,  Harber, Charlotte
+    11615  ,  65  ,  Archeology        ,  Anderson, Mary
+    11616  ,  28  ,  Archeology        ,  Foster, Peggy
+    11617  ,  20  ,  Archeology        ,  Hardy, Melanie
+    11618  ,  45  ,  Archeology        ,  Bryant, Cynthia
+    11619  ,  47  ,  Archeology        ,  Banks, Richard
+    11620  ,  62  ,  Archeology        ,  Vallis, Mary
+    11621  ,  43  ,  Archeology        ,  Benson, Kathy
+    11622  ,  27  ,  Archeology        ,  Foryce, Fred
+    11623  ,  56  ,  Archeology        ,  Pils, Maryanne
+    11624  ,  68  ,  Archeology        ,  King, Norris
+    11625  ,  63  ,  Archeology        ,  Hooper, Melody
+    11626  ,  51  ,  Archeology        ,  Geppert, Rolo
+    11627  ,  36  ,  Archeology        ,  Irwin, Trudy
+    11628  ,  32  ,  Archeology        ,  Zoe, John
+    11629  ,  47  ,  Archeology        ,  Hall, Carolyn
+    11630  ,  65  ,  Archeology        ,  Grillot, Karen
+
+ Those age() == 24 (order: -empno) 
+
+    10640  ,  24  ,  English           ,  Lawson, Kathy
+    10621  ,  24  ,  English           ,  Nixon, Mary
+    10330  ,  24  ,  Anthropology      ,  Packherser, Vickie
+    10219  ,  24  ,  Computer Science  ,  Wiseman, Addie
+    10112  ,  24  ,  Biology           ,  Glover, Ross
+
+ Increment age of those age() <= 23 (order empno)
+
+ Round 1
+
+    10124  ,  21  ,  Biology           ,  Williams, Larry
+    10128  ,  20  ,  Biology           ,  Walser, Maryanne
+    10210  ,  23  ,  Computer Science  ,  Pfeil, Barbara
+    10221  ,  22  ,  Computer Science  ,  Dabbs, Bob
+    10307  ,  22  ,  Anthropology      ,  Durst, Pam
+    10421  ,  23  ,  Architecture      ,  Harms, Fontaine
+    10424  ,  20  ,  Architecture      ,  Richardson, Elizabeth
+    10603  ,  20  ,  English           ,  Loayza, Katherine
+    10617  ,  20  ,  English           ,  Mellencamp, Lisa
+    10717  ,  22  ,  Philosophy        ,  Wright, Judith
+    10723  ,  22  ,  Philosophy        ,  Hardwich, Karen
+    10732  ,  21  ,  Philosophy        ,  Swenson, Kayla
+    10809  ,  23  ,  Latin Studies     ,  Wiman, Janet
+    10824  ,  20  ,  Latin Studies     ,  Solter, Eddie
+    10833  ,  21  ,  Latin Studies     ,  Jones, Mary
+    10918  ,  22  ,  Electrical Eng.   ,  Tolar, Lori
+    10920  ,  21  ,  Electrical Eng.   ,  Pharr, John
+    10926  ,  23  ,  Electrical Eng.   ,  Kerr, Joyce
+    11001  ,  20  ,  Liberal Arts      ,  Alexander, Joe
+    11018  ,  21  ,  Liberal Arts      ,  Kinsley, Barbara
+    11119  ,  23  ,  Pre-medicine      ,  Black, Beverly
+    11207  ,  20  ,  History           ,  Pfeil, Betsy
+    11211  ,  20  ,  History           ,  Carlson, Judy
+    11212  ,  21  ,  History           ,  Wilson, Ann
+    11223  ,  22  ,  History           ,  Ricker, Patricia
+    11227  ,  23  ,  History           ,  Puentes, Carlos
+    11233  ,  21  ,  History           ,  Willcott, Murphy
+    11234  ,  21  ,  History           ,  Davis, David
+    11305  ,  23  ,  Zoology           ,  McGinty, Ann
+    11308  ,  20  ,  Zoology           ,  Crouch, Marla
+    11322  ,  22  ,  Zoology           ,  Harrison, Jaylene
+    11410  ,  20  ,  Mechanical Eng.   ,  Root, Janie
+    11422  ,  20  ,  Mechanical Eng.   ,  Weatherford, Ann
+    11530  ,  23  ,  Computer Eng.     ,  Barber, Gretchen
+    11609  ,  22  ,  Archeology        ,  Vanderford, Frankie
+    11617  ,  20  ,  Archeology        ,  Hardy, Melanie
+
+ Round 2
+
+    10124  ,  22  ,  Biology           ,  Williams, Larry
+    10128  ,  21  ,  Biology           ,  Walser, Maryanne
+    10221  ,  23  ,  Computer Science  ,  Dabbs, Bob
+    10307  ,  23  ,  Anthropology      ,  Durst, Pam
+    10424  ,  21  ,  Architecture      ,  Richardson, Elizabeth
+    10603  ,  21  ,  English           ,  Loayza, Katherine
+    10617  ,  21  ,  English           ,  Mellencamp, Lisa
+    10717  ,  23  ,  Philosophy        ,  Wright, Judith
+    10723  ,  23  ,  Philosophy        ,  Hardwich, Karen
+    10732  ,  22  ,  Philosophy        ,  Swenson, Kayla
+    10824  ,  21  ,  Latin Studies     ,  Solter, Eddie
+    10833  ,  22  ,  Latin Studies     ,  Jones, Mary
+    10918  ,  23  ,  Electrical Eng.   ,  Tolar, Lori
+    10920  ,  22  ,  Electrical Eng.   ,  Pharr, John
+    11001  ,  21  ,  Liberal Arts      ,  Alexander, Joe
+    11018  ,  22  ,  Liberal Arts      ,  Kinsley, Barbara
+    11207  ,  21  ,  History           ,  Pfeil, Betsy
+    11211  ,  21  ,  History           ,  Carlson, Judy
+    11212  ,  22  ,  History           ,  Wilson, Ann
+    11223  ,  23  ,  History           ,  Ricker, Patricia
+    11233  ,  22  ,  History           ,  Willcott, Murphy
+    11234  ,  22  ,  History           ,  Davis, David
+    11308  ,  21  ,  Zoology           ,  Crouch, Marla
+    11322  ,  23  ,  Zoology           ,  Harrison, Jaylene
+    11410  ,  21  ,  Mechanical Eng.   ,  Root, Janie
+    11422  ,  21  ,  Mechanical Eng.   ,  Weatherford, Ann
+    11609  ,  23  ,  Archeology        ,  Vanderford, Frankie
+    11617  ,  21  ,  Archeology        ,  Hardy, Melanie
+
+ Round 3
+
+    10124  ,  23  ,  Biology           ,  Williams, Larry
+    10128  ,  22  ,  Biology           ,  Walser, Maryanne
+    10424  ,  22  ,  Architecture      ,  Richardson, Elizabeth
+    10603  ,  22  ,  English           ,  Loayza, Katherine
+    10617  ,  22  ,  English           ,  Mellencamp, Lisa
+    10732  ,  23  ,  Philosophy        ,  Swenson, Kayla
+    10824  ,  22  ,  Latin Studies     ,  Solter, Eddie
+    10833  ,  23  ,  Latin Studies     ,  Jones, Mary
+    10920  ,  23  ,  Electrical Eng.   ,  Pharr, John
+    11001  ,  22  ,  Liberal Arts      ,  Alexander, Joe
+    11018  ,  23  ,  Liberal Arts      ,  Kinsley, Barbara
+    11207  ,  22  ,  History           ,  Pfeil, Betsy
+    11211  ,  22  ,  History           ,  Carlson, Judy
+    11212  ,  23  ,  History           ,  Wilson, Ann
+    11233  ,  23  ,  History           ,  Willcott, Murphy
+    11234  ,  23  ,  History           ,  Davis, David
+    11308  ,  22  ,  Zoology           ,  Crouch, Marla
+    11410  ,  22  ,  Mechanical Eng.   ,  Root, Janie
+    11422  ,  22  ,  Mechanical Eng.   ,  Weatherford, Ann
+    11617  ,  22  ,  Archeology        ,  Hardy, Melanie
+
+ Round 4
+
+    10128  ,  23  ,  Biology           ,  Walser, Maryanne
+    10424  ,  23  ,  Architecture      ,  Richardson, Elizabeth
+    10603  ,  23  ,  English           ,  Loayza, Katherine
+    10617  ,  23  ,  English           ,  Mellencamp, Lisa
+    10824  ,  23  ,  Latin Studies     ,  Solter, Eddie
+    11001  ,  23  ,  Liberal Arts      ,  Alexander, Joe
+    11207  ,  23  ,  History           ,  Pfeil, Betsy
+    11211  ,  23  ,  History           ,  Carlson, Judy
+    11308  ,  23  ,  Zoology           ,  Crouch, Marla
+    11410  ,  23  ,  Mechanical Eng.   ,  Root, Janie
+    11422  ,  23  ,  Mechanical Eng.   ,  Weatherford, Ann
+    11617  ,  23  ,  Archeology        ,  Hardy, Melanie
+
+ Round 5
+
+
+ Again, those age() == 24 (order: -empno) 
+
+    11617  ,  24  ,  Archeology        ,  Hardy, Melanie
+    11609  ,  24  ,  Archeology        ,  Vanderford, Frankie
+    11530  ,  24  ,  Computer Eng.     ,  Barber, Gretchen
+    11422  ,  24  ,  Mechanical Eng.   ,  Weatherford, Ann
+    11410  ,  24  ,  Mechanical Eng.   ,  Root, Janie
+    11322  ,  24  ,  Zoology           ,  Harrison, Jaylene
+    11308  ,  24  ,  Zoology           ,  Crouch, Marla
+    11305  ,  24  ,  Zoology           ,  McGinty, Ann
+    11234  ,  24  ,  History           ,  Davis, David
+    11233  ,  24  ,  History           ,  Willcott, Murphy
+    11227  ,  24  ,  History           ,  Puentes, Carlos
+    11223  ,  24  ,  History           ,  Ricker, Patricia
+    11212  ,  24  ,  History           ,  Wilson, Ann
+    11211  ,  24  ,  History           ,  Carlson, Judy
+    11207  ,  24  ,  History           ,  Pfeil, Betsy
+    11119  ,  24  ,  Pre-medicine      ,  Black, Beverly
+    11018  ,  24  ,  Liberal Arts      ,  Kinsley, Barbara
+    11001  ,  24  ,  Liberal Arts      ,  Alexander, Joe
+    10926  ,  24  ,  Electrical Eng.   ,  Kerr, Joyce
+    10920  ,  24  ,  Electrical Eng.   ,  Pharr, John
+    10918  ,  24  ,  Electrical Eng.   ,  Tolar, Lori
+    10833  ,  24  ,  Latin Studies     ,  Jones, Mary
+    10824  ,  24  ,  Latin Studies     ,  Solter, Eddie
+    10809  ,  24  ,  Latin Studies     ,  Wiman, Janet
+    10732  ,  24  ,  Philosophy        ,  Swenson, Kayla
+    10723  ,  24  ,  Philosophy        ,  Hardwich, Karen
+    10717  ,  24  ,  Philosophy        ,  Wright, Judith
+    10640  ,  24  ,  English           ,  Lawson, Kathy
+    10621  ,  24  ,  English           ,  Nixon, Mary
+    10617  ,  24  ,  English           ,  Mellencamp, Lisa
+    10603  ,  24  ,  English           ,  Loayza, Katherine
+    10424  ,  24  ,  Architecture      ,  Richardson, Elizabeth
+    10421  ,  24  ,  Architecture      ,  Harms, Fontaine
+    10330  ,  24  ,  Anthropology      ,  Packherser, Vickie
+    10307  ,  24  ,  Anthropology      ,  Durst, Pam
+    10221  ,  24  ,  Computer Science  ,  Dabbs, Bob
+    10219  ,  24  ,  Computer Science  ,  Wiseman, Addie
+    10210  ,  24  ,  Computer Science  ,  Pfeil, Barbara
+    10128  ,  24  ,  Biology           ,  Walser, Maryanne
+    10124  ,  24  ,  Biology           ,  Williams, Larry
+    10112  ,  24  ,  Biology           ,  Glover, Ross
+
+ Delete those name() == "Chen, Gang" (orderby empno) 
+
+    10223  ,  41  ,  Computer Science  ,  Chen, Gang
+    10716  ,  47  ,  Philosophy        ,  Chen, Gang
+
+ Delete those name() == "Batory, Don" (orderby empno) 
+
+    10220  ,  59  ,  Computer Science  ,  Batory, Don
+    11025  ,  62  ,  Liberal Arts      ,  Batory, Don
+    11417  ,  25  ,  Mechanical Eng.   ,  Batory, Don
+
+ Those age() > 30 && age() < 40 && name() >= "H" (orderby name) 
+
+    11312  ,  37  ,  Zoology           ,  Haralson, Lisa
+    11614  ,  34  ,  Archeology        ,  Harber, Charlotte
+    10711  ,  32  ,  Philosophy        ,  Hardesty, Ava
+    10212  ,  34  ,  Computer Science  ,  Hartness, Glen
+    11604  ,  36  ,  Archeology        ,  Hebbe, Ann
+    10638  ,  39  ,  English           ,  Henglein, Mary
+    11532  ,  31  ,  Computer Eng.     ,  Hibbitts, Laura
+    11331  ,  32  ,  Zoology           ,  Holland, Jay
+    10708  ,  39  ,  Philosophy        ,  House, Debbie
+    10407  ,  38  ,  Architecture      ,  Hunt, Jane
+    11627  ,  36  ,  Archeology        ,  Irwin, Trudy
+    10832  ,  32  ,  Latin Studies     ,  Johanson, Barbara
+    10834  ,  38  ,  Latin Studies     ,  Johns, Leslie
+    11014  ,  31  ,  Liberal Arts      ,  Jones, Lisa
+    11101  ,  34  ,  Pre-medicine      ,  Kelly, Kim
+    10724  ,  35  ,  Philosophy        ,  Kelly, Teri
+    11522  ,  35  ,  Computer Eng.     ,  Kinsley, Nanou
+    11009  ,  31  ,  Liberal Arts      ,  Klingman, Darwin
+    10308  ,  37  ,  Anthropology      ,  Kupits, Steve
+    11511  ,  31  ,  Computer Eng.     ,  Kym, Kerin
+    10510  ,  32  ,  Chemistry         ,  Lalinas, Felipe
+    10602  ,  36  ,  English           ,  Linn, Brenda
+    10521  ,  33  ,  Chemistry         ,  Linn, Emma
+    10409  ,  38  ,  Architecture      ,  Longley, Mark
+    10626  ,  39  ,  English           ,  MacLennan, Kerry
+    10513  ,  36  ,  Chemistry         ,  Mason, Glen
+    10928  ,  36  ,  Electrical Eng.   ,  McQuerry, Kati
+    11416  ,  36  ,  Mechanical Eng.   ,  Mersky, Lisa
+    11021  ,  38  ,  Liberal Arts      ,  Moores, Julie
+    11327  ,  33  ,  Zoology           ,  Moynahan, Jan
+    11120  ,  39  ,  Pre-medicine      ,  Mussett, Brett
+    10317  ,  32  ,  Anthropology      ,  Mustin, A.K.
+    11602  ,  32  ,  Archeology        ,  Myers, Bill
+    10812  ,  34  ,  Latin Studies     ,  Myers, Cecil
+    10205  ,  32  ,  Computer Science  ,  Myler, Danny
+    11202  ,  34  ,  History           ,  Ney, Diana
+    10201  ,  31  ,  Computer Science  ,  Palousek, Cheryl
+    11130  ,  37  ,  Pre-medicine      ,  Perry, George
+    11106  ,  35  ,  Pre-medicine      ,  Poorman, Katie
+    11421  ,  36  ,  Mechanical Eng.   ,  Pryor, Dwight
+    10727  ,  35  ,  Philosophy        ,  Radcliff, Katheryn
+    10905  ,  32  ,  Electrical Eng.   ,  Rider, Kathy
+    10325  ,  37  ,  Anthropology      ,  Salone, Susan
+    11222  ,  35  ,  History           ,  Schreffler, Kay
+    10929  ,  37  ,  Electrical Eng.   ,  Schulze, Debbie
+    10605  ,  32  ,  English           ,  Schweitzer, Virginia
+    10517  ,  38  ,  Chemistry         ,  Shaw, Camille
+    11203  ,  34  ,  History           ,  Shawn, Any
+    11329  ,  38  ,  Zoology           ,  Sifuentes, Liz
+    10119  ,  32  ,  Biology           ,  Skelly, Greg
+    10728  ,  38  ,  Philosophy        ,  Slusser, Cathy
+    11523  ,  31  ,  Computer Eng.     ,  Snow, Brenda
+    10803  ,  35  ,  Latin Studies     ,  Spurr, Sharon
+    11333  ,  38  ,  Zoology           ,  Stevens, Marla
+    10408  ,  33  ,  Architecture      ,  Stinson, Greg
+    11302  ,  35  ,  Zoology           ,  Stockton, Barbara
+    10712  ,  37  ,  Philosophy        ,  Stokes, Gay
+    10322  ,  34  ,  Anthropology      ,  Stone, Roberta
+    10522  ,  38  ,  Chemistry         ,  Suess, Ellen
+    10911  ,  32  ,  Electrical Eng.   ,  Tammadge, Terry
+    11111  ,  35  ,  Pre-medicine      ,  Tassin, Felix
+    11307  ,  32  ,  Zoology           ,  Tighe, Rosemary
+    10217  ,  31  ,  Computer Science  ,  Tolbot, Mary
+    10636  ,  35  ,  English           ,  Trimble, Cathy
+    10923  ,  38  ,  Electrical Eng.   ,  Udell, Joe
+    10604  ,  35  ,  English           ,  VanMechelen, Lucky
+    11509  ,  39  ,  Computer Eng.     ,  Vance, Mary
+    10827  ,  36  ,  Latin Studies     ,  Ward, Melissa
+    10507  ,  37  ,  Chemistry         ,  Waring, Melinda
+    11228  ,  38  ,  History           ,  Washburn, Christy
+    10709  ,  36  ,  Philosophy        ,  Whitten, Virginia
+    10310  ,  39  ,  Anthropology      ,  Wiggins, Terry
+    11005  ,  39  ,  Liberal Arts      ,  Wilchar, Ginger
+    10412  ,  34  ,  Architecture      ,  Williams, Cynthia
+    10234  ,  37  ,  Computer Science  ,  Wills, Donna
+    11628  ,  32  ,  Archeology        ,  Zoe, John
+
+ Those dept() == "Computer Science" (orderby -name) 
+
+    10207  ,  29  ,  Computer Science  ,  Wright, Madalyn
+    10219  ,  24  ,  Computer Science  ,  Wiseman, Addie
+    10234  ,  37  ,  Computer Science  ,  Wills, Donna
+    10206  ,  54  ,  Computer Science  ,  Williams, David
+    10214  ,  68  ,  Computer Science  ,  Westerfield, Mary
+    10218  ,  45  ,  Computer Science  ,  Webb, Susie
+    10216  ,  42  ,  Computer Science  ,  Vick, Kathleen
+    10217  ,  31  ,  Computer Science  ,  Tolbot, Mary
+    10224  ,  49  ,  Computer Science  ,  Signor, Beth
+    10213  ,  59  ,  Computer Science  ,  Schoonmaker, Dathy
+    10202  ,  69  ,  Computer Science  ,  Romberg, John
+    10210  ,  24  ,  Computer Science  ,  Pfeil, Barbara
+    10204  ,  48  ,  Computer Science  ,  Parr, June
+    10235  ,  40  ,  Computer Science  ,  Papa, Lorraine
+    10201  ,  31  ,  Computer Science  ,  Palousek, Cheryl
+    10230  ,  44  ,  Computer Science  ,  Obrien, Jan
+    10205  ,  32  ,  Computer Science  ,  Myler, Danny
+    10222  ,  52  ,  Computer Science  ,  Murr, C.E.
+    10211  ,  49  ,  Computer Science  ,  Merferd, Dannie
+    10203  ,  27  ,  Computer Science  ,  Jackson, Ron
+    10212  ,  34  ,  Computer Science  ,  Hartness, Glen
+    10229  ,  61  ,  Computer Science  ,  Hanson, Fran
+    10228  ,  65  ,  Computer Science  ,  Gregory, Angela
+    10231  ,  63  ,  Computer Science  ,  Golver, Ross
+    10209  ,  54  ,  Computer Science  ,  Garreh, Mary
+    10225  ,  57  ,  Computer Science  ,  Garcia, Gilbert
+    10233  ,  39  ,  Computer Science  ,  Gammon, Elizabeth
+    10215  ,  62  ,  Computer Science  ,  Foss, Brenda
+    10232  ,  56  ,  Computer Science  ,  Dunn, Nikki
+    10227  ,  48  ,  Computer Science  ,  Delp, Joan
+    10221  ,  24  ,  Computer Science  ,  Dabbs, Bob
+    10208  ,  63  ,  Computer Science  ,  Beller, Karen
+    10226  ,  51  ,  Computer Science  ,  Barclay, Jim
+
+ Update dept of those empno > 10600 && empno < 10700 (orderby -empno) 
+
+    10647  ,  47  ,  English           ,  Edwards, Jola
+    10646  ,  42  ,  English           ,  Caserta, Cynthia
+    10645  ,  51  ,  English           ,  Malitz, David
+    10644  ,  29  ,  English           ,  Linder-Tate, Janis
+    10643  ,  29  ,  English           ,  Braodrick, Ingrid
+    10642  ,  62  ,  English           ,  Dunkelberg, Janet
+    10641  ,  51  ,  English           ,  Nelson, Nelda
+    10640  ,  24  ,  English           ,  Lawson, Kathy
+    10639  ,  67  ,  English           ,  Peirce, Tommy
+    10638  ,  39  ,  English           ,  Henglein, Mary
+    10637  ,  54  ,  English           ,  Walker, Pat
+    10636  ,  35  ,  English           ,  Trimble, Cathy
+    10635  ,  49  ,  English           ,  Cardenas, Libby
+    10634  ,  30  ,  English           ,  Dyer, Claire
+    10633  ,  62  ,  English           ,  Klugman, Rick
+    10632  ,  30  ,  English           ,  Musgrave, Todd
+    10631  ,  44  ,  English           ,  Ibanez, Jerry
+    10630  ,  67  ,  English           ,  Shults, Carry
+    10629  ,  38  ,  English           ,  BoneBrake, Veronica
+    10628  ,  49  ,  English           ,  Worsham, Dennis
+    10627  ,  44  ,  English           ,  Greenberg, Lawrence
+    10626  ,  39  ,  English           ,  MacLennan, Kerry
+    10625  ,  35  ,  English           ,  Eger, Audrey
+    10624  ,  63  ,  English           ,  Kuperman, Helene
+    10623  ,  55  ,  English           ,  Holbert, John
+    10622  ,  57  ,  English           ,  Schacherl, Carol
+    10621  ,  24  ,  English           ,  Nixon, Mary
+    10620  ,  27  ,  English           ,  Turney, Connie
+    10619  ,  46  ,  English           ,  Emmert, Deanna
+    10618  ,  63  ,  English           ,  Frost, Tina
+    10617  ,  24  ,  English           ,  Mellencamp, Lisa
+    10616  ,  40  ,  English           ,  Nunn, Kay
+    10615  ,  36  ,  English           ,  Denton, Judy
+    10614  ,  69  ,  English           ,  Hebbe, Joseph
+    10613  ,  55  ,  English           ,  Ybarra, Maria
+    10612  ,  63  ,  English           ,  Mayfield, Julie
+    10611  ,  55  ,  English           ,  Wheeler, Elaine
+    10610  ,  34  ,  English           ,  Cordes, John
+    10609  ,  25  ,  English           ,  Leff, Nancy
+    10608  ,  25  ,  English           ,  Fenelon, Mike
+    10607  ,  29  ,  English           ,  Vaughn, Charles
+    10606  ,  51  ,  English           ,  Stalle, Monet
+    10605  ,  32  ,  English           ,  Schweitzer, Virginia
+    10604  ,  35  ,  English           ,  VanMechelen, Lucky
+    10603  ,  24  ,  English           ,  Loayza, Katherine
+    10602  ,  36  ,  English           ,  Linn, Brenda
+    10601  ,  32  ,  English           ,  Brooks, Leslie
+
+ Update dept of those empno > 10900 && empno < 11000 (orderby -empno) 
+
+    10930  ,  58  ,  Electrical Eng.   ,  Reynolds, Morna
+    10929  ,  37  ,  Electrical Eng.   ,  Schulze, Debbie
+    10928  ,  36  ,  Electrical Eng.   ,  McQuerry, Kati
+    10927  ,  34  ,  Electrical Eng.   ,  Gieseck, Terri
+    10926  ,  24  ,  Electrical Eng.   ,  Kerr, Joyce
+    10925  ,  29  ,  Electrical Eng.   ,  Russell, Kittie
+    10924  ,  52  ,  Electrical Eng.   ,  Spontak, Dede
+    10923  ,  38  ,  Electrical Eng.   ,  Udell, Joe
+    10922  ,  67  ,  Electrical Eng.   ,  Berferet, Suzanne
+    10921  ,  51  ,  Electrical Eng.   ,  Quirk, Christopher
+    10920  ,  24  ,  Electrical Eng.   ,  Pharr, John
+    10919  ,  65  ,  Electrical Eng.   ,  Griffin, Nancy
+    10918  ,  24  ,  Electrical Eng.   ,  Tolar, Lori
+    10917  ,  66  ,  Electrical Eng.   ,  Raatz, Ricky
+    10916  ,  32  ,  Electrical Eng.   ,  Comton, Camille
+    10915  ,  41  ,  Electrical Eng.   ,  Keene, Sally
+    10914  ,  56  ,  Electrical Eng.   ,  Wofford, Deborah
+    10913  ,  67  ,  Electrical Eng.   ,  Sottile, Beth
+    10912  ,  31  ,  Electrical Eng.   ,  Edgin, Penny
+    10911  ,  32  ,  Electrical Eng.   ,  Tammadge, Terry
+    10910  ,  53  ,  Electrical Eng.   ,  Booher, Doug
+    10909  ,  64  ,  Electrical Eng.   ,  Garcia, Lupe
+    10908  ,  56  ,  Electrical Eng.   ,  Murphy, Michael
+    10907  ,  64  ,  Electrical Eng.   ,  Greig, Lindsey
+    10906  ,  57  ,  Electrical Eng.   ,  Smith, Rod
+    10905  ,  32  ,  Electrical Eng.   ,  Rider, Kathy
+    10904  ,  67  ,  Electrical Eng.   ,  Paul, Sandra
+    10903  ,  58  ,  Electrical Eng.   ,  Rioroan, Patrick
+    10902  ,  65  ,  Electrical Eng.   ,  Claire, Rachel
+    10901  ,  45  ,  Electrical Eng.   ,  O'Conner, Gail
+
+ Delete those dept() == "Computer Science" (orderby -name) 
+
+    10613  ,  55  ,  Computer Science  ,  Ybarra, Maria
+    10207  ,  29  ,  Computer Science  ,  Wright, Madalyn
+    10628  ,  49  ,  Computer Science  ,  Worsham, Dennis
+    10914  ,  56  ,  Computer Science  ,  Wofford, Deborah
+    10219  ,  24  ,  Computer Science  ,  Wiseman, Addie
+    10234  ,  37  ,  Computer Science  ,  Wills, Donna
+    10206  ,  54  ,  Computer Science  ,  Williams, David
+    10611  ,  55  ,  Computer Science  ,  Wheeler, Elaine
+    10214  ,  68  ,  Computer Science  ,  Westerfield, Mary
+    10218  ,  45  ,  Computer Science  ,  Webb, Susie
+    10637  ,  54  ,  Computer Science  ,  Walker, Pat
+    10216  ,  42  ,  Computer Science  ,  Vick, Kathleen
+    10607  ,  29  ,  Computer Science  ,  Vaughn, Charles
+    10604  ,  35  ,  Computer Science  ,  VanMechelen, Lucky
+    10923  ,  38  ,  Computer Science  ,  Udell, Joe
+    10620  ,  27  ,  Computer Science  ,  Turney, Connie
+    10636  ,  35  ,  Computer Science  ,  Trimble, Cathy
+    10217  ,  31  ,  Computer Science  ,  Tolbot, Mary
+    10918  ,  24  ,  Computer Science  ,  Tolar, Lori
+    10911  ,  32  ,  Computer Science  ,  Tammadge, Terry
+    10606  ,  51  ,  Computer Science  ,  Stalle, Monet
+    10924  ,  52  ,  Computer Science  ,  Spontak, Dede
+    10913  ,  67  ,  Computer Science  ,  Sottile, Beth
+    10906  ,  57  ,  Computer Science  ,  Smith, Rod
+    10224  ,  49  ,  Computer Science  ,  Signor, Beth
+    10630  ,  67  ,  Computer Science  ,  Shults, Carry
+    10605  ,  32  ,  Computer Science  ,  Schweitzer, Virginia
+    10929  ,  37  ,  Computer Science  ,  Schulze, Debbie
+    10213  ,  59  ,  Computer Science  ,  Schoonmaker, Dathy
+    10622  ,  57  ,  Computer Science  ,  Schacherl, Carol
+    10925  ,  29  ,  Computer Science  ,  Russell, Kittie
+    10202  ,  69  ,  Computer Science  ,  Romberg, John
+    10903  ,  58  ,  Computer Science  ,  Rioroan, Patrick
+    10905  ,  32  ,  Computer Science  ,  Rider, Kathy
+    10930  ,  58  ,  Computer Science  ,  Reynolds, Morna
+    10917  ,  66  ,  Computer Science  ,  Raatz, Ricky
+    10921  ,  51  ,  Computer Science  ,  Quirk, Christopher
+    10920  ,  24  ,  Computer Science  ,  Pharr, John
+    10210  ,  24  ,  Computer Science  ,  Pfeil, Barbara
+    10639  ,  67  ,  Computer Science  ,  Peirce, Tommy
+    10904  ,  67  ,  Computer Science  ,  Paul, Sandra
+    10204  ,  48  ,  Computer Science  ,  Parr, June
+    10235  ,  40  ,  Computer Science  ,  Papa, Lorraine
+    10201  ,  31  ,  Computer Science  ,  Palousek, Cheryl
+    10230  ,  44  ,  Computer Science  ,  Obrien, Jan
+    10901  ,  45  ,  Computer Science  ,  O'Conner, Gail
+    10616  ,  40  ,  Computer Science  ,  Nunn, Kay
+    10621  ,  24  ,  Computer Science  ,  Nixon, Mary
+    10641  ,  51  ,  Computer Science  ,  Nelson, Nelda
+    10205  ,  32  ,  Computer Science  ,  Myler, Danny
+    10632  ,  30  ,  Computer Science  ,  Musgrave, Todd
+    10222  ,  52  ,  Computer Science  ,  Murr, C.E.
+    10908  ,  56  ,  Computer Science  ,  Murphy, Michael
+    10211  ,  49  ,  Computer Science  ,  Merferd, Dannie
+    10617  ,  24  ,  Computer Science  ,  Mellencamp, Lisa
+    10928  ,  36  ,  Computer Science  ,  McQuerry, Kati
+    10612  ,  63  ,  Computer Science  ,  Mayfield, Julie
+    10645  ,  51  ,  Computer Science  ,  Malitz, David
+    10626  ,  39  ,  Computer Science  ,  MacLennan, Kerry
+    10603  ,  24  ,  Computer Science  ,  Loayza, Katherine
+    10602  ,  36  ,  Computer Science  ,  Linn, Brenda
+    10644  ,  29  ,  Computer Science  ,  Linder-Tate, Janis
+    10609  ,  25  ,  Computer Science  ,  Leff, Nancy
+    10640  ,  24  ,  Computer Science  ,  Lawson, Kathy
+    10624  ,  63  ,  Computer Science  ,  Kuperman, Helene
+    10633  ,  62  ,  Computer Science  ,  Klugman, Rick
+    10926  ,  24  ,  Computer Science  ,  Kerr, Joyce
+    10915  ,  41  ,  Computer Science  ,  Keene, Sally
+    10203  ,  27  ,  Computer Science  ,  Jackson, Ron
+    10631  ,  44  ,  Computer Science  ,  Ibanez, Jerry
+    10623  ,  55  ,  Computer Science  ,  Holbert, John
+    10638  ,  39  ,  Computer Science  ,  Henglein, Mary
+    10614  ,  69  ,  Computer Science  ,  Hebbe, Joseph
+    10212  ,  34  ,  Computer Science  ,  Hartness, Glen
+    10229  ,  61  ,  Computer Science  ,  Hanson, Fran
+    10919  ,  65  ,  Computer Science  ,  Griffin, Nancy
+    10907  ,  64  ,  Computer Science  ,  Greig, Lindsey
+    10228  ,  65  ,  Computer Science  ,  Gregory, Angela
+    10627  ,  44  ,  Computer Science  ,  Greenberg, Lawrence
+    10231  ,  63  ,  Computer Science  ,  Golver, Ross
+    10927  ,  34  ,  Computer Science  ,  Gieseck, Terri
+    10209  ,  54  ,  Computer Science  ,  Garreh, Mary
+    10909  ,  64  ,  Computer Science  ,  Garcia, Lupe
+    10225  ,  57  ,  Computer Science  ,  Garcia, Gilbert
+    10233  ,  39  ,  Computer Science  ,  Gammon, Elizabeth
+    10618  ,  63  ,  Computer Science  ,  Frost, Tina
+    10215  ,  62  ,  Computer Science  ,  Foss, Brenda
+    10608  ,  25  ,  Computer Science  ,  Fenelon, Mike
+    10619  ,  46  ,  Computer Science  ,  Emmert, Deanna
+    10625  ,  35  ,  Computer Science  ,  Eger, Audrey
+    10647  ,  47  ,  Computer Science  ,  Edwards, Jola
+    10912  ,  31  ,  Computer Science  ,  Edgin, Penny
+    10634  ,  30  ,  Computer Science  ,  Dyer, Claire
+    10232  ,  56  ,  Computer Science  ,  Dunn, Nikki
+    10642  ,  62  ,  Computer Science  ,  Dunkelberg, Janet
+    10615  ,  36  ,  Computer Science  ,  Denton, Judy
+    10227  ,  48  ,  Computer Science  ,  Delp, Joan
+    10221  ,  24  ,  Computer Science  ,  Dabbs, Bob
+    10610  ,  34  ,  Computer Science  ,  Cordes, John
+    10916  ,  32  ,  Computer Science  ,  Comton, Camille
+    10902  ,  65  ,  Computer Science  ,  Claire, Rachel
+    10646  ,  42  ,  Computer Science  ,  Caserta, Cynthia
+    10635  ,  49  ,  Computer Science  ,  Cardenas, Libby
+    10601  ,  32  ,  Computer Science  ,  Brooks, Leslie
+    10643  ,  29  ,  Computer Science  ,  Braodrick, Ingrid
+    10910  ,  53  ,  Computer Science  ,  Booher, Doug
+    10629  ,  38  ,  Computer Science  ,  BoneBrake, Veronica
+    10922  ,  67  ,  Computer Science  ,  Berferet, Suzanne
+    10208  ,  63  ,  Computer Science  ,  Beller, Karen
+    10226  ,  51  ,  Computer Science  ,  Barclay, Jim
+
+ Again, those dept() == "Computer Science" (orderby -name) 
+
+
+ Update dept of all employee (orderby empno) 
+
+    10101  ,  31  ,  Biology           ,  Ashley, Anne
+    10102  ,  42  ,  Biology           ,  Gaudet, Laura
+    10103  ,  57  ,  Biology           ,  Gill, Sharon
+    10104  ,  47  ,  Biology           ,  Clawson, Tina
+    10105  ,  27  ,  Biology           ,  Cotrell, Georgia
+    10106  ,  45  ,  Biology           ,  Jones, Janie
+    10107  ,  64  ,  Biology           ,  Burdine, Charles
+    10108  ,  43  ,  Biology           ,  Pierins, Bill
+    10109  ,  58  ,  Biology           ,  Barbosa, Tammy
+    10110  ,  43  ,  Biology           ,  White, Patty
+    10111  ,  40  ,  Biology           ,  Ladner, Beth
+    10112  ,  24  ,  Biology           ,  Glover, Ross
+    10113  ,  50  ,  Biology           ,  Dyer, Elizabeth
+    10114  ,  57  ,  Biology           ,  Dow, Ann
+    10115  ,  41  ,  Biology           ,  Below, Linda
+    10116  ,  54  ,  Biology           ,  Dell, Al
+    10117  ,  66  ,  Biology           ,  Bergin, Vicky
+    10118  ,  52  ,  Biology           ,  Guerry, Linda
+    10119  ,  32  ,  Biology           ,  Skelly, Greg
+    10120  ,  26  ,  Biology           ,  Lipscomb, Lois
+    10121  ,  35  ,  Biology           ,  Duke, Janet
+    10122  ,  30  ,  Biology           ,  Biery, Linda
+    10123  ,  54  ,  Biology           ,  Zygmunt, Amy
+    10124  ,  24  ,  Biology           ,  Williams, Larry
+    10125  ,  45  ,  Biology           ,  Terwelp, Diane
+    10126  ,  61  ,  Biology           ,  Trommer, Pat
+    10127  ,  30  ,  Biology           ,  Padilla, Gina
+    10128  ,  24  ,  Biology           ,  Walser, Maryanne
+    10129  ,  58  ,  Biology           ,  Clifton, Georgia
+    10301  ,  65  ,  Anthropology      ,  Darling, Donna
+    10302  ,  47  ,  Anthropology      ,  Holden, Heather
+    10303  ,  46  ,  Anthropology      ,  Goodwin, Diane
+    10304  ,  67  ,  Anthropology      ,  Swope, Jeanie
+    10305  ,  41  ,  Anthropology      ,  Dixon, Royce
+    10306  ,  69  ,  Anthropology      ,  Braun, John
+    10307  ,  24  ,  Anthropology      ,  Durst, Pam
+    10308  ,  37  ,  Anthropology      ,  Kupits, Steve
+    10309  ,  60  ,  Anthropology      ,  Reese, Anita
+    10310  ,  39  ,  Anthropology      ,  Wiggins, Terry
+    10311  ,  61  ,  Anthropology      ,  Dent, Dennis
+    10312  ,  58  ,  Anthropology      ,  Donovan, Pat
+    10313  ,  45  ,  Anthropology      ,  Brooks, Pat
+    10314  ,  56  ,  Anthropology      ,  Schwertner, Sherri
+    10315  ,  52  ,  Anthropology      ,  Leonpacher, Jennifer
+    10316  ,  59  ,  Anthropology      ,  Casey, Jan
+    10317  ,  32  ,  Anthropology      ,  Mustin, A.K.
+    10318  ,  49  ,  Anthropology      ,  Sullivan, Evie
+    10319  ,  62  ,  Anthropology      ,  Mims, Shirley
+    10320  ,  53  ,  Anthropology      ,  Mciver, Janice
+    10321  ,  48  ,  Anthropology      ,  Ivy, Mary
+    10322  ,  34  ,  Anthropology      ,  Stone, Roberta
+    10323  ,  43  ,  Anthropology      ,  Pace, Kahryn
+    10324  ,  47  ,  Anthropology      ,  Patterson, Nancy
+    10325  ,  37  ,  Anthropology      ,  Salone, Susan
+    10326  ,  43  ,  Anthropology      ,  Lyon, Michael
+    10327  ,  59  ,  Anthropology      ,  Williamson, Tricia
+    10328  ,  36  ,  Anthropology      ,  Cross, Chris
+    10329  ,  53  ,  Anthropology      ,  Planta, Joyce
+    10330  ,  24  ,  Anthropology      ,  Packherser, Vickie
+    10331  ,  69  ,  Anthropology      ,  McKnight, Hoanne
+    10401  ,  61  ,  Architecture      ,  Perry, Karen
+    10402  ,  40  ,  Architecture      ,  Thompson, Nicole
+    10403  ,  60  ,  Architecture      ,  Smith, Don
+    10404  ,  50  ,  Architecture      ,  Matthews, Jill
+    10405  ,  26  ,  Architecture      ,  Mutter, Les
+    10406  ,  62  ,  Architecture      ,  Davis, Alice
+    10407  ,  38  ,  Architecture      ,  Hunt, Jane
+    10408  ,  33  ,  Architecture      ,  Stinson, Greg
+    10409  ,  38  ,  Architecture      ,  Longley, Mark
+    10410  ,  36  ,  Architecture      ,  Earl, Jerry
+    10411  ,  28  ,  Architecture      ,  Zogg, John
+    10412  ,  34  ,  Architecture      ,  Williams, Cynthia
+    10413  ,  63  ,  Architecture      ,  Holt, Brian
+    10414  ,  58  ,  Architecture      ,  Sanders, Mike
+    10415  ,  61  ,  Architecture      ,  Webster, Mark
+    10416  ,  41  ,  Architecture      ,  Blagg, Kathy
+    10417  ,  44  ,  Architecture      ,  Hadaway, Beverly
+    10418  ,  39  ,  Architecture      ,  Atherton, Susan
+    10419  ,  26  ,  Architecture      ,  Wolf, Ann
+    10420  ,  58  ,  Architecture      ,  Johle, Sandy
+    10421  ,  24  ,  Architecture      ,  Harms, Fontaine
+    10422  ,  53  ,  Architecture      ,  Luther, Mary
+    10423  ,  65  ,  Architecture      ,  Durand, Catherine
+    10424  ,  24  ,  Architecture      ,  Richardson, Elizabeth
+    10425  ,  53  ,  Architecture      ,  Bourne, Katleen
+    10426  ,  42  ,  Architecture      ,  Harrison, John
+    10501  ,  28  ,  Chemistry         ,  Gil, Belinda
+    10502  ,  47  ,  Chemistry         ,  Byors, Anne
+    10503  ,  51  ,  Chemistry         ,  Akin, Monica
+    10504  ,  68  ,  Chemistry         ,  Sonna, Caruth
+    10505  ,  34  ,  Chemistry         ,  Gary, Jim
+    10506  ,  48  ,  Chemistry         ,  Sorrell, Nathalie
+    10507  ,  37  ,  Chemistry         ,  Waring, Melinda
+    10508  ,  54  ,  Chemistry         ,  Houston, Katherine
+    10509  ,  37  ,  Chemistry         ,  Ayad, Vic
+    10510  ,  32  ,  Chemistry         ,  Lalinas, Felipe
+    10511  ,  57  ,  Chemistry         ,  Janicek, Nancy
+    10512  ,  42  ,  Chemistry         ,  Carr, Virginia
+    10513  ,  36  ,  Chemistry         ,  Mason, Glen
+    10514  ,  52  ,  Chemistry         ,  Smith, Bill
+    10515  ,  69  ,  Chemistry         ,  Chapa, Carola
+    10516  ,  61  ,  Chemistry         ,  Leonard, Niki
+    10517  ,  38  ,  Chemistry         ,  Shaw, Camille
+    10518  ,  64  ,  Chemistry         ,  Reid, Jennifer
+    10519  ,  41  ,  Chemistry         ,  Baker, Kathy
+    10520  ,  51  ,  Chemistry         ,  Nix, Toni
+    10521  ,  33  ,  Chemistry         ,  Linn, Emma
+    10522  ,  38  ,  Chemistry         ,  Suess, Ellen
+    10523  ,  30  ,  Chemistry         ,  Lively, Mary
+    10524  ,  30  ,  Chemistry         ,  Mersky-Poole, Ruth
+    10525  ,  61  ,  Chemistry         ,  Muennink, Pat
+    10526  ,  63  ,  Chemistry         ,  Hernandez, Brenda
+    10527  ,  50  ,  Chemistry         ,  Reece, Johanna
+    10528  ,  27  ,  Chemistry         ,  Numley, Rhonda
+    10529  ,  30  ,  Chemistry         ,  Derosa, Steven
+    10701  ,  59  ,  Philosophy        ,  Whitten, Lynn
+    10702  ,  47  ,  Philosophy        ,  Deutchman, Cherie
+    10703  ,  58  ,  Philosophy        ,  Zeek, Tonda
+    10704  ,  54  ,  Philosophy        ,  Harms, John
+    10705  ,  28  ,  Philosophy        ,  Goad, Clayton
+    10706  ,  30  ,  Philosophy        ,  Bayne, Bette
+    10707  ,  50  ,  Philosophy        ,  Galbreath, Bret
+    10708  ,  39  ,  Philosophy        ,  House, Debbie
+    10709  ,  36  ,  Philosophy        ,  Whitten, Virginia
+    10710  ,  43  ,  Philosophy        ,  Mersky, Deena
+    10711  ,  32  ,  Philosophy        ,  Hardesty, Ava
+    10712  ,  37  ,  Philosophy        ,  Stokes, Gay
+    10713  ,  64  ,  Philosophy        ,  Perry, Sue
+    10714  ,  54  ,  Philosophy        ,  Perez, Leola
+    10715  ,  43  ,  Philosophy        ,  Tillinghast, Kathy
+    10717  ,  24  ,  Philosophy        ,  Wright, Judith
+    10718  ,  51  ,  Philosophy        ,  Ellis, John
+    10719  ,  27  ,  Philosophy        ,  Pasta, Plus
+    10720  ,  66  ,  Philosophy        ,  Shell, Ford
+    10721  ,  29  ,  Philosophy        ,  Smith, Donna
+    10722  ,  30  ,  Philosophy        ,  Lara, Pamela
+    10723  ,  24  ,  Philosophy        ,  Hardwich, Karen
+    10724  ,  35  ,  Philosophy        ,  Kelly, Teri
+    10725  ,  55  ,  Philosophy        ,  Shaunessy, Michele
+    10726  ,  49  ,  Philosophy        ,  Ferrell, Melinda
+    10727  ,  35  ,  Philosophy        ,  Radcliff, Katheryn
+    10728  ,  38  ,  Philosophy        ,  Slusser, Cathy
+    10729  ,  41  ,  Philosophy        ,  Vanderkolk, Mark
+    10730  ,  47  ,  Philosophy        ,  Sottile, Joy
+    10731  ,  26  ,  Philosophy        ,  Blizzard, Roy
+    10732  ,  24  ,  Philosophy        ,  Swenson, Kayla
+    10733  ,  44  ,  Philosophy        ,  Weber, Pam
+    10801  ,  25  ,  Latin Studies     ,  Pellinat, Martin
+    10802  ,  34  ,  Latin Studies     ,  Graff, Bill
+    10803  ,  35  ,  Latin Studies     ,  Spurr, Sharon
+    10804  ,  59  ,  Latin Studies     ,  Tomlin, Phil
+    10805  ,  56  ,  Latin Studies     ,  Safady, Ronda
+    10806  ,  26  ,  Latin Studies     ,  Muskrella, John
+    10807  ,  50  ,  Latin Studies     ,  Rider, Bobby
+    10808  ,  26  ,  Latin Studies     ,  Gore, Nancy
+    10809  ,  24  ,  Latin Studies     ,  Wiman, Janet
+    10810  ,  47  ,  Latin Studies     ,  Daugherty, Patty
+    10811  ,  65  ,  Latin Studies     ,  Cummings, Laura
+    10812  ,  34  ,  Latin Studies     ,  Myers, Cecil
+    10813  ,  43  ,  Latin Studies     ,  Beegs, Chris
+    10814  ,  52  ,  Latin Studies     ,  Erard, Carol
+    10815  ,  40  ,  Latin Studies     ,  Neunhoffer, Neal
+    10816  ,  68  ,  Latin Studies     ,  Barry, Pat
+    10817  ,  58  ,  Latin Studies     ,  Grieg, Robbie
+    10818  ,  27  ,  Latin Studies     ,  Traweek, Kathy
+    10819  ,  45  ,  Latin Studies     ,  Rhodes, Jody
+    10820  ,  25  ,  Latin Studies     ,  Hawkins, Catherine
+    10821  ,  56  ,  Latin Studies     ,  Graham, Sam
+    10822  ,  66  ,  Latin Studies     ,  Jobe, Mike
+    10823  ,  51  ,  Latin Studies     ,  Estill, Ronald
+    10824  ,  24  ,  Latin Studies     ,  Solter, Eddie
+    10825  ,  48  ,  Latin Studies     ,  Kendrick, Joann
+    10826  ,  36  ,  Latin Studies     ,  Arimes, Sharon
+    10827  ,  36  ,  Latin Studies     ,  Ward, Melissa
+    10828  ,  40  ,  Latin Studies     ,  Miller, Lisa
+    10829  ,  32  ,  Latin Studies     ,  Beerman, Norma
+    10830  ,  49  ,  Latin Studies     ,  Lesso, Anne
+    10831  ,  69  ,  Latin Studies     ,  White, Michael
+    10832  ,  32  ,  Latin Studies     ,  Johanson, Barbara
+    10833  ,  24  ,  Latin Studies     ,  Jones, Mary
+    10834  ,  38  ,  Latin Studies     ,  Johns, Leslie
+    10835  ,  63  ,  Latin Studies     ,  Eads, Vivian
+    10836  ,  64  ,  Latin Studies     ,  Moores, Leslie
+    10837  ,  29  ,  Latin Studies     ,  Spellman, Mary
+    11001  ,  24  ,  Liberal Arts      ,  Alexander, Joe
+    11002  ,  48  ,  Liberal Arts      ,  Balagia, Jack
+    11003  ,  64  ,  Liberal Arts      ,  Thomas, Tina
+    11004  ,  54  ,  Liberal Arts      ,  Beckner, B.M.
+    11005  ,  39  ,  Liberal Arts      ,  Wilchar, Ginger
+    11006  ,  50  ,  Liberal Arts      ,  Buckley, Carolyn
+    11007  ,  43  ,  Liberal Arts      ,  Scheynailder, Mark
+    11008  ,  41  ,  Liberal Arts      ,  Murrell, Adam
+    11009  ,  31  ,  Liberal Arts      ,  Klingman, Darwin
+    11010  ,  45  ,  Liberal Arts      ,  Anderson, Suzanne
+    11011  ,  30  ,  Liberal Arts      ,  Lim, Sook
+    11012  ,  41  ,  Liberal Arts      ,  Ham, Tracy
+    11013  ,  36  ,  Liberal Arts      ,  Fagen, Joe
+    11014  ,  31  ,  Liberal Arts      ,  Jones, Lisa
+    11015  ,  54  ,  Liberal Arts      ,  Sanchez, Aurora
+    11016  ,  62  ,  Liberal Arts      ,  Percifull, Becky
+    11017  ,  46  ,  Liberal Arts      ,  Dabbs, Larry
+    11018  ,  24  ,  Liberal Arts      ,  Kinsley, Barbara
+    11019  ,  52  ,  Liberal Arts      ,  Goldman, Linda
+    11020  ,  66  ,  Liberal Arts      ,  Rhode, Marcia
+    11021  ,  38  ,  Liberal Arts      ,  Moores, Julie
+    11022  ,  31  ,  Liberal Arts      ,  Graham, Bill
+    11023  ,  53  ,  Liberal Arts      ,  Dabbs, Bryan
+    11024  ,  60  ,  Liberal Arts      ,  McConnell, Carol
+    11026  ,  48  ,  Liberal Arts      ,  Clark, Charles
+    11027  ,  26  ,  Liberal Arts      ,  Fuller, Jill
+    11028  ,  43  ,  Liberal Arts      ,  Daily, John
+    11029  ,  53  ,  Liberal Arts      ,  Weichert, Margaret
+    11030  ,  26  ,  Liberal Arts      ,  Zahn, Cayce
+    11031  ,  63  ,  Liberal Arts      ,  Tims, Mary
+    11032  ,  29  ,  Liberal Arts      ,  Boone, Bebe
+    11033  ,  43  ,  Liberal Arts      ,  Wilkins, Rosemary
+    11034  ,  25  ,  Liberal Arts      ,  Andrews, John
+    11035  ,  41  ,  Liberal Arts      ,  Coleman, Bill
+    11101  ,  34  ,  Pre-medicine      ,  Kelly, Kim
+    11102  ,  33  ,  Pre-medicine      ,  Flores, Valentina
+    11103  ,  47  ,  Pre-medicine      ,  Avera, Jean
+    11104  ,  56  ,  Pre-medicine      ,  Kwisely, Mark
+    11105  ,  47  ,  Pre-medicine      ,  Jenkins, Marcella
+    11106  ,  35  ,  Pre-medicine      ,  Poorman, Katie
+    11107  ,  48  ,  Pre-medicine      ,  Penn, Virginia
+    11108  ,  64  ,  Pre-medicine      ,  Smith, David
+    11109  ,  42  ,  Pre-medicine      ,  Doughtery, Priscilla
+    11110  ,  60  ,  Pre-medicine      ,  Benecke, Kathleen
+    11111  ,  35  ,  Pre-medicine      ,  Tassin, Felix
+    11112  ,  59  ,  Pre-medicine      ,  Watson, Deborah
+    11113  ,  52  ,  Pre-medicine      ,  Coedes, John
+    11114  ,  56  ,  Pre-medicine      ,  Nietfell, Craig
+    11115  ,  27  ,  Pre-medicine      ,  Perry, Betty
+    11116  ,  48  ,  Pre-medicine      ,  Corder, Jeanne
+    11117  ,  60  ,  Pre-medicine      ,  Luke, Joe
+    11118  ,  56  ,  Pre-medicine      ,  Bundy, Stevie
+    11119  ,  24  ,  Pre-medicine      ,  Black, Beverly
+    11120  ,  39  ,  Pre-medicine      ,  Mussett, Brett
+    11121  ,  41  ,  Pre-medicine      ,  Rose, Jerry
+    11122  ,  63  ,  Pre-medicine      ,  Mikeska, Mary
+    11123  ,  55  ,  Pre-medicine      ,  Staat, Katherine
+    11124  ,  60  ,  Pre-medicine      ,  Hanisen, Grace
+    11125  ,  32  ,  Pre-medicine      ,  Bell, Brenda
+    11126  ,  48  ,  Pre-medicine      ,  Hayes, Helen
+    11127  ,  45  ,  Pre-medicine      ,  Willis, Shirley
+    11128  ,  42  ,  Pre-medicine      ,  Lamb, Bridget
+    11129  ,  51  ,  Pre-medicine      ,  Heberly, Jill
+    11130  ,  37  ,  Pre-medicine      ,  Perry, George
+    11201  ,  51  ,  History           ,  Tobloka, Rick
+    11202  ,  34  ,  History           ,  Ney, Diana
+    11203  ,  34  ,  History           ,  Shawn, Any
+    11204  ,  49  ,  History           ,  Giddings, Monica
+    11205  ,  66  ,  History           ,  Duwe, Blair
+    11206  ,  61  ,  History           ,  Armbrust, Cheryl
+    11207  ,  24  ,  History           ,  Pfeil, Betsy
+    11208  ,  48  ,  History           ,  Durham, Carolyn
+    11209  ,  59  ,  History           ,  McMichael, Kim
+    11210  ,  51  ,  History           ,  Green, Carolyn
+    11211  ,  24  ,  History           ,  Carlson, Judy
+    11212  ,  24  ,  History           ,  Wilson, Ann
+    11213  ,  68  ,  History           ,  Doury, Jennifer
+    11214  ,  27  ,  History           ,  McBrayer, Susan
+    11215  ,  60  ,  History           ,  Wikstrom, Chrysa
+    11216  ,  39  ,  History           ,  Canipe, Sharon
+    11217  ,  61  ,  History           ,  Jefferies, Tricia
+    11218  ,  30  ,  History           ,  Richardson, Carol
+    11219  ,  64  ,  History           ,  Carmichael, Ronda
+    11220  ,  52  ,  History           ,  Smith, Mary
+    11221  ,  25  ,  History           ,  Pilney, Mary
+    11222  ,  35  ,  History           ,  Schreffler, Kay
+    11223  ,  24  ,  History           ,  Ricker, Patricia
+    11224  ,  52  ,  History           ,  Martin, Cindy
+    11225  ,  40  ,  History           ,  Gulla, Susan
+    11226  ,  43  ,  History           ,  Jefferies, Carla
+    11227  ,  24  ,  History           ,  Puentes, Carlos
+    11228  ,  38  ,  History           ,  Washburn, Christy
+    11229  ,  56  ,  History           ,  Pepin, Pat
+    11230  ,  49  ,  History           ,  White, Wynette
+    11231  ,  34  ,  History           ,  Behrend, Sam
+    11232  ,  43  ,  History           ,  Miller, Jill
+    11233  ,  24  ,  History           ,  Willcott, Murphy
+    11234  ,  24  ,  History           ,  Davis, David
+    11235  ,  60  ,  History           ,  Clarkson, Cheryl
+    11236  ,  57  ,  History           ,  Beeson, John
+    11237  ,  34  ,  History           ,  Fullilove, Gena
+    11238  ,  59  ,  History           ,  Johnson, Cynthia
+    11239  ,  50  ,  History           ,  Bindock, James
+    11240  ,  49  ,  History           ,  Shead, Linda
+    11301  ,  58  ,  Zoology           ,  Lockwood, James
+    11302  ,  35  ,  Zoology           ,  Stockton, Barbara
+    11303  ,  44  ,  Zoology           ,  Olvera, Elsa
+    11304  ,  33  ,  Zoology           ,  Braodrick, Linda
+    11305  ,  24  ,  Zoology           ,  McGinty, Ann
+    11306  ,  43  ,  Zoology           ,  Bradshaw, Mary
+    11307  ,  32  ,  Zoology           ,  Tighe, Rosemary
+    11308  ,  24  ,  Zoology           ,  Crouch, Marla
+    11309  ,  43  ,  Zoology           ,  McCann, Jana
+    11310  ,  66  ,  Zoology           ,  Bergeron, Ronnie
+    11311  ,  46  ,  Zoology           ,  Ray, Vicki
+    11312  ,  37  ,  Zoology           ,  Haralson, Lisa
+    11313  ,  60  ,  Zoology           ,  Henson, Diana
+    11314  ,  47  ,  Zoology           ,  Dixon-Eden, Pamela
+    11315  ,  60  ,  Zoology           ,  Williams, Susan
+    11316  ,  28  ,  Zoology           ,  Koskinsy, Frances
+    11317  ,  68  ,  Zoology           ,  Wipperman, Wendy
+    11318  ,  61  ,  Zoology           ,  Vyner, Jeff
+    11319  ,  66  ,  Zoology           ,  Fowler, Kay
+    11320  ,  53  ,  Zoology           ,  Maund, Yvonne
+    11321  ,  51  ,  Zoology           ,  Souther, Greg
+    11322  ,  24  ,  Zoology           ,  Harrison, Jaylene
+    11323  ,  31  ,  Zoology           ,  Epstein, Nancy
+    11324  ,  51  ,  Zoology           ,  Zinnecker, Steve
+    11325  ,  58  ,  Zoology           ,  Eudy, Barbara
+    11326  ,  25  ,  Zoology           ,  Wilson, Karen
+    11327  ,  33  ,  Zoology           ,  Moynahan, Jan
+    11328  ,  36  ,  Zoology           ,  Byrd, Sharon
+    11329  ,  38  ,  Zoology           ,  Sifuentes, Liz
+    11330  ,  38  ,  Zoology           ,  Garza, Debbie
+    11331  ,  32  ,  Zoology           ,  Holland, Jay
+    11332  ,  67  ,  Zoology           ,  Luedke, Lori
+    11333  ,  38  ,  Zoology           ,  Stevens, Marla
+    11334  ,  59  ,  Zoology           ,  Akers, Mark
+    11401  ,  52  ,  Mechanical Eng.   ,  Ellis, Carolyn
+    11402  ,  42  ,  Mechanical Eng.   ,  Kinard, Jeanette
+    11403  ,  43  ,  Mechanical Eng.   ,  Davis, Jeanette
+    11404  ,  25  ,  Mechanical Eng.   ,  Reece, Marsha
+    11405  ,  26  ,  Mechanical Eng.   ,  Massat, Gerhard
+    11406  ,  65  ,  Mechanical Eng.   ,  Perez, Missy
+    11407  ,  69  ,  Mechanical Eng.   ,  Bassion, Susan
+    11408  ,  40  ,  Mechanical Eng.   ,  Anderson, Gwyn
+    11409  ,  49  ,  Mechanical Eng.   ,  Cannon, Erika
+    11410  ,  24  ,  Mechanical Eng.   ,  Root, Janie
+    11411  ,  45  ,  Mechanical Eng.   ,  Taylor, Cathy
+    11412  ,  41  ,  Mechanical Eng.   ,  Andrews, Kay
+    11413  ,  64  ,  Mechanical Eng.   ,  Simmons, E.R.
+    11414  ,  44  ,  Mechanical Eng.   ,  Bosworth, Michael
+    11415  ,  65  ,  Mechanical Eng.   ,  Smith, Jeff
+    11416  ,  36  ,  Mechanical Eng.   ,  Mersky, Lisa
+    11418  ,  51  ,  Mechanical Eng.   ,  Watkins, Larry
+    11419  ,  43  ,  Mechanical Eng.   ,  Moe, Charlene
+    11420  ,  25  ,  Mechanical Eng.   ,  Fine, Judy
+    11421  ,  36  ,  Mechanical Eng.   ,  Pryor, Dwight
+    11422  ,  24  ,  Mechanical Eng.   ,  Weatherford, Ann
+    11423  ,  51  ,  Mechanical Eng.   ,  Mavil, Andrea
+    11424  ,  29  ,  Mechanical Eng.   ,  Morris, Linda
+    11425  ,  32  ,  Mechanical Eng.   ,  Cantu, Cindy
+    11426  ,  30  ,  Mechanical Eng.   ,  Murphy, Andy
+    11501  ,  30  ,  Computer Eng.     ,  Millhollow, Gail
+    11502  ,  26  ,  Computer Eng.     ,  Mendenhall, Laura
+    11503  ,  57  ,  Computer Eng.     ,  Clements, Rick
+    11504  ,  59  ,  Computer Eng.     ,  Gore, Donna
+    11505  ,  44  ,  Computer Eng.     ,  Mathews, Jerry
+    11506  ,  48  ,  Computer Eng.     ,  Paladino, Maureen
+    11507  ,  68  ,  Computer Eng.     ,  Flores, Gina
+    11508  ,  42  ,  Computer Eng.     ,  Hefter, Katie
+    11509  ,  39  ,  Computer Eng.     ,  Vance, Mary
+    11510  ,  42  ,  Computer Eng.     ,  Mercer, Orelia
+    11511  ,  31  ,  Computer Eng.     ,  Kym, Kerin
+    11512  ,  58  ,  Computer Eng.     ,  Manchester, Jane
+    11513  ,  48  ,  Computer Eng.     ,  Stone, Tracy
+    11514  ,  42  ,  Computer Eng.     ,  Yeager, Chris
+    11515  ,  44  ,  Computer Eng.     ,  Castello, Mary
+    11516  ,  34  ,  Computer Eng.     ,  Dabney, Brad
+    11517  ,  56  ,  Computer Eng.     ,  Johnson, Mary
+    11518  ,  43  ,  Computer Eng.     ,  Mussman, David
+    11519  ,  69  ,  Computer Eng.     ,  Carlin, Jennefer
+    11520  ,  49  ,  Computer Eng.     ,  Garza, Quen
+    11521  ,  53  ,  Computer Eng.     ,  Thompson, Margaret
+    11522  ,  35  ,  Computer Eng.     ,  Kinsley, Nanou
+    11523  ,  31  ,  Computer Eng.     ,  Snow, Brenda
+    11524  ,  45  ,  Computer Eng.     ,  Weirich, Roma
+    11525  ,  50  ,  Computer Eng.     ,  Burt, Ruby
+    11526  ,  58  ,  Computer Eng.     ,  Thoresrud, Carole
+    11527  ,  25  ,  Computer Eng.     ,  Percorella, Leo
+    11528  ,  56  ,  Computer Eng.     ,  Montgomedry, Cheryle
+    11529  ,  49  ,  Computer Eng.     ,  Davis, Tony
+    11530  ,  24  ,  Computer Eng.     ,  Barber, Gretchen
+    11531  ,  68  ,  Computer Eng.     ,  Reagor, Barbara
+    11532  ,  31  ,  Computer Eng.     ,  Hibbitts, Laura
+    11533  ,  53  ,  Computer Eng.     ,  Morales, Marilou
+    11534  ,  28  ,  Computer Eng.     ,  Priesnetz, Joe
+    11601  ,  48  ,  Archeology        ,  Kraft, Karen
+    11602  ,  32  ,  Archeology        ,  Myers, Bill
+    11603  ,  27  ,  Archeology        ,  Werrbach, Gail
+    11604  ,  36  ,  Archeology        ,  Hebbe, Ann
+    11605  ,  48  ,  Archeology        ,  Lewis, Debra
+    11606  ,  45  ,  Archeology        ,  Friedland, Leonard
+    11607  ,  25  ,  Archeology        ,  Escobedo, Olga
+    11608  ,  44  ,  Archeology        ,  Gall, Sandy
+    11609  ,  24  ,  Archeology        ,  Vanderford, Frankie
+    11610  ,  43  ,  Archeology        ,  David, Sandra
+    11611  ,  67  ,  Archeology        ,  Nelson, David
+    11612  ,  63  ,  Archeology        ,  Stenicka, Kitzi
+    11613  ,  53  ,  Archeology        ,  Schwartz, Barbara
+    11614  ,  34  ,  Archeology        ,  Harber, Charlotte
+    11615  ,  65  ,  Archeology        ,  Anderson, Mary
+    11616  ,  28  ,  Archeology        ,  Foster, Peggy
+    11617  ,  24  ,  Archeology        ,  Hardy, Melanie
+    11618  ,  45  ,  Archeology        ,  Bryant, Cynthia
+    11619  ,  47  ,  Archeology        ,  Banks, Richard
+    11620  ,  62  ,  Archeology        ,  Vallis, Mary
+    11621  ,  43  ,  Archeology        ,  Benson, Kathy
+    11622  ,  27  ,  Archeology        ,  Foryce, Fred
+    11623  ,  56  ,  Archeology        ,  Pils, Maryanne
+    11624  ,  68  ,  Archeology        ,  King, Norris
+    11625  ,  63  ,  Archeology        ,  Hooper, Melody
+    11626  ,  51  ,  Archeology        ,  Geppert, Rolo
+    11627  ,  36  ,  Archeology        ,  Irwin, Trudy
+    11628  ,  32  ,  Archeology        ,  Zoe, John
+    11629  ,  47  ,  Archeology        ,  Hall, Carolyn
+    11630  ,  65  ,  Archeology        ,  Grillot, Karen
+
+ Delete those dept() == "Computer Science" (orderby -name) 
+
+    10123  ,  54  ,  Computer Science  ,  Zygmunt, Amy
+    10411  ,  28  ,  Computer Science  ,  Zogg, John
+    11628  ,  32  ,  Computer Science  ,  Zoe, John
+    11324  ,  51  ,  Computer Science  ,  Zinnecker, Steve
+    10703  ,  58  ,  Computer Science  ,  Zeek, Tonda
+    11030  ,  26  ,  Computer Science  ,  Zahn, Cayce
+    11514  ,  42  ,  Computer Science  ,  Yeager, Chris
+    10717  ,  24  ,  Computer Science  ,  Wright, Judith
+    10419  ,  26  ,  Computer Science  ,  Wolf, Ann
+    11317  ,  68  ,  Computer Science  ,  Wipperman, Wendy
+    10809  ,  24  ,  Computer Science  ,  Wiman, Janet
+    11326  ,  25  ,  Computer Science  ,  Wilson, Karen
+    11212  ,  24  ,  Computer Science  ,  Wilson, Ann
+    11127  ,  45  ,  Computer Science  ,  Willis, Shirley
+    10327  ,  59  ,  Computer Science  ,  Williamson, Tricia
+    11315  ,  60  ,  Computer Science  ,  Williams, Susan
+    10124  ,  24  ,  Computer Science  ,  Williams, Larry
+    10412  ,  34  ,  Computer Science  ,  Williams, Cynthia
+    11233  ,  24  ,  Computer Science  ,  Willcott, Murphy
+    11033  ,  43  ,  Computer Science  ,  Wilkins, Rosemary
+    11005  ,  39  ,  Computer Science  ,  Wilchar, Ginger
+    11215  ,  60  ,  Computer Science  ,  Wikstrom, Chrysa
+    10310  ,  39  ,  Computer Science  ,  Wiggins, Terry
+    10709  ,  36  ,  Computer Science  ,  Whitten, Virginia
+    10701  ,  59  ,  Computer Science  ,  Whitten, Lynn
+    11230  ,  49  ,  Computer Science  ,  White, Wynette
+    10110  ,  43  ,  Computer Science  ,  White, Patty
+    10831  ,  69  ,  Computer Science  ,  White, Michael
+    11603  ,  27  ,  Computer Science  ,  Werrbach, Gail
+    11524  ,  45  ,  Computer Science  ,  Weirich, Roma
+    11029  ,  53  ,  Computer Science  ,  Weichert, Margaret
+    10415  ,  61  ,  Computer Science  ,  Webster, Mark
+    10733  ,  44  ,  Computer Science  ,  Weber, Pam
+    11422  ,  24  ,  Computer Science  ,  Weatherford, Ann
+    11112  ,  59  ,  Computer Science  ,  Watson, Deborah
+    11418  ,  51  ,  Computer Science  ,  Watkins, Larry
+    11228  ,  38  ,  Computer Science  ,  Washburn, Christy
+    10507  ,  37  ,  Computer Science  ,  Waring, Melinda
+    10827  ,  36  ,  Computer Science  ,  Ward, Melissa
+    10128  ,  24  ,  Computer Science  ,  Walser, Maryanne
+    11318  ,  61  ,  Computer Science  ,  Vyner, Jeff
+    10729  ,  41  ,  Computer Science  ,  Vanderkolk, Mark
+    11609  ,  24  ,  Computer Science  ,  Vanderford, Frankie
+    11509  ,  39  ,  Computer Science  ,  Vance, Mary
+    11620  ,  62  ,  Computer Science  ,  Vallis, Mary
+    10126  ,  61  ,  Computer Science  ,  Trommer, Pat
+    10818  ,  27  ,  Computer Science  ,  Traweek, Kathy
+    10804  ,  59  ,  Computer Science  ,  Tomlin, Phil
+    11201  ,  51  ,  Computer Science  ,  Tobloka, Rick
+    11031  ,  63  ,  Computer Science  ,  Tims, Mary
+    10715  ,  43  ,  Computer Science  ,  Tillinghast, Kathy
+    11307  ,  32  ,  Computer Science  ,  Tighe, Rosemary
+    11526  ,  58  ,  Computer Science  ,  Thoresrud, Carole
+    10402  ,  40  ,  Computer Science  ,  Thompson, Nicole
+    11521  ,  53  ,  Computer Science  ,  Thompson, Margaret
+    11003  ,  64  ,  Computer Science  ,  Thomas, Tina
+    10125  ,  45  ,  Computer Science  ,  Terwelp, Diane
+    11411  ,  45  ,  Computer Science  ,  Taylor, Cathy
+    11111  ,  35  ,  Computer Science  ,  Tassin, Felix
+    10304  ,  67  ,  Computer Science  ,  Swope, Jeanie
+    10732  ,  24  ,  Computer Science  ,  Swenson, Kayla
+    10318  ,  49  ,  Computer Science  ,  Sullivan, Evie
+    10522  ,  38  ,  Computer Science  ,  Suess, Ellen
+    11513  ,  48  ,  Computer Science  ,  Stone, Tracy
+    10322  ,  34  ,  Computer Science  ,  Stone, Roberta
+    10712  ,  37  ,  Computer Science  ,  Stokes, Gay
+    11302  ,  35  ,  Computer Science  ,  Stockton, Barbara
+    10408  ,  33  ,  Computer Science  ,  Stinson, Greg
+    11333  ,  38  ,  Computer Science  ,  Stevens, Marla
+    11612  ,  63  ,  Computer Science  ,  Stenicka, Kitzi
+    11123  ,  55  ,  Computer Science  ,  Staat, Katherine
+    10803  ,  35  ,  Computer Science  ,  Spurr, Sharon
+    10837  ,  29  ,  Computer Science  ,  Spellman, Mary
+    11321  ,  51  ,  Computer Science  ,  Souther, Greg
+    10730  ,  47  ,  Computer Science  ,  Sottile, Joy
+    10506  ,  48  ,  Computer Science  ,  Sorrell, Nathalie
+    10504  ,  68  ,  Computer Science  ,  Sonna, Caruth
+    10824  ,  24  ,  Computer Science  ,  Solter, Eddie
+    11523  ,  31  ,  Computer Science  ,  Snow, Brenda
+    11220  ,  52  ,  Computer Science  ,  Smith, Mary
+    11415  ,  65  ,  Computer Science  ,  Smith, Jeff
+    10721  ,  29  ,  Computer Science  ,  Smith, Donna
+    10403  ,  60  ,  Computer Science  ,  Smith, Don
+    11108  ,  64  ,  Computer Science  ,  Smith, David
+    10514  ,  52  ,  Computer Science  ,  Smith, Bill
+    10728  ,  38  ,  Computer Science  ,  Slusser, Cathy
+    10119  ,  32  ,  Computer Science  ,  Skelly, Greg
+    11413  ,  64  ,  Computer Science  ,  Simmons, E.R.
+    11329  ,  38  ,  Computer Science  ,  Sifuentes, Liz
+    10720  ,  66  ,  Computer Science  ,  Shell, Ford
+    11240  ,  49  ,  Computer Science  ,  Shead, Linda
+    11203  ,  34  ,  Computer Science  ,  Shawn, Any
+    10517  ,  38  ,  Computer Science  ,  Shaw, Camille
+    10725  ,  55  ,  Computer Science  ,  Shaunessy, Michele
+    10314  ,  56  ,  Computer Science  ,  Schwertner, Sherri
+    11613  ,  53  ,  Computer Science  ,  Schwartz, Barbara
+    11222  ,  35  ,  Computer Science  ,  Schreffler, Kay
+    11007  ,  43  ,  Computer Science  ,  Scheynailder, Mark
+    10414  ,  58  ,  Computer Science  ,  Sanders, Mike
+    11015  ,  54  ,  Computer Science  ,  Sanchez, Aurora
+    10325  ,  37  ,  Computer Science  ,  Salone, Susan
+    10805  ,  56  ,  Computer Science  ,  Safady, Ronda
+    11121  ,  41  ,  Computer Science  ,  Rose, Jerry
+    11410  ,  24  ,  Computer Science  ,  Root, Janie
+    10807  ,  50  ,  Computer Science  ,  Rider, Bobby
+    11223  ,  24  ,  Computer Science  ,  Ricker, Patricia
+    10424  ,  24  ,  Computer Science  ,  Richardson, Elizabeth
+    11218  ,  30  ,  Computer Science  ,  Richardson, Carol
+    10819  ,  45  ,  Computer Science  ,  Rhodes, Jody
+    11020  ,  66  ,  Computer Science  ,  Rhode, Marcia
+    10518  ,  64  ,  Computer Science  ,  Reid, Jennifer
+    10309  ,  60  ,  Computer Science  ,  Reese, Anita
+    11404  ,  25  ,  Computer Science  ,  Reece, Marsha
+    10527  ,  50  ,  Computer Science  ,  Reece, Johanna
+    11531  ,  68  ,  Computer Science  ,  Reagor, Barbara
+    11311  ,  46  ,  Computer Science  ,  Ray, Vicki
+    10727  ,  35  ,  Computer Science  ,  Radcliff, Katheryn
+    11227  ,  24  ,  Computer Science  ,  Puentes, Carlos
+    11421  ,  36  ,  Computer Science  ,  Pryor, Dwight
+    11534  ,  28  ,  Computer Science  ,  Priesnetz, Joe
+    11106  ,  35  ,  Computer Science  ,  Poorman, Katie
+    10329  ,  53  ,  Computer Science  ,  Planta, Joyce
+    11623  ,  56  ,  Computer Science  ,  Pils, Maryanne
+    11221  ,  25  ,  Computer Science  ,  Pilney, Mary
+    10108  ,  43  ,  Computer Science  ,  Pierins, Bill
+    11207  ,  24  ,  Computer Science  ,  Pfeil, Betsy
+    10713  ,  64  ,  Computer Science  ,  Perry, Sue
+    10401  ,  61  ,  Computer Science  ,  Perry, Karen
+    11130  ,  37  ,  Computer Science  ,  Perry, George
+    11115  ,  27  ,  Computer Science  ,  Perry, Betty
+    11406  ,  65  ,  Computer Science  ,  Perez, Missy
+    10714  ,  54  ,  Computer Science  ,  Perez, Leola
+    11527  ,  25  ,  Computer Science  ,  Percorella, Leo
+    11016  ,  62  ,  Computer Science  ,  Percifull, Becky
+    11229  ,  56  ,  Computer Science  ,  Pepin, Pat
+    11107  ,  48  ,  Computer Science  ,  Penn, Virginia
+    10801  ,  25  ,  Computer Science  ,  Pellinat, Martin
+    10324  ,  47  ,  Computer Science  ,  Patterson, Nancy
+    10719  ,  27  ,  Computer Science  ,  Pasta, Plus
+    11506  ,  48  ,  Computer Science  ,  Paladino, Maureen
+    10127  ,  30  ,  Computer Science  ,  Padilla, Gina
+    10330  ,  24  ,  Computer Science  ,  Packherser, Vickie
+    10323  ,  43  ,  Computer Science  ,  Pace, Kahryn
+    11303  ,  44  ,  Computer Science  ,  Olvera, Elsa
+    10528  ,  27  ,  Computer Science  ,  Numley, Rhonda
+    10520  ,  51  ,  Computer Science  ,  Nix, Toni
+    11114  ,  56  ,  Computer Science  ,  Nietfell, Craig
+    11202  ,  34  ,  Computer Science  ,  Ney, Diana
+    10815  ,  40  ,  Computer Science  ,  Neunhoffer, Neal
+    11611  ,  67  ,  Computer Science  ,  Nelson, David
+    10812  ,  34  ,  Computer Science  ,  Myers, Cecil
+    11602  ,  32  ,  Computer Science  ,  Myers, Bill
+    10405  ,  26  ,  Computer Science  ,  Mutter, Les
+    10317  ,  32  ,  Computer Science  ,  Mustin, A.K.
+    11518  ,  43  ,  Computer Science  ,  Mussman, David
+    11120  ,  39  ,  Computer Science  ,  Mussett, Brett
+    10806  ,  26  ,  Computer Science  ,  Muskrella, John
+    11008  ,  41  ,  Computer Science  ,  Murrell, Adam
+    11426  ,  30  ,  Computer Science  ,  Murphy, Andy
+    10525  ,  61  ,  Computer Science  ,  Muennink, Pat
+    11327  ,  33  ,  Computer Science  ,  Moynahan, Jan
+    11424  ,  29  ,  Computer Science  ,  Morris, Linda
+    11533  ,  53  ,  Computer Science  ,  Morales, Marilou
+    10836  ,  64  ,  Computer Science  ,  Moores, Leslie
+    11021  ,  38  ,  Computer Science  ,  Moores, Julie
+    11528  ,  56  ,  Computer Science  ,  Montgomedry, Cheryle
+    11419  ,  43  ,  Computer Science  ,  Moe, Charlene
+    10319  ,  62  ,  Computer Science  ,  Mims, Shirley
+    11501  ,  30  ,  Computer Science  ,  Millhollow, Gail
+    10828  ,  40  ,  Computer Science  ,  Miller, Lisa
+    11232  ,  43  ,  Computer Science  ,  Miller, Jill
+    11122  ,  63  ,  Computer Science  ,  Mikeska, Mary
+    10524  ,  30  ,  Computer Science  ,  Mersky-Poole, Ruth
+    11416  ,  36  ,  Computer Science  ,  Mersky, Lisa
+    10710  ,  43  ,  Computer Science  ,  Mersky, Deena
+    11510  ,  42  ,  Computer Science  ,  Mercer, Orelia
+    11502  ,  26  ,  Computer Science  ,  Mendenhall, Laura
+    10320  ,  53  ,  Computer Science  ,  Mciver, Janice
+    11209  ,  59  ,  Computer Science  ,  McMichael, Kim
+    10331  ,  69  ,  Computer Science  ,  McKnight, Hoanne
+    11305  ,  24  ,  Computer Science  ,  McGinty, Ann
+    11024  ,  60  ,  Computer Science  ,  McConnell, Carol
+    11309  ,  43  ,  Computer Science  ,  McCann, Jana
+    11214  ,  27  ,  Computer Science  ,  McBrayer, Susan
+    11423  ,  51  ,  Computer Science  ,  Mavil, Andrea
+    11320  ,  53  ,  Computer Science  ,  Maund, Yvonne
+    10404  ,  50  ,  Computer Science  ,  Matthews, Jill
+    11505  ,  44  ,  Computer Science  ,  Mathews, Jerry
+    11405  ,  26  ,  Computer Science  ,  Massat, Gerhard
+    10513  ,  36  ,  Computer Science  ,  Mason, Glen
+    11224  ,  52  ,  Computer Science  ,  Martin, Cindy
+    11512  ,  58  ,  Computer Science  ,  Manchester, Jane
+    10326  ,  43  ,  Computer Science  ,  Lyon, Michael
+    10422  ,  53  ,  Computer Science  ,  Luther, Mary
+    11117  ,  60  ,  Computer Science  ,  Luke, Joe
+    11332  ,  67  ,  Computer Science  ,  Luedke, Lori
+    10409  ,  38  ,  Computer Science  ,  Longley, Mark
+    11301  ,  58  ,  Computer Science  ,  Lockwood, James
+    10523  ,  30  ,  Computer Science  ,  Lively, Mary
+    10120  ,  26  ,  Computer Science  ,  Lipscomb, Lois
+    10521  ,  33  ,  Computer Science  ,  Linn, Emma
+    11011  ,  30  ,  Computer Science  ,  Lim, Sook
+    11605  ,  48  ,  Computer Science  ,  Lewis, Debra
+    10830  ,  49  ,  Computer Science  ,  Lesso, Anne
+    10315  ,  52  ,  Computer Science  ,  Leonpacher, Jennifer
+    10516  ,  61  ,  Computer Science  ,  Leonard, Niki
+    10722  ,  30  ,  Computer Science  ,  Lara, Pamela
+    11128  ,  42  ,  Computer Science  ,  Lamb, Bridget
+    10510  ,  32  ,  Computer Science  ,  Lalinas, Felipe
+    10111  ,  40  ,  Computer Science  ,  Ladner, Beth
+    11511  ,  31  ,  Computer Science  ,  Kym, Kerin
+    11104  ,  56  ,  Computer Science  ,  Kwisely, Mark
+    10308  ,  37  ,  Computer Science  ,  Kupits, Steve
+    11601  ,  48  ,  Computer Science  ,  Kraft, Karen
+    11316  ,  28  ,  Computer Science  ,  Koskinsy, Frances
+    11009  ,  31  ,  Computer Science  ,  Klingman, Darwin
+    11522  ,  35  ,  Computer Science  ,  Kinsley, Nanou
+    11018  ,  24  ,  Computer Science  ,  Kinsley, Barbara
+    11624  ,  68  ,  Computer Science  ,  King, Norris
+    11402  ,  42  ,  Computer Science  ,  Kinard, Jeanette
+    10825  ,  48  ,  Computer Science  ,  Kendrick, Joann
+    10724  ,  35  ,  Computer Science  ,  Kelly, Teri
+    11101  ,  34  ,  Computer Science  ,  Kelly, Kim
+    10833  ,  24  ,  Computer Science  ,  Jones, Mary
+    11014  ,  31  ,  Computer Science  ,  Jones, Lisa
+    10106  ,  45  ,  Computer Science  ,  Jones, Janie
+    11517  ,  56  ,  Computer Science  ,  Johnson, Mary
+    11238  ,  59  ,  Computer Science  ,  Johnson, Cynthia
+    10834  ,  38  ,  Computer Science  ,  Johns, Leslie
+    10420  ,  58  ,  Computer Science  ,  Johle, Sandy
+    10832  ,  32  ,  Computer Science  ,  Johanson, Barbara
+    10822  ,  66  ,  Computer Science  ,  Jobe, Mike
+    11105  ,  47  ,  Computer Science  ,  Jenkins, Marcella
+    11217  ,  61  ,  Computer Science  ,  Jefferies, Tricia
+    11226  ,  43  ,  Computer Science  ,  Jefferies, Carla
+    10511  ,  57  ,  Computer Science  ,  Janicek, Nancy
+    10321  ,  48  ,  Computer Science  ,  Ivy, Mary
+    11627  ,  36  ,  Computer Science  ,  Irwin, Trudy
+    10407  ,  38  ,  Computer Science  ,  Hunt, Jane
+    10508  ,  54  ,  Computer Science  ,  Houston, Katherine
+    10708  ,  39  ,  Computer Science  ,  House, Debbie
+    11625  ,  63  ,  Computer Science  ,  Hooper, Melody
+    10413  ,  63  ,  Computer Science  ,  Holt, Brian
+    11331  ,  32  ,  Computer Science  ,  Holland, Jay
+    10302  ,  47  ,  Computer Science  ,  Holden, Heather
+    11532  ,  31  ,  Computer Science  ,  Hibbitts, Laura
+    10526  ,  63  ,  Computer Science  ,  Hernandez, Brenda
+    11313  ,  60  ,  Computer Science  ,  Henson, Diana
+    11508  ,  42  ,  Computer Science  ,  Hefter, Katie
+    11129  ,  51  ,  Computer Science  ,  Heberly, Jill
+    11604  ,  36  ,  Computer Science  ,  Hebbe, Ann
+    11126  ,  48  ,  Computer Science  ,  Hayes, Helen
+    10820  ,  25  ,  Computer Science  ,  Hawkins, Catherine
+    10426  ,  42  ,  Computer Science  ,  Harrison, John
+    11322  ,  24  ,  Computer Science  ,  Harrison, Jaylene
+    10704  ,  54  ,  Computer Science  ,  Harms, John
+    10421  ,  24  ,  Computer Science  ,  Harms, Fontaine
+    11617  ,  24  ,  Computer Science  ,  Hardy, Melanie
+    10723  ,  24  ,  Computer Science  ,  Hardwich, Karen
+    10711  ,  32  ,  Computer Science  ,  Hardesty, Ava
+    11614  ,  34  ,  Computer Science  ,  Harber, Charlotte
+    11312  ,  37  ,  Computer Science  ,  Haralson, Lisa
+    11124  ,  60  ,  Computer Science  ,  Hanisen, Grace
+    11012  ,  41  ,  Computer Science  ,  Ham, Tracy
+    11629  ,  47  ,  Computer Science  ,  Hall, Carolyn
+    10417  ,  44  ,  Computer Science  ,  Hadaway, Beverly
+    11225  ,  40  ,  Computer Science  ,  Gulla, Susan
+    10118  ,  52  ,  Computer Science  ,  Guerry, Linda
+    11630  ,  65  ,  Computer Science  ,  Grillot, Karen
+    10817  ,  58  ,  Computer Science  ,  Grieg, Robbie
+    11210  ,  51  ,  Computer Science  ,  Green, Carolyn
+    10821  ,  56  ,  Computer Science  ,  Graham, Sam
+    11022  ,  31  ,  Computer Science  ,  Graham, Bill
+    10802  ,  34  ,  Computer Science  ,  Graff, Bill
+    10808  ,  26  ,  Computer Science  ,  Gore, Nancy
+    11504  ,  59  ,  Computer Science  ,  Gore, Donna
+    10303  ,  46  ,  Computer Science  ,  Goodwin, Diane
+    11019  ,  52  ,  Computer Science  ,  Goldman, Linda
+    10705  ,  28  ,  Computer Science  ,  Goad, Clayton
+    10112  ,  24  ,  Computer Science  ,  Glover, Ross
+    10103  ,  57  ,  Computer Science  ,  Gill, Sharon
+    10501  ,  28  ,  Computer Science  ,  Gil, Belinda
+    11204  ,  49  ,  Computer Science  ,  Giddings, Monica
+    11626  ,  51  ,  Computer Science  ,  Geppert, Rolo
+    10102  ,  42  ,  Computer Science  ,  Gaudet, Laura
+    11520  ,  49  ,  Computer Science  ,  Garza, Quen
+    11330  ,  38  ,  Computer Science  ,  Garza, Debbie
+    10505  ,  34  ,  Computer Science  ,  Gary, Jim
+    11608  ,  44  ,  Computer Science  ,  Gall, Sandy
+    10707  ,  50  ,  Computer Science  ,  Galbreath, Bret
+    11237  ,  34  ,  Computer Science  ,  Fullilove, Gena
+    11027  ,  26  ,  Computer Science  ,  Fuller, Jill
+    11606  ,  45  ,  Computer Science  ,  Friedland, Leonard
+    11319  ,  66  ,  Computer Science  ,  Fowler, Kay
+    11616  ,  28  ,  Computer Science  ,  Foster, Peggy
+    11622  ,  27  ,  Computer Science  ,  Foryce, Fred
+    11102  ,  33  ,  Computer Science  ,  Flores, Valentina
+    11507  ,  68  ,  Computer Science  ,  Flores, Gina
+    11420  ,  25  ,  Computer Science  ,  Fine, Judy
+    10726  ,  49  ,  Computer Science  ,  Ferrell, Melinda
+    11013  ,  36  ,  Computer Science  ,  Fagen, Joe
+    11325  ,  58  ,  Computer Science  ,  Eudy, Barbara
+    10823  ,  51  ,  Computer Science  ,  Estill, Ronald
+    11607  ,  25  ,  Computer Science  ,  Escobedo, Olga
+    10814  ,  52  ,  Computer Science  ,  Erard, Carol
+    11323  ,  31  ,  Computer Science  ,  Epstein, Nancy
+    10718  ,  51  ,  Computer Science  ,  Ellis, John
+    11401  ,  52  ,  Computer Science  ,  Ellis, Carolyn
+    10410  ,  36  ,  Computer Science  ,  Earl, Jerry
+    10835  ,  63  ,  Computer Science  ,  Eads, Vivian
+    10113  ,  50  ,  Computer Science  ,  Dyer, Elizabeth
+    11205  ,  66  ,  Computer Science  ,  Duwe, Blair
+    10307  ,  24  ,  Computer Science  ,  Durst, Pam
+    11208  ,  48  ,  Computer Science  ,  Durham, Carolyn
+    10423  ,  65  ,  Computer Science  ,  Durand, Catherine
+    10121  ,  35  ,  Computer Science  ,  Duke, Janet
+    10114  ,  57  ,  Computer Science  ,  Dow, Ann
+    11213  ,  68  ,  Computer Science  ,  Doury, Jennifer
+    11109  ,  42  ,  Computer Science  ,  Doughtery, Priscilla
+    10312  ,  58  ,  Computer Science  ,  Donovan, Pat
+    11314  ,  47  ,  Computer Science  ,  Dixon-Eden, Pamela
+    10305  ,  41  ,  Computer Science  ,  Dixon, Royce
+    10702  ,  47  ,  Computer Science  ,  Deutchman, Cherie
+    10529  ,  30  ,  Computer Science  ,  Derosa, Steven
+    10311  ,  61  ,  Computer Science  ,  Dent, Dennis
+    10116  ,  54  ,  Computer Science  ,  Dell, Al
+    11529  ,  49  ,  Computer Science  ,  Davis, Tony
+    11403  ,  43  ,  Computer Science  ,  Davis, Jeanette
+    11234  ,  24  ,  Computer Science  ,  Davis, David
+    10406  ,  62  ,  Computer Science  ,  Davis, Alice
+    11610  ,  43  ,  Computer Science  ,  David, Sandra
+    10810  ,  47  ,  Computer Science  ,  Daugherty, Patty
+    10301  ,  65  ,  Computer Science  ,  Darling, Donna
+    11028  ,  43  ,  Computer Science  ,  Daily, John
+    11516  ,  34  ,  Computer Science  ,  Dabney, Brad
+    11017  ,  46  ,  Computer Science  ,  Dabbs, Larry
+    11023  ,  53  ,  Computer Science  ,  Dabbs, Bryan
+    10811  ,  65  ,  Computer Science  ,  Cummings, Laura
+    11308  ,  24  ,  Computer Science  ,  Crouch, Marla
+    10328  ,  36  ,  Computer Science  ,  Cross, Chris
+    10105  ,  27  ,  Computer Science  ,  Cotrell, Georgia
+    11116  ,  48  ,  Computer Science  ,  Corder, Jeanne
+    11035  ,  41  ,  Computer Science  ,  Coleman, Bill
+    11113  ,  52  ,  Computer Science  ,  Coedes, John
+    10129  ,  58  ,  Computer Science  ,  Clifton, Georgia
+    11503  ,  57  ,  Computer Science  ,  Clements, Rick
+    10104  ,  47  ,  Computer Science  ,  Clawson, Tina
+    11235  ,  60  ,  Computer Science  ,  Clarkson, Cheryl
+    11026  ,  48  ,  Computer Science  ,  Clark, Charles
+    10515  ,  69  ,  Computer Science  ,  Chapa, Carola
+    11515  ,  44  ,  Computer Science  ,  Castello, Mary
+    10316  ,  59  ,  Computer Science  ,  Casey, Jan
+    10512  ,  42  ,  Computer Science  ,  Carr, Virginia
+    11219  ,  64  ,  Computer Science  ,  Carmichael, Ronda
+    11211  ,  24  ,  Computer Science  ,  Carlson, Judy
+    11519  ,  69  ,  Computer Science  ,  Carlin, Jennefer
+    11425  ,  32  ,  Computer Science  ,  Cantu, Cindy
+    11409  ,  49  ,  Computer Science  ,  Cannon, Erika
+    11216  ,  39  ,  Computer Science  ,  Canipe, Sharon
+    11328  ,  36  ,  Computer Science  ,  Byrd, Sharon
+    10502  ,  47  ,  Computer Science  ,  Byors, Anne
+    11525  ,  50  ,  Computer Science  ,  Burt, Ruby
+    10107  ,  64  ,  Computer Science  ,  Burdine, Charles
+    11118  ,  56  ,  Computer Science  ,  Bundy, Stevie
+    11006  ,  50  ,  Computer Science  ,  Buckley, Carolyn
+    11618  ,  45  ,  Computer Science  ,  Bryant, Cynthia
+    10313  ,  45  ,  Computer Science  ,  Brooks, Pat
+    10306  ,  69  ,  Computer Science  ,  Braun, John
+    11304  ,  33  ,  Computer Science  ,  Braodrick, Linda
+    11306  ,  43  ,  Computer Science  ,  Bradshaw, Mary
+    10425  ,  53  ,  Computer Science  ,  Bourne, Katleen
+    11414  ,  44  ,  Computer Science  ,  Bosworth, Michael
+    11032  ,  29  ,  Computer Science  ,  Boone, Bebe
+    10731  ,  26  ,  Computer Science  ,  Blizzard, Roy
+    10416  ,  41  ,  Computer Science  ,  Blagg, Kathy
+    11119  ,  24  ,  Computer Science  ,  Black, Beverly
+    11239  ,  50  ,  Computer Science  ,  Bindock, James
+    10122  ,  30  ,  Computer Science  ,  Biery, Linda
+    10117  ,  66  ,  Computer Science  ,  Bergin, Vicky
+    11310  ,  66  ,  Computer Science  ,  Bergeron, Ronnie
+    11621  ,  43  ,  Computer Science  ,  Benson, Kathy
+    11110  ,  60  ,  Computer Science  ,  Benecke, Kathleen
+    10115  ,  41  ,  Computer Science  ,  Below, Linda
+    11125  ,  32  ,  Computer Science  ,  Bell, Brenda
+    11231  ,  34  ,  Computer Science  ,  Behrend, Sam
+    11236  ,  57  ,  Computer Science  ,  Beeson, John
+    10829  ,  32  ,  Computer Science  ,  Beerman, Norma
+    10813  ,  43  ,  Computer Science  ,  Beegs, Chris
+    11004  ,  54  ,  Computer Science  ,  Beckner, B.M.
+    10706  ,  30  ,  Computer Science  ,  Bayne, Bette
+    11407  ,  69  ,  Computer Science  ,  Bassion, Susan
+    10816  ,  68  ,  Computer Science  ,  Barry, Pat
+    10109  ,  58  ,  Computer Science  ,  Barbosa, Tammy
+    11530  ,  24  ,  Computer Science  ,  Barber, Gretchen
+    11619  ,  47  ,  Computer Science  ,  Banks, Richard
+    11002  ,  48  ,  Computer Science  ,  Balagia, Jack
+    10519  ,  41  ,  Computer Science  ,  Baker, Kathy
+    10509  ,  37  ,  Computer Science  ,  Ayad, Vic
+    11103  ,  47  ,  Computer Science  ,  Avera, Jean
+    10418  ,  39  ,  Computer Science  ,  Atherton, Susan
+    10101  ,  31  ,  Computer Science  ,  Ashley, Anne
+    11206  ,  61  ,  Computer Science  ,  Armbrust, Cheryl
+    10826  ,  36  ,  Computer Science  ,  Arimes, Sharon
+    11412  ,  41  ,  Computer Science  ,  Andrews, Kay
+    11034  ,  25  ,  Computer Science  ,  Andrews, John
+    11010  ,  45  ,  Computer Science  ,  Anderson, Suzanne
+    11615  ,  65  ,  Computer Science  ,  Anderson, Mary
+    11408  ,  40  ,  Computer Science  ,  Anderson, Gwyn
+    11001  ,  24  ,  Computer Science  ,  Alexander, Joe
+    10503  ,  51  ,  Computer Science  ,  Akin, Monica
+    11334  ,  59  ,  Computer Science  ,  Akers, Mark
+
+ Remaining employee 
+
+
+ Set age of all employees to 100 
+
+
+ Print those age() != 100 
+

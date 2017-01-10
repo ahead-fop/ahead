@@ -1,0 +1,137 @@
+layer core;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+// end Main class
+
+public class JTSParseTree {
+    static Parser myparser = null;
+    llayer layr = null;
+
+    public static void setFlags( boolean x, boolean y ) {}
+
+    public JTSParseTree( String fname ) throws Exception {
+
+        // Step 0: initialize the primary kernelConstant
+        //         for error reporting
+
+        kernelConstants.globals().currentFileName = fname;
+
+        // Step 1: create or reinitialize a Parser
+        //         an exception thrown here is that we can't
+        //         open the given file
+
+        myparser =  Parser.getInstance( new FileInputStream( fname ) ) ;
+
+        // Step 2: parse the input file.  An exception thrown
+        //         here is a parsing error
+
+        AST_Program  inputRoot = null;
+        try {
+            inputRoot = (AST_Program) myparser.parse ("AST_Program") ;
+        }
+        catch ( Exception e ) {
+            throw new Exception( "Parsing Exception Thrown in " 
+                                + fname + ": " + e.getMessage() );
+        }
+
+        // Step 3: process the tree.  Also, replace all "extern"
+        //         attributes with "external" tags in the symbol table.
+        //         In this way, these attributes can now be redefined
+        //         without generating an error
+
+        String ap = new File( fname ).getAbsolutePath();
+        kernelConstants.globals().currentAbsPath = ap;
+        inputRoot.reduce();
+        symtab.promoteImported();
+        layr =  AST_Program.layr;
+    }
+
+    public void compose( JTSParseTree ext ) {
+        layr.compose( ext.layr );
+    }
+
+    public boolean isComplete() {
+        return layr.isComplete();
+    }
+
+    public boolean isConstant() {
+        return layr.isConstant;
+    }
+
+    public String completeness() {
+        return layr.completeness;
+    }
+
+    public void print2file() {
+        print2file( new PrintWriter( System.out ) ) ;
+    }
+
+    public void print2file( File file ) {
+
+        if ( file == null ) {
+            print2file( new PrintWriter( System.out ) ) ;
+            return ;
+        }
+
+        OutputStream stream = null ;
+        try {
+            stream = new FileOutputStream( file ) ;
+            if ( ! "\n".equals( System.getProperty( "line.separator" ) ) )
+                stream = new FixDosOutputStream( stream ) ;
+        }
+        catch ( IOException exception ) {
+            AstNode.fatalError( exception, "" ) ;
+        }
+
+        print2file( new PrintWriter( stream ) ) ;
+    }
+
+    public void print2file( String fileName ) {
+        if ( fileName == null )
+            print2file( new PrintWriter( System.out ) ) ;
+        else
+            print2file( new File( fileName ) ) ;
+    }
+
+    public void print2file( PrintWriter writer ) {
+        layr.print2file( writer ) ;
+        writer.flush() ;
+    }
+
+    public String getAspectName() {
+        return layr.name;
+    }
+
+    public void setAspectName( String aname ) {
+        layr.name = aname;
+    }
+
+    public static int errorCount() {
+        return Util.errorCount();
+    }
+
+    public static int warningCount() {
+        return Util.warningCount();
+    }
+
+    public String errorCountString() {
+        int ecount = Util.errorCount();
+        return "Summary " + ecount + " error" + ( ecount==1?"":"s" );
+    }
+
+    public static void resetCounters() {
+        Util.resetCounters();
+    }
+
+    public static void setReportStream( PrintWriter p ) {
+        Util.setReportStream( p );
+    }
+
+    public static void report( String msg ) {
+        Util.report( msg );
+    }
+}

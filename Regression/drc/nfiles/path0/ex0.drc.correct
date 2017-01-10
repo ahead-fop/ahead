@@ -1,0 +1,4 @@
+
+drc: path2/ex2.drc: Error constraint (a < 30) of layer path2 not satisfied by (a < 40) set by path1
+drc: path2/ex2.drc: Error constraint (10 <= b) of layer path2 not satisfied by (0 <= b) set by path1
+drc: Summary 2 errors

@@ -1,0 +1,21 @@
+package MessageL;
+
+import  
+    fsats.util.DataContainer;
+import 
+    F.Libraries.laydown.*;
+import 
+    java.util.*;
+
+
+
+    /** Message that weapon firing is done **/
+    public class CompleteTime
+        extends BasicTimeout 
+    {
+        public EventType getType() { return TimeoutType.completeTime; }
+	public CompleteTime(String missionId) { super(missionId);
+          CompleteTimeConstructor(missionId); }
+	public void CompleteTimeConstructor(String missionId) {
+      }
+    }

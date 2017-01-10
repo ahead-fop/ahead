@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+echo "****************AstGscope Regression Test***********"
+
+bash regress-one testcfe testcfe double \
+&& bash regress-one top g6 g66.correct \
+&& bash regress-one err err resulterr \
+|| exit 1
+
+echo -e "\nAstGscope Regression Test succeeded."

@@ -1,0 +1,74 @@
+package AddRmiL;
+
+import  
+java.io.*;
+import 
+java.rmi.*;
+import 
+java.rmi.server.UnicastRemoteObject;
+import 
+//F.Libraries.RmiStuff.*,
+F.Libraries.log.Log;
+
+
+   
+    /** We need to convert between objects that are of type
+       NetworkObjectIfcRmi and those that are NetworkObjectIfc.
+       This object does it - it wraps a NetworkObjectIfcRmi
+       object around a NetworkObjectIfc interface
+   **/
+    public class LocalNOWrapper 
+	implements NetworkObject, java.io.Serializable 
+    { NetworkObjectIfcRmi _netObjStub;
+       
+	public LocalNOWrapper( String netObjName ) 
+	throws RemoteException, NotBoundException, 
+	       java.net.MalformedURLException
+	{
+          LocalNOWrapperConstructor(netObjName);
+	}
+       
+	public void LocalNOWrapperConstructor( String netObjName) 
+	throws RemoteException, NotBoundException, 
+	       java.net.MalformedURLException {
+	    // Try to connect to the remote network object
+	    _netObjStub = ( NetworkObjectIfcRmi) Naming.lookup(netObjName);
+      }
+       
+	/** Register a local opfac object with a remote network object **/
+	public boolean register( Opfac opfac, String opfacName ) {
+	    try {
+		// Create a remotely exported object for the opfac
+		OPFACRmi opfacServer;
+		opfacServer = new OPFACRmi( opfac, opfac.getName() ); OpfacIfc opfacStub;
+		opfacStub = new LocalOWrapper( opfacServer );
+
+		// Now register the opfac wrapper with the remote netobj
+		return _netObjStub.register( opfacStub, opfac.getName() );
+	    } catch (RemoteException e) {
+		Log.error("can't register: " + e );
+		System.exit(10);
+	    }
+	    return false;
+	}
+   
+	public boolean unregister( String n ) {
+	    try {
+		return _netObjStub.unregister(n);
+	    } catch (RemoteException e) {
+		Log.error("can't unregister: " + e );
+		System.exit(10);
+	    }
+	    return false;
+	}
+	
+	public boolean send( Message m ) {
+	    try {
+		return _netObjStub.send(m);
+	    } catch (RemoteException e) {
+		Log.error("can't send : " + e );
+		System.exit(10);
+	    }
+	    return false;
+	}
+    }

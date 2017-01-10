@@ -1,0 +1,148 @@
+layer JavaHarvest;
+
+import java.util.Vector;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+
+public refines class Main {
+
+    // Counts the number the static parser has been created
+    public static int counter =0;
+   
+    public static void main( String args[] ) {
+        int     argc    = args.length;
+        int                non_switch_args;
+        int                i, j;
+        char               ch;
+        AstProperties props;
+        Parser         myParser = null;
+        AstNode       root;
+        PrintWriter        pw;
+        String             line; // one line from the user
+        String             input; // one Language command
+        // (terminated with line ".")
+
+        ByteArrayInputStream is; // is and dis are used together
+        DataInputStream      dis; // to "feed" the scanner.
+        BufferedReader       userInput = null;
+
+        // Step 1: print the Marquee...
+ 
+        // System.out.println($str($PackName) + " Started...");
+
+        // Step 2: a general routine to pick off command line options
+        //         options are removed from command line and
+        //         args array is adjusted accordingly.
+
+        // Step 3: there must be at least one real argument,otherwise error
+        /*  
+               if (non_switch_args != 0)
+            usage();
+         */
+        // ************************************************************
+        // ************************************************************
+        // ************************************************************
+
+        // args[0] is the name of the realm that is going to be documented
+                
+        try {
+            userInput =
+                            new BufferedReader( new FileReader( args[0] ) );
+            GlobalWrapper.ProgramName = args[0];
+        }
+        catch ( Exception e ) {
+            System.err.println( "File " + args[0] + " not found:" 
+                                                   + e.getMessage() );
+        }
+
+        // *************************************************************
+        // *************************************************************
+        // *************************************************************
+
+        // Step 4: Initialize output stream
+        //         Standard initialization stuff that should be
+        //         platform independent.
+
+        props = new  AstProperties();
+        String lineSeparator =
+                System.getProperties().getProperty( "line.separator" );
+        if ( lineSeparator.compareTo( "\n" ) != 0 )
+            pw = new PrintWriter( new FixDosOutputStream( System.out ) );
+        else
+            pw = new PrintWriter( System.out );
+        props.setProperty( "output", pw );
+    
+        // Step 5: Get input and parse until an empty line is entered.
+        //         An empty line is something with "." only.
+
+        if ( userInput == null )
+            userInput= new BufferedReader( new InputStreamReader( System.in ) );
+
+        do { // LanguageName statement loop
+            input = ""; // initialize input string
+
+            // Step 6.1: print prompt
+
+            // System.out.print("\n" + $str($PackName) + "> ");
+            // System.out.flush();
+
+            // Step 5.2: collect in variable input over multiple line reads
+            do {
+                line = "";
+                try {
+                    line = userInput.readLine();
+                }
+                catch ( Exception e ) {
+                    System.exit( 10 );
+                }
+                if ( line == null )
+                    break;
+                if ( line.compareTo( "" ) == 0 )
+                    continue;
+                if ( line.compareTo( "." ) == 0 )
+                    break;
+                input += "\n" + line;
+            // System.out.print(" > ");
+            // System.out.flush();
+            }
+            while ( true );
+
+            if ( input == "" )
+                break;
+
+            // Step 5.3: parse input string
+
+            is  = new ByteArrayInputStream( input.getBytes() );
+            dis = new DataInputStream( is );
+
+            myParser =  Parser.getInstance( dis ) ;
+            counter ++;
+
+            try {
+                root =  myParser.parseAll () ;
+            }
+            catch ( Throwable e ) {
+                System.out.println( "Parsing Exception Thrown: " +
+                                                                       e.getMessage() );
+                e.printStackTrace();
+                continue; // go to next $(LanguageName) statement
+            }
+    
+            // Step 5.4: Parse of input command succeeded!
+             // System.out.println();
+            ( ( AST_Program ) root ).execute();
+            pw.flush();
+
+        // Step 5.5: now dump the parse tree
+        //           this code can be removed for production systems
+
+        // System.out.println("Dump root");
+        // root.PrettyDump();
+
+        }
+        while ( true ); // end Language statement loop
+
+    } //end main()
+
+}

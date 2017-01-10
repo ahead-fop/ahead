@@ -1,0 +1,13 @@
+// checks to see that no predicate is defined twice, and
+// attribute typing
+
+single layer foo;
+
+outside Bool search; 
+outside Int  range;
+
+provides outside search;
+provides outside range;
+requires outside search;
+requires outside range;
+

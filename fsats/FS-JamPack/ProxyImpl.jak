@@ -1,0 +1,150 @@
+layer FS;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+/**
+ * This class implements common proxy functionality
+ */
+public abstract class ProxyImpl 
+        implements Proxy {
+    /** The name of the opfac this proxy stands for **/
+    protected String opfacName;
+    protected OpfacType opfacType;
+    protected Collection assets;
+    protected Location location;
+
+    protected void addAssets( Collection c )
+        {
+        Iterator i=c.iterator();
+        while ( i.hasNext() )
+            assets.add( create( ( String )i.next() ) );
+    }
+
+    /** Copy constructor **/
+    public Object clone() 
+        {
+        try {
+            return Super().clone();
+        }
+        catch( CloneNotSupportedException shouldNeverHappen ) {
+            return null;
+        }
+    }
+
+    /** Pseudo constructor **/
+    public void init( OpfacDataWrapper record ) 
+        {
+        opfacName = record.getName();
+        opfacType = OpfacType.fromString( record.getType() );
+        assets = new HashSet();
+        location =
+                new LocationLatLong( record.getLatitude(),
+                    record.getLongitude() );
+    }
+
+    private static ProxyFactory factory = new ProxyFactory();
+
+    public static Proxy create( String opfacName )
+        {
+        return factory.create( opfacName );
+    }
+
+    public String getName() 
+        {
+        return opfacName;
+    }
+
+    public OpfacType getType()
+        {
+        return opfacType;
+    }
+
+    public boolean hasLocation() {
+        return location!=null;
+    }
+
+    public float distanceTo( Location loc )
+        {
+        return location==null ? 0F : location.distanceTo( loc );
+    }
+
+    public boolean canShoot( Mission mission ) 
+        {
+        return !mission.hasDenied( getName() );
+    }
+
+    public int typePrecedence() {
+        return 0;
+    }
+
+    protected static int sgn( float x ) {
+        return x>0 ? 1 : x<0 ? -1 : 0;
+    }
+    protected static int sgn( int x ) {
+        return x>0 ? 1 : x<0 ? -1 : 0;
+    }
+
+    public int compareWeapon( Mission mission, Proxy weapon )
+        {
+        int result;
+
+        // Choose by precedence of weapon type. 
+        result = sgn( typePrecedence() - weapon.typePrecedence() );
+        if ( result!=0 )
+            return result;
+
+        // Choose weapon with better location knowledge.
+        result = ( hasLocation() ? 0 : 1 )- ( weapon.hasLocation() ? 0 : 1 );
+        if ( result!=0 )
+            return result;
+        Location targetLoc = mission.getTarget().getLocation();
+        result = sgn( weapon.distanceTo( targetLoc ) - distanceTo( targetLoc ) );
+        if ( result!=0 )
+            return result;
+
+        // Don't care.
+        return 0;
+    }
+
+    /** 
+     * Rank all the proxies in the specific set and return the best.
+     */
+    public SelectedProxy getBestWeapon( Mission mission ) 
+        {
+        SelectedProxy best = null;
+        if ( canShoot( mission ) )
+            {
+            // Iterate over the collection
+            Iterator i = assets.iterator();
+            
+            // Compare each successive proxy with the current champ
+            while( i.hasNext() ) 
+                {
+                Proxy proxy = ( Proxy ) i.next();
+                //Log.log("Check proxy: "+proxy.getName());
+
+                if ( proxy != null )
+                                    {
+                    SelectedProxy test = proxy.getBestWeapon( mission );
+                    if ( test!=null )
+                        {
+                        //Log.log("OK proxy: "+proxy.getName());
+                        if ( best==null 
+                                || best.getWeapon().compareWeapon( mission, test.getWeapon() )<0 )
+                            {
+                            //Log.log("Best proxy: "+proxy.getName());
+                            best = 
+                                    new SelectedProxy( proxy, test.getWeapon() );
+                        }
+                    }
+                }
+            }
+        }
+        
+        return best;
+    }
+}

@@ -1,0 +1,270 @@
+layer JavaAPI;
+
+import java.io.*;
+import java.util.*;
+
+ // of DocJTS
+
+// _________________________________________________________________
+
+ /** JEDI Project
+ * ExecutableMemberDocJTS.java
+ * University of Texas at Austin
+ * Department of Computer Sciences
+ * Product-line Architecture Research Group
+ * @author Roberto E. Lopez-Herrejon
+ * @version 1.1
+ * @since November 25, 2002
+* @layer<JavaAPI>
+*/
+
+public class ExecutableMemberDocJTS extends  MemberDocJTS {
+
+    // ********************************************************************
+    // ********************************************************************
+    // ** Interface methods that have to be implemented
+    
+    /** Return exceptions this method or constructor throws.
+     * @returns an array representing the exceptions thrown by this method.
+     * @layer<JavaAPI>
+     */
+    public  ClassDocJTS thrownExceptions()[] 
+    {
+        return thrownExceptions;
+    }
+
+    /** Return true if this method is native. 
+     * @layer<JavaAPI>
+     */
+    public boolean isNative() {
+        return isNative;
+    }
+
+    /** Return true if this method is synchronized. 
+     * @layer<JavaAPI>
+     */
+    public boolean isSynchronized() {
+        return isSynchronized;
+    }
+
+    /** Get argument information.
+     * @return an array of Parameter, one element per argument in the 
+     * order the arguments are present.
+     * @see Parameter
+     * @layer<JavaAPI>
+     */
+    public  ParameterJTS parameters()[] {
+        return parameters;
+    }
+
+    /** Return the throws tags in this method.
+     * @return an array of ThrowTag containing all @exception 
+     * and @throws tags.
+     * @layer<JavaAPI>
+     */
+    public LinkedList throwsTags() {
+        return throwsTags;
+    }
+
+    /** Return the param tags in this method.
+     * @return an array of ParamTag containing all @param tags.
+     * @layer<JavaAPI>
+     */
+    public LinkedList paramTags() {
+        return paramTags;
+    }
+
+    /** Get the signature. It is the parameter list, type is qualified. 
+     * For instance, for a method mymethod(String x, int y), it will 
+     * return (java.lang.String,int).
+     * @layer<JavaAPI>
+     */
+    public String signature() {
+        return signature;
+    }
+
+    /** Get flat signature. all types are not qualified. return a String, 
+     * which is the flat signature of this member. It is the parameter list, 
+     * type is not qualified. For instance, for a method 
+     * mymethod(String x, int y), it will return (String, int).
+     * @layer<JavaAPI>
+     */
+    public String flatSignature() {
+        return flatSignature;
+    }
+
+    /** Signature of the member. Initialized to empty string.         
+     * @layer<JavaAPI>
+     */
+    String signature = "";
+
+    /** Signature without qualified type names. Initialized to empty string. 
+     * @layer<JavaAPI>
+     */
+    String flatSignature = "";
+
+    /** The full signature is the names of params and their types.      
+     * @layer<JavaAPI>
+     */
+    String fullSignature = "";
+
+    /** The string of the throws exceptions.                 
+     * @layer<JavaAPI>
+     */
+    String throwsString = "";
+
+    /** Array of Parameter objects.Initialized to null.         
+     * @layer<JavaAPI>
+     */
+    ParameterJTS parameters[] = null;
+
+    /** Array of ClassDoc that corresponds to the exception it throws. 
+     * @layer<JavaAPI>
+     */
+    ClassDocJTS thrownExceptions[] = null;
+
+    /** List that contains the param tags of the member.           
+     * @layer<JavaAPI>
+     */
+    LinkedList paramTags = new LinkedList();
+ 
+    /** Array that contains the throws tags of the member.         
+     * @layer<JavaAPI>
+     */
+    LinkedList throwsTags = new LinkedList();
+
+    /** Variable that indicates if the executable member is native. 
+     * Initialized to false. 
+     * @layer<JavaAPI>
+     */
+    boolean isNative = false;
+
+    /** Variable that indicates if the executable member is synchronized.
+     * Initialized to false. 
+     * @layer<JavaAPI>
+     */
+    boolean isSynchronized = false;
+
+    /** Compares the parameter types with the ones in a String. 
+     * @layer<JavaAPI>
+     */
+    public boolean equalParameterTypes( String[] parmtypes ) 
+    {
+        if ( parameters == null )
+            return false;
+        
+        for( int i=0; i< parameters.length; i++ )
+            {
+            if ( ! ( parameters[i].typeName() ).equals( parmtypes[i] ) )
+                return false;
+        }
+        
+        return true;
+    }
+
+    /** Gets full signature which is the signature with param names 
+     * @layer<JavaAPI>
+     */
+    public String getFullSignature() {
+        return fullSignature;
+    }
+
+    /** Gets the throws string with throws and names of exceptions 
+     * @layer<JavaAPI>
+     */
+    public String getThrowsString() {
+        return throwsString;
+    }
+
+    /** Sets the parameters array, and adjusts the signature of the 
+     * member. 
+     * @layer<JavaAPI>
+     */
+    public void setParameters( ParameterJTS[] _parameters )
+    {
+        parameters = _parameters;
+
+        String theSignature = " ( ";
+        signature = "";
+
+        // shows all the arguments of the method
+        if ( parameters != null ) {
+            for ( int k=0; k< parameters.length; k++ ) {
+                theSignature = theSignature + parameters[k].typeName() 
+                                               + " " + parameters[k].name();
+
+                // Sets the signature and full signature fields
+                signature = signature +  parameters[k].typeName();
+                flatSignature = flatSignature +  parameters[k].typeName();
+
+                if ( k < parameters.length - 1 ) {
+                    theSignature = theSignature + ", ";
+                    signature = signature + ", ";
+                    flatSignature = flatSignature + ", ";
+                }
+            } // for k all the parameters
+        } // if there are parameters
+           
+        theSignature = theSignature + " ) ";
+        
+        // Assigns the value of the full signature to the member 
+        fullSignature = theSignature;
+
+    }
+
+    /** Sets the throws tags for the member doc.  
+     * @layer<JavaAPI>
+     */
+    public void setThrowsTags( LinkedList _throwsTags )
+    {
+        throwsTags = _throwsTags;
+    }
+
+    /** Sets the param tags for the member docs. 
+     * @layer<JavaAPI>
+     */
+    public void setParamTags( LinkedList _paramTags )
+    {
+        paramTags = _paramTags;
+    }
+
+    /** Sets the variable isNative. 
+     * @layer<JavaAPI>
+     */
+    public void setNative( boolean _isNative ) {
+        isNative = _isNative;
+    }
+
+    /** Sets the variable isSynchronized. 
+     * @layer<JavaAPI>
+     */
+    public void setSynchronized( boolean _isSynchronized )
+    {
+        isSynchronized = _isSynchronized;
+    }
+
+    /** Sets the thrown exceptions. 
+     * @layer<JavaAPI>
+     */
+    public void setThrownExceptions( ClassDocJTS[] _thrownExceptions )
+    {
+        thrownExceptions = _thrownExceptions;
+        
+        // Sets the throws String
+        String theExceptions = "";
+        if ( thrownExceptions != null ) {
+            if ( thrownExceptions.length > 0 )
+                theExceptions = "throws ";
+            for ( int m=0; m < thrownExceptions.length; m++ ) {
+                theExceptions = theExceptions+thrownExceptions[m].name() + " ";
+                if ( m != thrownExceptions.length - 1 )
+                    theExceptions = theExceptions + ", ";
+            } // for all the thrown exceptions
+                        
+        } // if there are thrown exceptions
+
+        // Assigns the value
+        throwsString = theExceptions;
+    }
+
+}

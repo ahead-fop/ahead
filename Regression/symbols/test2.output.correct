@@ -1,0 +1,49 @@
+Symbol table built.
+
+*** Symbol Table ***
+
+
+Package: DEFAULT_PACKAGE
+    Class: boolean
+    Class: byte
+    Class: char
+    Class: double
+    Class: float
+    Class: int
+    Class: long
+    Class: short
+    Class: void
+
+    Package: MyPackage
+        Class: myClass extends MyPackage.mySuperclass
+            void foo()
+                float foo;
+            void foo(int)
+                int foo;
+            int foo;
+        Class: mySuperclass
+            float bar;
+
+    Package: java
+
+        Package: java.lang
+            Class: Object
+                boolean equals(java.lang.Object)
+                int hashCode()
+                java.lang.Class getClass()
+                java.lang.Object clone()
+                java.lang.String toString()
+                void <clinit>()
+                void <init>()
+                void finalize()
+                void notify()
+                void notifyAll()
+                void registerNatives()
+                void wait()
+                void wait(long)
+                void wait(long, int)
+
+Found: float foo;
+Found: void foo()
+Found: void foo(int)
+Found: int foo;

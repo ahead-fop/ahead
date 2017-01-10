@@ -1,0 +1,15 @@
+05/27/99  10:18a                 2,710 missionenter_action_ast.ser
+05/27/99  10:18a                 2,706 oneenter_action_ast.ser
+05/27/99  10:18a                 2,708 startenter_action_ast.ser
+05/27/99  10:18a                 2,707 stopenter_action_ast.ser
+05/27/99  10:18a                65,535 t1action_mth_name_ast.ser
+05/27/99  10:18a                   887 t1name_ast.ser
+05/27/99  10:18a                65,539 t1test_mth_name_ast.ser
+05/27/99  10:18a                65,527 t2action_mth_name_ast.ser
+05/27/99  10:18a                   887 t2name_ast.ser
+05/27/99  10:18a                65,531 t2test_mth_name_ast.ser
+05/27/99  10:18a                65,519 t3action_mth_name_ast.ser
+05/27/99  10:18a                   887 t3name_ast.ser
+05/27/99  10:18a                65,523 t3test_mth_name_ast.ser
+05/27/99  10:18a                70,220 wrffe_common_fist.ser
+              14 File(s)        476,886 bytes

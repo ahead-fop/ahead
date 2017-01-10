@@ -1,0 +1,12 @@
+// This program tests a macro call and a macro definition nested inside
+// a macro definition.
+
+macro test6() cls{ class foo { #SORT(fooSort, fooType) } }cls
+
+#test6()
+
+macro test6b() cls{ macro inner() cls{ class foo {} }cls }cls
+
+#test6b()
+
+#inner()

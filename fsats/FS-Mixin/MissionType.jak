@@ -1,0 +1,56 @@
+layer FS;
+
+import laydown.*;
+
+import java.util.*;
+
+import log.Log;
+
+SoUrCe RooT FsatsL "C:!Java!FeatureOrientedProgramming!fsats!FsatsL!MissionType.jak";
+
+abstract class MissionType$$FsatsL extends EventType implements MissionTypeInterface {}
+
+SoUrCe  MissionL "C:!Java!FeatureOrientedProgramming!fsats!MissionL!MissionType.jak";
+
+public class MissionType extends MissionType$$FsatsL
+implements MissionTypeInterface {
+    private int index;
+    private String name;
+
+    private static Vector values = new Vector();
+
+    protected MissionType( String name )
+	{
+        index = values.size();
+        this.name = name;
+        values.add( this );
+    }
+
+    public String toString()
+    {
+        return name;
+    }
+
+    public static MissionType fromString( String name )
+    {
+        MissionType result = null;
+
+        for ( int i = 0; i < values.size() && result == null; ++i )
+            if ( values.elementAt( i ).toString().equals( name ) )
+                result = ( MissionType )values.elementAt( i );
+
+        return result;
+    }
+
+    public int toInt()
+    {
+        return index;
+    }
+
+    public static MissionType fromInt( int index )
+    {
+        return 0<=index && index<values.size() ? ( MissionType )values.elementAt( index ) : null;
+    }
+
+    public static final MissionType wrffe = new MissionType( "WR_FFE" );
+}

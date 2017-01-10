@@ -1,0 +1,45 @@
+refines State_machine s1 implements java.io.Serializable {
+
+   Delivery_parameters( M m );
+
+	States unneeded;
+
+	Transition useless: unneeded -> unneeded
+	condition true
+	do { }
+
+   Prepare start { Proceed(m); System.out.println("preparing start"); }
+   Enter start { Proceed(m); System.out.println("entering start"); }
+   Exit start  { Proceed(m); System.out.println("exiting start"); }
+
+   Prepare one { Proceed(m); System.out.println("preparing one"); }
+   Enter one { Proceed(m); System.out.println("entering one"); }
+   Exit one  { Proceed(m); System.out.println("exiting one"); }
+
+   Prepare two { Proceed(m); System.out.println("preparing two"); }
+   Enter two { Proceed(m); System.out.println("entering two"); }
+   Exit two { Proceed(m); System.out.println("exiting two"); }
+
+   Prepare three { Proceed(m); System.out.println("preparing three"); }
+   Enter three { Proceed(m); System.out.println("entering three"); }
+   Exit three { Proceed(m); System.out.println("exiting three"); }
+
+   Prepare stop { Proceed(m); System.out.println("preparing stop"); }
+   Enter stop { Proceed(m); System.out.println("entering stop"); }
+   Exit stop  { Proceed(m); System.out.println("exiting stop"); }
+
+   static int array[] = { M.one, M.two, M.two, M.two, M.three, M.eom };
+
+   public static void main(String args[]) {
+      s1 sd = new s1();
+      int i;
+      M m = new M();
+
+      for (i=0; i<array.length; i++) {
+         m.msg = array[i];
+         sd.delivery(m);
+         System.out.println(sd.getState());
+      }
+   }
+}
+

@@ -1,0 +1,17 @@
+layer M2D2Java;
+
+refines class ExtClause {
+
+   public void extract( context c ) {
+
+       // Step 1: declare extended class
+
+       String exc = ((AST_QualifiedName) arg[0]).GetName();
+       exc = ImpQual.fullPath(exc, c);
+
+       // Step 2: declare class, class-extension
+
+       c.Footer.add(
+           RubyInstCreator.createClassExtends(c.getClassName(), exc));
+   }
+}

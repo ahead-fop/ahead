@@ -1,0 +1,10 @@
+layer M2D2Base;
+
+refines class AstListNode {
+   public void extract( context c ) { 
+       Util.fatalError("AstListNode.extract() method should not be called");
+    }
+   public void registerImportOwnership( context c ) { 
+       Util.fatalError("registerImportOwnership.extract() method should not be called");
+   }
+}

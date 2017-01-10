@@ -1,0 +1,23 @@
+
+
+layer TOP;
+
+import java.util.*;
+
+import anotherPackage;
+
+import midimport;
+
+public static
+
+interface top extends java.io.Serializable, F {
+   int Silent = 0;
+   int Loud = 1;
+   int Whisper = 3;
+
+   int run( int i ) throws Exception, AnotherException; 
+   int midmethod();
+
+   void setLoudness(int n);
+   int  getLoudness();
+}

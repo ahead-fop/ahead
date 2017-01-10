@@ -1,0 +1,19 @@
+layer FS;
+
+import fsats.util.DataContainer;
+
+import laydown.*;
+
+import java.util.*;
+
+SoUrCe RooT MessageL "C:!Java!FeatureOrientedProgramming!fsats!MessageL!WatchTime.jak";
+
+/** Time that observer watches for fall of shot. */
+public class WatchTime
+        extends BasicTimeout {
+    public EventType getType() {
+        return TimeoutType.watchTime;
+    }
+    public WatchTime( String missionId ) { Super( String )( missionId );
+    }
+}

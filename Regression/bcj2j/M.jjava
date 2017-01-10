@@ -1,0 +1,27 @@
+class M {
+   final static int undefined    = 0;
+   final static int initialize   = 1;
+   final static int deny         = 2;
+   final static int accept       = 3;
+   final static int shot         = 4;
+   final static int splash       = 5;
+   final static int roundsComplete = 6;
+   final static int confirmEffects = 7;
+   final static int eom          = 8;
+   final static int loadtime     = 9;
+   final static int flighttime   = 10;
+   final static int completetime = 11;
+   final static int totaltime    = 12;
+   final static int mfr          = 13;
+
+   final static int one          = 21;
+   final static int two          = 22;
+   final static int three        = 23;
+   final static int four         = 24;
+   final static int toc          = 25;
+
+   public int msg;
+
+   public M() { msg = undefined; }
+}
+

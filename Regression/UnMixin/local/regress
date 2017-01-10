@@ -1,0 +1,13 @@
+#!/bin/bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+echo "****************Local Regression Test***********"
+
+bash regress-one Ctop Cmid resultCtopCmid \
+&& bash regress-one Ctop Cmid5 resultCtopCmid5 \
+&& bash regress-one Cmid Cmid2 resultCmidCmid2 \
+&& bash regress-one Ctop1 Cmid1 result12 \
+|| exit 1
+
+echo -e "\nLocal Regression Test succeeded."

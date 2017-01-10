@@ -1,0 +1,1 @@
+ layer X; class junk { public static void main( String args[] ) { junk j = new junk( "2" ); System.out.println( j ); } int a,b,c; int d = 4; junk( int a ) { this.a=a; b=0; c=0; } junk(String x) { this(4); } public final String toString$$X() { return a + " " + b + " " + c; } public String toString() { return toString$$X() + " " + d; } }

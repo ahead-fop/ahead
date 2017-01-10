@@ -1,0 +1,216 @@
+// -*-Java-*- build file: Used to compile other files.
+
+package $(LanguageName);
+
+import Jakarta.util.BuildUtil ;
+import Jakarta.util.Dependency ;
+import Jakarta.util.LineWriter ;
+import Jakarta.util.Util ;
+
+import java.io.* ;
+
+import java.lang.reflect.Method ;
+import java.lang.reflect.Modifier ;
+
+import java.util.Arrays ;
+import java.util.HashSet ;
+import java.util.Iterator ;
+
+public class Build {
+
+    public static void main(String[] args) {
+	String cwd = BuildUtil.workingDir("JTS.languages.$(LanguageName)");
+	String dir = cwd + File.separator;
+
+	status.setLabel ("$(LanguageName)") ;
+	status.println ("building $(LanguageName)") ;
+
+	String parser = dir + "BaliParser.java" ;
+	String source = dir + "$(LanguageName).jj";
+	Dependency dependency = new Dependency(parser, source) ;
+
+	if (! dependency.satisfied()) {
+	    String outdirSwitch = "-OUTPUT_DIRECTORY=" + cwd ;
+	    String[] argsJavaCC = new String[] { outdirSwitch, source } ;
+
+	    status.println ("invoking JavaCC ...");
+
+	    try {
+		File errorFile = new File (cwd, "JavaCC.out") ;
+		OutputStream errorStream = new FileOutputStream (errorFile) ;
+		PrintWriter errorWriter = new PrintWriter (errorStream) ;
+
+		if (! BuildUtil.buildJavaCC (argsJavaCC, errorWriter))
+		    Util.fatalError ("JavaCC compilation failed") ;
+
+		errorWriter.close();
+	    } catch (IOException e) {
+		Util.fatalError ("cannot create file", e);
+	    }
+	}
+
+	String[] dirList= {$(LibSrcDirList)};
+	String[] libList= {$(LibList)};
+
+	for (int i=0; i<libList.length; i++) {
+	    String libDirPath = dir+libList[i]+"Lib";
+	    File libDir = new File(libDirPath);
+
+	    if (! libDir.exists ())
+		Util.makeHierarchy (libDir) ;
+
+	    File srcDir = new File(dirList[i]);
+
+	    status.println ("building component " + libList[i] + " library:") ;
+
+	    String[] fileList = srcDir.list(new BuildUtil.javaFileFilter());
+	    if (fileList != null) {
+		for (int j=0; j<fileList.length; j++) {
+		    String to = libDirPath + File.separator + fileList[j] ;
+		    String from = dirList[i] + File.separator + fileList[j] ;
+
+		    Dependency copyDependency = new Dependency (to, from) ;
+		    if (! copyDependency.satisfied()) {
+			File fout = new File(to);
+
+			if (fout.exists()) {
+			    status.print (". replacing ") ;
+			    fout.delete() ;
+			} else {
+			    status.print (". copying ") ;
+			}
+			status.println (fileList[j]) ;
+
+			String[] fromPat = new String [2] ;
+			String[] toPat = new String [fromPat.length] ;
+
+			fromPat[0] = "JakBasic" ;
+			toPat[0] = "$(LanguageName)" ;
+
+			fromPat[1] = "package " ;
+			toPat[1] = "package $(LanguageName)." ;
+
+			BuildUtil.appendSubst (from, to, fromPat, toPat) ;
+		    }
+		}
+	    }
+	}
+
+	status.println ("compiling $(LanguageName) ...") ;
+
+	if (! BuildUtil.buildDirectory (cwd)) {
+	    Util.fatalError ("build failed in directory " + cwd) ;
+	    System.exit (1) ;
+	}
+
+	buildMains (cwd) ;
+    }
+
+    private static void buildMains (Class source, File directory) {
+	Class[] mainParameters = new Class[1] ;
+	mainParameters[0] = (new String[0]).getClass() ;
+
+	HashSet completed = new HashSet () ;
+
+	Class[] topClasses = source.getClasses() ;
+	Iterator classIterator = Arrays.asList(topClasses).iterator() ;
+
+	while (classIterator.hasNext()) {
+	    Class topClass = (Class) classIterator.next() ;
+	    String className = topClass.getName() ;
+	    
+	    int lastIndex = className.lastIndexOf ('.') ;
+	    String baseName = className.substring (1+lastIndex) ;
+	    lastIndex = baseName.lastIndexOf ('$') ;
+	    baseName = baseName.substring (1+lastIndex) ;
+
+	    if (completed.contains (baseName))
+		continue ;
+	    completed.add (baseName) ;
+
+	    String toolName = "$(LanguageName)." + baseName ;
+	    if (baseName.equals ("Main"))
+		buildManifest (toolName, directory) ;
+
+	    String javaBase = baseName + ".java" ;
+	    File javaFile = new File (directory, javaBase) ;
+	    if (javaFile.exists()) {
+		status.println (". " + javaBase + " ... file already exists") ;
+		continue ;
+	    }
+
+	    try {
+		Method main = topClass.getMethod ("main", mainParameters) ;
+
+		if (main.getReturnType() != Void.TYPE)
+		    continue ;
+
+		int modifier = main.getModifiers () ;
+
+		if (! Modifier.isPublic (modifier))
+		    continue ;
+
+		if (! Modifier.isStatic (modifier))
+		    continue ;
+
+		status.print (". " + javaBase + " ... ") ;
+		status.print ("generating " + toolName + " ... ") ;
+
+		PrintWriter codeWriter = Util.backedOutput (javaFile) ;
+		codeWriter.println ("package $(LanguageName) ;") ;
+		codeWriter.println () ;
+		codeWriter.print ("public class " + baseName) ;
+		codeWriter.println (" extends Lang." + baseName + " {}") ;
+		codeWriter.close () ;
+
+		if (! BuildUtil.buildJava (Util.getFullPath (javaFile)))
+		    Util.fatalError ("Java compilation failed") ;
+
+		status.println ("done") ;
+	    } catch (NoSuchMethodException except) {
+		;
+	    }
+	}
+    }
+
+    private static void buildMains (File directory) {
+	if (! directory.isDirectory())
+	    Util.fatalError (directory.toString() + " is not a directory") ;
+
+	File langJava = new File (directory, "Lang.java") ;
+	if (langJava.isFile()) {
+	    String className = "$(LanguageName).Lang" ;
+	    status.println ("building main programs") ;
+
+	    try {
+		buildMains (Class.forName(className), directory) ;
+	    } catch (ClassNotFoundException except) {
+		Util.fatalError ("class not found", except) ;
+	    }
+	}
+    }
+
+    private static void buildMains (String directoryName) {
+	buildMains (new File (directoryName)) ;
+    }
+
+    private static void buildManifest (String mainName, File directory) {
+	File manifestFile = new File (directory, "MANIFEST.MF") ;
+	if (manifestFile.exists ()) {
+	    status.println (". MANIFEST.MF already exists") ;
+	    return ;
+	}
+
+	status.print (". generating MANIFEST.MF ... ") ;
+
+	PrintWriter manifestWriter = Util.backedOutput (manifestFile) ;
+	manifestWriter.println ("Manifest-Version: 1.0") ;
+	manifestWriter.println ("Main-Class: " + mainName) ;
+	manifestWriter.println ("Class-Path: file:jakarta.jar") ;
+	manifestWriter.close () ;
+
+	status.println ("done") ;
+    }
+
+    private static LineWriter status = new LineWriter (System.err) ;
+}

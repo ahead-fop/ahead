@@ -1,0 +1,15 @@
+layer comb.ine.left;
+
+SoUrCe RooT one.left "../../one/left/B.jak";
+
+abstract class B$$one$left {
+   public void print() { System.out.println("left.B works! "
+       + $pack.A.a ); }
+}
+
+SoUrCe  two.left "../../two/left/B.jak";
+
+ public class B extends  B$$one$left  {
+   public void print() { Super().print();
+                    System.out.println("left.B works again!"); }
+}

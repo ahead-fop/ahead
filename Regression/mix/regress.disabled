@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+echo "**************** mix Regression Test***********"
+
+bash regress-one base ref1 ref2 b12 \
+&& bash regress-one base ref3 ref1 b31 \
+&& bash regress-two a b c abc \
+&& bash regress-two d e f def \
+|| exit 1
+
+rm correct current
+echo -e "\nmix Regression Test succeeded."

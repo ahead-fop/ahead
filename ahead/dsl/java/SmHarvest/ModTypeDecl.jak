@@ -1,0 +1,54 @@
+layer SmHarvest;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+// ClassBody
+
+ // --- additional classes generated for AstNodes
+
+ // **************************************************************************
+ // ******* Additional classes need to be extended not present in the grammar
+ // **************************************************************************
+
+ /** This class is added to obtain the modifiers of the state declaration. 
+  * This can only be obtained at the ModTypeDecl object, after traversing and
+  * creating a state machine object.
+  * Uses the auxiliary function setModifiers to get the modifiers
+  * to the object.
+  * TypeDeclaration
+  *: [ AST_Modifiers ] UnmodifiedTypeDeclaration::ModTypeDecl
+  * @layer<SmHarvest>
+  */
+    
+public refines class ModTypeDecl {
+    public void execute() {
+        Super().execute();
+            
+        // Insert the corresponding modifiers to the class
+        // Gets the state. Either the 
+        StateMachineDocJTS st = null;
+            
+        // @pending The following two ifs should be put 
+        // in different layers but 
+        // for now they remain here for simplicity
+
+        // if (arg[1] instanceof UmodSmExt) {
+        //        st = ((UmodSmExt)arg[1])._state;
+        // }
+            
+        // comes from an unmodified type extension
+        if ( arg[1] instanceof UmodSmDecl )
+            st = ( ( UmodSmDecl )arg[1] )._state;
+
+        // Sets the modifiers of the state, arg[0] OptNode
+        GlobalWrapper.setModifiers( arg[0].arg[0], st );
+
+        // Adds the state to the containing program
+        if ( st!=null )
+            GlobalWrapper.containingProgram.addState( st );
+
+    } // execute
+}

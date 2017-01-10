@@ -1,0 +1,49 @@
+layer SmWriter;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.io.*;
+import java.util.*;
+
+ // of StateWriter
+
+// **********************************************************************
+// **********************************************************************
+// ***************  For generation of documents     *********************
+
+// _________________________________________________________________
+  /** JEDI
+ * ProgramDocJTS in SmWriter.java
+ * University of Texas at Austin
+ * Department of Computer Sciences
+ * Product-line Architecture Research Group
+ * @rationale Introduces a new method for generation of documents.
+ * @author Roberto E. Lopez-Herrejon
+ * @version 1.0
+ * @since November 8, 2002
+ * @layer<SmWriter>
+ */
+
+public refines class ProgramDocJTS {
+    
+    public void generateProgram( String outDir,
+                LinkedList documentsList )
+    throws Exception
+    {
+        // System.out.println("Generating program ");
+
+        LinkedList theStates = states();
+        // System.out.println("Number of states" + theStates.size());
+
+        for( int i=0; i< theStates.size(); i++ )
+            StateWriter.GenerateState( ( StateMachineDocJTS )
+                                                               theStates.get( i ),
+                                                               outDir,
+                                                               documentsList );
+
+        // Calls the lower generate program
+        Super( String, LinkedList ).generateProgram( outDir, documentsList );
+
+    }
+ 
+}

@@ -1,0 +1,2190 @@
+//                              -*- Mode: Java -*- 
+// CodeTemplate<2> --- 
+// Author          : 
+// Created On      : Fri Jul 03 14:52:03 1998
+// Last Modified By: Bernie Lofaso
+// Last Modified On: Wed Dec  9 16:01:03 1998
+// Update Count    : 18
+// Status          : Under Development
+// 
+
+package $(LanguageName);
+
+import $(LanguageName).Lang;
+import java.io.PrintWriter;
+
+public class ast extends $(ParentComponent) {
+    // gen'd from asttmpl.txt
+
+    //**************************************************
+    // AST_ExpC extension class
+    //**************************************************
+    static public class AST_ExpC extends $(ParentComponent).AST_ExpC {
+	private int stackMarker;
+ 
+	public void reduce2java(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    // Start passing a level count marker for AST's
+	    props.setProperty("AstLevel", new Integer(1));
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof Lang.AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2ast(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2ast(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+
+	    // Remove AstLevel marker
+	    props.removeProperty("AstLevel");
+	}
+
+	public void reduce2ast(Lang.AstProperties props) {
+	    Integer oldLevel;
+
+	    // Increment AstLevel
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()+1));
+
+	    super.reduce2ast(props);
+
+	    // Restore old level (decrement)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+
+	public void buildSymbolTable1() {}
+
+	public void buildSymbolTable2() {}
+    }
+    // gen'd from asttmpl2.txt
+
+    //**************************************************
+    // AST_StmtC extension class
+    //**************************************************
+    static public class AST_StmtC extends $(ParentComponent).AST_StmtC {
+	private int stackMarker;
+
+	public void reduce2java(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0].arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+
+	    // arg[0] is an AstOptNode
+	    if (a0 == null) {
+		ps.print(" null");
+		return;
+	    }
+
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    // Start passing a level count marker for AST's
+	    props.setProperty("AstLevel", new Integer(1));
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof Lang.AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2ast(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2ast(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+
+	    // Remove AstLevel marker
+	    props.removeProperty("AstLevel");
+	}
+
+	public void reduce2ast(Lang.AstProperties props) {
+	    Integer oldLevel;
+
+	    // Increment AstLevel
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()+1));
+
+	    super.reduce2ast(props);
+
+	    // Restore old level (decrement)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+
+	public void buildSymbolTable1() {}
+
+	public void buildSymbolTable2() {}
+    }
+    // gen'd from asttmpl.txt
+
+    //**************************************************
+    // AST_SwitchEntryC extension class
+    //**************************************************
+    static public class AST_SwitchEntryC extends $(ParentComponent).AST_SwitchEntryC {
+	private int stackMarker;
+ 
+	public void reduce2java(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    // Start passing a level count marker for AST's
+	    props.setProperty("AstLevel", new Integer(1));
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof Lang.AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2ast(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2ast(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+
+	    // Remove AstLevel marker
+	    props.removeProperty("AstLevel");
+	}
+
+	public void reduce2ast(Lang.AstProperties props) {
+	    Integer oldLevel;
+
+	    // Increment AstLevel
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()+1));
+
+	    super.reduce2ast(props);
+
+	    // Restore old level (decrement)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+
+	public void buildSymbolTable1() {}
+
+	public void buildSymbolTable2() {}
+    }
+    // gen'd from asttmpl2.txt
+
+    //**************************************************
+    // AST_FieldDeclC extension class
+    //**************************************************
+    static public class AST_FieldDeclC extends $(ParentComponent).AST_FieldDeclC {
+	private int stackMarker;
+
+	public void reduce2java(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0].arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+
+	    // arg[0] is an AstOptNode
+	    if (a0 == null) {
+		ps.print(" null");
+		return;
+	    }
+
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    // Start passing a level count marker for AST's
+	    props.setProperty("AstLevel", new Integer(1));
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof Lang.AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2ast(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2ast(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+
+	    // Remove AstLevel marker
+	    props.removeProperty("AstLevel");
+	}
+
+	public void reduce2ast(Lang.AstProperties props) {
+	    Integer oldLevel;
+
+	    // Increment AstLevel
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()+1));
+
+	    super.reduce2ast(props);
+
+	    // Restore old level (decrement)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+
+	public void buildSymbolTable1() {}
+
+	public void buildSymbolTable2() {}
+    }
+    // gen'd from asttmpl2.txt
+
+    //**************************************************
+    // AST_ClassC extension class
+    //**************************************************
+    static public class AST_ClassC extends $(ParentComponent).AST_ClassC {
+	private int stackMarker;
+
+	public void reduce2java(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0].arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+
+	    // arg[0] is an AstOptNode
+	    if (a0 == null) {
+		ps.print(" null");
+		return;
+	    }
+
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    // Start passing a level count marker for AST's
+	    props.setProperty("AstLevel", new Integer(1));
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof Lang.AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2ast(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2ast(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+
+	    // Remove AstLevel marker
+	    props.removeProperty("AstLevel");
+	}
+
+	public void reduce2ast(Lang.AstProperties props) {
+	    Integer oldLevel;
+
+	    // Increment AstLevel
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()+1));
+
+	    super.reduce2ast(props);
+
+	    // Restore old level (decrement)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+
+	public void buildSymbolTable1() {}
+
+	public void buildSymbolTable2() {}
+    }
+    // gen'd from asttmpl.txt
+
+    //**************************************************
+    // AST_ProgramC extension class
+    //**************************************************
+    static public class AST_ProgramC extends $(ParentComponent).AST_ProgramC {
+	private int stackMarker;
+
+	public void reduce2java(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    // Start passing a level count marker for AST's
+	    props.setProperty("AstLevel", new Integer(1));
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof Lang.AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2ast(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2ast(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+
+	    // Remove AstLevel marker
+	    props.removeProperty("AstLevel");
+	}
+
+	public void reduce2ast(Lang.AstProperties props) {
+	    Integer oldLevel;
+
+	    // Increment AstLevel
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()+1));
+
+	    super.reduce2ast(props);
+
+	    // Restore old level (decrement)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+
+	public void buildSymbolTable1() {}
+
+	public void buildSymbolTable2() {}
+    }
+    // gen'd from asttmpl.txt
+
+    //**************************************************
+    // AST_TypeNameC extension class
+    //**************************************************
+    static public class AST_TypeNameC extends $(ParentComponent).AST_TypeNameC {
+	private int stackMarker;
+
+	public void reduce2java(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    // Start passing a level count marker for AST's
+	    props.setProperty("AstLevel", new Integer(1));
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof Lang.AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2ast(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2ast(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+
+	    // Remove AstLevel marker
+	    props.removeProperty("AstLevel");
+	}
+
+	public void reduce2ast(Lang.AstProperties props) {
+	    Integer oldLevel;
+
+	    // Increment AstLevel
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()+1));
+
+	    super.reduce2ast(props);
+
+	    // Restore old level (decrement)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+
+	public void buildSymbolTable1() {}
+
+	public void buildSymbolTable2() {}
+    }
+    // gen'd from asttmpl.txt
+
+    //**************************************************
+    // AST_QualifiedNameC extension class
+    //**************************************************
+    static public class AST_QualifiedNameC extends $(ParentComponent).AST_QualifiedNameC {
+	private int stackMarker;
+
+	public void reduce2java(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    // Start passing a level count marker for AST's
+	    props.setProperty("AstLevel", new Integer(1));
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof Lang.AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2ast(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2ast(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+
+	    // Remove AstLevel marker
+	    props.removeProperty("AstLevel");
+	}
+
+	public void reduce2ast(Lang.AstProperties props) {
+	    Integer oldLevel;
+
+	    // Increment AstLevel
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()+1));
+
+	    super.reduce2ast(props);
+
+	    // Restore old level (decrement)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+
+	public void buildSymbolTable1() {}
+
+	public void buildSymbolTable2() {}
+    }
+    // gen'd from asttmpl2.txt
+
+    //**************************************************
+    // AST_ParListC extension class
+    //**************************************************
+    static public class AST_ParListC extends $(ParentComponent).AST_ParListC {
+	private int stackMarker;
+
+	public void reduce2java(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0].arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+
+	    // arg[0] is an AstOptNode
+	    if (a0 == null) {
+		ps.print(" null");
+		return;
+	    }
+
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    // Start passing a level count marker for AST's
+	    props.setProperty("AstLevel", new Integer(1));
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof Lang.AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2ast(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2ast(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+
+	    // Remove AstLevel marker
+	    props.removeProperty("AstLevel");
+	}
+
+	public void reduce2ast(Lang.AstProperties props) {
+	    Integer oldLevel;
+
+	    // Increment AstLevel
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()+1));
+
+	    super.reduce2ast(props);
+
+	    // Restore old level (decrement)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+
+	public void buildSymbolTable1() {}
+
+	public void buildSymbolTable2() {}
+    }
+    // gen'd from asttmpl2.txt
+
+    //**************************************************
+    // AST_ArgListC extension class
+    //**************************************************
+    static public class AST_ArgListC extends $(ParentComponent).AST_ArgListC {
+	private int stackMarker;
+
+	public void reduce2java(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0].arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+
+	    // arg[0] is an AstOptNode
+	    if (a0 == null) {
+		ps.print(" null");
+		return;
+	    }
+
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    // Start passing a level count marker for AST's
+	    props.setProperty("AstLevel", new Integer(1));
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof Lang.AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2ast(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2ast(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+
+	    // Remove AstLevel marker
+	    props.removeProperty("AstLevel");
+	}
+
+	public void reduce2ast(Lang.AstProperties props) {
+	    Integer oldLevel;
+
+	    // Increment AstLevel
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()+1));
+
+	    super.reduce2ast(props);
+
+	    // Restore old level (decrement)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+
+	public void buildSymbolTable1() {}
+
+	public void buildSymbolTable2() {}
+    }
+    // gen'd from asttmpl.txt
+
+    //**************************************************
+    // AST_TypeNameListC extension class
+    //**************************************************
+    static public class AST_TypeNameListC extends $(ParentComponent).AST_TypeNameListC {
+	private int stackMarker;
+
+	public void reduce2java(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    // Start passing a level count marker for AST's
+	    props.setProperty("AstLevel", new Integer(1));
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof Lang.AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2ast(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2ast(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+
+	    // Remove AstLevel marker
+	    props.removeProperty("AstLevel");
+	}
+
+	public void reduce2ast(Lang.AstProperties props) {
+	    Integer oldLevel;
+
+	    // Increment AstLevel
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()+1));
+
+	    super.reduce2ast(props);
+
+	    // Restore old level (decrement)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+
+	public void buildSymbolTable1() {}
+
+	public void buildSymbolTable2() {}
+    }
+    // gen'd from asttmpl2.txt
+
+    //**************************************************
+    // AST_ImportsC extension class
+    //**************************************************
+    static public class AST_ImportsC extends $(ParentComponent).AST_ImportsC {
+	private int stackMarker;
+
+	public void reduce2java(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0].arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+
+	    // arg[0] is an AstOptNode
+	    if (a0 == null) {
+		ps.print(" null");
+		return;
+	    }
+
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    // Start passing a level count marker for AST's
+	    props.setProperty("AstLevel", new Integer(1));
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof Lang.AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2ast(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2ast(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+
+	    // Remove AstLevel marker
+	    props.removeProperty("AstLevel");
+	}
+
+	public void reduce2ast(Lang.AstProperties props) {
+	    Integer oldLevel;
+
+	    // Increment AstLevel
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()+1));
+
+	    super.reduce2ast(props);
+
+	    // Restore old level (decrement)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+
+	public void buildSymbolTable1() {}
+
+	public void buildSymbolTable2() {}
+    }
+    // gen'd from asttmpl2.txt
+
+    //**************************************************
+    // AST_ModifiersC extension class
+    //**************************************************
+    static public class AST_ModifiersC extends $(ParentComponent).AST_ModifiersC {
+	private int stackMarker;
+
+	public void reduce2java(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0].arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+
+	    // arg[0] is an AstOptNode
+	    if (a0 == null) {
+		ps.print(" null");
+		return;
+	    }
+
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    // Start passing a level count marker for AST's
+	    props.setProperty("AstLevel", new Integer(1));
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof Lang.AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2ast(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2ast(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+
+	    // Remove AstLevel marker
+	    props.removeProperty("AstLevel");
+	}
+
+	public void reduce2ast(Lang.AstProperties props) {
+	    Integer oldLevel;
+
+	    // Increment AstLevel
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()+1));
+
+	    super.reduce2ast(props);
+
+	    // Restore old level (decrement)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+
+	public void buildSymbolTable1() {}
+
+	public void buildSymbolTable2() {}
+    }
+    // gen'd from asttmpl.txt
+
+    //**************************************************
+    // AST_VarDeclC extension class
+    //**************************************************
+    static public class AST_VarDeclC extends $(ParentComponent).AST_VarDeclC {
+	private int stackMarker;
+
+	public void reduce2java(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    // Start passing a level count marker for AST's
+	    props.setProperty("AstLevel", new Integer(1));
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof Lang.AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2ast(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2ast(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+
+	    // Remove AstLevel marker
+	    props.removeProperty("AstLevel");
+	}
+
+	public void reduce2ast(Lang.AstProperties props) {
+	    Integer oldLevel;
+
+	    // Increment AstLevel
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()+1));
+
+	    super.reduce2ast(props);
+
+	    // Restore old level (decrement)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+
+	public void buildSymbolTable1() {}
+
+	public void buildSymbolTable2() {}
+    }
+    // gen'd from asttmpl.txt
+
+    //**************************************************
+    // AST_VarInitC extension class
+    //**************************************************
+    static public class AST_VarInitC extends $(ParentComponent).AST_VarInitC {
+	private int stackMarker;
+
+	public void reduce2java(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    // Start passing a level count marker for AST's
+	    props.setProperty("AstLevel", new Integer(1));
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof Lang.AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2ast(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2ast(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+
+	    // Remove AstLevel marker
+	    props.removeProperty("AstLevel");
+	}
+
+	public void reduce2ast(Lang.AstProperties props) {
+	    Integer oldLevel;
+
+	    // Increment AstLevel
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()+1));
+
+	    super.reduce2ast(props);
+
+	    // Restore old level (decrement)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+
+	public void buildSymbolTable1() {}
+
+	public void buildSymbolTable2() {}
+    }
+    // gen'd from asttmpl.txt
+
+    //**************************************************
+    // AST_ArrayInitC extension class
+    //**************************************************
+    static public class AST_ArrayInitC extends $(ParentComponent).AST_ArrayInitC {
+	private int stackMarker;
+
+	public void reduce2java(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    // Start passing a level count marker for AST's
+	    props.setProperty("AstLevel", new Integer(1));
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof Lang.AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2ast(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2ast(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+
+	    // Remove AstLevel marker
+	    props.removeProperty("AstLevel");
+	}
+
+	public void reduce2ast(Lang.AstProperties props) {
+	    Integer oldLevel;
+
+	    // Increment AstLevel
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()+1));
+
+	    super.reduce2ast(props);
+
+	    // Restore old level (decrement)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+
+	public void buildSymbolTable1() {}
+
+	public void buildSymbolTable2() {}
+    }
+    // gen'd from asttmpl.txt
+
+    //**************************************************
+    // AST_ExpStmtC extension class
+    //**************************************************
+    static public class AST_ExpStmtC extends $(ParentComponent).AST_ExpStmtC {
+	private int stackMarker;
+
+	public void reduce2java(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    // Start passing a level count marker for AST's
+	    props.setProperty("AstLevel", new Integer(1));
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof Lang.AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2ast(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2ast(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+
+	    // Remove AstLevel marker
+	    props.removeProperty("AstLevel");
+	}
+
+	public void reduce2ast(Lang.AstProperties props) {
+	    Integer oldLevel;
+
+	    // Increment AstLevel
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()+1));
+
+	    super.reduce2ast(props);
+
+	    // Restore old level (decrement)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+
+	public void buildSymbolTable1() {}
+
+	public void buildSymbolTable2() {}
+    }
+    // gen'd from asttmpl2.txt
+
+    //**************************************************
+    // AST_CatchesC extension class
+    //**************************************************
+    static public class AST_CatchesC extends $(ParentComponent).AST_CatchesC {
+	private int stackMarker;
+
+	public void reduce2java(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0].arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+
+	    // arg[0] is an AstOptNode
+	    if (a0 == null) {
+		ps.print(" null");
+		return;
+	    }
+
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    // Start passing a level count marker for AST's
+	    props.setProperty("AstLevel", new Integer(1));
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof Lang.AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2ast(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2ast(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+
+	    // Remove AstLevel marker
+	    props.removeProperty("AstLevel");
+	}
+
+	public void reduce2ast(Lang.AstProperties props) {
+	    Integer oldLevel;
+
+	    // Increment AstLevel
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()+1));
+
+	    super.reduce2ast(props);
+
+	    // Restore old level (decrement)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+
+	public void buildSymbolTable1() {}
+
+	public void buildSymbolTable2() {}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // TypEscape extension class
+    //**************************************************
+    static public class TypEscape extends $(ParentComponent).TypEscape {
+	public void reduce2ast(Lang.AstProperties props) {
+	    PrintWriter pw = (PrintWriter) props.getProperty("output");
+	    Lang.AstToken atok = (Lang.AstToken) tok[0];
+	    Integer oldLevel = (Integer) props.getProperty("AstLevel");
+
+	    // Decrement AstLevel marker
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()-1));
+
+	    if (atok.white_space.trim().length() == 0) {
+		// white_space is all white. Don't add comment this.
+		arg[0].reduce2java(props);
+	    }
+	    else {
+		pw.print("Lang.AstNode.addComment(");
+		arg[0].reduce2java(props);
+		pw.print(",\"");
+		atok.printWhitespaceOnly(props);
+		pw.print("\")");
+	    }
+
+	    // Restore AstLevel marker (increment)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // TlstEscape extension class
+    //**************************************************
+    static public class TlstEscape extends $(ParentComponent).TlstEscape {
+	public void reduce2ast(Lang.AstProperties props) {
+	    PrintWriter pw = (PrintWriter) props.getProperty("output");
+	    Lang.AstToken atok = (Lang.AstToken) tok[0];
+	    Integer oldLevel = (Integer) props.getProperty("AstLevel");
+
+	    // Decrement AstLevel marker
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()-1));
+
+	    if (atok.white_space.trim().length() == 0) {
+		// white_space is all white. Don't add comment this.
+		arg[0].reduce2java(props);
+	    }
+	    else {
+		pw.print("Lang.AstNode.addComment(");
+		arg[0].reduce2java(props);
+		pw.print(",\"");
+		atok.printWhitespaceOnly(props);
+		pw.print("\")");
+	    }
+
+	    // Restore AstLevel marker (increment)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // ClsEscape extension class
+    //**************************************************
+    static public class ClsEscape extends $(ParentComponent).ClsEscape {
+	public void reduce2ast(Lang.AstProperties props) {
+	    PrintWriter pw = (PrintWriter) props.getProperty("output");
+	    Lang.AstToken atok = (Lang.AstToken) tok[0];
+	    Integer oldLevel = (Integer) props.getProperty("AstLevel");
+
+	    // Decrement AstLevel marker
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()-1));
+
+	    if (atok.white_space.trim().length() == 0) {
+		// white_space is all white. Don't add comment this.
+		arg[0].reduce2java(props);
+	    }
+	    else {
+		pw.print("Lang.AstNode.addComment(");
+		arg[0].reduce2java(props);
+		pw.print(",\"");
+		atok.printWhitespaceOnly(props);
+		pw.print("\")");
+	    }
+
+	    // Restore AstLevel marker (increment)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // ImpEscape extension class
+    //**************************************************
+    static public class ImpEscape extends $(ParentComponent).ImpEscape {
+	public void reduce2ast(Lang.AstProperties props) {
+	    PrintWriter pw = (PrintWriter) props.getProperty("output");
+	    Lang.AstToken atok = (Lang.AstToken) tok[0];
+	    Integer oldLevel = (Integer) props.getProperty("AstLevel");
+
+	    // Decrement AstLevel marker
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()-1));
+
+	    if (atok.white_space.trim().length() == 0) {
+		// white_space is all white. Don't add comment this.
+		arg[0].reduce2java(props);
+	    }
+	    else {
+		pw.print("Lang.AstNode.addComment(");
+		arg[0].reduce2java(props);
+		pw.print(",\"");
+		atok.printWhitespaceOnly(props);
+		pw.print("\")");
+	    }
+
+	    // Restore AstLevel marker (increment)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // IdEscape2 extension class
+    //**************************************************
+    static public class IdEscape2 extends $(ParentComponent).IdEscape2 {
+	public void reduce2ast(Lang.AstProperties props) {
+	    PrintWriter pw = (PrintWriter) props.getProperty("output");
+	    Lang.AstToken atok = (Lang.AstToken) tok[0];
+	    Integer oldLevel = (Integer) props.getProperty("AstLevel");
+
+	    // Decrement AstLevel marker
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()-1));
+
+	    if (atok.white_space.trim().length() == 0) {
+		// white_space is all white. Don't add comment this.
+		arg[0].reduce2java(props);
+	    }
+	    else {
+		pw.print("Lang.AstNode.addComment(");
+		arg[0].reduce2java(props);
+		pw.print(",\"");
+		atok.printWhitespaceOnly(props);
+		pw.print("\")");
+	    }
+
+	    // Restore AstLevel marker (increment)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // ModEscape extension class
+    //**************************************************
+    static public class ModEscape extends $(ParentComponent).ModEscape {
+	public void reduce2ast(Lang.AstProperties props) {
+	    PrintWriter pw = (PrintWriter) props.getProperty("output");
+	    Lang.AstToken atok = (Lang.AstToken) tok[0];
+	    Integer oldLevel = (Integer) props.getProperty("AstLevel");
+
+	    // Decrement AstLevel marker
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()-1));
+
+	    if (atok.white_space.trim().length() == 0) {
+		// white_space is all white. Don't add comment this.
+		arg[0].reduce2java(props);
+	    }
+	    else {
+		pw.print("Lang.AstNode.addComment(");
+		arg[0].reduce2java(props);
+		pw.print(",\"");
+		atok.printWhitespaceOnly(props);
+		pw.print("\")");
+	    }
+
+	    // Restore AstLevel marker (increment)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // MthEscape extension class
+    //**************************************************
+    static public class MthEscape extends $(ParentComponent).MthEscape {
+	public void reduce2ast(Lang.AstProperties props) {
+	    PrintWriter pw = (PrintWriter) props.getProperty("output");
+	    Lang.AstToken atok = (Lang.AstToken) tok[0];
+	    Integer oldLevel = (Integer) props.getProperty("AstLevel");
+
+	    // Decrement AstLevel marker
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()-1));
+
+	    if (atok.white_space.trim().length() == 0) {
+		// white_space is all white. Don't add comment this.
+		arg[0].reduce2java(props);
+	    }
+	    else {
+		pw.print("Lang.AstNode.addComment(");
+		arg[0].reduce2java(props);
+		pw.print(",\"");
+		atok.printWhitespaceOnly(props);
+		pw.print("\")");
+	    }
+
+	    // Restore AstLevel marker (increment)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // VlstEscape extension class
+    //**************************************************
+    static public class VlstEscape extends $(ParentComponent).VlstEscape {
+	public void reduce2ast(Lang.AstProperties props) {
+	    PrintWriter pw = (PrintWriter) props.getProperty("output");
+	    Lang.AstToken atok = (Lang.AstToken) tok[0];
+	    Integer oldLevel = (Integer) props.getProperty("AstLevel");
+
+	    // Decrement AstLevel marker
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()-1));
+
+	    if (atok.white_space.trim().length() == 0) {
+		// white_space is all white. Don't add comment this.
+		arg[0].reduce2java(props);
+	    }
+	    else {
+		pw.print("Lang.AstNode.addComment(");
+		arg[0].reduce2java(props);
+		pw.print(",\"");
+		atok.printWhitespaceOnly(props);
+		pw.print("\")");
+	    }
+
+	    // Restore AstLevel marker (increment)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // ViEscape extension class
+    //**************************************************
+    static public class ViEscape extends $(ParentComponent).ViEscape {
+	public void reduce2ast(Lang.AstProperties props) {
+	    PrintWriter pw = (PrintWriter) props.getProperty("output");
+	    Lang.AstToken atok = (Lang.AstToken) tok[0];
+	    Integer oldLevel = (Integer) props.getProperty("AstLevel");
+
+	    // Decrement AstLevel marker
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()-1));
+
+	    if (atok.white_space.trim().length() == 0) {
+		// white_space is all white. Don't add comment this.
+		arg[0].reduce2java(props);
+	    }
+	    else {
+		pw.print("Lang.AstNode.addComment(");
+		arg[0].reduce2java(props);
+		pw.print(",\"");
+		atok.printWhitespaceOnly(props);
+		pw.print("\")");
+	    }
+
+	    // Restore AstLevel marker (increment)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // AiEscape extension class
+    //**************************************************
+    static public class AiEscape extends $(ParentComponent).AiEscape {
+	public void reduce2ast(Lang.AstProperties props) {
+	    PrintWriter pw = (PrintWriter) props.getProperty("output");
+	    Lang.AstToken atok = (Lang.AstToken) tok[0];
+	    Integer oldLevel = (Integer) props.getProperty("AstLevel");
+
+	    // Decrement AstLevel marker
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()-1));
+
+	    if (atok.white_space.trim().length() == 0) {
+		// white_space is all white. Don't add comment this.
+		arg[0].reduce2java(props);
+	    }
+	    else {
+		pw.print("Lang.AstNode.addComment(");
+		arg[0].reduce2java(props);
+		pw.print(",\"");
+		atok.printWhitespaceOnly(props);
+		pw.print("\")");
+	    }
+
+	    // Restore AstLevel marker (increment)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // PlstEscape extension class
+    //**************************************************
+    static public class PlstEscape extends $(ParentComponent).PlstEscape {
+	public void reduce2ast(Lang.AstProperties props) {
+	    PrintWriter pw = (PrintWriter) props.getProperty("output");
+	    Lang.AstToken atok = (Lang.AstToken) tok[0];
+	    Integer oldLevel = (Integer) props.getProperty("AstLevel");
+
+	    // Decrement AstLevel marker
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()-1));
+
+	    if (atok.white_space.trim().length() == 0) {
+		// white_space is all white. Don't add comment this.
+		arg[0].reduce2java(props);
+	    }
+	    else {
+		pw.print("Lang.AstNode.addComment(");
+		arg[0].reduce2java(props);
+		pw.print(",\"");
+		atok.printWhitespaceOnly(props);
+		pw.print("\")");
+	    }
+
+	    // Restore AstLevel marker (increment)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // StmEscape extension class
+    //**************************************************
+    static public class StmEscape extends $(ParentComponent).StmEscape {
+	public void reduce2ast(Lang.AstProperties props) {
+	    PrintWriter pw = (PrintWriter) props.getProperty("output");
+	    Lang.AstToken atok = (Lang.AstToken) tok[0];
+	    Integer oldLevel = (Integer) props.getProperty("AstLevel");
+
+	    // Decrement AstLevel marker
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()-1));
+
+	    if (atok.white_space.trim().length() == 0) {
+		// white_space is all white. Don't add comment this.
+		arg[0].reduce2java(props);
+	    }
+	    else {
+		pw.print("Lang.AstNode.addComment(");
+		arg[0].reduce2java(props);
+		pw.print(",\"");
+		atok.printWhitespaceOnly(props);
+		pw.print("\")");
+	    }
+
+	    // Restore AstLevel marker (increment)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // StrEscape extension class
+    //**************************************************
+    static public class StrEscape extends $(ParentComponent).StrEscape {
+	public void reduce2java(Lang.AstProperties props) {
+	    PrintWriter pw = (PrintWriter) props.getProperty("output");
+	    Lang.AstToken atok = (Lang.AstToken) tok[0];
+
+	    pw.print(atok.white_space);
+	    pw.print("\"");
+	    arg[0].reduce2java(props);
+	    pw.print("\"");
+	}
+
+	public void reduce2ast(Lang.AstProperties props) {
+	    PrintWriter pw = (PrintWriter) props.getProperty("output");
+	    Lang.AstToken atok = (Lang.AstToken) tok[0];
+	    Integer oldLevel = (Integer) props.getProperty("AstLevel");
+	    Lang.Literal quoted =
+		Lang.Literal.makeLiteral("\"" + arg[0] + "\"");
+
+	    // Decrement AstLevel marker
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()-1));
+
+	    if (atok.white_space.length() == 0) {
+		// white_space is zero length. Don't add comment this.
+		quoted.reduce2ast(props);
+	    }
+	    else {
+		pw.print("Lang.AstNode.addComment(");
+		quoted.reduce2ast(props);
+		pw.print(",\"");
+		atok.printWhitespaceOnly(props);
+		pw.print("\")");
+	    }
+
+	    // Restore AstLevel marker (increment)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // EstmEscape extension class
+    //**************************************************
+    static public class EstmEscape extends $(ParentComponent).EstmEscape {
+	public void reduce2ast(Lang.AstProperties props) {
+	    PrintWriter pw = (PrintWriter) props.getProperty("output");
+	    Lang.AstToken atok = (Lang.AstToken) tok[0];
+	    Integer oldLevel = (Integer) props.getProperty("AstLevel");
+
+	    // Decrement AstLevel marker
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()-1));
+
+	    if (atok.white_space.trim().length() == 0) {
+		// white_space is all white. Don't add comment this.
+		arg[0].reduce2java(props);
+	    }
+	    else {
+		pw.print("Lang.AstNode.addComment(");
+		arg[0].reduce2java(props);
+		pw.print(",\"");
+		atok.printWhitespaceOnly(props);
+		pw.print("\")");
+	    }
+
+	    // Restore AstLevel marker (increment)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // CatEscape extension class
+    //**************************************************
+    static public class CatEscape extends $(ParentComponent).CatEscape {
+	public void reduce2ast(Lang.AstProperties props) {
+	    PrintWriter pw = (PrintWriter) props.getProperty("output");
+	    Lang.AstToken atok = (Lang.AstToken) tok[0];
+	    Integer oldLevel = (Integer) props.getProperty("AstLevel");
+
+	    // Decrement AstLevel marker
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()-1));
+
+	    if (atok.white_space.trim().length() == 0) {
+		// white_space is all white. Don't add comment this.
+		arg[0].reduce2java(props);
+	    }
+	    else {
+		pw.print("Lang.AstNode.addComment(");
+		arg[0].reduce2java(props);
+		pw.print(",\"");
+		atok.printWhitespaceOnly(props);
+		pw.print("\")");
+	    }
+
+	    // Restore AstLevel marker (increment)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // ExpEscape extension class
+    //**************************************************
+    static public class ExpEscape extends $(ParentComponent).ExpEscape {
+	public void reduce2ast(Lang.AstProperties props) {
+	    PrintWriter pw = (PrintWriter) props.getProperty("output");
+	    Lang.AstToken atok = (Lang.AstToken) tok[0];
+	    Integer oldLevel = (Integer) props.getProperty("AstLevel");
+
+	    // Decrement AstLevel marker
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()-1));
+
+	    if (atok.white_space.trim().length() == 0) {
+		// white_space is all white. Don't add comment this.
+		arg[0].reduce2java(props);
+	    }
+	    else {
+		pw.print("Lang.AstNode.addComment(");
+		arg[0].reduce2java(props);
+		pw.print(",\"");
+		atok.printWhitespaceOnly(props);
+		pw.print("\")");
+	    }
+
+	    // Restore AstLevel marker (increment)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // XlstEscape extension class
+    //**************************************************
+    static public class XlstEscape extends $(ParentComponent).XlstEscape {
+	public void reduce2ast(Lang.AstProperties props) {
+	    PrintWriter pw = (PrintWriter) props.getProperty("output");
+	    Lang.AstToken atok = (Lang.AstToken) tok[0];
+	    Integer oldLevel = (Integer) props.getProperty("AstLevel");
+
+	    // Decrement AstLevel marker
+	    props.setProperty("AstLevel", new Integer(oldLevel.intValue()-1));
+
+	    if (atok.white_space.trim().length() == 0) {
+		// white_space is all white. Don't add comment this.
+		arg[0].reduce2java(props);
+	    }
+	    else {
+		pw.print("Lang.AstNode.addComment(");
+		arg[0].reduce2java(props);
+		pw.print(",\"");
+		atok.printWhitespaceOnly(props);
+		pw.print("\")");
+	    }
+
+	    // Restore AstLevel marker (increment)
+	    props.setProperty("AstLevel", oldLevel);
+	}
+    }
+
+
+    // start of code from CodeTemplate.Kernel
+
+    //**************************************************
+    // class AstList extension
+    //**************************************************
+    static public abstract class AstList extends $(ParentComponent).AstList {
+	//**************************************************
+	// reduce2ast()
+	//**************************************************
+	public void reduce2ast(Lang.AstProperties props) {
+	    Lang.AstNode l;
+	    PrintWriter ps;
+
+	    // Step 1: generate the AstList node
+	    ps = (PrintWriter) props.getProperty("output");
+
+	    ps.println(" (" + className() + ") new " + className() + "()");
+
+	    // Step 3: return if the list is empty
+
+	    if (arg[0] == null)
+		return;
+
+	    // Step 3: print all the same
+
+	    for (l = arg[0]; l != null; l = l.right)
+		l.reduce2ast(props);
+	}
+    }
+
+
+    //**************************************************
+    // class AstListNode extension
+    //**************************************************
+    static public abstract class AstListNode extends $(ParentComponent).AstListNode {
+	//**************************************************
+	// reduce2ast()
+	//**************************************************
+	public void reduce2ast(Lang.AstProperties props) {
+	    PrintWriter ps;
+
+	    if (arg[0] != null) {
+		ps = (PrintWriter) props.getProperty("output");
+
+		ps.print("\n.add( (" + this.className() + ") new " +
+			 this.className() + "().setParms(");
+		if (tok != null) {
+		    Print_Only_Token_Ast(props);
+		    ps.println(",");
+		}
+		arg[0].reduce2ast(props);
+		ps.println("))/* " + this.className() +" + add */");
+	    }
+	}
+    }
+
+
+    //**************************************************
+    // class AstToken extension
+    //**************************************************
+    static public class AstToken extends $(ParentComponent).AstToken
+	implements Token {
+
+	// temporary
+// 	public AstToken(int n, String _ws, String _sym) {
+// 	    super(n, _ws, _sym);
+// 	}
+
+	//**************************************************
+	// reduce2ast()
+	//**************************************************
+	public void reduce2ast(Lang.AstProperties props) {
+	    PrintWriter ps;
+	    Lang.Environment env;
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    env = (Lang.Environment) props.getProperty("env");
+	    ps.print("new Lang.AstToken().setParms(\"" +
+		     makeString(white_space) + "\",\"" +
+		     makeString(name) + "\", 0)");
+
+	    // Mangling is done at run-time only.
+	    // Logic has moved to NameId class.
+	}
+    }
+
+
+    //**************************************************
+    // class AstOptToken extension
+    //**************************************************
+    static public class AstOptToken extends $(ParentComponent).AstOptToken
+	implements Token {
+
+	//**************************************************
+	// reduce2ast()
+	//**************************************************
+	public void reduce2ast(Lang.AstProperties props) {
+	    PrintWriter ps;
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    ps.println(" new Lang.AstOptToken(");
+	    if (tok[0] != null) {
+		ps.print(").setParms(");
+		tok[0].reduce2ast(props);
+	    }
+	    ps.println(") /* AstOptToken */");
+	}
+    }
+
+
+    //**************************************************
+    // class AstOptNode extension
+    //**************************************************
+    static public class AstOptNode extends $(ParentComponent).AstOptNode {
+	//**************************************************
+	// reduce2ast()
+	//**************************************************
+	public void reduce2ast(Lang.AstProperties props) {
+	    PrintWriter ps;
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    ps.println(" new Lang.AstOptNode(");
+	    if (arg[0] != null) {
+		ps.print(").setParms(");
+		arg[0].reduce2ast(props);
+	    }
+	    ps.println(") /* AstOptNode */");
+	}
+    }
+
+
+    //**************************************************
+    // class AstCursor extension
+    //**************************************************
+    static public class AstCursor extends $(ParentComponent).AstCursor {
+	//**************************************************
+	// reduce2ast()
+	//**************************************************
+	public void reduce2ast(Lang.AstProperties props) {
+	    node.reduce2ast(props);
+	}
+    }
+
+
+    // Start of code from CodeTemplate.KernelBase
+    //**************************************************
+    // class AstNode extension
+    //**************************************************
+    static public abstract class AstNode extends $(ParentComponent).AstNode {
+	//**************************************************
+	// reduce2ast
+	//**************************************************
+	public void reduce2ast(Lang.AstProperties props) {
+	    boolean order[];
+	    int     t, n, i;
+	    PrintWriter ps;
+
+	    order = printorder();
+	    t = 0;
+	    n = 0;
+	    ps = (PrintWriter) props.getProperty("output");
+
+	    ps.println(" (" + className() + ") new " + className() +
+		       "().setParms( ");
+	    for (i=0; i<order.length; i++) {
+
+		if (i>0)
+		    ps.print(", ");
+		// if order[i] is true; print token else print nonterminal
+
+		if (order[i])
+		    tok[t++].reduce2ast(props);
+		else
+		    arg[n++].reduce2ast(props);
+	    }
+	    ps.println(") /* " + className() + " */");
+	}
+
+
+	//**************************************************
+	// Print_Only_Token_Ast
+	//**************************************************
+	public void Print_Only_Token_Ast(Lang.AstProperties props) {
+	    int i;
+	    PrintWriter ps;
+
+	    if (tok == null)
+		return;
+
+	    tok[0].reduce2ast(props);
+	    ps = (PrintWriter) props.getProperty("output");
+	    for (i=1; i<tok.length; i++) {
+		ps.print(",");
+		tok[i].reduce2ast(props);
+	    }
+	}
+    }
+
+
+    //**************************************************
+    // class Token extension
+    //**************************************************
+    static public interface Token extends $(ParentComponent).Token {
+	public void reduce2ast(Lang.AstProperties props);
+    }
+
+    // from asttail.txt
+}	// this closes the class started in asthead.txt

@@ -1,0 +1,145 @@
+package OpfacL;
+
+import  
+    F.Libraries.laydown.OpfacDataWrapper;
+import 
+    F.Libraries.log.Log;
+import 
+    java.util.*;
+import 
+    fsats.util.*;
+
+// OpfacThread
+
+    /** Basic OPFAC functionality **/
+    public class OpfacImpl 
+        implements Opfac
+    {
+        protected SynchronizedQueue deliveryQueue = null;
+
+	protected OpfacThread opfacThread;  // BDH test
+
+/*
+        class OpfacThread extends Thread
+        {
+            public void run()
+            {
+                while (true)
+                {
+                    $TEqn.Event event = ($TEqn.Event)deliveryQueue.get();
+                    receive(event);
+                }
+            }
+        }
+*/
+
+        public void deliver( Event event)
+        {
+            /*
+	    if(!opfacThread.isAlive())
+            {
+		opfacThread = new $TEqn.OpfacThread(this);
+		opfacThread.start();
+                Iterator i = getActiveMissions().iterator();
+		while(i.hasNext())
+                    System.out.println("State for "+getName()+": "+(($TEqn.Mission)i.next()).getState());
+            }
+            */
+
+            deliveryQueue.put(event);
+        }
+
+	protected void receive( Event event ) 
+        {
+	    // Debugging
+	    Log.log("Opfac "+getName()+" received "+event);
+	}
+
+
+	protected String _name;
+	protected int _unit;
+	protected OpfacType _type;
+	protected String _superior;
+        protected Location _location;
+	protected Network _network;
+
+        public Object clone() 
+        { 
+            try { return super.clone(); } catch (Exception e) {}
+            return null;
+        }
+
+	/** Initializer sets fields according to laydown record **/
+	public void init( OpfacDataWrapper record, Network network) 
+	{
+	    // Initialize fields according to laydown record
+	    _network    = network;
+
+	    _name      = record.getName();
+	    _unit      = record.getUnit();
+	    _type      = OpfacType.fromString(record.getType());
+	    _superior  = record.getSuperior();
+            _location =
+                new LocationLatLong(
+                    record.getLatitude(),
+                    record.getLongitude());
+
+	    // Register with net object
+	    if( _network != null ) {
+		_network.register( _name, (Opfac) this );
+	    }
+            
+            deliveryQueue = new SynchronizedQueue();
+            opfacThread = new OpfacThread(( OpfacImpl) this);      // BDH test -- added cast
+	    opfacThread.start();                  // BDH test
+            //new $TEqn.OpfacThread(this).start();
+	}
+
+        private static OpfacFactory factory = new OpfacFactory();
+
+        public static Opfac create(
+            OpfacDataWrapper record, Network network)
+        {
+            return factory.create(record, network);
+        }
+
+	/** A list of currently active Missions. */
+	public Collection getActiveMissions() {
+	    return Collections.EMPTY_SET;
+	}
+
+	/** Current location of Opfac. */
+	public Location getLocation() 
+        { 
+            return _location;
+        }
+
+	/** 
+	 * A unique identifier.  
+	 * Should be meaningful, will be shown to the user.
+	 */
+	public String getName()      { return _name; } 
+
+	/** The unit number of the Opfac. */
+	public int getUnit()       { return _unit; }
+
+	/** The type of the Opfac. fo, fist, etc.  */
+ 	public OpfacType getType()      { return _type; } 
+
+	/** This opfac's commanding unit **/
+	public String getSuperior()  { return _superior; } 
+
+	/** Schedule a timeout. */
+	public void timeout(float delay, Timeout event) 
+	{
+            new OpfacTimeout(( Opfac)this, delay, event);
+	}
+
+        /** Send a message to another opfac. */
+        public void sendTo(String to, Message message)
+        {
+            message.setSource(getName());
+            message.setDestination(to);
+            _network.send(message);
+        }
+    }

@@ -1,0 +1,12 @@
+package MlrsL;
+
+
+
+
+    public extends class ProxyFactory 
+    {
+	protected void ProxyFactoryConstructor() {
+            Base().ProxyFactoryConstructor();
+	    register(OpfacType.MLRS_BTRY, new MlrsProxy());
+      }
+    }

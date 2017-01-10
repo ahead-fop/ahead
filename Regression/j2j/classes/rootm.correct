@@ -1,0 +1,19 @@
+package one;
+
+
+
+abstract class root$$one {
+   root$$one( int x, double y, String z ) {}
+}
+
+
+
+ class root extends  root$$one  {
+   root( int x, float y, String z ) {
+      this(x+1,(double)y+2.0,"xxx"+z);  
+   }
+      // inherited constructors
+
+
+   root (  int x, double y, String z ) { super(x, y, z); }
+}

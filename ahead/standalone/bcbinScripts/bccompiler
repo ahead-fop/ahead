@@ -1,0 +1,59 @@
+#!/bin/bash
+# $1 is the given model name
+
+function donothing() {
+	counter=$1
+	while [ $counter -gt 0 ]; do
+		let counter=counter-1
+	done
+}
+
+echo "Compile the given model $1:"
+
+echo "	Step 0: create the directory ${1}\$\$......"
+cp -r $1 ${1}\$\$
+donothing 100
+
+echo "	Step 1: generating the stub directories......"
+bcstubgenerator ${1}\$\$
+donothing 100
+
+echo "	Step 2: compiling the stub directories......"
+cd ${1}\$\$/stub
+javac *.java
+cd ../refine 
+javac *.java
+cd ..
+donothing 100
+
+echo "	Step 3: changing the package of classes in the stub directory......"
+bctostub stub
+donothing 100
+
+echo "	Step 4: running jrename to rename the classes in all layers, the renamed classes is in the directory ${1}\$\$........"
+cd ..
+bcjrename ${1}\$\$
+donothing 100
+
+echo "	Step 5: compiling each layer................."
+x="stub"
+y="refine"
+z="BaliParser"
+cd ${1}\$\$
+for dir in `ls`; 
+do
+  if [ -d $dir ]; then
+    if [ $dir != $x ]; then
+    	if [ $dir != $y ]; then
+    	    if [ $dir != $z ]; then
+    		echo $dir
+    		javac -classpath .\;refine\;stub\;$CLASSPATH $dir/*\$\$.java
+    	    fi
+    	fi
+    fi
+  fi
+done;
+cd ..
+
+echo "the model $1 has been compiled, the compiled model is in ${1}\$\$"
+

@@ -1,0 +1,12 @@
+Jak.macroLayer$InvalidMacroException: Local/parm variable name collision
+	at Jak.macroLayer$MacroDcl.init(Compiled Code)
+	at Jak.macroLayer$MacroDcl.setParms(macroLayer.java:298)
+	at Jak.BaliParser.MacroDecl(BaliParser.java:372)
+	at Jak.BaliParser.UnmodifiedTypeDeclaration(BaliParser.java:312)
+	at Jak.BaliParser.TypeDeclaration(BaliParser.java:291)
+	at Jak.BaliParser.AST_Class(BaliParser.java:2333)
+	at Jak.BaliParser.AST_Program(BaliParser.java:81)
+	at Jak.Base.getStartRoot(Base.java:7865)
+	at Jak.Java$Main.createAST(Java.java:131)
+	at Jak.kernel$Main.driver(kernel.java:1615)
+	at Jak.kernel$Main.main(kernel.java:1465)

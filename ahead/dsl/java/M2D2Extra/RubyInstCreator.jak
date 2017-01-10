@@ -1,0 +1,35 @@
+layer M2D2Extra;
+
+import java.util.*;
+import java.util.*;
+import java.util.HashSet;
+import java.util.HashSet;
+
+refines class RubyInstCreator {
+
+  public  static String createClass( String className, String classIdentifier, 
+              String classVisibility, boolean isRefinement, 
+              String classOwnerPackageIdentifier ){
+
+     // register that this class belongs to a layer
+     ImpQual.layerClasses.add(className);
+
+     // and do the normal string processing
+     return Super(String, String, String, boolean, String).createClass( className, 
+              classIdentifier, classVisibility, isRefinement, 
+              classOwnerPackageIdentifier);
+  }
+
+   public static String createInterface (String interfaceName, 
+        String interfaceIdentifier, String interfaceVisibility, 
+        boolean isRefinement, String interfaceOwnerPackageIdentifier){
+      
+     // register that this interface belongs to a layer
+     ImpQual.layerClasses.add(interfaceName);
+
+     // and do the normal string processing
+     return Super(String, String, String, boolean, String). createInterface 
+       (interfaceName, interfaceIdentifier, interfaceVisibility, isRefinement, 
+        interfaceOwnerPackageIdentifier);
+   }
+}

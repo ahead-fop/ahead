@@ -1,0 +1,17 @@
+#!/bin/bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+FAILURES=0
+
+unset -v BEFORE
+for DIR in onefile nfiles fsats ; do
+    [ -n "${BEFORE}" ] && echo -e "${BEFORE}" || BEFORE='\n'
+    (cd "${DIR}" ; bash regress) || FAILURES=1
+done
+
+if ((FAILURES)); then
+  echo -e "${BEFORE}DRC Regression Tests Completed with ERRORS"
+else
+  echo -e "${BEFORE}DRC Regression Tests Completed Successfully"
+fi

@@ -1,0 +1,309 @@
+<?xml version="1.0"?>
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <project name="OrthoTest" default="all"> 
+      <description> OrthoTest Description </description>
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <!-- Project-level properties define build parameters.	       -->
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <!-- The "project" properties are used to generate other property  -->
+      <!-- names and to define substitutions into project documents.     -->
+      <!-- Definitions are taken from the first place where found in the -->
+      <!-- following list:  (A) Command line; (B) "build.properties"     -->
+      <!-- in the base directory; (C) The definitions in this file.      -->
+      <!-- The command-line may be specified by a higher-level build.    -->
+      <!--							       -->
+      <!-- PROJECT PARAMETERS (should be defined in this file):	       -->
+      <!-- * project.name ....... generate property and file names;      -->
+      <!-- * project.Name ....... capitalized name for documentation;    -->
+      <!-- * project.owner ...... copyright owner of this code;	       -->
+      <!-- * project.title ...... capitalized title for documentation;   -->
+      <!-- * project.version .... the release, state and patch level.    -->
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <property name="project.name"	value="orthotest"/>
+      <property name="project.Name"	value="OrthoTest"/>
+      <property
+        name="project.owner"
+        value="The University of Texas at Austin"/>
+      <property
+        name="project.title"
+	value="The Orthogonality Validator Tool"/>
+      <property name="project.version"	value="v2006.02.11"/>
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <property name="dir.build"		location="${basedir}/build"/>
+   
+      <property name="dir.external"	location="${basedir}/miscellaneous"/>
+      <property name="dir.external.bin"	location="${dir.external}/bin"/>
+      <property name="dir.external.lib"	location="${dir.external}/lib"/>
+
+      <property name="dir.external.lib"	location="${dir.external}/lib"/>
+
+      <property name="dir.build.api"	location="${dir.build}/api"/>
+      <property name="dir.build.classes"	location="${dir.build}/classes"/>
+      <property name="dir.build.test"	location="${dir.build}/test"/>
+      <property
+        name="jar.build"
+		location="${dir.build}/${project.name}.jar"/>
+      <property
+        name="xml.orthotest"
+        location="${basedir}/OrthoTest.xml"/>
+      <property name="build.debug"	value="true"/>
+      <property name="build.deprecation"	value="false"/>
+      <property name="build.optimize"	value="false"/>
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <property name="dir.jts"		location=".."/>
+      <property name="dir.lib"		location="${dir.jts}/lib"/>
+      <property name="jar.ant"		location="${ant.home}/lib/ant.jar"/>
+      <property name="jar.composer"	location="${dir.lib}/composer.jar"/>
+      <property name="jar.jakarta"	location="${dir.lib}/jakarta.jar"/>
+      <property name="jar.jdom"		location="${dir.lib}/jdom.jar"/>
+      <property name="jar.sat4j"		location="${dir.lib}/sat4j.jar"/>
+      <property name="jar.guidsl"		location="${dir.lib}/guidsl.jar"/>
+      <property name="jar.bcel"		location="${dir.lib}/bcel-5.1.jar"/>
+      <property name="jar.log4j"		location="${dir.jts}/orthotest/lib/log4j-1.2.11.jar"/>
+      <property name="jar.classreader"		location="${dir.jts}/orthotest/lib/classreader.jar"/>
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <path id="external.class.path.id"> 
+        <pathelement location="${jar.composer}"/>
+        <pathelement location="${jar.jakarta}"/>
+        <pathelement location="${jar.ant}"/>
+        <pathelement location="${jar.jdom}"/>
+        <pathelement location="${jar.sat4j}"/>
+        <pathelement location="${jar.guidsl}"/>
+        <pathelement location="${jar.bcel}"/>
+        <pathelement location="${jar.log4j}"/>
+        <pathelement location="${jar.classreader}"/>
+      </path>
+      <property name="external.class.path" refid="external.class.path.id"/>
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <!-- The "all" target is shorthand to re-compile from scratch.     -->
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <target
+        name="all"
+        depends="jar"
+        description="Equivalent to jar"/>
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <!-- The "clean" target removes generated files *other* than those -->
+      <!-- generated to define the build configuration, if any.	       -->
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <target
+        name="clean"
+        depends="initialize"
+        description="Deletes generated files (e.g., class files)"> 
+        <patternset id="clean.patterns"> 
+          <exclude name="**/CVS/**"/>
+          <include name="**/*~"/>
+          <include name="**/#*#"/>
+          <include name="**/.#*"/>
+          <include name="**/%*%"/>
+          <include name="**/*.bak"/>
+          <include name="**/*.BAK"/>
+          <include name="**/*.pyc"/>
+          <include name="**/*.pyo"/>
+          <include name="**/core"/>
+        </patternset>
+        <delete includeEmptyDirs="true" quiet="true"> 
+          <fileset dir="${dir.build}"/>
+          <fileset defaultexcludes="no" dir="."> 
+            <include name="**/*.log"/>
+            <include name="**/*.class"/>
+            <patternset refid="clean.patterns"/>
+          </fileset>
+        </delete>
+        <!-- Apparently the "delete" task can't delete symbol links, -->
+        <!-- so the following deletes the directory containing them: -->
+        <exec executable="rm"> 
+          <arg value="--force"/>
+          <arg value="--recursive"/>
+          <arg value="--"/>
+          <arg file="${dir.build}"/>
+        </exec>
+      </target>
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <!-- The "compile" target compiles all nested Java source files,   -->
+      <!-- storing the generated class files into another directory.     -->
+      <!-- It also copies any resource files to the same directory.      -->
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <target
+        name="compile"
+        depends="prepare,use.jar.jdom"
+        description="Compiles Java source files to class files in build/"> 
+        <mkdir dir="${dir.build.classes}"/>
+        <echo message="CP=${external.class.path}" />
+        <javac
+	    classpath="${external.class.path};./lib/orthoClassReader.jar"
+	    debug="${build.debug}"
+	    deprecation="${build.deprecation}"
+            destdir="${dir.build.classes}"
+	    optimize="${build.optimize}"> 
+          <src path="."/>
+          <exclude name="**/*Test.java"/>
+          <include name="**/*.java"/>
+        </javac>
+        <copy todir="${dir.build.classes}/${project.Name}"> 
+          <fileset dir="."> 
+            <exclude name="${dir.build}/_MEState.properties"/>
+            <exclude name="${dir.build}/_MRUModel.properties"/>
+            <exclude name="${dir.build}/**/*"/>
+            <include name="**/*.properties"/>
+            <include name="images/**/*"/>
+          </fileset>
+        </copy>
+      </target>
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <!-- The "initialize" target calculates a set of initial dynamic build -->
+      <!-- properties such as timestamps and copyrights.  It also prints an  -->
+      <!-- informative message about the build.                              -->
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <target name="initialize"> 
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <!-- Create the time stamps for current build:                 -->
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <tstamp> 
+          <format property="initialize.date" pattern="yyyy/MM/dd"/>
+          <format property="initialize.time" pattern="HH:mm:ss"/>
+          <format property="initialize.year" pattern="yyyy"/>
+        </tstamp>
+        <property
+	    name="timestamp"
+	    value="${initialize.date} ${initialize.time}"/>
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <!-- Calculate range of years to put into copyright notice:    -->
+        <!-- * cr.alpha .......	first year source was created;	       -->
+        <!-- * cr.omega .......	last year source was modified;	       -->
+        <!-- * cr.range .......	range of years for copyright.	       -->
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <property name="cr.alpha" value="2002"/>
+        <property name="cr.owner" value="${project.owner}"/>
+        <condition property="cr.range" value="${cr.alpha}"> 
+          <equals arg1="${cr.alpha}" arg2="${initialize.year}"/>
+        </condition>
+        <condition property="cr.range" value="${cr.alpha}-${initialize.year}"> 
+          <not> 
+            <equals arg1="${cr.alpha}" arg2="${initialize.year}"/>
+          </not>
+        </condition>
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <!-- Create copyright messages:                                -->
+        <!-- * copyright.base ... text with year(s) and owner;         -->
+        <!-- * copyright.html ... for inclusion into HTML documents;   -->
+        <!-- * copyright.text ... for inclusion into text documents.   -->
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <property name="copyright.base" value="${cr.range} ${cr.owner}"/>
+        <property name="copyright.html"	value="&#169; ${copyright.base}"/>
+        <property name="copyright.text"	value="(C) ${copyright.base}"/>
+        <echo level="info" message="Build begins ${timestamp}"/>
+        <echo level="info" message=""/>
+        <echo level="info" message="${project.title} ${project.version}"/>
+        <echo level="info" message="${copyright.text}"/>
+      </target>
+      
+	  
+	  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      
+	  
+	  <target
+        name="jar"
+        depends="compile,manifest"
+        description="Collects generated class files into a JAR"> 
+        <jar basedir="${dir.build.classes}" jarfile="${jar.build}" manifest="${dir.build}/MANIFEST.MF"/> 
+		<!--jar basedir="${dir.build.classes}" jarfile="${jar.build}" manifest="${dir.build}/MANIFEST.MF"> 
+          <zipgroupfileset dir="${ant.home}/lib" includes="**/*.jar"/>
+        </jar-->
+		
+        <delete file="${dir.build}/composer.jar" quiet="true"/>
+        <delete file="${dir.build}/jakarta.jar" quiet="true"/>
+        <delete file="${dir.build}/mmatrix.jar" quiet="true"/>
+        <echo level="info" message="linking external jar files"/>
+		
+
+        <copy todir="${dir.lib}" flatten="yes">		  
+          <fileset dir="${dir.jts}/orthotest/lib/"> 
+            <include name="orthoClassReader.jar"/>
+
+          </fileset>
+        </copy>
+		
+		
+		<copy todir="${dir.build}/../bin" flatten="yes">		  
+          <fileset dir="${basedir}"> 
+            <include name="safecomp.bat"/>
+			<include name="safecomp"/>
+          </fileset>
+        </copy>
+		
+      </target>
+		
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	  
+      <target name="manifest" depends="prepare"> 
+        <manifest file="${dir.build}/MANIFEST.MF"> 
+          <attribute name="Build-Timestamp"	value="${timestamp}"/>
+          <attribute name="Build-Username"	value="${user.name}"/>
+          <attribute name="Main-Class"	value="${project.Name}.Main"/>
+          <attribute name="Class-Path" value="file:composer.jar file:jakarta.jar file:mmatrix.jar"/>
+        </manifest>
+		
+        <echo
+            level="info"
+	    message="Manifest ${dir.build}/MANIFEST.MF"
+	    taskname="manifest"/>
+      </target>
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <target name="prepare" depends="initialize"> 
+        <mkdir dir="${dir.build}"/>
+        <mkdir dir="${dir.build.api}"/>
+        <mkdir dir="${dir.build.classes}"/>
+        <mkdir dir="${dir.build.test}"/>
+      </target>
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <!-- The "test" target runs all JUnit tests in the test source code.   -->
+      <!-- Java code for testing is d here since it's not mainstream. -->
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- Property "jar.jdom" specifies the location of the built Jar       -->
+    <!-- file for the JDom parsing tool if it exists or can be built.      -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <target
+        name="use.jar.jdom"
+        depends="use.jar.jdom:available"
+        unless="jar.jdom">
+
+	<copy
+            file="${dir.external.lib}/jdom.jar"
+            todir="${dir.build.lib}"/>
+
+	<property
+            name="jar.jdom"
+            location="${dir.build.lib}/jdom.jar"/>
+
+    </target>
+
+    <target name="use.jar.jdom:available" depends="prepare">
+
+	<available
+            property="jar.jdom"
+            value="${dir.build.lib}/jdom.jar"
+            file="${dir.build.lib}/jdom.jar"
+	    type="file"/>
+
+    </target>
+
+
+
+    </project>
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Local Variables:                    -->
+    <!-- mode:                           XML -->
+    <!-- fill-column:                     79 -->
+    <!-- sgml-ignore-undefined-elements: nil -->
+    <!-- sgml-indent-data:                 t -->
+    <!-- sgml-indent-step:                 4 -->
+    <!-- End:                                -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  

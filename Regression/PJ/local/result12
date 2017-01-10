@@ -1,0 +1,24 @@
+layer Ctop; 
+
+import Jakarta.util.*;
+
+import java.util.*;
+
+class top implements java.io.Serializable {
+   static int i$$Ctop,j$$Ctop;
+
+   static int i$$Cmid,j$$Cmid;
+
+   static { i$$Ctop = 4; }
+
+   static { i$$Cmid = 4; }
+   int ii$$Ctop,jj$$Ctop;
+   int ii$$Cmid,jj$$Cmid;
+
+   top() {  ii$$Ctop = 5; }
+   top(int rj) { jj$$Ctop = rj; }
+
+   void foo$$Ctop(float x, float y) { i$$Ctop = j$$Ctop = x+y; }
+
+   void foo$$Cmid(float x, float y) { i$$Cmid = j$$Cmid = x*y; }
+}

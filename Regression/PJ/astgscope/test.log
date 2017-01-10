@@ -1,0 +1,20 @@
++ '[' -z /usr/bin/bash ']'
++ echo '****************AstGscope Regression Test***********'
+****************AstGscope Regression Test***********
++ bash regress-one testroot onefoo testrootOnefoo
+composing testroot & onefoo -> testrootOnefoo ... succeeded
++ bash regress-one top g6 topg6
+composing top & g6 -> topg6 ... succeeded
++ bash regress-one top err toperr
+composing top & err -> toperr ... succeeded
++ bash regress-one top err1 toperr1
+composing top & err1 -> toperr1 ... succeeded
++ bash regress-one top env topenv
+composing top & env -> topenv ... succeeded
++ bash regress-one env env2 envenv2
+composing env & env2 -> envenv2 ... succeeded
++ bash regress-one env2 empty env2empty
+composing env2 & empty -> env2empty ... succeeded
++ echo -e '\nAstGscope Regression Test succeeded.'
+
+AstGscope Regression Test succeeded.

@@ -1,0 +1,18 @@
+public class CNFException extends Exception {
+
+    public CNFException() {
+        Super( String )( "CNF Translation Error" );
+    }
+
+    public CNFException( String message ) {
+        Super( String )( "CNF Translation Error: " + message );
+    }
+
+    public CNFException( String message, Throwable cause ) {
+        Super( String,Throwable )( "CNF Translation Error: " + message, cause );
+    }
+
+    public CNFException( Throwable cause ) {
+        Super( String,Throwable )( cause );
+    }
+}

@@ -1,0 +1,12 @@
+layer FS;
+
+import laydown.*;
+
+import java.util.*;
+
+import fsats.util.DataContainer;
+
+public interface MessageTypeInterface extends EventTypeInterface {
+    /** Create a Message from an FSAMS message. **/
+    Message fromFsams( DataContainer fsams );
+}

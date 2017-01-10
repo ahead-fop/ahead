@@ -1,0 +1,20 @@
+drc: testa1.drc: Warning composed equation is incomplete: non-null requirements present
+requires left !bottom
+requires right search
+
+single layer foo;
+
+// defined attributes
+
+left2right Bool bottom;
+right2left Bool search;
+
+// externally defined attributes
+
+
+
+requires left !bottom;
+provides right !bottom;
+requires right search;
+provides left search;
+

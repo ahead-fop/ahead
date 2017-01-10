@@ -1,0 +1,29 @@
+I R Opfac 
+Line range (-1, -1)
+public  endMods 
+ beginNest
+        M D canElevate(Mission) boolean 
+        Line range (15, 15)
+         endMods 
+         beginKeys
+        Throws :(  stuff ):
+         endKeys
+        M D canSee(Location) boolean 
+        Line range (18, 18)
+         endMods 
+         beginKeys
+        Throws :(  morestuff stuff ):
+         endKeys
+        M D hasDuplicate(Mission) boolean 
+        Line range (21, 21)
+         endMods 
+        M D missionFree(Mission) void 
+        Line range (27, 27)
+         endMods 
+        M D missionLock(Mission) void 
+        Line range (24, 24)
+         endMods 
+        M D ponder(float) void 
+        Line range (30, 30)
+         endMods 
+ endNest

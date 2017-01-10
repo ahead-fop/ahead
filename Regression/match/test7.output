@@ -1,0 +1,10 @@
+Match succeeded
+m =  public
+n =  foo
+s =  bar
+cursor k is null.
+Match succeeded
+m =  private
+n =  zoo
+cursor s is null.
+cursor k is null.

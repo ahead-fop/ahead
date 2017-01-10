@@ -1,0 +1,1618 @@
+//                              -*- Mode: Java -*- 
+// CodeTemplate --- 
+// Author          : Bernie Lofaso
+// Created On      : Thu Nov 13 09:57:54 1997
+// Last Modified By: Bernie Lofaso
+// Last Modified On: Wed Feb 24 14:23:52 1999
+// Update Count    : 137
+// Status          : Under Development
+// 
+// $Locker:  $
+// $Log: CodeTemplate,v $
+// Revision 1.2  2002-02-22 18:19:42  sarvela
+// Removed carriage returns.
+//
+// Revision 1.1.1.1  1999/03/03 15:07:50  sarvela
+// Imported original v3.0beta4 sources from Webpage
+//
+// Revision 1.2  1999/03/03 17:07:50  lofaso
+// Removed code to test if macro substitution has correct type for current
+// environment.
+//
+// Revision 1.1.1.1  1999/02/18 16:15:41  lofaso
+// Snapshot 2-18-99
+//
+// Revision 1.4  1998/09/25 21:48:51  lofaso
+// Modified JTS such that only default constructor and constructor taking a
+// single int is required for extending grammar classes.
+//
+// Revision 1.3  1998/09/18 20:08:04  lofaso
+// Somehow there was a line of code corrupted in the PlstIscape.macroReduce()
+// method. I fixed it.
+//
+// Revision 1.2  1998/07/07 18:56:48  lofaso
+// Added $mparm escape.
+//
+// Revision 1.1.1.1  1998/06/22 18:02:55  lofaso
+// renamed macro component
+//
+// Revision 1.5  1998/04/07 21:41:54  lofaso
+// After kernel and Main split.
+//
+// Revision 1.4  1998/02/27 18:24:00  richcar
+// Remove macro instantiation problem.
+//
+// Revision 1.3  1998/02/13 17:16:31  lofaso
+// Corrected problem where classes MthIscape, ClsIscape, and PlstIscape didn't
+// implement constructors present in ancestor classes.
+//
+// Revision 1.2  1998/02/11 21:05:31  lofaso
+// Initial macro implementation.
+//
+// Revision 1.1  1997/12/31 12:00:12  smaragd
+// Added java files for performing builds incrementally
+//
+// Revision 1.1.1.1  1997/12/15 21:00:41  lofaso
+// Imported sources
+//
+// 
+
+package $(LanguageName);
+
+import Jakarta.util.Util;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
+
+public class macroLayer extends $(ParentComponent) {
+    //**************************************************
+    // Class NameId
+    //**************************************************
+    static public class NameId extends $(ParentComponent).NameId {
+	// error messages
+	private static final String msg =
+	    "Incorrect parameter type for NameId: ";
+
+	static public final int LEAVE_ALONE = -2;
+	static public final int MANGLE = -1;
+	static public final int NO_INDEX = -3;
+
+	private int marker = LEAVE_ALONE;
+
+	//**************************************************
+	// Constructors
+	//**************************************************
+	public void setMangleFlag() { marker = MANGLE; }
+
+	public boolean shouldMangle() { return(marker == MANGLE); }
+
+	public void setParmIndex(int index) {
+	    if (index >= 0)
+		marker = index;
+	}
+
+	public int getParmIndex() {
+	    if (marker >= 0)
+		return(marker);
+	    return(NO_INDEX);
+	}
+
+	public boolean shouldSubst() { return(marker >= 0); }
+
+	public boolean shouldLeaveAlone() { return(marker == LEAVE_ALONE); }
+
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    String name;
+	    MacroDcl.MacroEnv env;
+	    int index;
+
+	    // Do nothing if inside an un-escaped AST constructor
+	    if (props.getProperty("AstLevel") != null)
+		return;
+
+	    // Retrieve macro environment
+	    env = (MacroDcl.MacroEnv) props.getProperty("macro_env");
+	    if (env == null)
+		return;
+
+	    // Check if name is to be mangled
+
+	    name = tok[0].tokenName();
+	    for (index=0; index < env.locals.length; index++) {
+		if (name.compareTo(env.locals[index]) == 0)
+		    break;
+	    }
+	    if (index < env.locals.length) {
+		setMangleFlag();
+		return;
+	    }
+
+	    // Check if name is on parameter list
+
+	    for (index=0; index < env.parmNames.length; index++) {
+		if (name.compareTo(env.parmNames[index]) == 0)
+		    break;
+	    }
+	    if (index == env.parmNames.length) {
+		// leave alone
+		return;
+	    }
+
+	    // Mark with parameter index
+	    setParmIndex(index);
+	}
+
+
+	//**************************************************
+	// We must implement initClone to copy the marker value as
+	// well as the children.
+	//**************************************************
+	protected void initClone(Lang.AstNode copy) {
+	    super.initClone(copy);
+	    ((NameId) copy).marker = marker;
+	}
+    }
+
+
+    //**************************************************
+    // Class MthIscape
+    //**************************************************
+    static public class MthIscape extends $(ParentComponent).MthIscape {
+	// error messages
+	private static final String msg1 = "No parameter binding for ";
+	private static final String msg2 =
+	    "Incorrect parameter type for MthIscape: ";
+
+	static public final int NO_INDEX = -1;
+
+	private int marker = NO_INDEX;
+
+
+	public void setParmIndex(int index) {
+	    if (index > 0)
+		marker = index;
+	}
+
+	public int getParmIndex() { return(marker); }
+
+	public boolean indexSet() { return(marker != NO_INDEX); }
+
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    String name;
+	    int index;
+	    MacroDcl.MacroEnv env;
+
+	    // Do nothing if inside an un-escaped AST constructor
+	    if (props.getProperty("AstLevel") != null)
+		return;
+
+	    // Retrieve macro environment
+	    env = (MacroDcl.MacroEnv) props.getProperty("macro_env");
+	    if (env == null)
+		return;
+
+	    // Find name in parameter list
+	    name = tok[0].tokenName();
+	    for (index=0; index < env.parmNames.length; index++) {
+		if (name.compareTo(env.parmNames[index]) == 0)
+		    break;
+	    }
+	    if (index == env.parmNames.length)
+		throw new InvalidMacroException(msg1 + name);
+
+	    // Verify that the parameter type is an acceptable
+	    // replacement for the node.
+	    if (env.parmTypes[index] != Macro.AST_FieldDecl_Type)
+		throw new InvalidMacroException(msg2 + env.parmNames[index]);
+	    setParmIndex(index);
+	}
+
+
+	//**************************************************
+	// We must implement initClone to copy the marker value as
+	// well as the children.
+	//**************************************************
+	protected void initClone(Lang.AstNode copy) {
+	    super.initClone(copy);
+	    ((MthIscape) copy).marker = marker;
+	}
+    }
+
+
+    //**************************************************
+    // Class ClsIscape
+    //**************************************************
+    static public class ClsIscape extends $(ParentComponent).ClsIscape {
+	// error messages
+	private static final String msg1 = "No parameter binding for ";
+	private static final String msg2 =
+	    "Incorrect parameter type for ClsIscape: ";
+
+	static public final int NO_INDEX = -1;
+
+	private int marker = NO_INDEX;
+
+
+	public void setParmIndex(int index) {
+	    if (index > 0)
+		marker = index;
+	}
+
+	public int getParmIndex() { return(marker); }
+
+	public boolean indexSet() { return(marker != NO_INDEX); }
+
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    String name;
+	    int index;
+	    MacroDcl.MacroEnv env;
+
+	    // Do nothing if inside an un-escaped AST constructor
+	    if (props.getProperty("AstLevel") != null)
+		return;
+
+	    // Retrieve macro environment
+	    env = (MacroDcl.MacroEnv) props.getProperty("macro_env");
+	    if (env == null)
+		return;
+
+	    // Find name in parameter list
+	    name = tok[0].tokenName();
+	    for (index=0; index < env.parmNames.length; index++) {
+		if (name.compareTo(env.parmNames[index]) == 0)
+		    break;
+	    }
+	    if (index == env.parmNames.length)
+		throw new InvalidMacroException(msg1 + name);
+
+	    // Verify that the parameter type is an acceptable
+	    // replacement for the node.
+	    if (env.parmTypes[index] != Macro.AST_Class_Type)
+		throw new InvalidMacroException(msg2 + env.parmNames[index]);
+	    else
+		setParmIndex(index);
+	}
+
+
+	//**************************************************
+	// We must implement initClone to copy the marker value as
+	// well as the children.
+	//**************************************************
+	protected void initClone(Lang.AstNode copy) {
+	    super.initClone(copy);
+	    ((ClsIscape) copy).marker = marker;
+	}
+    }
+
+
+    //**************************************************
+    // Class PlstIscape
+    //**************************************************
+    static public class PlstIscape extends $(ParentComponent).PlstIscape {
+	// error messages
+	private static final String msg =
+	    "PlstIscape not allowed in macro ast";
+
+
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    if (props.getProperty("AstLevel") == null)
+		throw new InvalidMacroException(msg);
+	}
+    }
+
+
+    //**************************************************
+    // Class MacroDcl
+    //**************************************************
+    static public class MacroDcl extends $(ParentComponent).MacroDcl {
+	private MacroCache cache;	// if non-null, dcl has been processed
+
+	// This variable is set if the constructor or setParms fails.
+	// The exception may be rethrown when macroReduce() is called.
+	private InvalidMacroException exc = null;
+
+	// This nested class is used to pass the environment used to mark the
+	// macro's AST.
+	static public class MacroEnv {
+	    int[] parmTypes;
+	    String[] parmNames;
+	    String[] locals;
+	}
+	
+	// Built by init(). Used by macroReduce() to create a Macro object.
+	private MacroEnv env;
+
+	// Error messages
+	private static final String msg1 =
+	    "Local/parm variable name collision";
+	private static final String msg2 =
+	    "Invalid parameter type for parameter ";
+	private static final String msg3 = "Bad ast type for macro ";
+
+	// If set to true via the xlate2TypeName() method, then when we
+	// create a MacroDcl, any invalid parameter types are automatically
+	// translated to the type AST_TypeName.
+	static boolean translateParmType = false;
+
+
+	public Lang.MacroDcl setParms(Lang.Token _arg0, Lang.AstNode _arg1,
+				      Lang.Token _arg2, Lang.AstNode _arg3,
+				      Lang.Token _arg4, Lang.AstNode _arg5,
+				      Lang.AstNode _arg6) {
+	    super.setParms(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6);
+	    try {
+		init();
+	    }
+	    catch (InvalidMacroException e) {
+		exc = e;
+	    }
+	    return(this);
+	}
+
+
+	//**************************************************
+	// If called with an argument of true, then when we create a
+	// MacroDcl, any invalid parameter types are automatically
+	// translated to the type AST_TypeName.
+	//**************************************************
+	public static void xlate2TypeName(boolean b) {
+	    translateParmType = b;
+	}
+
+
+	//**************************************************
+	// initClone is implemented here to perform init() on a copy.
+	//**************************************************
+	protected void initClone(Lang.AstNode copy) {
+	    Lang.MacroDcl md = (Lang.MacroDcl) copy;
+
+	    super.initClone(copy);
+	    md.cache = cache;
+	    md.exc = exc;
+	    md.env = env;
+	    try {
+		md.init();
+	    }
+	    catch (InvalidMacroException e) {
+		md.exc = e;
+	    }
+	}
+
+
+	//**************************************************
+	// The init() method performs the following operations on a macro
+	// declaration:
+	//	1) Builds "lists" for parms and local identifiers
+	//	2) Determines that the intersection of the above to lists
+	//	   (based on names) is empty.
+	// These items are saved and used by macroReduce() to create an
+	// instance of Macro in the MacroCache.
+	//**************************************************
+	public void init()
+	    throws InvalidMacroException {
+	    Vector parms;	// odd entries are Integer, even are String
+	    int size;
+	    int i, j;
+	    int type;
+
+	    env = new MacroEnv();
+
+	    Lang.AstNode parmlist = arg[1].arg[0];	// an AstOptNode
+	    Lang.AstNode locallist = arg[2].arg[0];	// an AstOptNode
+
+	    // Extract parameter list
+	    parms = new Vector();
+	    buildParmList(parmlist, parms);
+
+		// Create separate arrays for parameter types and names
+	    size = parms.size() >> 1;
+	    env.parmTypes = new int[size];
+	    env.parmNames = new String[size];
+	    for (i=0; i < size; i++) {
+		type = ((Integer) parms.elementAt(i<<1)).intValue();
+		if ((type != Macro.AST_QualifiedName_Type) &&
+		    (type != Macro.AST_Exp_Type) &&
+		    (type != Macro.AST_Stmt_Type) &&
+		    (type != Macro.AST_FieldDecl_Type) &&
+		    (type != Macro.AST_Class_Type) &&
+		    (type != Macro.AST_TypeName_Type)) {
+		    if (translateParmType)
+			type = Macro.AST_TypeName_Type;
+		    else
+			throw new InvalidMacroException(msg2+(i+1));
+		}
+		env.parmTypes[i] = type;
+		env.parmNames[i] = (String) parms.elementAt((i<<1)+1);
+	    }
+
+	    // Extract locals list
+	    env.locals = buildLocalList(locallist);
+
+	    // Ensure that the intersection of the parm list and the
+	    // local list is empty.
+	    for (i=0; i < env.parmNames.length; i++) {
+		for (j=0; j < env.locals.length; j++) {
+		    if (env.parmNames[i].compareTo(env.locals[j]) == 0)
+			throw new InvalidMacroException(msg1);
+		}
+	    }
+	}
+
+
+	//**************************************************
+	// Scan the AST_ParList to construct an array of MacroParm's.
+	//**************************************************
+	private void buildParmList(Lang.AstNode parmlist, Vector parms) {
+	    Lang.AstCursor csr = new Lang.AstCursor();
+	    String macroName;
+	    int macroType;
+	    NameId nid;
+
+	    csr.First(parmlist);
+	    csr.PlusPlus();
+	    while (csr.More()) {
+		// csr should point at a FormParDecl node at this point
+		if (! (csr.node instanceof FormParDecl)) {
+		    nextParm(csr);
+		    continue;
+		}
+
+		// skip to NameId's and process until a DecNameDim node
+		// is reached.
+		nid = null;
+		while (! (csr.node instanceof DecNameDim)) {
+		    if (csr.node instanceof NameId)
+			nid = (NameId) csr.node;
+		    csr.PlusPlus();
+		}
+
+		macroType = Macro.typeCode(nid.tok[0].tokenName());
+		// skip DecNameDim to ( NameId | AST_QualifiedName)
+		csr.PlusPlus();
+		if (csr.node instanceof NameId) {
+		    macroName = ((NameId) csr.node).tok[0].tokenName();
+		    csr.PlusPlus();
+		}
+		else {	// must be an AST_QualifiedName
+		    macroName = ((AST_QualifiedName) csr.node).GetName();
+		    csr.Sibling();
+		}
+
+		// Add an Integer element followed by a String element
+		parms.addElement(new Integer(macroType));
+		parms.addElement(macroName);
+
+		// Next should be a FormParDecl or end of parm list
+	    }
+	}
+
+
+	//**************************************************
+	// This method advances an AstCursor to the next FormParDecl node.
+	//**************************************************
+	private void nextParm(Lang.AstCursor csr) {
+	    csr.PlusPlus();
+	    while (csr.More()) {
+		if (csr.node instanceof FormParDecl)
+		    return;
+		csr.PlusPlus();
+	    }
+	}
+
+
+	//**************************************************
+	// This method scans the LocalIds class parameter and builds an
+	// array of String's that are the names of local variables.
+	//**************************************************
+	private String[] buildLocalList(Lang.AstNode locallist) {
+	    AstCursor csr = new AstCursor();
+	    Vector lnames = new Vector();
+	    String[] result;
+
+	    csr.First(locallist);
+	    csr.PlusPlus();
+	    while (csr.More()) {
+		if (csr.node instanceof NameId)
+		    lnames.addElement(((NameId) csr.node).tok[0].tokenName());
+		csr.PlusPlus();
+	    }
+
+	    result = new String[lnames.size()];
+	    lnames.copyInto(result);
+	    return(result);
+	}
+
+
+	//**************************************************
+	// In the context of MacroDcl, macroReduce() marks its AST
+	// and stores it in the MacroCache.
+	//**************************************************
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    boolean isPublic;
+	    String macroName;
+	    Lang.Macro macro;
+	    Lang.AstNode ast;
+	    int returnType;
+
+	    // Throw exception if constructor failed.
+	    if (exc != null)
+		throw exc;
+
+	    // check if declaration has already been processed.
+// 	    if (cache != null)
+// 		return;
+
+	    // Not sure about this
+	    if (props.getProperty("AstLevel") != null)
+		return;
+
+	    // Check if wer're in a macro definition
+	    if (props.getProperty("macro_env") != null)
+		return;
+
+	    // Validate macro "return type"
+	    if (arg[0] instanceof NameId)
+		macroName = arg[0].tok[0].tokenName();
+	    else	// must be AST_QualifiedName
+		macroName = ((AST_QualifiedName) arg[0]).GetName();
+	    returnType = 0;
+	    if (arg[3] instanceof AST_ProgramC)
+		returnType = Macro.AST_Program_Type;
+	    else if (arg[3] instanceof AST_ClassC)
+		returnType = Macro.AST_Class_Type;
+	    else if (arg[3] instanceof AST_FieldDeclC)
+		returnType = Macro.AST_FieldDecl_Type;
+	    else if (arg[3] instanceof AST_StmtC)
+		returnType = Macro.AST_Stmt_Type;
+	    else if (arg[3] instanceof AST_ExpC)
+		returnType = Macro.AST_Exp_Type;
+	    if (returnType == 0)
+		throw new InvalidMacroException(msg3+macroName);
+
+	    // mark AST using macroReduce.
+	    props.setProperty("macro_env", env);
+	    ast = arg[3].arg[0];	// skip constructor node
+	    if (ast instanceof AstOptNode)
+		ast = ast.arg[0];
+	    ast.macroReduce(props);
+	    props.removeProperty("macro_env");
+
+	    // Create a Macro object and store it in the MacroCache
+	    macro = new Macro(macroName, env.parmTypes, ast, returnType);
+	    cache = MacroCache.getInstance();
+	    isPublic = false;
+	    Lang.AstCursor csr = new Lang.AstCursor();
+	    csr.First(up);	// ModTypeDecl
+	    if (csr.findBaseType("ModPublic") != null)
+		isPublic = true;
+	    try {
+// 		cache.setMacro(macroName, macro, isPublic, false);
+		cache.setMacro(macroName, macro, isPublic, true);
+	    }
+	    catch (Exception e) {
+		Util.warning(e.getMessage());
+	    }
+	}
+
+
+	//**************************************************
+	// Macros reduce to no code for reduce2java().
+	//**************************************************
+	public void reduce2java(Lang.AstProperties props) {
+	    return;
+	}
+    }
+
+
+    //**************************************************
+    // ModTypeDecl class extension. We extend the reduce2java() method
+    // of this class because when the UnmodifiedTypeDeclaration is an
+    // instance of MacroDcl (above), we do not wish the modifiers or
+    // comments associated with them to be printed.
+    //**************************************************
+    static public class ModTypeDecl extends $(ParentComponent).ModTypeDecl {
+	public void reduce2java(Lang.AstProperties props) {
+	    if (arg[1] instanceof Lang.MacroDcl)
+		return;
+	    super.reduce2java(props);
+	}
+    }
+
+
+    //**************************************************
+    // MacroCall class - associated with a macro instantiation.
+    //**************************************************
+    static public class MacroCall extends $(ParentComponent).MacroCall {
+	// Error messages
+	private static final String msg1 = "Invalid arg count for macro ";
+	private static final String msg2 =
+	    "Invalid macro return type for macro ";
+
+
+	//**************************************************
+	// macroReduce() must:
+	//	1) Validate that arg count and types are correct.
+	//	2) Validate that the macro return type is an acceptable
+	//	   substitution in the current environment. *
+	//	3) Replace the macroCall node with the AST from the
+	//	   Macro.instantiate() call.
+	//	4) Call macroReduce() on the replaced AST.
+	// * This has been removed until we find a way of allowing expansion
+	//   of the acceptability criteria.
+	//**************************************************
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    Lang.AstNode lnode;	// actually an AstListNode
+	    int i;
+	    Lang.AstNode[] args;
+	    String macroName;
+	    Macro macro;
+	    MacroCache cache;
+	    int[] parmTypes;
+	    Lang.AstNode ast;
+
+	    // Not sure about this
+	    if (props.getProperty("AstLevel") != null)
+		return;
+
+	    // Fetch the macro's definition (a Macro object)
+	    macroName = ((AST_QualifiedName) arg[0]).GetName();
+	    cache = MacroCache.getInstance();
+	    try {
+		macro = cache.getMacro(macroName);
+	    }
+	    catch (Exception e) {
+		throw new InvalidMacroException(e.getMessage());
+	    }
+
+	    // First, count the number of args
+	    i = 0;
+	    if (arg[1].arg[0] != null) {
+		lnode = arg[1].arg[0].arg[0];
+		while (lnode != null) {
+		    i++;
+		    lnode = lnode.right;
+		}
+	    }
+
+	    // Does this agree with the definition?
+	    parmTypes = macro.argTypes();
+	    if (i != parmTypes.length)
+		throw new InvalidMacroException(msg1 + macroName);
+
+	    args = new Lang.AstNode[i];
+	    if (i != 0) {
+		lnode = arg[1].arg[0].arg[0];
+		i = 0;
+		while (lnode != null) {
+		    args[i] = lnode.arg[0];
+		    lnode = lnode.right;
+		    i++;
+		}
+
+		// Now scan through the args array and remove AST constructor
+		// nodes if necessary. This is based on the expected parameter
+		// types.
+		for (i=0; i < parmTypes.length; i++) {
+		    if (parmTypes[i] == Macro.AST_Exp_Type)
+			continue;
+
+		    if ((args[i] instanceof AST_QualifiedNameC) ||
+			(args[i] instanceof AST_TypeNameC))
+			args[i] = args[i].arg[0];
+		    else if ((args[i] instanceof AST_StmtC) ||
+			     (args[i] instanceof AST_FieldDeclC) ||
+			     (args[i] instanceof AST_ClassC))
+			args[i] = args[i].arg[0].arg[0];
+		}
+	    }
+
+	    // Create an AST instance
+	    try {
+		ast = macro.instantiate(args);
+	    }
+	    catch (MacroInstanceException e) {
+		throw new InvalidMacroException(e.getMessage());
+	    }
+
+	    // Replace this node with the ast
+	    up.Replace(ast);
+
+	    // Preserve white space associated with this node
+	    if (tok[0] != null)
+		ast.addComment(((AstToken) tok[0]).white_space);
+
+	    // Macro reduce replacement ast
+	    ast.macroReduce(props);
+	}
+    }
+
+
+    //**************************************************
+    // AST constructor classes. These are refined so that the
+    // macroReduce() method keeps an AST constructor depth count
+    // in the property "AstLevel".
+    //**************************************************
+
+    static public class AST_ExpC extends $(ParentComponent).AST_ExpC {
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    Integer oldLevel;
+
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    if (oldLevel == null)
+		props.setProperty("AstLevel", new Integer(1));
+	    else
+		props.setProperty("AstLevel",
+				  new Integer(oldLevel.intValue() + 1));
+
+	    arg[0].macroReduce(props);
+
+	    if (oldLevel == null)
+		props.removeProperty("AstLevel");
+	    else
+		props.setProperty("AstLevel", oldLevel);
+	}
+    }
+
+    static public class AST_StmtC extends $(ParentComponent).AST_StmtC {
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    Integer oldLevel;
+
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    if (oldLevel == null)
+		props.setProperty("AstLevel", new Integer(1));
+	    else
+		props.setProperty("AstLevel",
+				  new Integer(oldLevel.intValue() + 1));
+
+	    arg[0].macroReduce(props);
+
+	    if (oldLevel == null)
+		props.removeProperty("AstLevel");
+	    else
+		props.setProperty("AstLevel", oldLevel);
+	}
+    }
+
+    static public class AST_SwitchEntryC extends $(ParentComponent).AST_SwitchEntryC {
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    Integer oldLevel;
+
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    if (oldLevel == null)
+		props.setProperty("AstLevel", new Integer(1));
+	    else
+		props.setProperty("AstLevel",
+				  new Integer(oldLevel.intValue() + 1));
+
+	    arg[0].macroReduce(props);
+
+	    if (oldLevel == null)
+		props.removeProperty("AstLevel");
+	    else
+		props.setProperty("AstLevel", oldLevel);
+	}
+    }
+
+    static public class AST_FieldDeclC
+	extends $(ParentComponent).AST_FieldDeclC {
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    Integer oldLevel;
+
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    if (oldLevel == null)
+		props.setProperty("AstLevel", new Integer(1));
+	    else
+		props.setProperty("AstLevel",
+				  new Integer(oldLevel.intValue() + 1));
+
+	    arg[0].macroReduce(props);
+
+	    if (oldLevel == null)
+		props.removeProperty("AstLevel");
+	    else
+		props.setProperty("AstLevel", oldLevel);
+	}
+    }
+
+    static public class AST_ClassC extends $(ParentComponent).AST_ClassC {
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    Integer oldLevel;
+
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    if (oldLevel == null)
+		props.setProperty("AstLevel", new Integer(1));
+	    else
+		props.setProperty("AstLevel",
+				  new Integer(oldLevel.intValue() + 1));
+
+	    arg[0].macroReduce(props);
+
+	    if (oldLevel == null)
+		props.removeProperty("AstLevel");
+	    else
+		props.setProperty("AstLevel", oldLevel);
+	}
+    }
+
+    static public class AST_ProgramC extends $(ParentComponent).AST_ProgramC {
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    Integer oldLevel;
+
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    if (oldLevel == null)
+		props.setProperty("AstLevel", new Integer(1));
+	    else
+		props.setProperty("AstLevel",
+				  new Integer(oldLevel.intValue() + 1));
+
+	    arg[0].macroReduce(props);
+
+	    if (oldLevel == null)
+		props.removeProperty("AstLevel");
+	    else
+		props.setProperty("AstLevel", oldLevel);
+	}
+    }
+
+    static public class AST_TypeNameC
+	extends $(ParentComponent).AST_TypeNameC {
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    Integer oldLevel;
+
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    if (oldLevel == null)
+		props.setProperty("AstLevel", new Integer(1));
+	    else
+		props.setProperty("AstLevel",
+				  new Integer(oldLevel.intValue() + 1));
+
+	    arg[0].macroReduce(props);
+
+	    if (oldLevel == null)
+		props.removeProperty("AstLevel");
+	    else
+		props.setProperty("AstLevel", oldLevel);
+	}
+    }
+
+    static public class AST_QualifiedNameC
+	extends $(ParentComponent).AST_QualifiedNameC {
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    Integer oldLevel;
+
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    if (oldLevel == null)
+		props.setProperty("AstLevel", new Integer(1));
+	    else
+		props.setProperty("AstLevel",
+				  new Integer(oldLevel.intValue() + 1));
+
+	    arg[0].macroReduce(props);
+
+	    if (oldLevel == null)
+		props.removeProperty("AstLevel");
+	    else
+		props.setProperty("AstLevel", oldLevel);
+	}
+    }
+
+    static public class AST_ParListC extends $(ParentComponent).AST_ParListC {
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    Integer oldLevel;
+
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    if (oldLevel == null)
+		props.setProperty("AstLevel", new Integer(1));
+	    else
+		props.setProperty("AstLevel",
+				  new Integer(oldLevel.intValue() + 1));
+
+	    arg[0].macroReduce(props);
+
+	    if (oldLevel == null)
+		props.removeProperty("AstLevel");
+	    else
+		props.setProperty("AstLevel", oldLevel);
+	}
+    }
+
+    static public class AST_ArgListC extends $(ParentComponent).AST_ArgListC {
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    Integer oldLevel;
+
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    if (oldLevel == null)
+		props.setProperty("AstLevel", new Integer(1));
+	    else
+		props.setProperty("AstLevel",
+				  new Integer(oldLevel.intValue() + 1));
+
+	    arg[0].macroReduce(props);
+
+	    if (oldLevel == null)
+		props.removeProperty("AstLevel");
+	    else
+		props.setProperty("AstLevel", oldLevel);
+	}
+    }
+
+    static public class AST_TypeNameListC
+	extends $(ParentComponent).AST_TypeNameListC {
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    Integer oldLevel;
+
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    if (oldLevel == null)
+		props.setProperty("AstLevel", new Integer(1));
+	    else
+		props.setProperty("AstLevel",
+				  new Integer(oldLevel.intValue() + 1));
+
+	    arg[0].macroReduce(props);
+
+	    if (oldLevel == null)
+		props.removeProperty("AstLevel");
+	    else
+		props.setProperty("AstLevel", oldLevel);
+	}
+    }
+
+    static public class AST_ImportsC extends $(ParentComponent).AST_ImportsC {
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    Integer oldLevel;
+
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    if (oldLevel == null)
+		props.setProperty("AstLevel", new Integer(1));
+	    else
+		props.setProperty("AstLevel",
+				  new Integer(oldLevel.intValue() + 1));
+
+	    arg[0].macroReduce(props);
+
+	    if (oldLevel == null)
+		props.removeProperty("AstLevel");
+	    else
+		props.setProperty("AstLevel", oldLevel);
+	}
+    }
+
+    static public class AST_ModifiersC
+	extends $(ParentComponent).AST_ModifiersC {
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    Integer oldLevel;
+
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    if (oldLevel == null)
+		props.setProperty("AstLevel", new Integer(1));
+	    else
+		props.setProperty("AstLevel",
+				  new Integer(oldLevel.intValue() + 1));
+
+	    arg[0].macroReduce(props);
+
+	    if (oldLevel == null)
+		props.removeProperty("AstLevel");
+	    else
+		props.setProperty("AstLevel", oldLevel);
+	}
+    }
+
+    static public class AST_VarDeclC extends $(ParentComponent).AST_VarDeclC {
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    Integer oldLevel;
+
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    if (oldLevel == null)
+		props.setProperty("AstLevel", new Integer(1));
+	    else
+		props.setProperty("AstLevel",
+				  new Integer(oldLevel.intValue() + 1));
+
+	    arg[0].macroReduce(props);
+
+	    if (oldLevel == null)
+		props.removeProperty("AstLevel");
+	    else
+		props.setProperty("AstLevel", oldLevel);
+	}
+    }
+
+    static public class AST_VarInitC extends $(ParentComponent).AST_VarInitC {
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    Integer oldLevel;
+
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    if (oldLevel == null)
+		props.setProperty("AstLevel", new Integer(1));
+	    else
+		props.setProperty("AstLevel",
+				  new Integer(oldLevel.intValue() + 1));
+
+	    arg[0].macroReduce(props);
+
+	    if (oldLevel == null)
+		props.removeProperty("AstLevel");
+	    else
+		props.setProperty("AstLevel", oldLevel);
+	}
+    }
+
+    static public class AST_ArrayInitC
+	extends $(ParentComponent).AST_ArrayInitC {
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    Integer oldLevel;
+
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    if (oldLevel == null)
+		props.setProperty("AstLevel", new Integer(1));
+	    else
+		props.setProperty("AstLevel",
+				  new Integer(oldLevel.intValue() + 1));
+
+	    arg[0].macroReduce(props);
+
+	    if (oldLevel == null)
+		props.removeProperty("AstLevel");
+	    else
+		props.setProperty("AstLevel", oldLevel);
+	}
+    }
+
+    static public class AST_ExpStmtC extends $(ParentComponent).AST_ExpStmtC {
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    Integer oldLevel;
+
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    if (oldLevel == null)
+		props.setProperty("AstLevel", new Integer(1));
+	    else
+		props.setProperty("AstLevel",
+				  new Integer(oldLevel.intValue() + 1));
+
+	    arg[0].macroReduce(props);
+
+	    if (oldLevel == null)
+		props.removeProperty("AstLevel");
+	    else
+		props.setProperty("AstLevel", oldLevel);
+	}
+    }
+
+    static public class AST_CatchesC extends $(ParentComponent).AST_CatchesC {
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    Integer oldLevel;
+
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    if (oldLevel == null)
+		props.setProperty("AstLevel", new Integer(1));
+	    else
+		props.setProperty("AstLevel",
+				  new Integer(oldLevel.intValue() + 1));
+
+	    arg[0].macroReduce(props);
+
+	    if (oldLevel == null)
+		props.removeProperty("AstLevel");
+	    else
+		props.setProperty("AstLevel", oldLevel);
+	}
+    }
+
+
+    //**************************************************
+    // MParm Escape
+    //**************************************************
+    static public class MParm extends $(ParentComponent).MParm {
+	public void reduce2java(Lang.AstProperties props) {
+	    arg[0].reduce2java(props);
+	}
+
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    Integer oldLevel;
+
+	    oldLevel = (Integer) props.getProperty("AstLevel");
+	    if (oldLevel != null) {
+		if (oldLevel.intValue() == 1)
+		    props.removeProperty("AstLevel");
+		else
+		    props.setProperty("AstLevel",
+				      new Integer(oldLevel.intValue() - 1));
+	    }
+
+	    arg[0].macroReduce(props);
+
+	    if (oldLevel == null)
+		props.setProperty("AstLevel", new Integer(1));
+	    else
+		props.setProperty("AstLevel", oldLevel);
+	}
+    }
+
+
+    //**************************************************
+    // NOTE: These classes below are really library classes, but because
+    // they're small and we've yet to decide how to handle library
+    // classes, I'm sticking them in here for now.
+    //**************************************************
+
+    //**************************************************
+    // Class MacroInstanceException - thrown when we detect an invalid
+    // Macro instantiation.
+    //**************************************************
+    public static class MacroInstanceException extends Exception {
+	public MacroInstanceException() { super(); }
+	public MacroInstanceException(String s) { super(s); }
+    }
+
+    //**************************************************
+    // Class Macro
+    //**************************************************
+    static public class Macro implements java.io.Serializable {
+	private String name;
+	private int[] parmTypes;
+	private AstNode ast;
+	private int return_type;
+
+	static private int mangleNum = 0;
+
+	//**************************************************
+	// Constants used to identify macro return type and parameter types
+	//**************************************************
+
+	public static final int AST_ArgList_Type = 1;
+	public static final int AST_ArrayInit_Type = 2;
+	public static final int AST_Catches_Type = 3;
+	public static final int AST_Class_Type = 4;
+	public static final int AST_Exp_Type = 5;
+	public static final int AST_ExpStmt_Type = 6;
+	public static final int AST_FieldDecl_Type = 7;
+	public static final int AST_Imports_Type = 8;
+	public static final int AST_Modifiers_Type = 9;
+	public static final int AST_ParList_Type = 10;
+	public static final int AST_Program_Type = 11;
+	public static final int AST_QualifiedName_Type = 12;
+	public static final int AST_Stmt_Type = 13;
+	public static final int AST_TypeName_Type = 14;
+	public static final int AST_TypeNameList_Type = 15;
+	public static final int AST_VarDecl_Type = 16;
+	public static final int AST_VarInit_Type = 17;
+	public static final int AST_SwitchEntry_Type = 18;
+
+	private static final String msg1 =
+	    "Incorrect argument count for macro ";
+	private static final String msg2 =
+	    "Bad type for macro argument ";
+
+	//**************************************************
+	// Constructor
+	//**************************************************
+	public Macro(String mname, int[] parm_types, Lang.AstNode ast_head,
+		     int rtype) {
+	    name = mname;
+	    parmTypes = parm_types;
+	    ast = ast_head;
+	    ast.up = null;	// Sever link to any higher nodes
+	    return_type = rtype;
+	}
+
+
+	//**************************************************
+	// Determine argument types
+	//**************************************************
+	public int[] argTypes() { return(parmTypes); }
+
+
+	//**************************************************
+	// Determine return type of this macro
+	//**************************************************
+	public int returnType() { return(return_type); }
+
+
+	//**************************************************
+	// Create an instance of this macro
+	//**************************************************
+	public Lang.AstNode instantiate(Lang.AstNode[] args)
+	    throws MacroInstanceException {
+	    Lang.AstCursor csr = new Lang.AstCursor();
+	    int mnum;
+	    Lang.AstNode instance;
+	    int i;
+	    int index;
+	    Lang.AstNode current;
+	    String white_space;		// from NameId, MthIscape or ClsIscape
+	    Lang.AstNode newValue;	// from cloning a parameter
+
+	    // Check arg count
+	    if (args.length != parmTypes.length)
+		throw new MacroInstanceException(msg1 + name);
+
+	    // Check arg types
+	    for (i=0; i < parmTypes.length; i++) {
+		switch (parmTypes[i]) {
+		case AST_QualifiedName_Type:
+		    if (args[i] instanceof AST_QualifiedName)
+			break;
+
+// 		    if (! (args[i] instanceof QNList))
+		    if (! (args[i] instanceof PPQualName))
+			throw new MacroInstanceException(msg2 + (i+1) +
+							 " " + name);
+		    // The QNList has a single arg of type AST_QualifiedName
+		    args[i] = (Lang.AstNode) args[i].arg[0];
+		    break;
+		case AST_Exp_Type:
+		    if (! (args[i] instanceof AST_Exp))
+			throw new MacroInstanceException(msg2 + (i+1) +
+							 " " + name);
+		    break;
+		case AST_Stmt_Type:
+		    if (! (args[i] instanceof AST_Stmt))
+			throw new MacroInstanceException(msg2 + (i+1) +
+							 " " + name);
+		    break;
+		case AST_FieldDecl_Type:
+		    if (! (args[i] instanceof AST_FieldDecl))
+			throw new MacroInstanceException(msg2 + (i+1) +
+							 " " + name);
+		    break;
+		case AST_Class_Type:
+		    if (! (args[i] instanceof AST_Class))
+			throw new MacroInstanceException(msg2 + (i+1) +
+							 " " + name);
+		    break;
+		}
+	    }
+
+	    // Allocate a mangle number for this instance
+	    mnum = mangleNum++;
+
+	    // Clone and scan AST
+	    instance = (Lang.AstNode) ast.clone();
+	    csr.First(instance);
+	    csr.PlusPlus();
+	    if (csr.More()) {
+		do {
+		    current = csr.node;
+		    csr.PlusPlus();	// csr points to next node
+
+		    if (current instanceof NameId) {
+			NameId nid = (NameId) current;
+			if (! nid.shouldLeaveAlone()) {
+			    if (nid.shouldMangle()) {
+				Lang.AstToken t = (Lang.AstToken) nid.tok[0];
+				t.name += mnum;
+			    }
+			    else {
+				index = nid.getParmIndex();
+				white_space = ((AstToken) nid.tok[0]).white_space;
+				newValue = (Lang.AstNode) args[index].clone();
+				newValue.addComment(white_space, true);
+				if ((nid.up instanceof AstListNode) &&
+				    (args[index] instanceof AstList)) {
+				    // merge lists
+				    ((Lang.AstListNode) nid.up).AddAfter((Lang.AstList) newValue);
+				    ((Lang.AstListNode) nid.up).Delete();
+				}
+				else	// replacement
+				    nid.Replace(newValue);
+			    }
+			}
+		    }
+		    else if ((current instanceof MthIscape) ||
+			     (current instanceof ClsIscape)) {
+			if (current instanceof MthIscape)
+			    index = ((MthIscape) current).getParmIndex();
+			else
+			    index = ((ClsIscape) current).getParmIndex();
+			white_space = ((Lang.AstToken) current.tok[0]).white_space;
+			newValue = (Lang.AstNode) args[index].clone();
+			newValue.addComment(white_space, true);
+			if ((current.up instanceof AstListNode) &&
+			    (args[index] instanceof AstList)) {
+			    // merge lists
+			    ((Lang.AstListNode) current.up).AddAfter((Lang.AstList) newValue);
+			    ((Lang.AstListNode) current.up).Delete();
+			}
+			else	// replacement
+			    current.Replace(newValue);
+		    }
+		} while (csr.More());
+	    }
+	    return(instance);
+	}
+
+	//**************************************************
+	// Utility method to convert a type name (in String form) to
+	// the code used to represent it.
+	//**************************************************
+	public static int typeCode(String type) {
+	    if (type.compareTo("AST_ArgList") == 0)
+		return(AST_ArgList_Type);
+	    else if (type.compareTo("AST_ArrayInit") == 0)
+		return(AST_ArrayInit_Type);
+	    else if (type.compareTo("AST_Catches") == 0)
+		return(AST_Catches_Type);
+	    else if (type.compareTo("AST_Class") == 0)
+		return(AST_Class_Type);
+	    else if (type.compareTo("AST_Exp") == 0)
+		return(AST_Exp_Type);
+	    else if (type.compareTo("AST_ExpStmt") == 0)
+		return(AST_ExpStmt_Type);
+	    else if (type.compareTo("AST_FieldDecl") == 0)
+		return(AST_FieldDecl_Type);
+	    else if (type.compareTo("AST_Imports") == 0)
+		return(AST_Imports_Type);
+	    else if (type.compareTo("AST_Modifiers") == 0)
+		return(AST_Modifiers_Type);
+	    else if (type.compareTo("AST_ParList") == 0)
+		return(AST_ParList_Type);
+	    else if (type.compareTo("AST_Program") == 0)
+		return(AST_Program_Type);
+	    else if (type.compareTo("AST_QualifiedName") == 0)
+		return(AST_QualifiedName_Type);
+	    else if (type.compareTo("AST_Stmt") == 0)
+		return(AST_Stmt_Type);
+	    else if (type.compareTo("AST_TypeName") == 0)
+		return(AST_TypeName_Type);
+	    else if (type.compareTo("AST_TypeNameList") == 0)
+		return(AST_TypeNameList_Type);
+	    else if (type.compareTo("AST_VarDecl") == 0)
+		return(AST_VarDecl_Type);
+	    else if (type.compareTo("AST_VarInit") == 0)
+		return(AST_VarInit_Type);
+	    else if (type.compareTo("AST_SwitchEntry") == 0)
+		return(AST_SwitchEntry_Type);
+	    return(0);
+	}
+    }
+
+
+    //**************************************************
+    // Class MacroCache
+    //**************************************************
+    static public class MacroCache {
+	static private MacroCache instance = null;
+
+	static private char fsch = File.separatorChar;
+
+	// These static variables are used as "globals" which are set
+	// by the findMacroFile() method and used by getMacro() and
+	// setMacro(). They avoid they nuisance of creating a special
+	// structure just so findMacroFile() can return two values.
+	static private File macroFile;
+	static private String macroName;
+
+	//**************************************************
+	// User must call this static method to get the instance of this
+	// singleton object.
+	//**************************************************
+	static public MacroCache getInstance() {
+	    if (instance == null)
+		instance = new MacroCache();
+	    return(instance);
+	}
+
+	private Hashtable ht;
+
+	//**************************************************
+	// Constructor (private so user can't create with 'new')
+	//**************************************************
+	private MacroCache() {
+	    ht = new Hashtable();
+	}
+
+	public Macro getMacro(String name)
+	    throws IOException, FileNotFoundException, ClassNotFoundException {
+	    Macro macro;
+	    FileInputStream fis;
+	    ObjectInputStream ois;
+
+	    macro = (Macro) ht.get(name);
+	    if (macro != null)
+		return(macro);	// cache hit
+
+	    // cache miss
+
+	    findMacroFile(name);
+	    fis = new FileInputStream(macroFile);
+	    ois = new ObjectInputStream(fis);
+	    macro = (Macro) ois.readObject();
+	    ois.close();
+	    fis.close();
+
+	    // Add to cache and return value
+	    ht.put(macroName, macro);
+	    return(macro);
+	}
+
+	public void setMacro(String name, Macro macro, boolean isPublic,
+			     boolean overwriteAllowed)
+	    throws InvalidMacroException, IOException {
+	    boolean warn;
+	    FileOutputStream fos;
+	    ObjectOutputStream oos;
+
+	    // Check for macro already in cache
+	    warn = ht.containsKey(name);
+	    if (warn & (! overwriteAllowed))
+		throw new InvalidMacroException("Redefinition of macro "+name);
+
+	    // Save in cache
+	    ht.put(name, macro);
+
+	    // If public, write to disk
+	    if (! isPublic)
+		return;
+
+	    try {
+		findMacroFile(name);
+		fos = new FileOutputStream(macroFile);
+		oos = new ObjectOutputStream(fos);
+		oos.writeObject(macro);
+		oos.close();
+		fos.close();
+	    }
+	    catch (Exception e) {
+		Util.fatalError(e);
+	    }
+	}
+
+
+	//**************************************************
+	// NOTE: This method does not determine if the macro file actually exists,
+	// it mearly determines where the file should be if it does exist. This
+	// allows it to be used by write routines (where the file doesn't exist)
+	// as well as read routines.
+	//**************************************************
+	private void findMacroFile(String name) throws FileNotFoundException {
+	    int lastDotIndex;
+	    File macroDir;
+	    String dir;
+	    String path;
+
+	    lastDotIndex = name.lastIndexOf('.');
+	    if (lastDotIndex < 0) {
+		macroDir = new File(System.getProperty("user.dir"));
+		macroName = name;
+	    }
+	    else {
+		dir = name.substring(0, lastDotIndex);
+		macroDir = Util.findPackageDir(dir);
+		if (macroDir == null)
+		    throw new FileNotFoundException(name.replace('.', fsch));
+		macroName = name.substring(lastDotIndex+1);
+	    }
+	    path = macroDir.getAbsolutePath();
+
+	    // At this point, path, macroName and macroDir are set.
+	    macroFile = new File(macroDir, macroName + ".ser");
+	}
+
+    }
+
+    // Start of classes from CodeTemplate.Kernel
+
+    static public abstract class AstList extends $(ParentComponent).AstList {
+	//**************************************************
+	// Used to scan an AST and process macro definitions and macro
+	// instantiations.
+	//**************************************************
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    Lang.AstNode l;
+
+	    for (l= arg[0]; l != null; l = l.right)
+		l.arg[0].macroReduce(props);
+	}
+    }
+
+    static public abstract class AstListNode extends $(ParentComponent).AstListNode {
+	//**************************************************
+	// Used to scan an AST and process macro definitions and macro
+	// instantiations.
+	//**************************************************
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    arg[0].macroReduce(props);
+	}
+    }
+
+    static public class AstOptNode extends $(ParentComponent).AstOptNode {
+	//**************************************************
+	// Used to scan an AST and process macro definitions and macro
+	// instantiations.
+	//**************************************************
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    if (arg[0] != null)
+		arg[0].macroReduce(props);
+	}
+    }
+
+    // Start of classes from CodeTemplate.KernelBase
+    
+    //**************************************************
+    // class Main extension
+    //**************************************************
+    static public class Main extends $(ParentComponent).Main {
+	private int myLayerID;
+
+	//**************************************************
+	// Method called by the top-most layer to allow a layer to request
+	// switches and arguments.
+	//**************************************************
+	protected void argInquire(int layer) {
+	    myLayerID = layer;
+	    super.argInquire(nextLayer());
+	}
+
+	protected Lang.AstNode reduceAST(ArgList argObjects,
+					 Lang.AstNode ast) {
+
+	    try {
+		ast.macroReduce(mainProps);
+	    }
+	    catch (Exception e) {
+		Util.fatalError(e);
+	    }
+	    return(super.reduceAST(argObjects, ast));
+	}
+    }
+
+
+    static public class InvalidMacroException extends Exception {
+	public InvalidMacroException() { super(); }
+	public InvalidMacroException(String s) { super(s); }
+    }
+
+    static public abstract class AstNode extends $(ParentComponent).AstNode {
+	//**************************************************
+	// Used to scan an AST and process macro definitions and macro
+	// instantiations.
+	//**************************************************
+	public void macroReduce(Lang.AstProperties props)
+	    throws InvalidMacroException {
+	    if (arg == null)
+		return;
+
+	    for (int i=0; i < arg.length; i++)
+		if (arg[i] != null)
+		    arg[i].macroReduce(props);
+	}
+    }
+}

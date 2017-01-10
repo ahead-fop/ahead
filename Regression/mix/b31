@@ -1,0 +1,60 @@
+#ifndef _import_
+#include "a.h"
+#include "b.h"
+#include "c.h"
+#define _import_
+#endif
+
+#ifdef class_
+#undef class_
+#undef super_
+#undef namespace_
+#endif
+
+#define super_ base__0
+#define class_ base__1
+
+//SoUrCe base.cpp
+//import_ "a.h"
+//import_ "b.h"
+
+class class_ {
+		int x;
+		void bar();
+}
+//EnDSoUrCe 
+
+#ifdef class_
+#undef class_
+#undef super_
+#undef namespace_
+#endif
+
+#define super_ base__1
+#define class_ base__2
+
+//SoUrCe ref3.cpp
+class class_ {
+   int don;
+	float batory();
+}
+//EnDSoUrCe 
+
+#ifdef class_
+#undef class_
+#undef super_
+#undef namespace_
+#endif
+
+#define super_ base__2
+#define class_ base
+
+//SoUrCe ref1.cpp
+//import_ "c.h"
+
+class class_ : super_ {
+		int y;
+		void bar();
+		void biff();
+}
+//EnDSoUrCe 

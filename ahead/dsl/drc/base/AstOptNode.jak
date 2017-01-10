@@ -1,0 +1,13 @@
+layer core;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+public refines class AstOptNode {
+    public void reduce() {
+        if ( arg[0]!=null )
+            arg[0].reduce();
+    }
+}

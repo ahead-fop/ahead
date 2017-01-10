@@ -1,0 +1,13 @@
+// tests the unmangling of identifiers, but not within quoted text
+
+layer testr;
+
+Local_Id x, y, z;
+
+refines class g6 {
+
+     void foomethod() {
+         AST_Stmt x, y, z;
+         x = stm{ int x$$bar, y$$bar, z$$bar; }stm;
+     }
+}

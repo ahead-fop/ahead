@@ -1,0 +1,46 @@
+// this tests the name mangling outside AST_FieldDeclarations
+
+layer root3;
+
+import firstPackage.*;
+
+State_machine root extends class common  {
+   Delivery_parameters( M m );
+   Unrecognizable_state { ignore(m); }
+
+   States a, b, c;
+
+   Exit a {
+      test1$$root3();
+      // something more
+   }
+
+   Transition x : a -> b
+   condition test1$$root3() 
+   do {
+      test3$$root3(4);
+      /* test3 not overridden and referenced */
+   }
+
+
+   void test1(  ){ test1$$root3(  ); }
+
+   final void test1$$root3() {
+      /* overridden and referenced */
+   }
+
+   void test2(int i) {
+      /* overridden and not referenced */
+   }
+
+
+   void test3( String i ){ test3$$root3( i ); }
+
+   final void test3$$root3(String i) {
+      /* not overridden and referenced */
+   }
+
+   void test4() { 
+      /* not overridden and not referenced */
+   }
+}

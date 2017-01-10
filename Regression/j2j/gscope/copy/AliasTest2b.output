@@ -1,0 +1,7 @@
+ i_0 + j_0
+ i_0 + j_0 + k_0
+ i_0 + j_0 + k_0 + j_0 + k_0
+ i_0 + j_0 + k_0 + 4*5 + 7 + k_0
+ v = 0; for (q=0; q<30; q++) { funcall(q); }; v = 1;
+ v = 0; for (q=0; q<30; q++) { funcall(q); }; v = 1;
+ int q; AST_Exp x() { int r = i_0 + j_0 + k_0; }

@@ -1,0 +1,53 @@
+
+// just a more complicated example that pushes constructors up and
+// down the chain.
+
+
+
+abstract class MessageType$$FsatsL extends EventType implements MessageTypeInterface {
+        protected MessageType$$FsatsL(String name, double n ) {
+           super(name, n);
+        }
+      // inherited constructors
+
+      MessageType$$FsatsL( String v0) { super(  v0); }
+     }
+
+
+
+
+public abstract  class MessageType$$MessageL extends MessageType$$FsatsL
+        implements MessageTypeInterface
+    {
+
+        protected MessageType$$MessageL (double n)
+        {
+            super(""+n);
+          MessageTypeConstructor(name);
+        }
+
+        protected MessateType$$MessageL (String name, int cons ){
+            super(name);
+            /* something with cons */
+        }
+      // inherited constructors
+
+
+        protected MessageType$$MessageL ( String name, double n ) { super(name, n); }
+    }
+
+
+
+
+public abstract  class MessageType extends MessageType$$FsatsL
+        implements MessageTypeInterface
+    {
+      // inherited constructors
+
+
+
+        protected MessageType ( double n ) { super(n); }
+
+        protected MessageType ( String name, int cons ) { super(name, cons); }
+        protected MessageType ( String name, double n ) { super(name, n); }
+    }

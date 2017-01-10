@@ -1,0 +1,3 @@
+layer MortarL;
+
+public State_machine MortarMission extends WeaponMission {}

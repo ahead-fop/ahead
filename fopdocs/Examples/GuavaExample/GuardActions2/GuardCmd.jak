@@ -1,0 +1,30 @@
+layer GuardActions;
+import Jakarta.util.*;
+import java.io.*;
+import java.util.*;
+refines class GuardCmd {
+
+    public void reduce2java (AstProperties props) {
+   PrintWriter ps;
+
+   // Step 1: get arguments of Guard node
+   //         expression is argument #0
+   //         statement is argument #1
+   //         see grammar rule for Guard 
+
+	// note: (Statement) is not an (AST_Stmt), because (Statement) is a
+	//       single statement, whereas AST_Stmt is a LIST of statements.
+	//       an explicit conversion is needed here
+
+   AST_Exp exp = (AST_Exp) arg[0];
+   AST_Stmt stm = ((Statement) arg[1]).toAST_Stmt();
+
+   // Step 2: create replacement parse tree
+
+	AST_Stmt s = stm{ if ( $exp(exp) ) {$stm(stm); }; }stm;
+
+   // Step 3: reduce to java the generated statement
+
+   s.reduce2java(props);
+  }
+}

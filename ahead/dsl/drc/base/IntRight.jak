@@ -1,0 +1,27 @@
+layer core;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+public refines class IntRight {
+    public void reduce() {
+        int lit = Integer.parseInt( tok[1].tokenName() );
+        String id = tok[0].tokenName();
+        predicate p =  Predikate.p;
+        boolean includes = ( arg[0] instanceof  Leq ||
+                             arg[0] instanceof  Geq );
+        if ( arg[0] instanceof  Equ ) {
+            p.and( new  Int( id ).setEquals( lit ) );
+        }
+        else
+            if ( arg[0] instanceof  Lss ||
+             arg[0] instanceof  Leq ) {
+                p.and( new  Int( id ).setUpperRange( lit, includes ) );
+            }
+            else {
+                p.and( new  Int( id ).setLowerRange( lit, includes ) );
+            }
+    }
+}

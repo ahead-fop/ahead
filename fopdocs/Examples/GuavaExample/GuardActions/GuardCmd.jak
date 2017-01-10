@@ -1,0 +1,32 @@
+layer GuardActions;
+import Jakarta.util.*;
+import java.io.*;
+import java.util.*;
+refines class GuardCmd {
+
+    public void reduce2java (AstProperties props) {
+   PrintWriter ps;
+   AstNode exp, stm;
+
+   // Step 1: get arguments of Guard node
+   //         expression is argument #0
+   //         statement is argument #1
+   //         see grammar rule for Guard 
+
+   exp = arg[0];
+   stm = arg[1];
+
+   // Step 2: obtain printwriter to output translation.
+
+   ps = (PrintWriter) props.getProperty("output");
+
+   // Step 3: translate Guard into if statement
+
+   ps.print("if (");
+   exp.reduce2java(props);
+   ps.print(") ");
+   stm.reduce2java(props);
+
+    }
+
+}

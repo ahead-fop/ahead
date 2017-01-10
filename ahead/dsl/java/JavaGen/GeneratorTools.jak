@@ -1,0 +1,98 @@
+layer JavaGen;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.util.*;
+import java.io.*;
+
+// of ClassGenerator
+
+   // *******************************************************************
+   // ************************ AUXILIARY METHODS ************************
+     
+   // Class that contains auxiliary methods to produce output
+    
+public class GeneratorTools {
+
+    /** Writes tag description comment. Extracts the info from the 
+     * inline tags.
+     * @layer<JavaGen>
+     */
+    public String descriptionComment( LinkedList inlineTags )
+    {
+        String descriptionString = "";
+
+        if ( inlineTags == null )
+            return descriptionString;
+             
+        // If there are inlink, you have to cast them to see Tags 
+        // and get the referenced class, and member name plus the label.
+
+        for( int j=0; j< inlineTags.size(); j++ ) {
+                        
+            AbstractTagJedi inlineTag = 
+                                    ( AbstractTagJedi ) inlineTags.get( j );
+
+            // if we are dealing with a text tag then just add it 
+            if ( inlineTag.name().compareTo( "Text" ) == 0 ) {
+                descriptionString = descriptionString + " " + 
+                                                inlineTag.text();
+            }
+            else { // it is an inlink tag so make the reference call
+                SeeTagJedi seeTag = 
+                                                ( SeeTagJedi ) inlineTags.get( j );
+                String seeString  = seeTag.referencedClassName() 
+                                                + "#" + seeTag.referencedMemberName();
+                descriptionString = descriptionString + 
+                                                "<A HREF = " + seeString  + ">" + 
+                                                seeTag.label() + "</A> ";
+            }
+
+        }
+            
+        return descriptionString;
+    }
+
+    /** For all the tags whose name is tagName, read the inlinetags that
+     *  they have and add their text.
+     *  If there are inlink, you have to cast them to see Tags and get the
+     *  referenced class, and member name plus the label.
+     * @layer<JavaGen>
+     */
+    public String fullTextComment( DocJTS ADoc, String tagName ) {
+        String fullString = "";
+        LinkedList tags = ADoc.tags( tagName );
+            
+        for( int i=0; i < tags.size() ; i++ ) {
+            AbstractTagJedi tag = 
+                                    ( AbstractTagJedi )tags.get( i );
+ 
+            LinkedList inlineTags = tag.inlineTags();
+
+            for( int j=0; j< inlineTags.size(); j++ ) {
+                // if we are dealing with a text tag then just add it
+                AbstractTagJedi inlineTag = 
+                                   ( AbstractTagJedi )inlineTags.get( j );
+
+                if ( inlineTag.name().compareTo( "Text" ) == 0 )
+                                    {
+                    fullString = fullString + " " + 
+                                                              inlineTag.text();
+                }
+                else // it is an inlink tag so make the reference call
+                                    {
+                    SeeTagJedi seeTag = 
+                                                                ( SeeTagJedi ) inlineTags.get( j );
+                    String seeString  = 
+                                                                seeTag.referencedClassName() 
+                                                                + "#" + seeTag.referencedMemberName();
+                    fullString = fullString + "<A HREF = " + 
+                                                                seeString  + ">" + 
+                                                                seeTag.label() + "</A> ";
+                }
+            } //  for j
+        } // for i
+        return fullString;
+    }
+
+}

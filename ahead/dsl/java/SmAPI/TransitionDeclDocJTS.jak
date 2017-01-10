@@ -1,0 +1,140 @@
+layer SmAPI;
+
+import java.io.*;
+import java.util.*;
+
+ // of StateMachineDocJTS
+
+// _________________________________________________________________
+  /** JEDI
+ * TransitionDeclDocJTS.java
+ * University of Texas at Austin
+ * Department of Computer Sciences
+ * Product-line Architecture Research Group
+ * @rationale This class holds the information of TransitionDecl
+ * of the states grammar.
+ * @author Roberto E. Lopez-Herrejon
+ * @version 1.0
+ * @since November 8, 2002
+* @layer<SmAPI>
+*/
+
+public class TransitionDeclDocJTS extends  DocJTS {
+
+    // *********************************************************************
+    // *********************************************************************
+    // *** Field Summary 
+    /** Contains the name of the state.
+     * @layer<SmAPI>
+     */
+    String name;
+
+    /** List that contains the classes/interfaces that are in the block
+     * of Exit, Enter or Otherwise state declarations.
+     * @layer<SmAPI>
+     */
+    LinkedList classes;
+
+    /** Start name.
+     * @layer<SmAPI>
+     */
+    String startName;
+
+    /** End name.
+     * @layer<SmAPI>
+     */
+    String endName;
+
+    /** Conditions string.
+     * @layer<SmAPI>
+     */
+    String conditions;
+
+    /** Additional constructor.
+     * @layer<SmAPI>
+     */
+    public TransitionDeclDocJTS( String _name, LinkedList _classes ) 
+    {
+        name = _name;
+        classes = _classes;
+    }
+
+    // *** Method summary.
+    /** Gets the name of the state.
+     * @layer<SmAPI>
+     */
+    public String name() {
+        return name;
+    }
+
+    /** Gets the list of the classes/interfaces.
+     * @layer<SmAPI>
+     */
+    public LinkedList classes() {
+        return classes;
+    }
+
+    /** Gets start name.
+     * @layer<SmAPI>
+     */
+    public String startName() {
+        return startName;
+    }
+
+    /** Gets end name.
+     * @layer<SmAPI>
+     */
+    public String endName() {
+        return endName;
+    }
+
+    /** Conditions string.
+     * @layer<SmAPI>
+     */
+    public String conditions() {
+        return conditions;
+    }
+
+    /** Sets the name of the state.
+     * @layer<SmAPI>
+     */
+    public void setName( String _name ) {
+        name = _name;
+    }
+
+    /** Sets the list of classes/interfaces.
+     * @layer<SmAPI>
+     */
+    public void setClasses( LinkedList _classes ) {
+        classes = _classes;
+    }
+
+    /** Sets the start name.
+     * @layer<SmAPI>
+     */
+    public void setStartName( String _startName ) {
+        startName = _startName;
+    }
+
+    /** Sets the end name.
+     * @layer<SmAPI>
+     */
+    public void setEndName( String _endName ) {
+        endName = _endName;
+    }
+
+    /** Sets the conditions string.
+     * @layer<SmAPI>
+     */
+    public void setConditions( String _conditions ) {
+        conditions = _conditions;
+    }
+
+    /** Required for support of DocJTS
+     * @layer<SmAPI>
+     */
+    public boolean isIncluded() {
+        return false;
+    }
+    
+}

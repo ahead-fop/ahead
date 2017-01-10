@@ -1,0 +1,11 @@
+option is deprecated: i
+drc: test8.drc: Error attribute range referenced as Bool but declared as Int in layer foo
+drc: test8.drc:10: Error foo.provides left cannot be defined multiple times
+drc: test8.drc: Error attribute range referenced as Bool but declared as Int in layer foo
+drc: test8.drc:12: Error foo.requires right cannot be defined multiple times
+drc: test8.drc: Warning composed equation is incomplete: non-null requirements present
+requires right range
+Exception in thread "main" Jakarta.util.ExitError: drc: Summary 4 errors
+	at Jakarta.util.Util.fatalError(Util.java:71)
+	at drc.kernel$AstNode.toolReport(kernel.java:2589)
+	at drc.core$Main.main(core.java:1538)

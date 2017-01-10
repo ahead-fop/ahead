@@ -1,0 +1,20 @@
+layer FsatsRmiL ( F lower ) 
+realm F
+extends lower
+imports java.rmi.*
+{
+   /** The actual interface exported by remote OPFAC objects **/
+   public static interface OpfacRmi extends java.rmi.Remote 
+   {
+      public void receive( Message message ) throws RemoteException;
+   }
+   
+   /** The actual interface exported by remote NetObject objects **/
+   public static interface NetworkObjectRmi extends java.rmi.Remote
+   {
+       public boolean register( String name, Opfac opfac ) 
+	 throws RemoteException;
+      public boolean send( Message message ) throws RemoteException;
+      public boolean unregister( String name ) throws RemoteException;
+   }
+} 

@@ -1,0 +1,78 @@
+layer JavaHarvest;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+
+public refines class GlobalWrapper {
+    // Global variables
+    public static String ProgramName;
+    public static  PackageDocJTS containingPackage;
+    public static  ProgramDocJTS containingProgram;
+
+    /** Takes care of updating the modifiers of the class 
+     * @layer<JavaHarvest>
+     */
+    static public void adjustNestedElements( ClassDocJTS element, 
+                         AstNode e ) {
+        AstCursor c = new AstCursor(); // c to traverse list
+                           
+        if ( e != null && element !=null ) {
+            // Gets the comment from the first modifier
+            c.FirstElement( e );
+            AstNode first = c.node;
+                             
+            for ( ; c.MoreElement(); c.NextElement() ) {
+
+                // abstract method
+                if ( c.node instanceof ModAbstract ) 
+                                    {
+                    element.setAbstract( true );
+                }
+                                
+                // final method
+                if ( c.node instanceof ModFinal ) 
+                                    {
+                    element.setFinal( true );
+                }
+                                                
+                // public method
+                if ( c.node instanceof ModPublic ) 
+                                    {
+                    element.setPublic( true );
+                }
+                                
+                // protected method
+                if ( c.node instanceof ModProtected ) 
+                                    {
+                    element.setProtected( true );
+                }
+                                                
+                // private method
+                if ( c.node instanceof ModPrivate ) 
+                                    {
+                    element.setPrivate( true );
+                }
+                                                
+                // static method
+                if ( c.node instanceof ModStatic ) 
+                                    {
+                    element.setStatic( true );
+                }
+
+            } // for all modifiers
+                
+            // ********** Comment Processing ***************************
+            // if there are comments at Unmodified objectsare overwritten
+            String comment = ( ( AstToken ) first.tok[0] ).white_space;
+            CommentJedi classComment = 
+                        CommentParser.ParseComment( element, comment );
+            element.setComment( classComment );
+            
+        } // if there are modifiers
+    
+    } // of setModifiers
+
+}

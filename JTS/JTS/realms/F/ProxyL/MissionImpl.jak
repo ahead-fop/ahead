@@ -1,0 +1,29 @@
+package ProxyL;
+
+import  
+    java.util.*;
+import  
+    F.Libraries.laydown.*;
+import  
+    F.Libraries.log.Log;
+
+
+
+
+    /** Refinement of an active mission to handle ranking proxies **/
+    public extends state_machine MissionImpl 
+        implements Mission
+    {
+        private Set denied = new HashSet();
+
+	/** Discard current asset and go to next highest ranked **/
+	public void proxyDeny(String opfacName) 
+        {
+            denied.add(opfacName);
+	}
+        
+        public boolean hasDenied(String opfacName)
+        {
+            return denied.contains(opfacName);
+        }
+    }

@@ -1,0 +1,18 @@
+cd class
+bash clean
+
+cd ..
+cd interf
+bash clean
+
+cd ..
+cd sm
+bash clean
+
+cd ..
+cd gpl
+bash clean
+
+cd ..
+cd local
+bash clean

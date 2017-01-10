@@ -1,0 +1,21 @@
+package Iext2;
+
+SoUrCe  Iext2 "IExt2.jak";
+
+ abstract
+
+ interface MyInt$$IExt2 extends java.io.Serializable {
+    overrides void foo() throws AnotherException;
+    overrides void barrr();
+    new int biff( int i );
+    overrides float biff();
+}
+
+SoUrCe  Iext2 "IExt2.jak";
+
+ interface MyInt extends java.io.Serializable, MyInt$$Iext2 {
+    overrides void foo() throws AnotherException;
+    overrides void barrr();
+    new int biff( int i );
+    overrides float biff();
+}

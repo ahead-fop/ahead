@@ -1,0 +1,14 @@
+single layer ScriptL;
+
+extern outside Int fsatsRank;
+extern outside Bool scriptPresent;
+extern inside  Bool libraries;
+
+// must be in first rank of layers
+// must be outside networkPresent
+
+requires outside fsatsRank == 1;
+provides outside scriptPresent;
+requires inside  libraries;
+
+

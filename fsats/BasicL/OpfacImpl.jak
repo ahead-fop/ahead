@@ -1,0 +1,14 @@
+layer BasicL;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+public refines class OpfacImpl {
+    // Abstract - should never be called.
+    public Mission newMission() {
+        return null;
+    }
+}

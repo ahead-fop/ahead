@@ -1,0 +1,11 @@
+/drc/d
+/Jakarta\.util/d
+/Exception in thread/d
+/provides left/s//provides flowleft/
+/provides right/s//provides flowright/
+/requires left/s//requires flowright/
+/requires right/s//requires flowleft/
+/outside/s//flowleft/
+/inside/s//flowright/
+/left2right/s//flowright/
+/right2left/s//flowleft/

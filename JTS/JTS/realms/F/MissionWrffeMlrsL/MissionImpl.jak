@@ -1,0 +1,34 @@
+package MissionWrffeMlrsL;
+
+import 
+    Jakarta.util.Util;
+import 
+    java.io.*;
+import 
+    F.Libraries.log.Log;
+
+
+    public extends state_machine MissionImpl
+    {
+        states wrffeMlrsAccepted;
+
+        // Take this branch when mission accepted by MLRS.
+        edge wrffeAcceptedMlrs : wrffeAccepted -> wrffeMlrsAccepted
+            conditions (getWeaponType().equals("MLRS_BTRY"))
+            do {}
+
+        // Relay MFR and stop.
+        edge wrffeMlrsAccepted1 : wrffeMlrsAccepted -> stop
+            conditions wrffeMlrsAccepted1Test(message)
+            do { wrffeMlrsAccepted1Action(message); }
+
+        // added
+        public void wrffeMlrsAccepted1Action(Event message) {
+           sendDown(( Message)message.clone());
+        }
+
+        public boolean wrffeMlrsAccepted1Test(Event message) {
+           return (message instanceof MfrMessage);
+        }
+
+    }

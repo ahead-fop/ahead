@@ -1,0 +1,12 @@
+// tests refinement of static methods
+
+class three extends EventType {
+   static final void bar$$top() { System.out.println("xxx"); }
+   static void bar() { System.out.println("yyy"); bar$$top(); }
+   static final void foo$$top( int b ) { System.out.println(EventType.foo()); }
+   static void foo( int b ) { foo$$top(b); bar$$top(); }
+   static public void main(String[] args) {
+      foo(5);
+      bar();
+   }
+}

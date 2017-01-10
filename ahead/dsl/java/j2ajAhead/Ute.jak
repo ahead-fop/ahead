@@ -1,0 +1,33 @@
+/** @author Roberto E. Lopez-Herrejon
+*/
+layer j2ajAhead;
+
+public refines class Ute {
+
+    public void reduce2java( AstProperties props ) {
+         // don't echo "refines", print the comments
+         props.print( getComment() );
+
+         // Sets the property Aspect
+         props.setProperty("Aspect","true");
+
+         // Creates a variable for context and adds it as a property
+         VarContext context = new VarContext();
+         context.pushMarker();
+         props.setProperty("VariableContext", context);
+
+         // Prints the work aspect onto stream
+         props.print(" aspect ");
+         arg[0].reduce2java(props); // continues with the reduction
+
+        //@debug context before elimination
+        // System.out.println("Context Ute = " + context);
+
+         // Removes the properties set
+         // @debug Probably this property should be removed
+         // When the stack is popped in Java/Main
+         // props.removeProperty("Aspect");
+
+         props.removeProperty("VariableContext");
+    }
+}

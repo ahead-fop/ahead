@@ -1,0 +1,10 @@
+layer FS;
+
+SoUrCe RooT MlrsL "C:!Java!FeatureOrientedProgramming!fsats!MlrsL!MlrsOpfac.jak";
+
+public class MlrsOpfac extends WeaponOpfac {
+    public Mission newMission() 
+        {
+        return new MlrsMission();
+    }
+}

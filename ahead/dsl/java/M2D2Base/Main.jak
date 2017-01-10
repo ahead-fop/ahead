@@ -1,0 +1,254 @@
+layer M2D2Base;
+
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+//------------- Main -------------------------------  
+
+public refines class Main {
+
+    private context cntx;
+
+    public static String dir = null;
+    public static String ext = null;
+    public static boolean debug = false;
+
+    public static int oneTypePerFile;
+
+    static protected void usage() {
+        String toolname = "m2d2";
+      
+        System.err.println( "Usage: java " + toolname + ".Main [-D] -d string [-e string]" );
+        System.err.println( "  -or-" );
+        System.err.println( "Usage: java " + toolname + ".Main [-D] source_files" );
+        System.err.println();
+        System.err.println( "   -d : source directory to be RECURSIVELY searched" );
+        System.err.println( "   -e : source file extension to be searched ('jak' is default)" );
+        System.err.println( "   -D : debug information" );
+        // Force exit
+        System.exit( 1 ) ;
+    }
+
+    /**
+     * Overrides previous version to allow multiple source files in the
+     * argument list.  This is done by successively substituting the
+     * "source file" argument by each of the extra arguments.
+     *
+     * <p>
+     * <em>Note:</em>
+     * The argument processing here is a mess, mostly because the command
+     * line parsing design is poor.  That's another area of clean-up.
+     *
+     * @layer<M2D2Base>
+     */
+    protected boolean driver( ArgList args ) {
+
+        Switch sw;
+        File dirFile;
+
+        // extract switch "D" 
+        sw = ( Switch ) args.find( "D", Switch.class );
+        if ( sw != null ) {
+            debug = true;
+        }
+
+        // extract switch "d" and assign default if missing
+        sw = ( Switch ) args.find( "d", Switch.class );
+        if ( sw != null ) {
+            dir = sw.args[0];
+        }
+
+        // extract switch "e" and assign default if missing
+
+        sw = ( Switch ) args.find( "e", Switch.class );
+        if ( sw != null ) {
+            ext = sw.args[0];
+        }
+
+        // deal with the odd combinations 
+
+        if ((ext != null) && (dir == null)) usage();
+        if ((dir != null) && (ext == null)) ext="jak"; 
+
+
+        // now process the files
+        // first- create header
+
+        cntx = new context();
+        cntx.Header.line("#! JavaM => metamodels/JavaM.ecore");
+        cntx.Header.blankLine();
+
+        if ( ( dir != null ) ) {
+            try {
+                dirFile = new File( dir );
+                processDirectory( dirFile, dir );
+                if (debug) System.out.println( "end processing directory" );
+            }
+            catch ( Exception e ) {
+                System.err.println( "Cannot open directory " + dir );
+                System.err.println( e.getMessage() );
+                System.exit( -10 );
+            }
+        }
+        else {
+            // If there are no extra arguments, then we're done.
+            //
+            if ( extraArgs == null || extraArgs.size() < 1 ) {
+                usage();
+            }
+
+            // Substitute each extra source file argument into the source file
+            // position, then re-evaluate command line.
+            //
+            for ( Iterator p = extraArgs.iterator() ; p.hasNext() ; )
+                processing( packageName, ( String ) p.next() ) ;
+        }
+
+        // now, here is where we output the results of processing these files
+        // we need to distinguish classes that were implicitly imported
+        // from those that were declared
+
+        cntx.Header.blankLine();
+        cntx.Header.commentLine(" implicitly imported files");
+        ImpQual.processUnResolvedClasses(cntx); 
+
+        cntx.out();
+
+        return true;
+    }
+
+    public void processDirectory( File dirFile, String path ) {
+        File f;
+        int i;
+        String cpath;
+        String array[];
+ 
+        // Step 1: get list of files
+ 
+        if ( ( ext != null ) && ( !ext.equals( "" ) ) )
+            array = dirFile.list( new  filterPattern( "." + ext ) );
+        else
+            array = dirFile.list( new  filePattern() );
+ 
+        // Step 2: for each file name...
+ 
+        for ( i=0; i<array.length; i++ ) {
+            String filename = path + File.separator + array[i];
+            if (debug) System.out.println("--> "+filename);
+            processing( packageName, filename );
+        }
+
+        // Step 3: now recurse on directory
+
+        array = dirFile.list( new  dirPattern() );
+
+        if (debug) System.out.println( "recursing on directory");
+        for ( i=0; i<array.length; i++ ) {
+            
+            cpath = path + File.separator + array[i];
+            if (debug) System.out.println("***> " + cpath);
+            try {
+                f = new File( cpath );
+                processDirectory( f, cpath );
+            }
+            catch ( Exception e ) {
+                System.err.println( "failed to process directory " + cpath + 
+                    e.getMessage() );
+            }
+        }
+    }
+
+    protected void processing( String label, String fileName ) {
+       
+        AstNode ast;
+        String s;
+        int i;
+
+        if (debug) System.out.println( "Processing: " + fileName ) ;  
+
+        oneTypePerFile = 0;  // for error checking in TypeDeclaration
+
+        ast = createAST( fileName );
+        cntx.setPackageName("feature");
+
+        if ( ast != null ) {
+            cntx.fileName = fileName;
+            ast.extract( cntx ); 
+        }
+    }
+
+    //**************************************************
+    // Method called by the top-most layer to allow a layer to request
+    // switches and arguments.
+    //**************************************************
+    protected void argInquire( int _layer ) {
+        Switch sw;
+
+        // Register my switches
+        sw = new Switch( "d", "source directory to be searched; will void source file(s) argument(s)", new String[1], true, _layer );
+        switchRegister( sw );
+        sw = new Switch( "e", "source file extension to be searched; will void source file(s) argument(s)", new String[1], true, _layer );
+        switchRegister( sw );
+        sw = new Switch( "D", "Debugging output", null, true, _layer );
+        switchRegister( sw );
+
+        // Allow extra arguments
+        extraArgs = new ArrayList() ;
+
+    // Call next layer:
+    //
+    // Super(int).argInquire (nextLayer ()) ;
+    }
+
+    //**************************************************
+    // createAST()
+    //**************************************************
+    protected  AstNode createAST( String fileName ) {
+        FileInputStream fis;
+        PositionalArg parg;
+        File inputFile, backup;
+        AstNode root;
+
+        inputFile = null;
+        try {
+            inputFile = new File( fileName );
+            fis = new FileInputStream( inputFile );
+            kernelConstants.globals().mainProps.setProperty( "input", inputFile );
+
+            // now add inputDirectory property
+            String abspath = inputFile.getAbsolutePath();
+            kernelConstants.globals().mainProps.setProperty( "inputDirectory", 
+                                                                      directoryPath( abspath ) );
+            kernelConstants.globals().currentAbsPath = abspath;
+        }
+
+        catch ( Exception e ) {
+            Util.warning( "Can't open file " + fileName );
+            fis = null;
+            return null;
+        }
+        
+        try {
+            Parser parser =  Parser.getInstance( fis ) ;
+	    root = parser.parseAll () ;
+        }
+        catch ( ParseException e ) {
+            Util.warning( "Error in parsing file " + fileName + ": " + e.getMessage() );
+            root = null;
+            return null;
+        }
+
+        return ( root );
+    }
+
+    //**************************************************
+    // outputAST()
+    //**************************************************
+    protected void outputAST( AstNode ast ) {
+       // do nothing
+    }
+}

@@ -1,0 +1,9 @@
+// tests environment declaration
+
+layer uberalles;
+
+refines class g6 {
+   environment z, b, c;
+
+   void bar() { }
+}

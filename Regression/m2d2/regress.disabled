@@ -1,0 +1,31 @@
+#!/bin/bash
+
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+echo "**************** M2D2 Regression Test***********"
+
+rm -f current correct *.rb junk*
+rm -rf rubyfiles
+
+bash regress-one imports \
+&& bash regress-one fields \
+&& bash regress-one two \
+&& bash regress-one const \
+&& bash regress-one meth \
+&& bash regress-one cls \
+&& bash regress-one ref \
+&& bash regress-one intf \
+&& bash regress-one intr \
+&& bash regress-one thro \
+&& bash regress-one str \
+&& bash regress-one nolayer \
+&& bash regressdir mgpl \
+|| exit 1
+
+rm -f correct current
+
+echo -e "\nM2D2 Regression Test succeeded."
+
+

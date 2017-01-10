@@ -1,0 +1,21 @@
+package one;
+
+SoUrCe RooT one "one.jak";
+
+abstract
+class c$$one {
+   int top;
+}
+
+SoUrCe  two "two.jak";
+
+abstract 
+class c$$two extends c$$one {
+  int mid;
+}
+
+SoUrCe  three "three.jak";
+
+ class c extends c$$two {
+   int bottom;
+}

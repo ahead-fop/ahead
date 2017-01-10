@@ -1,0 +1,10 @@
+
+layer Iext0;
+
+import java.io.Serializable;
+
+public static transient refines interface MyInt extends java.io.Serializable, yyy {
+    void foo() throws SomeException;
+    int increment( int i );
+    int Terse = 2;
+}

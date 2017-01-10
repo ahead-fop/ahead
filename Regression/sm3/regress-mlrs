@@ -1,0 +1,10 @@
+#!/bin/bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+echo "************ WRFFE MLRS *************"
+java jak2java.Main wrffe_mlrs.spec \
+&& javac wrffe_mlrs.java \
+&& java wrffe_mlrs > junk \
+&& diff -b junk correct_mlrs \
+|| exit 1

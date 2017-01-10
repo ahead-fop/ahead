@@ -1,0 +1,18 @@
+layer FS;
+
+import laydown.*;
+
+import java.util.*;
+
+import fsats.util.DataContainer;
+
+public interface Event
+        extends java.io.Serializable, Cloneable {
+    /** Get message type. */
+    EventType getType();
+
+    /** Get mission identifier. */
+    String getMissionId();
+
+    Object clone();
+}

@@ -1,0 +1,19 @@
+// tests mixin composition
+
+layer allesuber;
+
+SoUrCe RooT allesuber "top.jak";
+
+ abstract
+
+class g6$$allesuber { }
+
+SoUrCe  testr "mangle.jak";
+
+ class g6 extends g6$$allesuber {
+
+     void foomethod() {
+         AST_Stmt x$$testr, y$$testr, z$$testr;
+	 x$$testr = stm{ int x$$bar, y$$bar, z$$bar; }stm;
+     }
+}

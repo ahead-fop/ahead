@@ -1,0 +1,86 @@
+package MessageL;
+
+import  
+    fsats.util.DataContainer;
+import 
+    F.Libraries.laydown.*;
+import 
+    java.util.*;
+
+
+
+    public abstract class BasicMessage
+        extends BasicEvent
+        implements Message
+    {
+	protected String source = "";
+	public String getSource() { return source; }
+	public void setSource(String newval) { source = newval; }
+        
+	protected String destination = "";
+	public String getDestination() { return destination; }
+	public void setDestination(String newval) { destination = newval; }
+
+	protected Integer initiatingUnitObserverId;
+	public Integer getInitiatingUnitObserverId() { return initiatingUnitObserverId; }
+	protected Integer initiatingUnitId;
+	public Integer getInitiatingUnitId() { return initiatingUnitId; }
+
+	public void setInitiatingUnitId(int initiatingUnitId)
+	{
+	    this.initiatingUnitId = new Integer(initiatingUnitId);
+	}
+
+	public void setInitiatingUnitObserverId(int initiatingUnitObserverId)
+	{
+	    this.initiatingUnitObserverId = new Integer(initiatingUnitObserverId);
+	}
+
+        public String getSpecific() { return ""; }
+
+        public String toString() 
+        { 
+            return 
+                super.toString()+" "+
+                    source+"->"+destination+" "+getSpecific(); 
+        }
+
+        protected BasicMessage(String missionId) { super(missionId);
+          BasicMessageConstructor(missionId); }
+
+        protected void BasicMessageConstructor(String missionId) {
+      }
+
+        public DataContainer toFsams()
+        {
+            DataContainer fsams = new DataContainer("Message");
+            DataContainer content = fsams.addField("CONTENT");
+            fsams.addField("PROTOCOL").setValue("FSAMS");
+            fsams.addField("FROM").setValue(""+((OpfacDataWrapper)LayDown.getSelf().
+                                                getOpfac(getSource())).getUnit());
+            fsams.addField("TO").setValue(""+((OpfacDataWrapper)LayDown.getSelf().
+                                              getOpfac(getDestination())).getUnit());
+
+	    DataContainer initiatingUnit = new DataContainer("Initiating_Unit");
+	    if (initiatingUnitObserverId != null)
+		initiatingUnit.addField("Observer_Id").setValue(initiatingUnitObserverId.toString());
+	    if (initiatingUnitId != null)
+		initiatingUnit.addField("Unit_Id").setValue(initiatingUnitId.toString());
+
+	    if (initiatingUnitObserverId!=null || initiatingUnitId!=null)
+		content.addField(initiatingUnit);
+
+            return fsams;
+        }
+
+        /*
+        public static Message fromFsams(DataContainer fsams)
+        {
+            Message m;
+            m = InitiateMessage.fromFsams(fsams);
+            if (m!=null) return m;
+            m = MissionStatusMessage.fromFsams(fsams);
+            return m;
+        }
+        */
+    }

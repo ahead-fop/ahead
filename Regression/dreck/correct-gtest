@@ -1,0 +1,63 @@
+
+
+Equation: cycle[ dft[ ugraph[] ] ]
+
+Explanation:
+checks cycles over an undirected graph using depth-first traversals.
+
+
+Equation: cycle[ cycle[ dft[ ugraph[] ] ]]
+
+Precondition errors: 
+   duplicate copies of a  cycle component.
+
+
+Equation: cycle[ cycle[ cycle[ dft[ ugraph[] ] ] ] ]
+
+Precondition errors: 
+   duplicate copies of a  cycle component.
+
+
+Equation: strongc[ dft[ ugraph[]]]
+
+Prerestriction errors: 
+   a directed graph is expected between ugraph and strongc.
+
+
+Equation: strongc[ ugraph[]]
+
+Prerestriction errors: 
+   a directed graph is expected between ugraph and strongc.
+
+
+Equation: strongc[ cycle[ bft[ ugraph[]]]]
+
+Prerestriction errors: 
+   a depth-first-traversal layer is expected below cycle.
+   a directed graph is expected between ugraph and strongc.
+
+
+Equation: number[ dft[ region[ dft[ dgraph[]]]]]
+
+Precondition errors: 
+   region is not expecting a search component (dft) above it.
+   dft is not expecting a search component (dft) above it.
+   duplicate copies of a  dft component.
+Prerestriction errors: 
+   an undirected graph layer is expected between dgraph and region.
+
+
+Equation: strongc[ dft[ region[ dft[ dgraph[]]]]]
+
+Precondition errors: 
+   region is not expecting a search component (dft) above it.
+   dft is not expecting a search component (dft) above it.
+   duplicate copies of a  dft component.
+Prerestriction errors: 
+   an undirected graph layer is expected between dgraph and region.
+
+
+Equation: number[ cycle[ region[ dft[ ugraph[]]]]]
+
+Explanation:
+numbers vertices, and checks cycles, and finds connected-regions over an undirected graph using depth-first traversals.

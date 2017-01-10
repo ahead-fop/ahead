@@ -1,0 +1,30 @@
+
+import java.io.PrintWriter;
+import jak2java.*;
+
+public class AliasTest {
+    public static void main(String args[]) {
+
+	dummy d = new dummy();
+
+	d.test();
+    }
+}
+
+	
+class dummy {
+    environment x;
+
+    public void test() {
+	AST_Exp expression;
+	AstProperties props = new AstProperties();
+	PrintWriter pw = new PrintWriter(System.out);
+
+	props.setProperty("output", pw);
+	alias(x, exp{ xArr[ipos] }exp );
+	expression = exp{ x+y }exp;
+	expression.reduce2java(props);
+	pw.println();
+	pw.flush();
+    }
+}

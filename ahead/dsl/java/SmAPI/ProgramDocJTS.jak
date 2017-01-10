@@ -1,0 +1,68 @@
+layer SmAPI;
+
+import java.io.*;
+import java.util.*;
+
+ // end of ClassDocJTS
+// _________________________________________________________________
+  /** JEDI
+ * ProgramDocJTS in SmAPI.java
+ * University of Texas at Austin
+ * Department of Computer Sciences
+ * Product-line Architecture Research Group
+ * @rationale States can also be part of a program file description. This 
+ * class adds them to the program representation.
+ * @author Roberto E. Lopez-Herrejon
+ * @version 1.0
+ * @since November 8, 2002
+ * @layer<SmAPI>
+ */
+ 
+public refines class ProgramDocJTS {
+
+    /** Contains a list with all the states accesible from AST_Class production.
+    * @layer<SmAPI>
+    */
+    LinkedList states ;
+
+    /** Default constructor initializes the states list. 
+     * @layer<SmAPI>
+     */
+    public void ProgramDocJTSConstructor()
+  {
+        Super().ProgramDocJTSConstructor();
+        this.states = new LinkedList();
+    }
+    
+    /** Name constructor 
+     * @layer<SmAPI>
+     */
+    public void ProgramDocJTSConstructor( String _name )
+  {
+        Super( String ).ProgramDocJTSConstructor( _name );
+        this.states = new LinkedList();
+    }
+
+    /** Returns the list of states accesible from AST_Class production.
+    * @layer<SmAPI>
+    */
+    public LinkedList states() {
+        return states;
+    }
+
+    /** Sets the list of states accesible form AST_Class production.
+    * @layer<SmAPI>
+    */
+    public void setStates( LinkedList _states ) {
+        states = _states;
+    }
+
+    /** Adds a state to the list of states 
+     * @layer<SmAPI>
+     */
+    public void addState( StateMachineDocJTS _state )
+  {
+        states.add( _state );
+    }
+
+}

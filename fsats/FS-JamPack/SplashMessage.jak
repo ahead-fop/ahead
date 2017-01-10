@@ -1,0 +1,48 @@
+layer FS;
+
+import fsats.util.DataContainer;
+
+import laydown.*;
+
+import java.util.*;
+
+/** Message to relay information about a shot **/
+public class SplashMessage 
+        extends MissionStatusMessage {
+    public EventType getType() {
+        return MessageType.splash;
+    }
+    public SplashMessage( String missionId )
+	{
+            Super( String )( missionId );
+    }
+
+    public DataContainer toFsams()
+        {
+        DataContainer fsams = Super().toFsams();
+        fsams.addField( new DataContainer( "NAME", "Splash" ) );
+
+        return fsams;
+    }
+
+    public static Message fromFsams( DataContainer fsams )
+        {
+        SplashMessage m;
+
+        DataContainer content = fsams.getField( "CONTENT" );
+        m = new SplashMessage( content.getField( "Target_Id" ).getValue() );
+
+        String initiatingUnitIdString = content.getField( "Initiating_Unit" ).getField( "Unit_Id" ).getValue();
+        if ( initiatingUnitIdString!=null && !initiatingUnitIdString.equals( "" ) )
+            m.setInitiatingUnitId( Integer.parseInt( initiatingUnitIdString ) );
+
+        String initiatingUnitObserverIdString = content.getField( "Initiating_Unit" ).getField( "Observer_Id" ).getValue();
+        if ( initiatingUnitObserverIdString!=null && !initiatingUnitObserverIdString.equals( "" ) )
+            m.setInitiatingUnitObserverId( Integer.parseInt( initiatingUnitObserverIdString ) );
+
+        m.setSource( LayDown.getSelf().getOpfacByUnit( Integer.parseInt( fsams.getField( "FROM" ).getValue() ) ).getName() );
+        m.setDestination( LayDown.getSelf().getOpfacByUnit( Integer.parseInt( fsams.getField( "TO" ).getValue() ) ).getName() );
+
+        return m;
+    }
+}

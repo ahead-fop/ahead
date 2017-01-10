@@ -1,0 +1,7 @@
+layer test;
+
+interface one extends two { }
+
+interface two {}
+
+

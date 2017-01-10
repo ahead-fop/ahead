@@ -1,0 +1,41 @@
+layer FS;
+
+SoUrCe RooT MissionL "C:!Java!FeatureOrientedProgramming!fsats!MissionL!MissionImpl.jak";
+
+ abstract State_machine MissionImpl$$MissionL
+        implements Mission
+    { void foo() throws a; }
+
+SoUrCe  ProxyL "C:!Java!FeatureOrientedProgramming!fsats!ProxyL!MissionImpl.jak";
+
+ abstract  State_machine MissionImpl$$ProxyL extends MissionImpl$$MissionL 
+        implements Mission
+    { void foo() throws b; }
+
+SoUrCe  MissionAnyL "C:!Java!FeatureOrientedProgramming!fsats!MissionAnyL!MissionImpl.jak";
+
+ abstract  State_machine MissionImpl$$MissionAnyL extends MissionImpl$$ProxyL
+        implements Mission
+    { public MissionImpl$$MissionAny() throws x {} }
+
+SoUrCe  MissionWrffeL "C:!Java!FeatureOrientedProgramming!fsats!MissionWrffeL!MissionImpl.jak";
+
+ abstract  State_machine MissionImpl$$MissionWrffeL extends MissionImpl$$MissionAnyL
+    { MissionImpl$$MissionWrffeL() throws y { }
+	   MissionImpl$$MissionWrffeL(int x) throws z { } }
+
+SoUrCe  MissionWrffeMortarL "C:!Java!FeatureOrientedProgramming!fsats!MissionWrffeMortarL!MissionImpl.jak";
+
+ abstract  State_machine MissionImpl$$MissionWrffeMortarL extends MissionImpl$$MissionWrffeL
+    { }
+
+SoUrCe  MissionWrffeArtyL "C:!Java!FeatureOrientedProgramming!fsats!MissionWrffeArtyL!MissionImpl.jak";
+
+ abstract  State_machine MissionImpl$$MissionWrffeArtyL extends MissionImpl$$MissionWrffeMortarL 
+    { }
+
+SoUrCe  MissionWrffeMlrsL "C:!Java!FeatureOrientedProgramming!fsats!MissionWrffeMlrsL!MissionImpl.jak";
+
+
+    public  State_machine MissionImpl extends MissionImpl$$MissionWrffeArtyL
+    { }

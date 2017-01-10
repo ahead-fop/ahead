@@ -1,0 +1,480 @@
+layer M2D2Base;
+
+/**
+ * This class provides static methods to generate the Ruby instructions that correspond to the 
+ * instances of the JavaM objects. That is, it helps the harvesting of Jak code into by creating 
+ * a model by creating the Ruby instructions that will be translated into XMI using the AGE tool.
+ * @author Maider Azanza
+ */
+
+public class RubyInstCreator {
+	
+	/**
+	 * Creates the instruction for the packages imported by the layer. Should be called once for 
+	 * each package (even if it is imported by multiple classes in the layer).
+	 * 
+	 * @param  packageName  the name of the package, could be used to store the layer name
+	 * @param  packageIdentifier will be used to compose them. Should be the same in all features
+	 *                           of the SPL.
+	 * @return      the Ruby String that creates the corresponding Package Metaclass instance
+	 */
+
+	
+	public static String createImportedPackage(String packageName, String packageIdentifier){
+		return "package_"+ formatIdentifier(packageIdentifier) +" = JavaM::Package.new(:name => '"+ packageName + "', :identifier => '"+ packageIdentifier+"', :isImported => true, :ownerLayer => layer)";
+	}
+	
+	/**
+	 * Creates the instruction for the classes imported by the layer. Should be called once for 
+	 * each class (even if it is imported by multiple classes in the layer).
+	 * 
+	 * @param  className  the name of the class, as it appears in the declaration (e.g. "LinkedList").
+	 * @param  classIdentifier complete path (e.g."java.util.LinkedList").
+	 * @return      the Ruby String that creates the corresponding Class Metaclass instance.
+	 */
+	
+	public static String createImportedClass (String className, String classIdentifier){
+				
+		return formatIdentifier(classIdentifier)+" = JavaM::Class.new(:name => '"+ className +"', :identifier => '"+ classIdentifier +"', :owner => package_used)";
+	}
+	
+	/**
+	 * Creates the instruction for the primitive types used by the layer. It can be called once for
+	 * every primitive type (byte, short, int, long, float, double, boolean, char and void) to make 
+	 * things easier.
+	 * 
+	 * @param  primitiveTypeName  the name of the primitive type, as it appears when declaring a variable of that type (e.g. "int").
+	 * @param  primitiveTypeIdentifier will be used for composition. Could be the same as the name (no two primitive types have the same name).
+	 * @return      the Ruby String that creates the corresponding PrimitiveType Metaclass instance (e.g."int").
+	 */
+	
+	public static String createPrimitiveType (String primitiveTypeName, String primitiveTypeIdentifier){
+		return "primitiveType_"+ formatIdentifier(primitiveTypeIdentifier) +" = JavaM::PrimitiveType.new(:name =>'"+ primitiveTypeName +"', :identifier =>'"+ primitiveTypeIdentifier +"', :owner => package_used)";
+	}
+	
+	/**
+	 * Creates the instruction that declares each class that is used in the layer. Should be called for every class at the beginning of the model
+	 * so that if any field has one of them as its type it has already been declared. 
+	 * 
+	 * The problem is that we are dealing with three types of classes: imported ones, belonging to the layer and directly used ones. How differentiate them?
+	 * 
+	 * IMPORTANT: Should be called also for every class that is extended.
+	 * 
+	 * @param  className the name of the class.
+	 * @param  classIdentifier complete path. Will be used for composition.
+	 * @return      the Ruby String that creates the corresponding Class Metaclass instance (e.g."String").
+	 */
+	
+	public static String createUsedClass (String className, String classIdentifier){
+		return formatIdentifier(classIdentifier) +" = JavaM::Class.new(:name => '"+ className +"', :identifier => '"+ classIdentifier +"', :owner => package_used)";
+	}
+	
+	/**
+	 * Creates the instruction that declares each interface that is used in the layer. Should be called for every interface at the beginning of the model
+	 * so that if any field has one of them as its type it has already been declared. 
+	 * 
+	 * @param  interfaceName the name of the interface.
+	 * @param  interfaceIdentifier complete path. Will be used for composition.
+	 * @return      the Ruby String that creates the corresponding Interface Metaclass instance (e.g."String").
+	 */
+	
+	public static String createUsedInterface (String interfaceName, String interfaceIdentifier){
+		return formatIdentifier(interfaceIdentifier) +" = JavaM::Interface.new(:name => '"+ interfaceName +"', :identifier => '"+ interfaceIdentifier +"', :owner => package_used)";
+	}
+	
+//	/**
+//	 * Creates the instruction that declares each exception that is thrown in the layer. Should be called for every exception at the beginning of the model
+//	 * so that if any class, constructor or method throws it, it has already been declared. 
+//	 * 
+//	 * @param  exceptionName the name of the class.
+//	 * @param  exceptionIdentifier complete path. Will be used for composition.
+//	 * @return      the Ruby String that creates the corresponding Exception Metaclass instance (e.g."String").
+//	 */
+//	
+//	public static String createException (String exceptionName, String exceptionIdentifier){
+//		return "exception_"+ exceptionIdentifier.replace('.', '_') +" = JavaM::Exception.new(:name => '"+ exceptionName +"', :identifier => '"+ exceptionIdentifier +"')";
+//	}
+	
+    // NEW DSB
+
+	public static String createImportedInterface (String iName, String iIdentifier){
+
+	 return formatIdentifier(iIdentifier)+" = JavaM::Interface.new(:name => '"+ iName +"', :identifier => '"+ iIdentifier +"', :owner => package_used)";
+	} 
+	
+	/**
+	 * Creates the instruction for the package. This package will be unique and will act as the root once the model is composed
+	 * @param  packageName could be the SPL name or the feature name
+	 * @param  packageIdentifier Needs to be exactly the same for every feature in the SPL (e.g. 'feature')
+	 * @return      the Ruby String that creates the corresponding Package Metaclass instance (e.g."Feature").
+	 */
+	
+	public static String createCurrentPackage (String packageName, String packageIdentifier){
+		return "layer = JavaM::Layer.new(:name => '"+ packageName +"', :identifier => 'layer') \npackage_used = JavaM::Package.new(:name => 'used', :identifier => 'used', :ownerLayer => layer)\npackage_"+ formatIdentifier(packageIdentifier) +" = JavaM::Package.new(:name => '"+ packageName +"', :identifier => '"+ packageIdentifier +"', , :ownerLayer => layer)";
+	}
+	
+	/**
+	 * Creates the instruction that declares each class that belongs to the layer. Should be called for every class at the beginning of the model
+	 * so that if any field has one of them as its type it has already been declared. 
+	 * @param  className the name of the class, as it appears in the declaration.
+	 * @param  classIdentifier complete path. Will be used for composition.
+	 * @param  classVisibility public, private, protected or package.
+	 * @param  isRefinement whether it refines a previously existing class.
+	 * @param  classOwnerPackageIdentifier the identifier of the package this class belongs to (in order to create the link between both objects)
+	 * @return      the Ruby String that creates the corresponding Class Metaclass instance (e.g."Graph").
+	 */
+	
+	public static String createClass (String className, String classIdentifier, String classVisibility, boolean isRefinement, String classOwnerPackageIdentifier){
+		String visibility;
+		if(classVisibility == "")
+			visibility = "package";
+		else
+			visibility = classVisibility;
+		return formatIdentifier(classIdentifier)+" = JavaM::Class.new(:name => '"+ className +"', :identifier => '"+ classIdentifier +"', :visibility => '"+ visibility +"', :isRefinement => "+ isRefinement +", :owner => package_"+ formatIdentifier(classOwnerPackageIdentifier) +")";
+	}
+	
+	/**
+	 * Creates the instruction that relates the current class with each class it is extending. 
+	 * @param  currentClassIdentifier complete path.
+	 * @param  extendedClassIdentifier identifier of the class we are extending.
+	 * @return      the Ruby String that creates the relation between both class objects.
+	 */
+	
+	public static String createClassExtends (String currentClassIdentifier, String extendedClassIdentifier){
+		return formatIdentifier(currentClassIdentifier) +".extends << "+ formatIdentifier(extendedClassIdentifier);
+	}
+	
+	/**
+	 * Creates the instruction that relates the current class with each interface it is implementing. 
+	 * @param  currentClassIdentifier complete path. 
+	 * @param  implementedInterfaceIdentifier identifier of the interface we are implementing.
+	 * @return      the Ruby String that creates the relation between the class object and the interface that is being implemented.
+	 */
+	
+	public static String createClassImplements (String currentClassIdentifier, String implementedInterfaceIdentifier){
+		return formatIdentifier(currentClassIdentifier) +".implements << "+ formatIdentifier(implementedInterfaceIdentifier);
+	}
+	
+	/**
+	 * Creates the instruction that relates the current class with each package it imports. 
+	 * @param  currentClassIdentifier complete path. 
+	 * @param  importedPackageIdentifier identifier of the package we are importing.
+	 * @return      the Ruby String that creates the relation between the class object and the package that is being imported.
+	 */
+
+	
+	public static String createClassImportsPackage (String currentClassIdentifier, String importedPackageIdentifier){
+		return formatIdentifier(currentClassIdentifier) +".importsPackage << package_"+ formatIdentifier(importedPackageIdentifier);
+	}
+	
+	/**
+	 * Creates the instruction that relates the current class with each class it imports. 
+	 * @param  currentClassIdentifier complete path. 
+	 * @param  importedClassIdentifier identifier of the class we are importing. Complete path
+	 * @return      the Ruby String that creates the relation between the class object and the class that is being imported.
+	 */
+	
+	public static String createClassImportsClass(String currentClassIdentifier, String importedClassIdentifier){
+		return formatIdentifier(currentClassIdentifier)+".importsType << "+ formatIdentifier(importedClassIdentifier);
+	}
+	
+//	/**
+//	 * Creates the instruction that relates the current class with each exception it throws. 
+//	 * @param  currentClassIdentifier complete path. 
+//	 * @param  exceptionIdentifier identifier of the exception we are throwing. Complete path
+//	 * @return      the Ruby String that creates the relation between the class object and the exception it is throwing.
+//	 */
+//	
+//	public static String createClassThrows(String currentClassIdentifier, String exceptionIdentifier){
+//		return "class_"+ formatIdentifier(currentClassIdentifier)+".throws << class_"+ formatIdentifier(exceptionIdentifier);
+//	}
+	
+	/**
+	 * Creates the instruction that creates a class field.
+	 * @param  fieldName the name of the field, as it appears in the declaration.
+	 * @param  fieldIdentifier complete path. Will be used for composition.
+	 * @param  fieldType type of the field. WARNING: It should be the Identifier of the type (complete path), not only the name.
+	 * @param  value  the initialization. Empty string if there is none. 
+	 * @param  fieldVisibility public, private, protected or package.
+	 * @param  isStatic whether it is static.
+	 * @param  isFinal whether it is final.
+	 * @param  fieldOwnerClassIdentifier the identifier of the class this field belongs to (in order to create the link between both objects)
+	 * @return      the Ruby String that creates the corresponding Field Metaclass instance.
+	 */
+	
+	public static String createClassField (String fieldName, String fieldIdentifier, String fieldType, String value, String fieldVisibility, boolean isStatic, boolean isFinal, String fieldOwnerClassIdentifier){
+		String instruction, visibility, type;
+		int nesting = getMemberNesting(fieldType);
+		type = getMemberType (fieldType);
+		if(fieldVisibility == "")
+			visibility = "package";
+		else
+			visibility = fieldVisibility;
+		instruction = "field_"+ formatIdentifier(fieldIdentifier) +" = JavaM::Field.new(:name => '" +fieldName +"', :identifier => '"+ fieldIdentifier +"', :type => "+ type +", :visibility => '"+visibility+"', :nesting => "+nesting+", :isStatic => "+isStatic+", :isFinal => "+isFinal+", :ownerClass => "+formatIdentifier(fieldOwnerClassIdentifier);
+		if (value == "")
+			instruction = instruction + ")";
+		else
+			instruction = instruction + ", :value => '"+value+"')";
+		return instruction;
+	}
+	
+	/**
+	 * Creates the instruction that creates a constructor.
+	 * @param  constructorName the name of the field, as it appears in the declaration.
+	 * @param  constructorIdentifier complete path. Will be used for composition.
+	 * @param  constructorType type of the method. WARNING: It should be the Identifier of the type (complete path), not only the name.
+	 * @param  constructorBody  the body, as it appears in the code (' should be changed for \') 
+	 * @param  constructorVisibility public, private, protected or package.
+	 * @param  isRefinement whether it refines another constructor or not.
+	 * @param  constructorOwnerClassIdentifier the identifier of the class this constructor belongs to (in order to create the link between both objects)
+	 * @return      the Ruby String that creates the corresponding Constructor Metaclass instance.
+	 */
+	
+	public static String createClassConstructor (String constructorName, String constructorIdentifier, String constructorType, String constructorBody, String constructorVisibility, boolean isRefinement){
+		String visibility, type;
+		int nesting = 0;
+		type = getMemberType (constructorType);
+		if(constructorVisibility == "")
+			visibility = "package";
+		else
+			visibility = constructorVisibility;
+		return "constructor_"+ formatIdentifier(constructorIdentifier) +" = JavaM::Constructor.new(:name => '"+ constructorName +"', :identifier => '"+ constructorIdentifier +"', :type => "+ type +", :nesting => "+nesting+", :visibility => '"+ visibility +"', :isRefinement => '"+isRefinement+"', :body => \""+ constructorBody +"\", :ownerClass => "+ type +")";
+	}
+	
+	/**
+	 * Creates the instruction that relates the current constructor with each exception it throws. 
+	 * @param  currentConstructorIdentifier complete path. 
+	 * @param  exceptionIdentifier identifier of the exception we are throwing. Complete path
+	 * @return      the Ruby String that creates the relation between the constructor object and the exception it is throwing.
+	 */
+	
+	public static String createConstructorThrows(String currentConstructorIdentifier, String exceptionIdentifier){
+		return "constructor_"+ formatIdentifier(currentConstructorIdentifier)+".throws << "+ formatIdentifier(exceptionIdentifier);
+	}
+	
+	/**
+	 * Creates the instruction that creates a class Method.
+	 * @param  methodName the name of the method, as it appears in the declaration.
+	 * @param  methodIdentifier complete path. Will be used for composition.
+	 * @param  methodType type of the method. WARNING: It should be the Identifier of the type (complete path), not only the name.
+	 * @param  methodBody  the body, as it appears in the code (' should be changed for \') 
+	 * @param  methodVisibility public, private, protected or package.
+	 * @param  methodOwnerClassIdentifier the identifier of the class this method belongs to (in order to create the link between both objects)
+	 * @return      the Ruby String that creates the corresponding Method Metaclass instance.
+	 */
+	public static String createClassMethod (String methodName, String methodIdentifier, String methodType, String methodBody, String methodVisibility, String methodOwnerClassIdentifier){
+		String visibility, type;
+		int nesting = getMemberNesting(methodType);
+		type = getMemberType (methodType);
+		if(methodVisibility == "")
+			visibility = "package";
+		else
+			visibility = methodVisibility;
+		return "method_"+ formatIdentifier(methodIdentifier) +" = JavaM::Method.new(:name => '" +methodName +"', :identifier => '"+ methodIdentifier +"', :type => "+ type +", :nesting => "+ nesting +", :visibility => '"+visibility+"', :body => \""+ methodBody +"\", :ownerClass => "+formatIdentifier(methodOwnerClassIdentifier)+")";
+	}
+	
+	/**
+	 * Creates the instruction that relates the current method with each exception it throws. 
+	 * @param  currentMethodIdentifier complete path. 
+	 * @param  exceptionIdentifier identifier of the exception we are throwing. Complete path
+	 * @return      the Ruby String that creates the relation between the method object and the exception it is throwing.
+	 */
+	
+	public static String createMethodThrows(String currentMethodIdentifier, String exceptionIdentifier){
+		return "method_"+ formatIdentifier(currentMethodIdentifier)+".throws << "+ formatIdentifier(exceptionIdentifier);
+	}
+	
+	/**
+	 * Creates the instruction that declares each interface that belongs to the layer. Should be called for every interface at the beginning of the model
+	 * so that if any field has one of them as its type it has already been declared. 
+	 * @param  interfaceName the name of the interface, as it appears in the declaration.
+	 * @param  interfaceIdentifier complete path. Will be used for composition.
+	 * @param  interfaceVisibility public, private, protected or package.
+	 * @param  isRefinement whether it refines a previously existing interface.
+	 * @param  interfaceOwnerPackageIdentifier the identifier of the package this interface belongs to (in order to create the link between both objects)
+	 * @return      the Ruby String that creates the corresponding Interface Metaclass instance.
+	 */
+	
+	public static String createInterface (String interfaceName, String interfaceIdentifier, String interfaceVisibility, boolean isRefinement, String interfaceOwnerPackageIdentifier){
+		String visibility;
+		if(interfaceVisibility == "")
+			visibility = "package";
+		else
+			visibility = interfaceVisibility;
+		return formatIdentifier(interfaceIdentifier) +" = JavaM::Interface.new(:name => '"+ interfaceName +"', :identifier => '"+ interfaceIdentifier +"', :visibility => '"+visibility+"', :isRefinement => "+ isRefinement +", :owner => package_"+ formatIdentifier(interfaceOwnerPackageIdentifier)+")";
+	}
+	
+	/**
+	 * Creates the instruction that relates the current interface with each interface it is extending. 
+	 * @param  currentInterfaceIdentifier complete path. Must have been declared first
+	 * @param  extendedInterfaceIdentifier identifier of the class we are extending. Must have been declared first.
+	 * @return      the Ruby String that creates the relation between both interface objects.
+	 */
+	
+	public static String createInterfaceExtends (String currentInterfaceIdentifier, String extendedInterfaceIdentifier){
+		return formatIdentifier(currentInterfaceIdentifier) +".extends << "+ formatIdentifier(extendedInterfaceIdentifier);
+	}
+	
+	/**
+	 * Creates the instruction that relates the current interface with each package it imports. 
+	 * @param  currentInterfaceIdentifier complete path. 
+	 * @param  importedPackageIdentifier identifier of the package we are importing.
+	 * @return      the Ruby String that creates the relation between the class object and the package that is being imported.
+	 */
+
+	
+	public static String createInterfaceImportsPackage (String currentInterfaceIdentifier, String importedPackageIdentifier){
+		return formatIdentifier(currentInterfaceIdentifier) +".importsPackage << package_"+ formatIdentifier(importedPackageIdentifier);
+	}
+	
+	/**
+	 * Creates the instruction that relates the current interface with each class it imports. 
+	 * @param  currentInterfaceIdentifier complete path. 
+	 * @param  importedClassIdentifier identifier of the class we are importing. Complete path
+	 * @return      the Ruby String that creates the relation between the interface object and the class that is being imported.
+	 */
+	
+	public static String createInterfaceImportsClass(String currentInterfaceIdentifier, String importedClassIdentifier){
+		return formatIdentifier(currentInterfaceIdentifier)+".importsType << "+ formatIdentifier(importedClassIdentifier);
+	}
+	
+	/**
+	 * Creates the instruction that creates an interface field.
+	 * @param  fieldName the name of the field, as it appears in the declaration.
+	 * @param  fieldIdentifier complete path. Will be used for composition.
+	 * @param  fieldType type of the field. WARNING: It should be the Identifier of the type (complete path), not only the name.
+	 * @param  value  the initialization. 
+	 * @param  fieldVisibility public, private, protected or package.
+	 * @param  isStatic whether it is static.
+	 * @param  isFinal whether it is final.
+	 * @param  fieldOwnerInterfaceIdentifier the identifier of the class this field belongs to (in order to create the link between both objects)
+	 * @return      the Ruby String that creates the corresponding Field Metaclass instance.
+	 */
+	
+	public static String createInterfaceField (String fieldName, String fieldIdentifier, String fieldType, String value, String fieldVisibility, boolean isStatic, boolean isFinal, String fieldOwnerInterfaceIdentifier){
+		String visibility, type;
+		int nesting = getMemberNesting(fieldType);
+		type = getMemberType (fieldType);
+		if(fieldVisibility == "")
+			visibility = "package";
+		else
+			visibility = fieldVisibility;
+		return "field_"+ formatIdentifier(fieldIdentifier) +" = JavaM::Field.new(:name => '" +fieldName +"', :identifier => '"+ fieldIdentifier +"', :type => "+ type +", :nesting => "+ nesting +", :visibility => '"+visibility+"', :isStatic => "+isStatic+", :isFinal => "+isFinal+", :ownerInterface => "+formatIdentifier(fieldOwnerInterfaceIdentifier)+ ")";
+	}
+	
+	/**
+	 * Creates the instruction that creates an interface method.
+	 * @param  methodName the name of the method, as it appears in the declaration.
+	 * @param  methodIdentifier complete path. Will be used for composition.
+	 * @param  methodType type of the method. WARNING: It should be the Identifier of the type (complete path), not only the name.
+	 * @param  methodVisibility public, private, protected or package.
+	 * @param  methodOwnerInterfaceIdentifier the identifier of the interface this method belongs to (in order to create the link between both objects)
+	 * @return      the Ruby String that creates the corresponding Method Metaclass instance.
+	 */
+	
+	public static String createInterfaceMethod (String methodName, String methodIdentifier, String methodType, String methodVisibility, String methodOwnerInterfaceIdentifier){
+		String visibility, type;
+		int nesting = getMemberNesting(methodType);
+		type = getMemberType (methodType);
+		if(methodVisibility == "")
+			visibility = "package";
+		else
+			visibility = methodVisibility;
+		return "method_"+ formatIdentifier(methodIdentifier) +" = JavaM::Method.new(:name => '" +methodName +"', :identifier => '"+ methodIdentifier +"', :type => "+ type +", :nesting => "+nesting+", :visibility => '"+visibility+"', :ownerInterface => "+formatIdentifier(methodOwnerInterfaceIdentifier)+")";
+	}
+	
+	/**
+	 * Creates the instruction that creates an method parameter.
+	 * @param  parameterName the name of the parameter, as it appears in the declaration.
+	 * @param  parameterIdentifier complete path. Will be used for composition.
+	 * @param  parameterType type of the parameter. WARNING: It should be the Identifier of the type (complete path), not only the name.
+	 * @param  parameterOwnerMethodIdentifier the identifier of the method this parameter belongs to (in order to create the link between both objects)
+	 * @return      the Ruby String that creates the corresponding Parameter Metaclass instance.
+	 */
+
+	public static String createMethodParameter (String parameterName, String parameterIdentifier, String parameterType, String parameterOwnerMethodIdentifier){
+		String type;
+		int nesting = getMemberNesting(parameterType);
+		type = getMemberType (parameterType);
+		return "parameter_" + formatIdentifier(parameterIdentifier) +" = JavaM::Parameter.new(:name => '"+ parameterName +"', :identifier => '"+ parameterIdentifier +"', :type => "+ type + ", :nesting => "+nesting+", :ownerMethod => method_"+ formatIdentifier(parameterOwnerMethodIdentifier) +")";
+	}
+	
+	/**
+	 * Creates the instruction that creates an constructor parameter.
+	 * @param  parameterName the name of the parameter, as it appears in the declaration.
+	 * @param  parameterIdentifier complete path. Will be used for composition.
+	 * @param  parameterType type of the parameter. WARNING: It should be the Identifier of the type (complete path), not only the name.
+	 * @param  parameterOwnerConstructorIdentifier the identifier of the constructor this parameter belongs to (in order to create the link between both objects)
+	 * @return      the Ruby String that creates the corresponding Parameter Metaclass instance.
+	 */
+	
+	public static String createConstructorParameter (String parameterName, String parameterIdentifier, String parameterType, String parameterOwnerConstructorIdentifier){
+		String type;
+		int nesting = getMemberNesting(parameterType);
+		type = getMemberType (parameterType);
+		return "parameter_" + formatIdentifier(parameterIdentifier) +" = JavaM::Parameter.new(:name => '"+ parameterName +"', :identifier => '"+ parameterIdentifier +"', :type => "+ type + ", :nesting => "+nesting+", :ownerConstructor => constructor_"+ formatIdentifier(parameterOwnerConstructorIdentifier) +")";
+	}
+	
+	private static boolean isPrimitive (String type){
+		return type.equals("byte") || type.equals("short") || type.equals("int") || type.equals("long") || type.equals("float") || type.equals("double") || type.equals("boolean") || type.equals("char") || type.equals("void");
+	}
+	
+	private static String formatIdentifier (String identifier){
+		return identifier.replace('.', '_').replace('(', '1').replace(')', '2').replace(',', '_').replace('[', '3').replace(']', '4');
+	}
+	
+	private static String getMemberType (String typeIdentifier){
+		int end = typeIdentifier.length();
+		String memberType;
+		if (typeIdentifier.contains("["))
+			end = typeIdentifier.indexOf('[');
+		memberType = formatIdentifier(typeIdentifier.substring(0,end));
+		if(isPrimitive(memberType))
+			memberType = "primitiveType_"+memberType;
+		return memberType;
+	}
+	
+	private static int getMemberNesting (String typeIdentifier){
+		int nesting = 0;
+		for(int i=0;i<typeIdentifier.length()-1;i++){
+			if(typeIdentifier.charAt(i) == '[')
+				nesting++;
+		}
+		return nesting;
+	}
+	
+
+
+	/**
+	 * Main class
+	 */
+	public static void main(String[] args) {
+		System.out.println(RubyInstCreator.createImportedPackage("java.util", "java.util"));
+		System.out.println(RubyInstCreator.createImportedClass("LinkedList", "java.util.LinkedList"));
+		System.out.println(RubyInstCreator.createPrimitiveType("int", "int"));
+		System.out.println(RubyInstCreator.createUsedClass("String", "String"));
+		System.out.println(RubyInstCreator.createUsedInterface("Serializable", "Serializable"));
+		System.out.println(RubyInstCreator.createCurrentPackage("GPL", "GPL"));
+		System.out.println(RubyInstCreator.createClass("Graph", "GPL.Graph", "public", false, "GPL"));
+		System.out.println(RubyInstCreator.createClassExtends("GPL.Edge", "GPL.Neighbor"));
+		System.out.println(RubyInstCreator.createClassImplements("SerializableClass", "Serializable"));
+		//System.out.println(RubyInstCreator.createClassThrows("GPL.Graph", "Exception"));
+		System.out.println(RubyInstCreator.createClassImportsPackage("GPL.Graph", "java.util"));
+		System.out.println(RubyInstCreator.createClassField("vertices","GPL.Graph.vertices", "java.util.LinkedList[][]", "", "public", false, false, "GPL.Graph"));
+		System.out.println(RubyInstCreator.createClassField("isDirected","GPL.Graph.isDirected", "boolean", "true", "public", true, true, "GPL.Graph"));
+		System.out.println(RubyInstCreator.createClassField("arrayTest","GPL.Graph.arraytest", "int[]", "true", "public", true, true, "GPL.Graph"));
+		System.out.println(RubyInstCreator.createClassConstructor("Graph","GPL.Graph.Graph", "GPL.Graph", " vertices = new LinkedList(); edges = new LinkedList();", "public", false));
+		System.out.println(RubyInstCreator.createConstructorThrows("GPL.Graph.Graph", "Exception"));
+		System.out.println(RubyInstCreator.createClassMethod("addEdge", "GPL.Graph.addEdge(Edge)", "void", "Vertex start = the_edge.start; Vertex end = the_edge.end; edges.add( the_edge ); start.addNeighbor( new  Neighbor( end,the_edge ) );", "public", "GPL.Graph"));
+		System.out.println(RubyInstCreator.createClassMethod("main", "feature_Main_main(String[])", "void", "", "public", "GPL.Graph"));
+		System.out.println(RubyInstCreator.createMethodThrows("GPL.Graph.addEdge", "Exception"));
+		System.out.println(RubyInstCreator.createClassMethod("findsVertex", "GPL.Graph.findsVertex(String)", "GPL.Vertex[]", "int i=0; Vertex theVertex; if ( theName==null ) return null; for( i=0; i<vertices.size(); i++ ) { theVertex = ( Vertex )vertices.get( i ); if ( theName.equals( theVertex.name ) ) return theVertex;  } return null;", "public", "GPL.Graph"));
+		System.out.println(RubyInstCreator.createInterface("Interface", "GPL.Interface", "public", false, "GPL"));
+		System.out.println(RubyInstCreator.createInterfaceExtends("GPL.Interface", "GPL.ExtendedInterface"));
+		System.out.println(RubyInstCreator.createInterfaceField("isDirected","GPL.Interface.isDirected", "boolean", "true", "public", true, true, "GPL.Interface"));
+		System.out.println(RubyInstCreator.createInterfaceMethod("addEdge", "GPL.Interface.addEdge(Edge, Edge)", "int[][]", "public", "GPL.Interface"));
+		System.out.println(RubyInstCreator.createMethodParameter("theName","GPL.Graph.findsVertex.theName", "String", "GPL.Graph.findsVertex"));
+		System.out.println(RubyInstCreator.createConstructorParameter("v","GPL.Neighbor.Neighbor.v", "GPL.Vertex", "GPL.Neighbor.Neighbor"));
+	}
+
+}

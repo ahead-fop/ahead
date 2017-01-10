@@ -1,0 +1,18 @@
+#!/bin/bash
+
+echo -n "translating $1 ... "
+
+(echo ; cat $1.correct)| sed -f updates | tr -s '\n\r' '\n' > correct
+java jak2java.Main -s $1.jak > $1.java 2>&1
+cat $1.java | sed -f updates | tr -s '\n\r' '\n' > current ; \
+rm $1.java  \
+|| exit 1
+
+if diff -b -B correct current ; then
+#    rm -f -r correct current || :
+    echo succeeded
+else
+#    rm -f -r correct current || :
+    echo failed
+    exit 1
+fi

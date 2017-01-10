@@ -1,0 +1,5 @@
+#!/bin/sh
+[ -z "${BASH}" ] && exec bash "$0" "$@"
+
+echo $1
+diff -w GPL/$1.java gpl-correct/$1.java 

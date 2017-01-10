@@ -1,0 +1,122 @@
+## StateMachine.vm
+## JEDI Project
+## HTML Template for the Class/Interface
+## Author: Roberto E. Lopez-Herrejon
+## Last update: November 10, 2002
+
+<HTML> 
+<HEAD>
+</HEAD> 
+<TITLE> State Machine $state.name() </TITLE> 
+
+<BODY BGCOLOR="white"> 
+<H2> 
+   <BR> $state.name() 
+</H2>
+
+## ## State relationships   
+ <DL> 
+ <DT> $state.modifiers() 
+   #if ($isExtendedFlag == "true")
+     extends	
+   #end 
+   state machine 
+   <B> $state.name() </B> 
+  </DT>
+ 
+## @pending update for the new grammar
+## #if ($state.extendsName() !="")
+## <DT> extends $state.extendsName() </DT>
+##  #end
+
+## @pending update for the new grammar
+## #if ($isClassExtended == "true" )
+## <DT> extends class $state.extendsName() </DT>
+## #end
+
+## ## if there are interfaces implemented by this class
+#if ($interfaces == "true")
+ <DT> implements 
+  #foreach($interface in $listInterfaces)
+   $interface.name() &nbsp;  
+ #end
+ </DT>
+ #end
+ </DL>
+
+  
+## Writes the description of the state diagrams
+
+## Header comment
+  <P> $generator.descriptionComment($state.inlineTags()) </P> 
+  <P>
+  <DL>
+
+   ## For use with general templates	
+   #set($doc = $method)
+
+   ## Parses deprecated tags
+   #parse("templates/HTML/DeprecatedTags.vm")
+	
+   ## Parses param tags
+   #parse("templates/HTML/ParamTags.vm")
+
+   ## Parses throws tags
+   #parse("templates/HTML/ThrowsTags.vm")
+
+   ## Parsers author tags
+   #parse("templates/HTML/AuthorTags.vm")
+
+   ## Parsers version tags
+   #parse("templates/HTML/VersionTags.vm")
+
+   ## Parses since tags
+   #parse("templates/HTML/SinceTags.vm")
+
+   ## Parses see tags
+   #parse("templates/HTML/SeeTags.vm")
+
+   ## Parses return tags
+   #parse("templates/HTML/ReturnTags.vm")
+
+  </DL>
+ </P>
+
+<HR>  
+
+## Writes out the Root Clause
+#parse ("templates/HTML/RootClauseSm.vm")
+
+## Writes out the otherwise clause
+#parse("templates/HTML/OtherClauseSm.vm")
+
+## Writes out the states clause states
+#parse("templates/HTML/StatesClauseSm.vm")
+
+## Writes out the exit state clauses
+#parse("templates/HTML/ExitClauseSm.vm")
+
+## Writes out the enter state clauses
+#parse("templates/HTML/EnterStateClauseSm.vm")
+
+## Writes out the edges state clause
+#parse("templates/HTML/EdgeStateClauseSm.vm")
+ 
+## Writes out the other state clauses
+#parse("templates/HTML/OtherStateClauseSm.vm")
+  
+## These are the AST_Field information
+
+#parse("templates/HTML/InnerClassSummarySM.vm")
+#parse("templates/HTML/MethodDetailsSm.vm")
+#parse("templates/HTML/ConstructorDetailsSm.vm")
+#parse("templates/HTML/FieldDetailsSm.vm")
+
+## @pending update for new grammar
+## ## Extensions
+## #foreach($extension in $extensionsList)
+##  #parse($extension)  
+## #end
+
+</BODY> 
+</HTML> 

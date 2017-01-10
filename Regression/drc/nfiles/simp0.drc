@@ -1,0 +1,8 @@
+// propagates requires outside (as is),
+// propagates requires inside (as is)
+// propagates requires inside (as is)
+
+layer simp0;
+
+inside Int a;
+inside Int b;

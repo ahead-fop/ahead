@@ -1,0 +1,85 @@
+layer MissionWrffeL;
+
+import 
+    Jakarta.util.Util;
+import 
+    java.io.*;
+import 
+    log.Log;
+
+
+    public refines State_machine MissionImpl
+    {
+        States wrffeInitiated, wrffeAssigned, wrffeElevated, wrffeAccepted;
+ 
+        // Take this branch on WR_FFE mission.
+        Transition initiatedWrffe : initiated -> wrffeInitiated
+	    condition getType() == MissionType.wrffe
+            //condition getType().equals("WR_FFE")
+            do {}
+
+        // Immediately Proceed with mission specific transitions.
+        Enter wrffeInitiated { event(null); }
+
+        // Select the best available weapon for this mission.
+        Exit wrffeInitiated 
+        { 
+            getOpfac().ponder(5F);
+            selectBestWeapon(); 
+        }
+
+        // If weapon found then assign the mission to it.
+        Transition wrffeInitiated1 : wrffeInitiated -> wrffeAssigned
+            condition (weaponSelected())
+            do { assignWeapon(); }
+ 
+        // If no weapon found but superior might do then elevate.
+        Transition wrffeInitiated2 : wrffeInitiated -> wrffeElevated
+            condition (!weaponSelected() && canElevate())
+            do { elevate(); }
+ 
+        // If no available weapon then deny mission and stop.
+        Transition wrffeInitiated3 : wrffeInitiated -> stop
+            condition (!weaponSelected() && !canElevate())
+            do { sendDeny("No capable assets."); }
+ 
+        // If weapon denies mission then record the fact and try again.
+        Transition wrffeAssigned1 : wrffeAssigned -> wrffeInitiated
+            condition (message instanceof DenyMessage)
+            do { weaponDenied(); }
+ 
+        // Relay accept and Proceed with mission.
+        Transition wrffeAssigned2 : wrffeAssigned -> wrffeAccepted
+            condition (message instanceof AcceptMessage)
+            do
+            {
+                weaponAccepted(( AcceptMessage)message);
+                sendAccept();
+            }
+ 
+        // Relay deny and stop.
+        Transition wrffeElevated1 : wrffeElevated -> stop
+            condition wrffeInitiated1Test(message)
+            do
+            {
+                sendDeny((( DenyMessage)message).getReason());
+            }
+ 
+        // Relay accept and Proceed with mission.
+        Transition wrffeElevated2 : wrffeElevated -> wrffeAccepted
+            condition (message instanceof AcceptMessage)
+            do
+            {
+                weaponAccepted(( AcceptMessage)message);
+                sendAccept();
+            }
+
+        // Immediately Proceed with weapon specific transitions.
+        Enter wrffeAccepted { event(null); }
+
+        // added
+        public boolean wrffeInitiated1Test(Event message) {
+            return (message instanceof DenyMessage);
+        }
+
+    }

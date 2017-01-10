@@ -1,0 +1,190 @@
+layer core;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+public class predicate {
+    String layerName;
+    TreeMap t;
+    boolean outside;
+
+    public predicate() {
+        t = new TreeMap();
+        outside = false;
+    }
+
+    public  predicate setLayer( String name ) {
+        layerName = name;
+        return this;
+    }
+   
+    public Collection values() {
+        return t.values();
+    }
+   
+    public Iterator iterator() {
+        return t.values().iterator();
+    }
+ 
+    public void checkOutside( boolean outside, String msg ) {
+
+        this.outside = outside;
+        Iterator i = iterator();
+        while ( i.hasNext() ) {
+
+            // Step 1: access the $TEqn.predicate primitive
+
+            common c = ( common ) i.next();
+            Element e =  symtab.lookup( c.property );
+            if ( !e.outside == outside ) {
+                if ( outside )
+                    AstNode.error( msg + " references " 
+                                                                                                                                       +  common.inside + " attribute " +
+                             c.property );
+                else
+                    AstNode.error( msg + " references " 
+                                                                                                                                       +  common.outside + " attribute " +
+                             c.property );
+            }
+        }
+    }
+ 
+    public void initCheck( Element e ) {
+
+        Iterator i = iterator();
+        while ( i.hasNext() ) {
+
+            // Step 1: access the $TEqn.predicate primitive
+
+            common c = ( common ) i.next();
+
+            // Step 2: Make sure that the $TEqn.predicate references the given 
+            //         attribute and that the $TEqn.predicate itself is of the 
+            //         right type.
+
+            if ( !c.property.equals( e.name ) )
+                AstNode.error( "initialization predicate for attribute " + e.name
+                          + " references attribute " + c.property );
+            if ( !c.propertyType.equals( e.typeName ) )
+                AstNode.error( "initialization predicate for attribute " + e.name
+                          + " is not of the correct type" );
+        }
+    }
+
+    public  predicate and( common c ) {
+        c.lastSetBy = layerName;
+        common k = ( common ) t.get( c.property );
+        if ( k == null )
+            t.put( c.property, c );
+        else
+            k.and( c );
+        return this;
+    }
+   
+    public  common find( common c ) {
+        return find( c.property );
+    }
+   
+    public  common find( String name ) {
+        return ( common ) t.get( name );
+    }
+   
+    public  predicate and( predicate p ) {
+        Iterator i = p.iterator();
+        while ( i.hasNext() )
+            and( ( common ) i.next() );
+        return this;
+    }
+   
+    // form the conjunction of each term in p, provided
+    // that there is no corresponding term in condition
+   
+    public  predicate and( predicate p,  predicate cond ) {
+        Iterator i = p.iterator();
+        while ( i.hasNext() ) {
+            common c = ( common ) i.next();
+            common k = cond.find( c );
+            if ( k == null )
+                and( c );
+        }
+        return this;
+    }
+   
+    public boolean implies( predicate p ) {
+        boolean result = true;
+        Iterator i = p.iterator();
+        while ( i.hasNext() ) {
+            common c = ( common ) i.next();
+            common k = find( c );
+            if ( k == null )
+                continue;
+            result = k.implies( c ) && result;
+        }
+        return result;
+    }
+   
+    public  predicate assign( predicate p ) {
+        Iterator i = p.iterator();
+        while ( i.hasNext() ) {
+            common c = ( common ) i.next();
+            t.put( c.property, c ); // possibly replace
+        }
+        return this;
+    }
+   
+    public boolean isNonEmpty() {
+        Iterator i = iterator();
+        return i.hasNext();
+    }
+   
+    public String toString() {
+        Iterator i = iterator();
+        String and = "";
+        String result = "";
+        while ( i.hasNext() ) {
+            result += and + ( ( common ) i.next() );
+            and = " and ";
+        }
+        return result;
+    }
+
+    public void typecheck() {
+
+        // Step 1: foreach conjunct, lookup the identifier
+
+        Iterator i = iterator();
+        while ( i.hasNext() ) {
+            common c = ( common ) i.next();
+            Element e =  symtab.lookup( c.property );
+
+            // Step 2: if element is absent, error
+
+            if ( e == null ) {
+                AstNode.error( "attribute " + c.property + 
+                           " referenced but not declared in layer " + 
+                            AST_Program.layr.name );
+
+                // enter a dummy into symbol table
+
+                Element d = new  Element( true, true, "ERROR", c.property,
+                              new  predicate(), null, false );
+                symtab.add( c.property, d );
+                continue;
+            }
+
+            // Step 3: element is present -- make sure that it is
+            //         of the declared type
+
+            if ( !e.typeName.equals( c.propertyType ) ) {
+                AstNode.error( "attribute " + c.property + 
+                           " referenced as " + c.propertyType + 
+                           " but declared as " + e.typeName + 
+                           " in layer " + 
+                            AST_Program.layr.name );
+                continue;
+            }
+        }
+    }
+}

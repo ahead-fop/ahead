@@ -1,0 +1,25 @@
+layer M2D2Java;
+
+refines class program {
+
+   public void extract( context c ) {
+
+      // Step 1: process package, imports, and class decls
+      if (arg[0].arg[0] != null)
+         arg[0].extract(c);
+      else 
+         PackageDeclaration.defaultLayer(c);
+      c.Header.commentLine(c.fileName);
+      arg[1].extract(c);
+      arg[2].extract(c);
+
+      // Step 2: at this point, c.getClass() returns the name of
+      // the class or interface that was processed, and
+      // c.isClass indicates if it was a class or interface
+      // this information is needed to connect import declarations
+      // to class declarations
+
+      arg[1].registerImportOwnership(c);
+   }
+}   
+

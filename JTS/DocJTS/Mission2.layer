@@ -1,0 +1,230 @@
+/** Mission 2 state diagram layer.
+  * @since October 15, 2001
+  * @version 1.0
+ */
+public layer MissionWrffeArtyL( F lower )
+realm F
+extends lower
+imports
+    Jakarta.util.Util,
+    java.io.*,
+    F.Libraries.log.Log
+{
+    /** This is the main state diagram of this layer.
+     * @author I dont know
+     * @version 1.03 most likely
+    */
+    public static state_diagram MissionImpl 
+        refines lower.MissionImpl extends OtherMission
+    {
+
+        event_delivery receive_message(M m);
+
+        no_transition 
+        { 
+          error(-1,m); 
+          class myclass 
+          {
+            int theField;
+            public void Nothing () { }
+          }
+        }
+
+        otherwise_default 
+        { 
+           ignore_message(current_state, m); 
+           interface myinterface
+           {
+              int value;
+           }
+        }
+
+        states wrffeArtyAccepted, wrffeArtyEnding;
+
+        // example of exit state
+        Exit out1 
+        {
+           class out1Class { int fieldOut; }
+           interface out1Interface 
+           {
+              public void out1InterfaceMethod();
+           }  
+        }
+
+       // example of enter state
+        Enter entry1 
+        {
+           class entry1Class { int fieldEntry; }
+           interface entry1Interface 
+           {
+              public void entry1InterfaceMethod();
+           }  
+        }
+
+        otherwise other1
+        {
+           class otherClass { double fieldOther; }
+           interface otherInterface
+           {
+               public void other1InterfaceMethod();
+           }
+        }  
+        
+        /** Proceed with this branch if a gun accepted the mission.
+         *  @version 1.3
+         *  @since a long time ago
+         */
+        edge wrffeAcceptedArty : wrffeAccepted -> wrffeArtyAccepted
+            conditions (getWeaponType().equals("DS_FA_PLT")
+                || getWeaponType().equals("GS_FA_PLT")
+                || getWeaponType().equals("R_FA_PLT"))
+            do {}
+
+        /** Relay EOM to gun and wait for MFR.
+         */
+        edge wrffeArtyAccepted1 : wrffeArtyAccepted -> wrffeArtyEnding
+            conditions (message instanceof $TEqn.EomMessage)
+            do { sendUp(($TEqn.Message)message.clone()); }
+        
+        /** Relay Shot and RoundsComplete to observer.
+         */
+        edge wrffeArtyAccepted2 : wrffeArtyAccepted -> wrffeArtyAccepted
+            conditions (message instanceof $TEqn.ShotMessage)
+                || (message instanceof $TEqn.RoundsCompleteMessage)
+            do { sendDown(($TEqn.Message)message.clone()); }
+        
+        /** Relay MFR to BN_FSE and stop.
+         */
+        edge wrffeArtyEnding1 : wrffeArtyEnding -> stop
+            conditions (message instanceof $TEqn.MfrMessage)
+            do { sendDown(($TEqn.Message)message.clone()); }
+
+        // in classbody
+        public void mymethod() { }
+        public class anotherclass
+        {
+           int yetanotherfield;
+            public static state_diagram MissionX
+             refines lower.BnFseMission implements thisMission
+            {
+              // Don't relay MFR to FIST.
+              refines edge wrffeArtyEnding1 : wrffeArtyEnding -> stop
+              conditions (message instanceof $TEqn.MfrMessage)
+               do { }
+            } // BnFseMission
+        } // another Class
+
+    } // MissionImpl
+
+    /** This is a comment for BnFseMission that I have no Idea. What it is
+     * for.
+     * @deprecated it is very old.
+    */
+    public static state_diagram BnFseMission
+        refines lower.BnFseMission implements thisMission
+    {
+        // Don't relay MFR to FIST.
+        refines edge wrffeArtyEnding1 : wrffeArtyEnding -> stop
+            conditions (message instanceof $TEqn.MfrMessage)
+            do { }
+    } // BnFseMission
+
+    /** This is another comment for the Iron Fist mission. 
+     * @version -1
+     * @since the beginning of time.
+     */
+    public static state_diagram FistMission 
+        refines lower.FistMission extends MissionImpossible
+          implements MissionPossible1, MissionPossible2
+    {
+        // Don't wait for MFR on EOM.
+        refines edge wrffeArtyAccepted1 : wrffeArtyAccepted -> wrffeArtyEnding
+            conditions false do {}
+        
+        // Relay EOM to gun and stop.
+        edge wrffeArtyAccepted3 : wrffeArtyAccepted -> stop
+            conditions (message instanceof $TEqn.EomMessage)
+            do { sendUp(($TEqn.Message)message.clone()); }
+    } // FistMission
+
+    /** This is the easiest mission to do.
+     */ 
+    public static state_diagram FoMission
+        refines lower.FoMission
+    {
+        // Don't wait for MFR on EOM.
+        refines edge wrffeArtyAccepted1 : wrffeArtyAccepted -> wrffeArtyEnding
+            conditions false do {}
+        
+        // Ignore shot message.
+        refines edge wrffeArtyAccepted2 : wrffeArtyAccepted -> wrffeArtyAccepted
+            conditions (message instanceof $TEqn.ShotMessage)
+            do {}
+        
+        // On RoundsComplete send EOM to gun and stop.
+        edge wrffeArtyAccepted3 : wrffeArtyAccepted -> stop
+            conditions (message instanceof $TEqn.RoundsCompleteMessage)
+            do
+	    {
+		$TEqn.EomMessage eomMessage = new $TEqn.EomMessage(getId());
+		if (initiatingUnit != null)
+		    eomMessage.setInitiatingUnitId(initiatingUnit.intValue());
+		sendUp(eomMessage);
+	    }
+    } // FoMission
+
+    /** This is the last mission of this file. And it is the most important.
+     */
+    private static state_diagram FaPltMission 
+        refines lower.FaPltMission
+    {
+        states wrffeLoading, wrffeShot, wrffeComplete;
+
+        // If mission is accepted then wait for exclusive control of the gun.
+        Enter wrffeArtyAccepted { getOpfac().missionLock(this); }
+
+        // When its this missions turn, aim and load.
+        edge wrffeArtyAccepted3 : wrffeArtyAccepted -> wrffeLoading
+            conditions (message instanceof $TEqn.LockGranted)
+            do { getOpfac().timeout(30F, new $TEqn.LoadTime(getId())); }
+
+        // When loading complete, shoot.
+        edge wrffeLoading1 : wrffeLoading -> wrffeShot
+            conditions (message instanceof $TEqn.LoadTime)
+            do 
+            { 
+                getOpfac().timeout(10F, new $TEqn.CompleteTime(getId()));
+		$TEqn.ShotMessage shotMessage = new $TEqn.ShotMessage(getId());
+		if (initiatingUnit != null)
+		    shotMessage.setInitiatingUnitId(initiatingUnit.intValue());
+                sendDown(shotMessage);
+            }
+    
+        // When done shooting notify observer.
+        edge wrffeShot1 : wrffeShot -> wrffeComplete
+            conditions (message instanceof $TEqn.CompleteTime)
+            do 
+	    {
+		$TEqn.RoundsCompleteMessage roundsCompleteMessage = new $TEqn.RoundsCompleteMessage(getId());
+		if (initiatingUnit != null)
+		    roundsCompleteMessage.setInitiatingUnitId(initiatingUnit.intValue());
+		sendDown(roundsCompleteMessage);
+	    }
+        
+        // Allow other missions to proceed.
+        Enter wrffeComplete { getOpfac().missionFree(this); }
+
+        // When EOM received, send MFR and stop.
+        edge wrffeComplete1 : wrffeComplete -> stop
+            conditions (message instanceof $TEqn.EomMessage)
+            do
+	    {
+		$TEqn.MfrMessage mfrMessage = new $TEqn.MfrMessage(getId());
+		if (initiatingUnit != null)
+		    mfrMessage.setInitiatingUnitId(initiatingUnit.intValue());
+		sendDown(mfrMessage);
+	    } 
+
+    } // FaPltMission
+}   
+

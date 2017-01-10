@@ -1,0 +1,20 @@
+layer JavaHarvest;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+
+// --
+
+public  abstract refines class AstNode {
+    public void execute() {
+        int i;
+        if ( arg == null )
+            return;
+        for ( i=0; i<arg.length; i++ )
+            if ( arg[i]!=null )
+                arg[i].execute();
+    }
+}

@@ -1,0 +1,83 @@
+layer FS;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+import java.io.*;
+
+SoUrCe RooT BasicL "C:!Java!FeatureOrientedProgramming!fsats!BasicL!FistMission.jak";
+
+/** Fire Support Team OPFAC. **/
+abstract State_machine FistMission$$BasicL extends FseMission {}
+
+SoUrCe  MissionWrffeArtyL "C:!Java!FeatureOrientedProgramming!fsats!MissionWrffeArtyL!FistMission.jak";
+
+// BnFseMission
+
+abstract State_machine FistMission$$MissionWrffeArtyL extends FistMission$$BasicL {
+    // Don't wait for MFR on EOM.
+
+    Transition_action wrffeArtyAccepted1 {
+        if ( false )
+            Proceed( message );
+    }
+
+    Transition_condition wrffeArtyAccepted1 false && Proceed( message );
+
+            /*REFINES EDGE no longer supported.  
+       Move predicate or body into method, and extend method. 
+    Refines Transition wrffeArtyAccepted1 : wrffeArtyAccepted -> wrffeArtyEnding
+                condition false do {} */
+
+            // Relay EOM to gun and stop.
+    Transition wrffeArtyAccepted3 : wrffeArtyAccepted -> stop
+        condition ( message instanceof EomMessage )
+        do {
+            sendUp( ( Message )message.clone() );
+        }
+
+        // net effect of the Refines clause above is to have a false 
+        // Transition condition
+
+/* DELETE
+        public boolean wrffeArtyAccepted1Test(Event message) {
+           return false;
+        }
+*/
+}
+
+SoUrCe  MissionWrffeMlrsL "C:!Java!FeatureOrientedProgramming!fsats!MissionWrffeMlrsL!FistMission.jak";
+
+// BnFseMission
+
+public State_machine FistMission extends FistMission$$MissionWrffeArtyL {
+    // If MLRS took mission then stop immediately.
+    Enter wrffeMlrsAccepted {
+        delivery( null );
+    }
+
+    Transition_action wrffeMlrsAccepted1 {
+        if ( false )
+            Proceed( message );
+    }
+
+    Transition_condition wrffeMlrsAccepted1 true || Proceed( message );
+
+        /*REFINES EDGE no longer supported.  
+   Move predicate or body into method, and extend method.
+Refines Transition wrffeMlrsAccepted1 : wrffeMlrsAccepted -> stop
+            condition true do {} 
+
+        // added -- net effect of above refinement is to
+        // make Transition action a no-op, and condition true
+
+        public void wrffeMlrsAccepted1Action( Event message) {}
+
+        public boolean wrffeMlrsAccepted1Test( Event message) {
+           return true;
+        }
+*/
+}

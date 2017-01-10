@@ -1,0 +1,8 @@
+layer combine.right;
+
+public class B {
+    public final void print$$one$right() { System.out.println("right.B works" +
+        $pack.A.a); }
+    public void print() { print$$one$right();
+                     System.out.println("right.B works"); }
+}

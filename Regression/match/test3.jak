@@ -1,0 +1,27 @@
+
+import java.io.PrintWriter;
+import jak.Lang;
+
+public class test3 {
+    public static void main(String[] args) {
+	Lang.AST_Stmt st = stm{ if (x < 5) x++; }stm;
+	Lang.AstProperties props = new Lang.AstProperties();
+	Lang.AstCursor csr = new Lang.AstCursor();
+	Lang.AstCursor booltest = new Lang.AstCursor();
+	Lang.AST_Stmt pattern = match stm{ if ($exp(booltest)) x++; }stm;
+	PrintWriter pw = new PrintWriter(System.out);
+
+	props.setProperty("output", pw);
+	csr.First(st);
+	booltest.First(st);
+	if (pattern.prefixMatch(csr)) {
+	    pw.print("Found boolean: ");
+ 	    booltest.node.reduce2java(props);
+	    pw.print("\n");
+	}
+	else {
+	    pw.println("Didn't match");
+	}
+	pw.flush();
+    }
+}

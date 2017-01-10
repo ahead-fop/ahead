@@ -1,0 +1,18 @@
+#!/bin/bash
+
+cat $1 | sed -e "/   /d" > $1.jak
+cat $2 | sed -e "/   /d" > $2.jak
+
+echo -n "uncomposing $3 into $1 & $2 ..."
+
+if ! java unmixin.Main $3 ; then
+   rm *.jak
+   echo "failed 'java UnMixin.Main $3'"
+   exit 1
+fi
+
+bash regress-test $1 \
+&& bash regress-test $2 \
+|| exit 1
+
+echo "succeeded"

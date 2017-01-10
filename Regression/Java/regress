@@ -1,0 +1,17 @@
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+echo -e "\nJava 1.1 regression test"
+echo "****************************************"
+
+java jak2java.Main -s test1.java >output
+
+if diff -w output test1.result ; then
+	echo "Test succeeded"
+else
+	echo "Test failed"
+	exit 1
+fi
+
+echo -e "\nJava 1.1 regression test succeeded."

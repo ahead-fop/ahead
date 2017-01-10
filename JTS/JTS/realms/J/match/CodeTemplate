@@ -1,0 +1,1862 @@
+//                              -*- Mode: Java -*- 
+// CodeTemplate --- 
+// Author          : Bernie Lofaso
+// Created On      : Wed Aug 26 12:47:23 1998
+// Last Modified By: Bernie Lofaso
+// Last Modified On: Fri Jan 22 15:45:26 1999
+// Update Count    : 10
+// Status          : Under Development
+// 
+// $Locker:  $
+// $Log: CodeTemplate,v $
+// Revision 1.2  2002-02-22 18:19:43  sarvela
+// Removed carriage returns.
+//
+// Revision 1.1.1.1  1999/02/18 14:15:42  sarvela
+// Imported original v3.0beta4 sources from Webpage
+//
+// Revision 1.1.1.1  1999/02/18 16:15:41  lofaso
+// Snapshot 2-18-99
+//
+// Revision 1.2  1998/09/25 21:48:53  lofaso
+// Modified JTS such that only default constructor and constructor taking a
+// single int is required for extending grammar classes.
+//
+// Revision 1.1  1998/09/10 19:02:37  lofaso
+// Fixed bug in match.layer where clearCursors() in AstList and AstNode needed
+// to test node for != null. Created CodeTemplate from the fixed file.
+//
+// 
+
+package $(LanguageName);
+
+import java.io.PrintWriter;
+import Jakarta.symtab.Symtab;
+
+public class match extends $(ParentComponent) {
+    // gen'd from asttmpl.txt
+
+    //**************************************************
+    // AST_ExpC extension class
+    //**************************************************
+    static public class AST_ExpC extends $(ParentComponent).AST_ExpC {
+	private int stackMarker;
+
+	public void reduce2match(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2match(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2match(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+	}
+    }
+    // gen'd from asttmpl2.txt
+
+    //**************************************************
+    // AST_StmtC extension class
+    //**************************************************
+    static public class AST_StmtC extends $(ParentComponent).AST_StmtC {
+	private int stackMarker;
+
+	public void reduce2match(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0].arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+
+	    // arg[0] is an AstOptNode
+	    if (a0 == null) {
+		ps.print(" null");
+		return;
+	    }
+
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2match(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2match(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+	}
+    }
+    // gen'd from asttmpl.txt
+
+    //**************************************************
+    // AST_SwitchEntryC extension class
+    //**************************************************
+    static public class AST_SwitchEntryC extends $(ParentComponent).AST_SwitchEntryC {
+	private int stackMarker;
+
+	public void reduce2match(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2match(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2match(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+	}
+    }
+    // gen'd from asttmpl2.txt
+
+    //**************************************************
+    // AST_FieldDeclC extension class
+    //**************************************************
+    static public class AST_FieldDeclC extends $(ParentComponent).AST_FieldDeclC {
+	private int stackMarker;
+
+	public void reduce2match(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0].arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+
+	    // arg[0] is an AstOptNode
+	    if (a0 == null) {
+		ps.print(" null");
+		return;
+	    }
+
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2match(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2match(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+	}
+    }
+    // gen'd from asttmpl2.txt
+
+    //**************************************************
+    // AST_ClassC extension class
+    //**************************************************
+    static public class AST_ClassC extends $(ParentComponent).AST_ClassC {
+	private int stackMarker;
+
+	public void reduce2match(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0].arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+
+	    // arg[0] is an AstOptNode
+	    if (a0 == null) {
+		ps.print(" null");
+		return;
+	    }
+
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2match(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2match(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+	}
+    }
+    // gen'd from asttmpl.txt
+
+    //**************************************************
+    // AST_ProgramC extension class
+    //**************************************************
+    static public class AST_ProgramC extends $(ParentComponent).AST_ProgramC {
+	private int stackMarker;
+
+	public void reduce2match(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2match(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2match(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+	}
+    }
+    // gen'd from asttmpl.txt
+
+    //**************************************************
+    // AST_TypeNameC extension class
+    //**************************************************
+    static public class AST_TypeNameC extends $(ParentComponent).AST_TypeNameC {
+	private int stackMarker;
+
+	public void reduce2match(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2match(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2match(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+	}
+    }
+    // gen'd from asttmpl.txt
+
+    //**************************************************
+    // AST_QualifiedNameC extension class
+    //**************************************************
+    static public class AST_QualifiedNameC extends $(ParentComponent).AST_QualifiedNameC {
+	private int stackMarker;
+
+	public void reduce2match(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2match(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2match(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+	}
+    }
+    // gen'd from asttmpl2.txt
+
+    //**************************************************
+    // AST_ParListC extension class
+    //**************************************************
+    static public class AST_ParListC extends $(ParentComponent).AST_ParListC {
+	private int stackMarker;
+
+	public void reduce2match(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0].arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+
+	    // arg[0] is an AstOptNode
+	    if (a0 == null) {
+		ps.print(" null");
+		return;
+	    }
+
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2match(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2match(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+	}
+    }
+    // gen'd from asttmpl2.txt
+
+    //**************************************************
+    // AST_ArgListC extension class
+    //**************************************************
+    static public class AST_ArgListC extends $(ParentComponent).AST_ArgListC {
+	private int stackMarker;
+
+	public void reduce2match(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0].arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+
+	    // arg[0] is an AstOptNode
+	    if (a0 == null) {
+		ps.print(" null");
+		return;
+	    }
+
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2match(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2match(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+	}
+    }
+    // gen'd from asttmpl.txt
+
+    //**************************************************
+    // AST_TypeNameListC extension class
+    //**************************************************
+    static public class AST_TypeNameListC extends $(ParentComponent).AST_TypeNameListC {
+	private int stackMarker;
+
+	public void reduce2match(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2match(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2match(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+	}
+    }
+    // gen'd from asttmpl2.txt
+
+    //**************************************************
+    // AST_ImportsC extension class
+    //**************************************************
+    static public class AST_ImportsC extends $(ParentComponent).AST_ImportsC {
+	private int stackMarker;
+
+	public void reduce2match(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0].arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+
+	    // arg[0] is an AstOptNode
+	    if (a0 == null) {
+		ps.print(" null");
+		return;
+	    }
+
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2match(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2match(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+	}
+    }
+    // gen'd from asttmpl2.txt
+
+    //**************************************************
+    // AST_ModifiersC extension class
+    //**************************************************
+    static public class AST_ModifiersC extends $(ParentComponent).AST_ModifiersC {
+	private int stackMarker;
+
+	public void reduce2match(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0].arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+
+	    // arg[0] is an AstOptNode
+	    if (a0 == null) {
+		ps.print(" null");
+		return;
+	    }
+
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2match(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2match(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+	}
+    }
+    // gen'd from asttmpl.txt
+
+    //**************************************************
+    // AST_VarDeclC extension class
+    //**************************************************
+    static public class AST_VarDeclC extends $(ParentComponent).AST_VarDeclC {
+	private int stackMarker;
+
+	public void reduce2match(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2match(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2match(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+	}
+    }
+    // gen'd from asttmpl.txt
+
+    //**************************************************
+    // AST_VarInitC extension class
+    //**************************************************
+    static public class AST_VarInitC extends $(ParentComponent).AST_VarInitC {
+	private int stackMarker;
+
+	public void reduce2match(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2match(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2match(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+	}
+    }
+    // gen'd from asttmpl.txt
+
+    //**************************************************
+    // AST_ArrayInitC extension class
+    //**************************************************
+    static public class AST_ArrayInitC extends $(ParentComponent).AST_ArrayInitC {
+	private int stackMarker;
+
+	public void reduce2match(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2match(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2match(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+	}
+    }
+    // gen'd from asttmpl.txt
+
+    //**************************************************
+    // AST_ExpStmtC extension class
+    //**************************************************
+    static public class AST_ExpStmtC extends $(ParentComponent).AST_ExpStmtC {
+	private int stackMarker;
+
+	public void reduce2match(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2match(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2match(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+	}
+    }
+    // gen'd from asttmpl2.txt
+
+    //**************************************************
+    // AST_CatchesC extension class
+    //**************************************************
+    static public class AST_CatchesC extends $(ParentComponent).AST_CatchesC {
+	private int stackMarker;
+
+	public void reduce2match(Lang.AstProperties props) {
+	    boolean order[];
+	    int i, t, n;
+	    PrintWriter ps;
+	    Lang.Environment env;
+	    Lang.AstNode a0 = arg[0].arg[0];
+
+	    ps = (PrintWriter) props.getProperty("output");
+
+	    // arg[0] is an AstOptNode
+	    if (a0 == null) {
+		ps.print(" null");
+		return;
+	    }
+
+	    env = (Lang.Environment) props.getProperty("env");
+	    if (env != null)
+		env.setActive(true);
+
+	    ps.println(" (" + a0.className() + ")((" + a0.className() +
+		       ") new " + a0.className() + "().markStack())");
+
+	    if (a0 instanceof AstList) {
+		Lang.AstNode l;
+
+		for (l = a0.arg[0]; l != null; l = l.right)
+		    l.reduce2match(props);
+	    }
+	    else {
+		// just an AstNode
+		order = a0.printorder();
+		t = 0;
+		n = 0;
+
+		ps.print(".setParms(");
+		for (i=0; i<order.length; i++) {
+		    if (i>0)
+			ps.print(", ");
+
+		    // if order[i] is true; print token else print nonterminal
+		    if (order[i])
+			a0.tok[t++].reduce2ast(props);
+		    else
+			a0.arg[n++].reduce2match(props);
+		}
+		ps.print(")");
+	    }
+
+	    ps.println(".patch() /* " + a0.className() + " */");
+	    if (env != null)
+		env.setActive(false);
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // TypEscape extension class
+    //**************************************************
+    static public class TypEscape extends $(ParentComponent).TypEscape {
+	//**************************************************
+	// This method will output code to create an ExpEscape2 node rather
+	// than a node of this type.
+	//**************************************************
+	public void reduce2match(Lang.AstProperties props) {
+	    PrintWriter ps;
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    ps.print("new Lang.ExpEscape2(");
+	    arg[0].reduce2java(props);
+	    ps.print(", ");
+	    arg[0].reduce2ast(props);
+	    ps.println(")");
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // TlstEscape extension class
+    //**************************************************
+    static public class TlstEscape extends $(ParentComponent).TlstEscape {
+	//**************************************************
+	// This method will output code to create an ExpEscape2 node rather
+	// than a node of this type.
+	//**************************************************
+	public void reduce2match(Lang.AstProperties props) {
+	    PrintWriter ps;
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    ps.print("new Lang.ExpEscape2(");
+	    arg[0].reduce2java(props);
+	    ps.print(", ");
+	    arg[0].reduce2ast(props);
+	    ps.println(")");
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // ClsEscape extension class
+    //**************************************************
+    static public class ClsEscape extends $(ParentComponent).ClsEscape {
+	//**************************************************
+	// This method will output code to create an ExpEscape2 node rather
+	// than a node of this type.
+	//**************************************************
+	public void reduce2match(Lang.AstProperties props) {
+	    PrintWriter ps;
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    ps.print("new Lang.ExpEscape2(");
+	    arg[0].reduce2java(props);
+	    ps.print(", ");
+	    arg[0].reduce2ast(props);
+	    ps.println(")");
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // ImpEscape extension class
+    //**************************************************
+    static public class ImpEscape extends $(ParentComponent).ImpEscape {
+	//**************************************************
+	// This method will output code to create an ExpEscape2 node rather
+	// than a node of this type.
+	//**************************************************
+	public void reduce2match(Lang.AstProperties props) {
+	    PrintWriter ps;
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    ps.print("new Lang.ExpEscape2(");
+	    arg[0].reduce2java(props);
+	    ps.print(", ");
+	    arg[0].reduce2ast(props);
+	    ps.println(")");
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // IdEscape2 extension class
+    //**************************************************
+    static public class IdEscape2 extends $(ParentComponent).IdEscape2 {
+	//**************************************************
+	// This method will output code to create an ExpEscape2 node rather
+	// than a node of this type.
+	//**************************************************
+	public void reduce2match(Lang.AstProperties props) {
+	    PrintWriter ps;
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    ps.print("new Lang.ExpEscape2(");
+	    arg[0].reduce2java(props);
+	    ps.print(", ");
+	    arg[0].reduce2ast(props);
+	    ps.println(")");
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // ModEscape extension class
+    //**************************************************
+    static public class ModEscape extends $(ParentComponent).ModEscape {
+	//**************************************************
+	// This method will output code to create an ExpEscape2 node rather
+	// than a node of this type.
+	//**************************************************
+	public void reduce2match(Lang.AstProperties props) {
+	    PrintWriter ps;
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    ps.print("new Lang.ExpEscape2(");
+	    arg[0].reduce2java(props);
+	    ps.print(", ");
+	    arg[0].reduce2ast(props);
+	    ps.println(")");
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // MthEscape extension class
+    //**************************************************
+    static public class MthEscape extends $(ParentComponent).MthEscape {
+	//**************************************************
+	// This method will output code to create an ExpEscape2 node rather
+	// than a node of this type.
+	//**************************************************
+	public void reduce2match(Lang.AstProperties props) {
+	    PrintWriter ps;
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    ps.print("new Lang.ExpEscape2(");
+	    arg[0].reduce2java(props);
+	    ps.print(", ");
+	    arg[0].reduce2ast(props);
+	    ps.println(")");
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // VlstEscape extension class
+    //**************************************************
+    static public class VlstEscape extends $(ParentComponent).VlstEscape {
+	//**************************************************
+	// This method will output code to create an ExpEscape2 node rather
+	// than a node of this type.
+	//**************************************************
+	public void reduce2match(Lang.AstProperties props) {
+	    PrintWriter ps;
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    ps.print("new Lang.ExpEscape2(");
+	    arg[0].reduce2java(props);
+	    ps.print(", ");
+	    arg[0].reduce2ast(props);
+	    ps.println(")");
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // ViEscape extension class
+    //**************************************************
+    static public class ViEscape extends $(ParentComponent).ViEscape {
+	//**************************************************
+	// This method will output code to create an ExpEscape2 node rather
+	// than a node of this type.
+	//**************************************************
+	public void reduce2match(Lang.AstProperties props) {
+	    PrintWriter ps;
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    ps.print("new Lang.ExpEscape2(");
+	    arg[0].reduce2java(props);
+	    ps.print(", ");
+	    arg[0].reduce2ast(props);
+	    ps.println(")");
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // AiEscape extension class
+    //**************************************************
+    static public class AiEscape extends $(ParentComponent).AiEscape {
+	//**************************************************
+	// This method will output code to create an ExpEscape2 node rather
+	// than a node of this type.
+	//**************************************************
+	public void reduce2match(Lang.AstProperties props) {
+	    PrintWriter ps;
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    ps.print("new Lang.ExpEscape2(");
+	    arg[0].reduce2java(props);
+	    ps.print(", ");
+	    arg[0].reduce2ast(props);
+	    ps.println(")");
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // PlstEscape extension class
+    //**************************************************
+    static public class PlstEscape extends $(ParentComponent).PlstEscape {
+	//**************************************************
+	// This method will output code to create an ExpEscape2 node rather
+	// than a node of this type.
+	//**************************************************
+	public void reduce2match(Lang.AstProperties props) {
+	    PrintWriter ps;
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    ps.print("new Lang.ExpEscape2(");
+	    arg[0].reduce2java(props);
+	    ps.print(", ");
+	    arg[0].reduce2ast(props);
+	    ps.println(")");
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // StmEscape extension class
+    //**************************************************
+    static public class StmEscape extends $(ParentComponent).StmEscape {
+	//**************************************************
+	// This method will output code to create an ExpEscape2 node rather
+	// than a node of this type.
+	//**************************************************
+	public void reduce2match(Lang.AstProperties props) {
+	    PrintWriter ps;
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    ps.print("new Lang.ExpEscape2(");
+	    arg[0].reduce2java(props);
+	    ps.print(", ");
+	    arg[0].reduce2ast(props);
+	    ps.println(")");
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // StrEscape extension class
+    //**************************************************
+    static public class StrEscape extends $(ParentComponent).StrEscape {
+	//**************************************************
+	// This method will output code to create an ExpEscape2 node rather
+	// than a node of this type.
+	//**************************************************
+	public void reduce2match(Lang.AstProperties props) {
+	    PrintWriter ps;
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    ps.print("new Lang.ExpEscape2(");
+	    arg[0].reduce2java(props);
+	    ps.print(", ");
+	    arg[0].reduce2ast(props);
+	    ps.println(")");
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // EstmEscape extension class
+    //**************************************************
+    static public class EstmEscape extends $(ParentComponent).EstmEscape {
+	//**************************************************
+	// This method will output code to create an ExpEscape2 node rather
+	// than a node of this type.
+	//**************************************************
+	public void reduce2match(Lang.AstProperties props) {
+	    PrintWriter ps;
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    ps.print("new Lang.ExpEscape2(");
+	    arg[0].reduce2java(props);
+	    ps.print(", ");
+	    arg[0].reduce2ast(props);
+	    ps.println(")");
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // CatEscape extension class
+    //**************************************************
+    static public class CatEscape extends $(ParentComponent).CatEscape {
+	//**************************************************
+	// This method will output code to create an ExpEscape2 node rather
+	// than a node of this type.
+	//**************************************************
+	public void reduce2match(Lang.AstProperties props) {
+	    PrintWriter ps;
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    ps.print("new Lang.ExpEscape2(");
+	    arg[0].reduce2java(props);
+	    ps.print(", ");
+	    arg[0].reduce2ast(props);
+	    ps.println(")");
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // ExpEscape extension class
+    //**************************************************
+    static public class ExpEscape extends $(ParentComponent).ExpEscape {
+	//**************************************************
+	// This method will output code to create an ExpEscape2 node rather
+	// than a node of this type.
+	//**************************************************
+	public void reduce2match(Lang.AstProperties props) {
+	    PrintWriter ps;
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    ps.print("new Lang.ExpEscape2(");
+	    arg[0].reduce2java(props);
+	    ps.print(", ");
+	    arg[0].reduce2ast(props);
+	    ps.println(")");
+	}
+    }
+    // gen'd from esctmpl.txt
+
+    //**************************************************
+    // XlstEscape extension class
+    //**************************************************
+    static public class XlstEscape extends $(ParentComponent).XlstEscape {
+	//**************************************************
+	// This method will output code to create an ExpEscape2 node rather
+	// than a node of this type.
+	//**************************************************
+	public void reduce2match(Lang.AstProperties props) {
+	    PrintWriter ps;
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    ps.print("new Lang.ExpEscape2(");
+	    arg[0].reduce2java(props);
+	    ps.print(", ");
+	    arg[0].reduce2ast(props);
+	    ps.println(")");
+	}
+    }
+    // from asttail.txt
+
+    //**************************************************
+    // ExpEscape2 class (not an extension class)
+    //**************************************************
+    static public class ExpEscape2 extends Lang.AstNode {
+	AstCursor csr;
+	boolean order[] = { false };
+
+	public ExpEscape2(Lang.AstCursor c, Lang.AST_Exp exp) {
+	    super();
+	    csr = c;
+	    tok = new Lang.Token[0];
+	    arg = new Lang.AstNode[1];
+	    arg[0] = exp;
+	}
+
+        public Lang.AstNode _match(Lang.AstNode x) {
+            // If our parent is an AstListNode, then we want the cursor root to
+            // be the AstList node.  Now here's a twist.  If we are positioning
+            // on the first element of a list, we will position the cursor
+            // on the entire list.  (The reason is that we are not doing
+            // prefix matching).  However, if we are to position on any other
+            // element, then we'll position the cursor's root on the entire
+            // list and have it point to this particular element.
+
+            if (x.up instanceof Lang.AstListNode)
+               if (x.up.left == null)
+                  csr.First(x.up.up);
+               else
+                  csr.Position(x.up.up, x);
+            else
+                csr.First(x);
+            return(x);
+        }
+
+	public boolean SyntaxCheck() {
+	    return(true);
+	}
+
+	public boolean[] printorder() {
+	    return(order);
+	}
+
+	public void clearCursors() {
+	    csr.node = null;
+	}
+    }
+
+
+    //**************************************************
+    // MatchExpr extension class
+    //**************************************************
+    static public class MatchExpr extends $(ParentComponent).MatchExpr {
+	public void reduce2java(Lang.AstProperties props) {
+	    arg[0].reduce2match(props);
+	}
+    }
+
+    // Start of code from CodeTemplate.Kernel
+
+    //**************************************************
+    // class AstList extension
+    //**************************************************
+    static public abstract class AstList extends $(ParentComponent).AstList {
+	//**************************************************
+	// For this match to be successful, the pattern must occur at
+	// the beginning of the instance. Therefore the pattern and instance
+	// must be identical or the pattern is a prefix of the instance.
+	// As with findPattern() the 'start' cursor is updated if the match
+	// is successful.
+	//**************************************************
+	public boolean prefixMatch(Lang.AstCursor start) {
+	    Lang.AstNode patLNode;
+	    Lang.AstNode instLNode;
+	    Lang.AstNode lastNode;
+
+	    if (start.node == null)
+		return(false);
+
+	    if (start.node instanceof Lang.AstList) {
+		lastNode = _match(start.node);
+		if (lastNode == null)
+		    return(false);
+		start.Position(lastNode);
+		start.PlusPlus();
+		return(true);
+	    }
+
+	    // start node must be instance of Lang.AstNode
+	    instLNode = start.node.up;
+	    if (instLNode == null) {
+		// We have a single node not part of a list. This
+		// will match only if our pattern has a single node.
+		if (arg[0] != last)
+		    return(false);
+
+		// return the result of matching our single AstNode
+		// with the searchStart.
+		lastNode = arg[0].arg[0]._match(start.node);
+		if (lastNode == null)
+		    return(false);
+		start.Position(lastNode);
+		start.PlusPlus();
+		return(true);
+	    }
+	    if (! (instLNode instanceof Lang.AstListNode))
+		return(false);
+
+	    // We want to scan through all the AstListNodes and require
+	    // that all of them match consecutive instance elements.
+	    lastNode = null;
+	    for (patLNode=arg[0]; patLNode != null; patLNode=patLNode.right) {
+		if (instLNode == null)
+		    return(false);	// instance shorter than pattern
+		if (patLNode.arg[0] == null)
+		    continue;
+		lastNode = patLNode.arg[0]._match(instLNode.arg[0]);
+		if (lastNode == null)
+		    return(false);
+
+		// Advance to next AstListNode in instance. ('for' loop
+		// will advance in pattern.)
+		instLNode = instLNode.right;
+	    }
+
+	    // Match succeeded. Update start cursor and return.
+	    start.Position(lastNode);
+	    start.PlusPlus();
+	    return(true);
+	}
+
+
+	//**************************************************
+	// Test the supplied argument against the pattern defined by this
+	// AST for "equality".
+	//**************************************************
+	public Lang.AstNode _match(Lang.AstNode x) {
+	    Lang.AstNode l;
+	    Lang.AstNode xl;
+	    Lang.AstNode lastMatch;
+
+	    if (x == null)
+		return(null);
+
+	    xl = x.arg[0];
+	    lastMatch = null;
+	    for (l=arg[0]; l != null; l = l.right) {
+		if (xl == null)
+		    return(null);	// instance shorter than pattern
+		if (l.arg[0] == null)
+		    continue;
+		lastMatch = l.arg[0]._match(xl.arg[0]);
+		if (lastMatch == null)
+		    return(null);
+
+		xl = xl.right;
+	    }
+	    return(lastMatch);
+	}
+
+	//**************************************************
+	// Output code to produce an AST rooted at this node which is
+	// suitable for use as a matching pattern.
+	//**************************************************
+	public void reduce2match(Lang.AstProperties props) {
+	    Lang.AstNode l;
+	    PrintWriter ps;
+
+	    // Step 1: generate the AstList node
+	    ps = (PrintWriter) props.getProperty("output");
+
+	    ps.println(" (" + className() + ") new " + className() + "()");
+
+	    // Step 3: return if the list is empty
+
+	    if (arg[0] == null)
+		return;
+
+	    // Step 3: print all the same
+
+	    for (l = arg[0]; l != null; l = l.right)
+		l.reduce2match(props);
+	}
+
+
+	//**************************************************
+	// Set cursor bound to ExpEscape2 classes to null.
+	//**************************************************
+	public void clearCursors() {
+	    Lang.AstNode l;
+
+	    for (l = arg[0]; l != null; l = l.right)
+		if (l.arg[0] != null)
+		    l.arg[0].clearCursors();
+	}
+    }
+
+
+    //**************************************************
+    // class AstListNode extension
+    //**************************************************
+    static public abstract class AstListNode
+	extends $(ParentComponent).AstListNode {
+
+	public void reduce2match(Lang.AstProperties props) {
+	    PrintWriter ps;
+
+	    if (arg[0] != null) {
+		ps = (PrintWriter) props.getProperty("output");
+
+		ps.print("\n.add( (" + this.className() + ") new " +
+			 this.className() + "().setParms(");
+		if (tok != null) {
+		    Print_Only_Token_Ast(props);
+		    ps.println(",");
+		}
+		arg[0].reduce2match(props);
+		ps.println("))/* " + this.className() +" + add */");
+	    }
+	}
+    }
+
+
+    //**************************************************
+    // class AstOptNode extension
+    //**************************************************
+    static public class AstOptNode extends $(ParentComponent).AstOptNode {
+	//**************************************************
+	// Test the supplied argument against the pattern defined by this
+	// AST for "equality".
+	//**************************************************
+	public Lang.AstNode _match(Lang.AstNode x) {
+	    Lang.AstNode result;
+
+	    if (arg[0] == null) {
+		if (x.arg[0] == null)
+		    return(x);	// to indicate a match
+		return(null);	// to indicate a non-match
+	    }
+
+	    // pattern is not null.
+
+	    // Indicate a match if instance doesn't have optional part.
+	    if (x.arg[0] == null) {
+		clearCursors();
+		return(x);
+	    }
+
+	    // If both instance and pattern have optional parts, they should
+	    // be equal.
+	    result = super._match(x);
+	    if (result == null)
+		clearCursors();
+	    return(result);
+	}
+
+	//**************************************************
+	// Output code to produce an AST rooted at this node which is
+	// suitable for use as a matching pattern.
+	//**************************************************
+	public void reduce2match(Lang.AstProperties props) {
+	    PrintWriter ps;
+
+	    ps = (PrintWriter) props.getProperty("output");
+	    ps.println(" new Lang.AstOptNode(");
+	    if (arg[0] != null) {
+		ps.print(").setParms(");
+		arg[0].reduce2match(props);
+	    }
+	    ps.println(") /* AstOptNode */");
+	}
+
+
+	//**************************************************
+	// Set cursor bound to ExpEscape2 classes to null.
+	//**************************************************
+	public void clearCursors() {
+	    if (arg[0] != null)
+		arg[0].clearCursors();
+	}
+    }
+
+    // Start of code from CodeTemplate.KernelBase
+
+    //**************************************************
+    // class AstNode extension
+    //**************************************************
+    static public abstract class AstNode extends $(ParentComponent).AstNode {
+	//**************************************************
+	// Searches for embedded pattern in the instance given by
+	// 'start'. This cursor is updated to point to the node
+	// after the pattern if the search is successful. patternStart
+	// is set to the start of the pattern instance if the search
+	// is successful.
+	//**************************************************
+	public boolean findPattern(Lang.AstCursor start,
+				   Lang.AstCursor patternStart) {
+	    Lang.AstNode startNode;
+	    Lang.AstNode startThisTry;
+
+	    // Save cursor position so we can restore cursor if search
+	    // fails.
+	    startNode = start.node;
+
+	    while (start.More()) {
+		startThisTry = start.node;
+		if (prefixMatch(start)) {
+		    if (patternStart != null)
+			patternStart.Position(start.Root(), startThisTry);
+		    return(true);
+		}
+
+		start.PlusPlus();
+	    }
+
+	    // restore start cursor and position patternStart on null.
+	    start.Position(startNode);
+	    if (patternStart != null)
+		patternStart.node = null;
+	    return(false);
+	}
+
+	//**************************************************
+	// For this match to be successful, the pattern must occur at
+	// the beginning of the instance. Therefore the pattern and instance
+	// must be identical or the pattern is a prefix of the instance.
+	// As with findPattern() the 'start' cursor is updated if the match
+	// is successful.
+	//**************************************************
+	public boolean prefixMatch(Lang.AstCursor start) {
+	    Lang.AstNode lastNode;
+
+	    lastNode = _match(start.node);
+	    if (lastNode == null)
+		return(false);
+	    start.Position(lastNode);
+	    start.PlusPlus();
+	    return(true);
+	}
+
+	//**************************************************
+	// Test the supplied argument against the pattern defined by this
+	// AST for "equality".
+	//**************************************************
+	public Lang.AstNode _match(Lang.AstNode x) {
+	    int i;
+	    Lang.AstNode lastMatch;
+
+	    if (x == null)
+		return(null);
+
+	    // Check token and argument counts
+	    if (tok == null) {
+		if (x.tok != null)
+		    return(null);
+	    }
+	    else {
+		if (x.tok == null)
+		    return(null);
+
+		// Both are non-null, test token counts
+		if (tok.length != x.tok.length)
+		    return(null);
+	    }
+
+	    // Test argument count
+	    if (arg == null) {
+		if (x.arg != null)
+		    return(null);
+	    }
+	    else {
+		if (x.arg == null)
+		    return(null);
+
+		// Both are non-null, test arg counts
+		if (arg.length != x.arg.length)
+		    return(null);
+	    }
+
+	    if (tok != null) {
+		// tokens must be equal
+		for (i=0; i < tok.length; i++)
+		    if (! tok[i].Equ(x.tok[i]))
+			return(null);
+	    }
+
+	    lastMatch = x;
+	    if (arg != null) {
+		// args must be equal
+		for (i=0; i < arg.length; i++)
+		    if (arg[i] != null) {
+			lastMatch = arg[i]._match(x.arg[i]);
+			if (lastMatch == null)
+			    return(lastMatch);
+		    }
+	    }
+
+	    return(lastMatch);
+	}
+
+	//**************************************************
+	// Output code to produce an AST rooted at this node which is
+	// suitable for use as a matching pattern.
+	//**************************************************
+	public void reduce2match(AstProperties props) {
+	    boolean order[];
+	    int     t, n, i;
+	    PrintWriter ps;
+
+	    order = printorder();
+	    t = 0;
+	    n = 0;
+	    ps = (PrintWriter) props.getProperty("output");
+
+	    ps.println(" (" + className() + ") new " + className() +
+		       "().setParms(");
+	    for (i=0; i<order.length; i++) {
+		if (i>0)
+		    ps.print(", ");
+		// if order[i] is true; print token else print nonterminal
+
+		if (order[i])
+		    tok[t++].reduce2ast(props);
+		else
+		    arg[n++].reduce2match(props);
+	    }
+	    ps.println(") /* " + className() + " */");
+	}
+
+
+	//**************************************************
+	// Set cursor bound to ExpEscape2 classes to null.
+	//**************************************************
+	public void clearCursors() {
+	    for (int i=0; i < arg.length; i++)
+		if (arg[0] != null)
+		    arg[i].clearCursors();
+	}
+    }
+}	// this closes the class started in asthead.txt

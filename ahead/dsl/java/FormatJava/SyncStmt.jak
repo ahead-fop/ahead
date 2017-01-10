@@ -1,0 +1,15 @@
+layer FormatJava;
+
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public refines class SyncStmt {
+    public void format( int position ) {
+        newline_routins( position );
+        arg[0].setComment( " " );
+        ( ( AstToken ) tok[2] ).white_space = " ";
+        super.format( position );
+    }
+}

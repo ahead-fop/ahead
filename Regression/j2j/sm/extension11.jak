@@ -1,0 +1,14 @@
+State_machine extension11 extends class wrffe {
+
+   Delivery_parameters(M m);
+   Unrecognizable_state { error((-1),m); }
+   Otherwise_default { System.out.println( "ignoring message " + m.msg ); }
+
+   Transition t0 : * -> stop
+   condition m.msg != M.initialize && m.msg != M.eom
+   do { System.out.println("going to stop on " + m.msg); }
+
+   Enter stop { Goto_state start(m); }
+
+   public extension11() { }
+}

@@ -1,0 +1,44 @@
+// Graph Algorithms Product Line (GPL)
+// University of Texas at Austin
+// Department of Computer Sciences
+// Product-Line Architecture Research Group
+// Edge-Neighbor Representation
+// WEIGHTED : weighted layer
+// Last Update: May 15, 2001
+// Written by: Roberto E. Lopez-Herrejon (rlopez@cs.utexas.edu)
+
+
+layer Weighted(GEN lower)
+realm GEN
+extends lower
+{
+	
+  // *************************************************************************
+  static public class Edge extends lower.Edge{
+	public int weight;
+		
+        public void Edge($TEqn.Vertex the_start, 
+                    $TEqn.Vertex the_end, int the_weight) {
+           EdgeConstructor(the_start,the_end,the_weight);
+        }
+
+        public void EdgeConstructor($TEqn.Vertex the_start, 
+                    $TEqn.Vertex the_end, int the_weight) {
+          base($TEqn.Vertex,$TEqn.Vertex).EdgeConstructor(the_start,the_end);
+	  weight = the_weight;
+	}
+		
+	public void adjustAdorns($TEqn.Edge the_edge)
+	{
+	  weight = the_edge.weight;
+	  super.adjustAdorns(the_edge);
+	}
+	    
+	public void display()
+	{
+ 	 System.out.print(" Weight=" + weight);
+	 super.display();
+	}
+		
+  } // of Edge
+}

@@ -1,0 +1,20 @@
+layer CExt1;
+
+import java.io.Serializable;
+import anotherPackage;
+
+SoUrCe  CExt1 "C:!Java!FeatureOrientedProgramming!Regression!Mixin!class!CExt1.jak";
+
+ abstract class MyClass$$CExt1 implements yyy, java.io.Serializable {
+    int Terse = 2;
+    void foo() throws SomeException { }
+    int increment( int i ) { }
+}
+
+SoUrCe  CExt1 "C:!Java!FeatureOrientedProgramming!Regression!Mixin!class!CExt1.jak";
+
+ class MyClass extends MyClass$$CExt1 implements yyy, java.io.Serializable {
+    int Terse = 2;
+    void foo() throws SomeException { }
+    int increment( int i ) { }
+}

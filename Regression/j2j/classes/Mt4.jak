@@ -1,0 +1,30 @@
+
+// example that catches the error that Super()() creates a constructor
+// that already exists.
+
+SoUrCe RooT FsatsL "C:!Java!FsatsPackages!Frealm!FsatsL!MessageType.jak";
+
+abstract class MessageType$$FsatsL extends EventType implements MessageTypeInterface {
+        protected MessageType$$FsatsL(String name ) {
+           Super(String)(name);
+        }
+     }
+
+SoUrCe  MessageL "C:!Java!FsatsPackages!Frealm!MessageL!MessageType.jak";
+
+
+public abstract  class MessageType extends MessageType$$FsatsL
+        implements MessageTypeInterface
+    {
+
+        protected MessageType(double n)
+        {
+            Super(String)(""+n);
+          MessageTypeConstructor(name);
+        }
+
+        protected MessateType(String name, int cons ){
+            Super(String)(name);
+            /* something with cons */
+        }
+    }

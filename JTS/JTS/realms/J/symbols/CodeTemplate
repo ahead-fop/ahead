@@ -1,0 +1,2313 @@
+//                              -*- Mode: Java -*- 
+// CodeTemplate --- 
+// Author          : Bernie Lofaso
+// Created On      : Thu Nov 13 08:31:02 1997
+// Last Modified By: 
+// Last Modified On: Tue May 18 16:48:19 1999
+// Update Count    : 157
+// Status          : Under Development
+// 
+// $Locker:  $
+// $Log: CodeTemplate,v $
+// Revision 1.4  2002-10-15 17:03:01  sarvela
+// Corrected "super" references to "Super".
+//
+// Revision 1.3  2002/08/26 16:57:05  sarvela
+// Changed "BaliParser.ReInit" calls to "$TEqn.Parser.getInstance" calls.
+// This is the last step in making BaliParser instances non-static.
+//
+// Revision 1.2  2002/02/22 18:19:54  sarvela
+// Removed carriage returns.
+//
+// Revision 1.1.1.1  1999/05/19 21:26:06  sarvela
+// Imported original v3.0beta4 sources from Webpage
+//
+// Revision 1.2  1999/05/19 21:26:05  lofaso
+// New symbol table implementation.
+//
+// Revision 1.1.1.1  1999/02/18 16:15:42  lofaso
+// Snapshot 2-18-99
+//
+// Revision 1.3  1998/09/25 21:48:57  lofaso
+// Modified JTS such that only default constructor and constructor taking a
+// single int is required for extending grammar classes.
+//
+// Revision 1.2  1998/09/18 20:08:49  lofaso
+// Changed st.imports to st._imports to match the layer file.
+//
+// Revision 1.1.1.1  1998/06/22 18:03:28  lofaso
+// renamed symtab component
+//
+// Revision 1.2  1998/04/07 21:43:26  lofaso
+// After kernel and Main split.
+//
+// Revision 1.1.1.1  1997/12/15 21:00:55  lofaso
+// Imported sources
+//
+// 
+
+
+package $(LanguageName);
+
+import Jakarta.symtab.*;
+import Jakarta.util.Util;
+import java.io.ByteArrayInputStream;
+import java.io.PrintWriter;
+import java.util.Enumeration;
+import java.util.Vector;
+
+public class symbols extends $(ParentComponent) {
+
+    //**************************************************
+    // This code got moved out of Symtab because we need to work with
+    // ASTs based in the language we generate, not in JakBasic.
+    //**************************************************
+    static public class Symtab extends Jakarta.symtab.Symtab {
+	protected Symtab() { super(); }
+
+	public static Jakarta.symtab.Symtab instance() {
+	    if (theInstance == null) {
+		theInstance = new Symtab();
+		initDefaultPackage();
+	    }
+	    return(theInstance);
+	}
+
+
+	//**************************************************
+	// The lookup mechanism in Symtab is String-based. This String is
+	// parsed to an AST where the lookup() method of the AST is called.
+	// Overloading provides for an optional specification of the lookup
+	// context to be specified.
+	//**************************************************
+	public Declaration lookup(String expression) {
+	    return(lookup(expression, null));
+	}
+
+	public Declaration lookup(String expression, Scope context) {
+	    BaliParser parser;
+	    Lang.AST_Exp exprAST = null;
+	    Lang.AST_TypeName typeName = null;
+	    ByteArrayInputStream input;
+
+	    input = new ByteArrayInputStream(expression.getBytes());
+	    parser = Lang.Parser.getInstance (input) ;
+	    try {
+		exprAST = parser.AST_Exp();
+	    }
+	    catch (ParseException pe) {
+		try {
+		    parser = Lang.Parser.getInstance (input) ;
+		    typeName = parser.AST_TypeName();
+		}
+		catch (ParseException pe2) {
+		    Util.fatalError(pe2);
+		}
+	    }
+
+	    if (context == null) {
+		if (exprAST != null)
+		    return(exprAST.lookup());
+		else
+		    return(typeName.lookup());
+	    }
+
+	    // Non-null context
+	    if (exprAST != null)
+		return(exprAST.lookup(context));
+
+	    return(typeName.lookup(context));
+	}
+    }
+
+    //**************************************************
+    // UmodClassDecl extension class
+    //**************************************************
+    static public class UmodClassDecl
+	extends $(ParentComponent).UmodClassDecl {
+	protected ClassP info;
+
+	public Scope locateScope() { return(info); }
+
+	//**************************************************
+	// Given an optional AST_Modifiers node, this routine will scan the
+	// modifiers and build a correct access flag.
+	//**************************************************
+	public static int access_flags(Lang.AstNode mods) {
+	    Lang.AstCursor csr = new Lang.AstCursor();
+	    int flags = 0;
+
+	    csr.First(mods);
+	    csr.PlusPlus();
+	    while (csr.More()) {
+		if (csr.node instanceof ModAbstract)
+		    flags |= ClassInfo.ACC_ABSTRACT;
+		else if (csr.node instanceof ModFinal)
+		    flags |= ClassInfo.ACC_FINAL;
+		else if (csr.node instanceof ModPublic)
+		    flags |= ClassInfo.ACC_PUBLIC;
+		else if (csr.node instanceof ModProtected)
+		    flags |= ClassInfo.ACC_PROTECTED;
+		else if (csr.node instanceof ModPrivate)
+		    flags |= ClassInfo.ACC_PRIVATE;
+		else if (csr.node instanceof ModStatic)
+		    flags |= ClassInfo.ACC_STATIC;
+		csr.PlusPlus();
+	    }
+	    return(flags);
+	}
+
+	protected void buildSymbolTable1(CompilationUnit cu) {
+	    Symtab st = (Symtab) Symtab.instance();
+
+	    info = new ClassP(arg[0].toString(), access_flags(up.arg[0]), cu);
+
+	    // Add this class to the appropriate package
+	    st.declare(info);
+
+	    // Activate this scope
+	    st.activateScope(info);
+
+	    // Call buildSymbolTable1() for ClassBody
+	    arg[3].buildSymbolTable1(cu);
+
+	    // Deactivate this scope
+	    st.deactivateScope();
+	}
+
+	protected void buildSymbolTable2() {
+	    Symtab st = (Symtab) Symtab.instance();
+	    Declaration dcl;
+	    Lang.AstCursor csr = new Lang.AstCursor();
+	    ClassInfo type;
+
+	    st.activateScope(info);
+
+	    // Set superclass
+	    if (arg[1].arg[0] != null) {
+		dcl = ((AST_QualifiedName) arg[1].arg[0].arg[0]).lookup();
+		info.setSuperclass((ClassInfo) dcl);
+	    }
+
+	    // Process interfaces implemented
+	    csr.First(arg[2]);
+	    while (csr.More()) {
+		if (csr.node instanceof Lang.AST_TypeName) {
+		    type = (ClassInfo) ((Lang.AST_TypeName) csr.node).lookup();
+		    info.setInterfaceImplemented(type);
+		}
+
+		csr.PlusPlus();
+	    }
+
+	    // Call buildSymbolTable2 for ClassBody
+	    arg[3].buildSymbolTable2();
+
+	    // Close context
+	    st.deactivateScope();
+	}
+    }
+
+
+    //**************************************************
+    // ConDecl extension class
+    //**************************************************
+    static public class ConDecl extends $(ParentComponent).ConDecl {
+	protected MethodP method;
+
+	public Scope locateScope() { return(method); }
+
+	protected void buildSymbolTable2() {
+	    Symtab st = (Symtab) Symtab.instance();
+	    int flags;
+	    FieldInfo parms[];
+	    SymName parmType;
+	    SymName parmName;
+	    String fieldSig;
+
+	    // Fetch access_flags from AST_Modifiers
+	    flags = Lang.MethodDcl.access_flags(arg[0]);
+
+	    // Create a method instance. This must be done before the parameter
+	    // FieldInfo elements are created so that they will be added to
+	    // the proper environment
+	    method = new MethodP("<init>", flags);
+	    st.declare(method);
+	    st.activateScope(method);
+
+	    //**************************************************
+	    // Process parameter list
+	    //**************************************************
+
+	    st.names.removeAllElements();
+	    arg[2].buildSymbolTable2();	// AST_ParList
+
+	    // Now that parms have been processed, call setMethodSignature().
+	    // NOTE: the symbol table 'names' list is used by
+	    // setMethodSignature().
+	    method.setMethodSignature(new SymName("void"), null);
+
+	    // Finally, call buildSymbolTable2 on method body
+	    arg[4].buildSymbolTable2();
+
+	    // Remove method scope
+	    st.deactivateScope();
+	}
+    }
+
+
+    //**************************************************
+    // Dims extension class
+    //**************************************************
+    static public class Dims extends $(ParentComponent).Dims {
+	// Used to count the number of dimensions
+	public int countDims() {
+	    int count;
+	    Lang.AstNode node;
+
+	    node = arg[0];
+	    count = 0;
+	    while (node != null) {
+		count++;
+		node = node.right;
+	    }
+	    return(count);
+	}
+    }
+
+
+    //**************************************************
+    // DecNameDim extension class
+    //**************************************************
+    static public class DecNameDim extends $(ParentComponent).DecNameDim {
+	public int countDims() {
+	    // Test if optional node is empty
+	    if (arg[1].arg[0] == null)
+		return(0);
+
+	    return(((Dims) arg[1].arg[0]).countDims());
+	}
+    }
+
+
+    //**************************************************
+    // MthDector extension class
+    //**************************************************
+    static public class MthDector extends $(ParentComponent).MthDector {
+	public int countDims() {
+	    // Test if optional node is empty
+	    if (arg[2].arg[0] == null)
+		return(0);
+
+	    return(((Dims) arg[2].arg[0]).countDims());
+	}
+    }
+
+
+    //**************************************************
+    // FldVarDec extension class
+    //**************************************************
+    static public class FldVarDec extends $(ParentComponent).FldVarDec {
+
+	protected void buildSymbolTable2() {
+	    Symtab st = (Symtab) Symtab.instance();
+	    SymName fieldType;
+	    String fieldName;
+	    FieldInfo field;
+	    ClassInfo ci;
+	    Type type;
+	    int dimCount;
+	    Lang.AstCursor csr;
+	    DecNameDim decNameDim;
+	    int af;
+
+	    // Get access flags from arg[0]
+	    af = UmodClassDecl.access_flags(arg[0]);
+
+	    // We use a SymName for fieldType to make it easier to
+	    // handle the dimension information and produce a signature.
+
+	    // Call buildSymbolTable2 for AST_TypeName and retrieve field type.
+	    st.names.removeAllElements();
+	    arg[1].buildSymbolTable2();
+	    fieldType = (SymName) st.names.lastElement();
+
+	    // Count dims in AST_TypeName
+	    if (arg[1] instanceof PrimType)
+		dimCount = ((PrimType) arg[1]).countDims();
+	    else if (arg[1] instanceof QNameType)
+		dimCount = ((QNameType) arg[1]).countDims();
+	    else
+		dimCount = 0;
+
+	    // Now lookup that type to get a ClassInfo
+	    ci = (ClassInfo) ((Lang.AST_TypeName) arg[1]).lookup();
+
+	    // Scan AST_VarDecl (a list) to determine fields of this type.
+	    // Cursor nodes will be of type VariableDeclarator
+	    csr = new Lang.AstCursor();
+	    csr.First(arg[2]);
+	    csr.PlusPlus();
+	    while (csr.More()) {
+		if (csr.node instanceof DecNameDim)
+		    decNameDim = (DecNameDim) csr.node;
+		else
+		    decNameDim = (DecNameDim) csr.node.arg[0];
+		fieldName = decNameDim.arg[0].toString();
+		dimCount += decNameDim.countDims();
+		type = ci.getType(dimCount);
+		field = new FieldP(fieldName, af, type,
+				   fieldType.getSignature());
+
+		// Declare the field in the current scope
+		st.declare(field);
+
+		csr.Sibling();
+		csr.PlusPlus();
+	    }
+	}
+    }
+
+
+    //**************************************************
+    // ImpQual extension class
+    //**************************************************
+    static public class ImpQual extends $(ParentComponent).ImpQual {
+	protected void buildSymbolTable2() {
+	    String importName;
+	    CompilationUnit cu;
+	    Lang.AstNode root;
+
+	    importName = arg[0].toString().trim();
+	    if (arg[1].arg[0] != null)	// test for DotTimes
+		importName += ".*";
+	    cu = getCompilationUnit();
+
+	    // If this AST has no CU, we must create one.
+	    if (cu == null) {
+		root = this;
+		while (root.up != null)
+		    root = root.up;
+		cu = CompilationUnit.internCompilationUnit(null, root);
+	    }
+
+	    cu.addImport(importName);
+	}
+    }
+
+
+    //**************************************************
+    // UmInterDecl extension class
+    //**************************************************
+    static public class UmInterDecl extends $(ParentComponent).UmInterDecl {
+	protected ClassP info;
+
+	public Scope locateScope() { return(info); }
+
+	protected void buildSymbolTable1(CompilationUnit cu) {
+	    Symtab st = (Symtab) Symtab.instance();
+	    int flags;
+
+	    flags = UmodClassDecl.access_flags(up.arg[0]);
+	    flags |= ClassInfo.ACC_INTERFACE;
+	    info = new ClassP(arg[0].toString(), flags, cu);
+
+	    // Add this class to the appropriate package
+	    st.declare(info);
+
+	    // Activate this scope
+	    st.activateScope(info);
+
+	    // Call buildSymbolTable1() for InterfaceMemberDeclarations.
+	    arg[2].buildSymbolTable1(cu);
+
+	    // Deactivate this scope
+	    st.deactivateScope();
+	}
+
+	protected void buildSymbolTable2() {
+	    Symtab st = (Symtab) Symtab.instance();
+	    Lang.AstCursor csr = new Lang.AstCursor();
+	    ClassInfo type;
+
+	    st.activateScope(info);
+
+	    // Process extends clause
+	    csr.First(arg[1]);
+	    while (csr.More()) {
+		if (csr.node instanceof Lang.AST_TypeName) {
+		    type = (ClassInfo) ((Lang.AST_TypeName) csr.node).lookup();
+		    info.setInterfaceImplemented(type);
+		}
+
+		csr.PlusPlus();
+	    }
+
+	    // Call buildSymbolTable for InterfaceMemberDeclarations.
+	    arg[2].buildSymbolTable2();
+
+	    // Close context
+	    st.deactivateScope();
+	}
+    }
+
+
+    //**************************************************
+    // LocalVarDecl extension class
+    //**************************************************
+    static public class LocalVarDecl extends $(ParentComponent).LocalVarDecl {
+
+	protected void buildSymbolTable2() {
+	    Symtab st = (Symtab) Symtab.instance();
+	    SymName fieldType;
+	    String fieldName;
+	    FieldInfo field;
+	    ClassInfo ci;
+	    Type type;
+	    int dimCount;
+	    Lang.AstCursor csr;
+	    DecNameDim decNameDim;
+
+	    // We use a SymName for fieldType to make it easier to
+	    // handle the dimension information and produce a signature.
+	    // Call buildSymbolTable2 for AST_TypeName and retrieve field type.
+	    st.names.removeAllElements();
+	    ((AstNode) arg[0]).buildSymbolTable2();
+	    fieldType = (SymName) st.names.lastElement();
+
+	    // Count dims in AST_TypeName
+	    if (arg[0] instanceof PrimType)
+		dimCount = ((PrimType) arg[0]).countDims();
+	    else if (arg[0] instanceof QNameType)
+		dimCount = ((QNameType) arg[0]).countDims();
+	    else
+		dimCount = 0;
+
+	    // Now lookup that type to get a ClassInfo
+	    ci = (ClassInfo) ((Lang.AST_TypeName) arg[0]).lookup();
+
+	    // Scan AST_VarDecl (a list) to determine fields of this type.
+	    // Cursor nodes will be of type VariableDeclarator
+	    csr = new Lang.AstCursor();
+	    csr.First(arg[1]);
+	    csr.PlusPlus();
+	    while (csr.More()) {
+		if (csr.node instanceof DecNameDim)
+		    decNameDim = (DecNameDim) csr.node;
+		else
+		    decNameDim = (DecNameDim) csr.node.arg[0];
+		fieldName = decNameDim.arg[0].toString();
+		dimCount += decNameDim.countDims();
+		type = ci.getType(dimCount);
+		field = new FieldP(fieldName, 0, type,
+				   fieldType.getSignature());
+
+		// Declare the field in the current scope
+		st.declare(field);
+
+		csr.Sibling();
+		csr.PlusPlus();
+	    }
+	}
+    }
+
+
+    //**************************************************
+    // MethodDcl extension class
+    //**************************************************
+    static public class MethodDcl extends $(ParentComponent).MethodDcl {
+	protected MethodP method;
+
+	public Scope locateScope() { return(method); }
+
+	//**************************************************
+	// Given an optional AST_Modifiers node, this routine will scan the
+	// modifiers and build a correct access flag.
+	//**************************************************
+	public static int access_flags(Lang.AstNode mods) {
+	    Lang.AstCursor csr = new Lang.AstCursor();
+	    int flags = 0;
+
+	    csr.First(mods);
+	    csr.PlusPlus();
+	    while (csr.More()) {
+		if (csr.node instanceof ModAbstract)
+		    flags |= ClassInfo.ACC_ABSTRACT;
+		else if (csr.node instanceof ModFinal)
+		    flags |= ClassInfo.ACC_FINAL;
+		else if (csr.node instanceof ModPublic)
+		    flags |= ClassInfo.ACC_PUBLIC;
+		else if (csr.node instanceof ModProtected)
+		    flags |= ClassInfo.ACC_PROTECTED;
+		else if (csr.node instanceof ModPrivate)
+		    flags |= ClassInfo.ACC_PRIVATE;
+		else if (csr.node instanceof ModStatic)
+		    flags |= ClassInfo.ACC_STATIC;
+		else if (csr.node instanceof ModNative)
+		    flags |= ClassInfo.ACC_NATIVE;
+		else if (csr.node instanceof ModSynchronized)
+		    flags |= ClassInfo.ACC_SYNCHRONIZED;
+		csr.PlusPlus();
+	    }
+	    return(flags);
+	}
+
+	protected void buildSymbolTable2() {
+	    Symtab st = (Symtab) Symtab.instance();
+	    int flags;
+	    String returnTypeName;
+	    SymName returnType;
+	    String methodName;
+	    SymName parmType;
+	    SymName parmName;
+	    String fieldSig;
+	    int dimCount;
+
+	    // Fetch access_flags from AST_Modifiers
+	    flags = access_flags(arg[0]);
+
+	    // Call buildSymbolTable2 for AST_TypeName and retrieve return type.
+	    st.names.removeAllElements();
+	    arg[1].buildSymbolTable2();	// ResultType
+	    returnType = (SymName) st.names.lastElement();
+
+	    //**************************************************
+	    // Count dims in two places: ResultType (return type) and
+	    // MethodDeclarator (method name).
+	    //**************************************************
+	
+	    // Count dims in ResultType
+	    if (arg[1] instanceof PrimType)
+		dimCount = ((PrimType) arg[1]).countDims();
+	    else if (arg[1] instanceof QNameType)
+		dimCount = ((QNameType) arg[1]).countDims();
+	    else
+		dimCount = 0;
+
+	    // Count dims in MethodDeclarator
+	    if (arg[2] instanceof MthDector)
+		dimCount += ((MthDector) arg[2]).countDims();
+
+	    // Set dim count in SymName for return type
+	    returnType.setDimCount(dimCount);
+
+	    // get methodName
+	    methodName = arg[2].arg[0].toString();
+
+	    // Create a method instance. This must be done before the parameter
+	    // FieldInfo elements are created so that they will be added to
+	    // the proper environment.
+	    method = new MethodP(methodName, flags);
+
+	    // Before we process the parameters, we link the method to its
+	    // declaring environment. Normally this would be done when we
+	    // declare the method, but as mentioned in the note below, we
+	    // cannot do that just yet.
+	    method.setDeclaringEnv(st.currentScope());
+
+	    // We activate this scope but haven't declared it in the
+	    // previous scope yet.
+	    st.activateScope(method);
+
+	    //**************************************************
+	    // Process parameter list
+	    //**************************************************
+
+	    // Now we process parm list
+	    st.names.removeAllElements();
+	    arg[2].arg[1].buildSymbolTable2();	// AST_ParList
+
+	    // Now that parms have been processed, call setMethodSignature.
+	    // NOTE: the symbol table 'names' list is used by
+	    // setMethodSignature(). Also, we must pass a lookup Scope for
+	    // setMethodSignature() to use in looking up type names.
+	    method.setMethodSignature(returnType, up.locateScope());
+
+	    //**************************************************
+	    // Add method to current class. NOTE: This is done AFTER we set
+	    // the method signature, otherwise we risk overwriting another
+	    // method of the same name but different signature. (i.e. we risk
+	    // overwriting the method entry for an overloaded method.)
+	    //**************************************************
+	    st.deactivateScope();	// deactivate method's scope
+	    st.declare(method);
+	    st.activateScope(method);	// reactivate method's scope
+	    
+	    // Finally, call buildSymbolTable2 on method body
+	    arg[4].buildSymbolTable2();
+
+	    // Deactivate method scope
+	    st.deactivateScope();
+	}
+    }
+
+
+    //**************************************************
+    // PackStm extension class
+    //**************************************************
+    static public class PackStm extends $(ParentComponent).PackStm {
+	protected PackageInfo info;
+
+	public Scope locateScope() { return(info); }
+
+	protected void buildSymbolTable1(CompilationUnit cu) {
+	    Symtab st = (Symtab) Symtab.instance();
+	    Lang.AstNode root;
+
+	    // PackageInfo will be created via lookup
+	    info = (PackageInfo) ((AST_QualifiedName) arg[0]).lookup();
+
+	    // If this AST has no CU, we must create one.
+	    if (cu == null) {
+		cu = getCompilationUnit();
+		if (cu == null) {
+		    root = this;
+		    while (root.up != null)
+			root = root.up;
+		    cu =CompilationUnit.internCompilationUnit(null,root);
+		}
+	    }
+	    cu.setPackage(info);
+
+	    // Declare package
+	    st.declare(info);
+
+	    // Activate scope
+	    st.activateScope(info);
+
+	    // The package scope can only be deactivated between
+	    // the first and second passes of building the symbol
+	    // table by calling Symtab.clearScopeStack().
+	}
+
+	protected void buildSymbolTable2() {
+	    Symtab st = (Symtab) Symtab.instance();
+
+	    // Activate scope
+	    st.activateScope(info);
+	}
+    }
+
+
+    //**************************************************
+    // FormParDecl extension class
+    //**************************************************
+    static public class FormParDecl extends $(ParentComponent).FormParDecl {
+
+	protected void buildSymbolTable2() {
+	    Symtab st = (Symtab) Symtab.instance();
+	    SymName fieldType;
+	    String fieldName;
+	    FieldInfo field;
+	    ClassInfo ci;
+	    Type type;
+	    int dimCount;
+
+	    // We use a SymName for fieldType to make it easier to
+	    // handle the dimension information and produce a signature.
+	    // Call buildSymbolTable2 for AST_TypeName and retrieve field type.
+// 	    st.names.removeAllElements();
+	    arg[0].buildSymbolTable2();
+	    fieldType = (SymName) st.names.lastElement();
+
+	    // Count dims in AST_TypeName
+	    if (arg[0] instanceof PrimType)
+		dimCount = ((PrimType) arg[0]).countDims();
+	    else if (arg[0] instanceof QNameType)
+		dimCount = ((QNameType) arg[0]).countDims();
+	    else
+		dimCount = 0;
+
+	    // Now lookup that type to get a ClassInfo
+	    ci = (ClassInfo) ((Lang.AST_TypeName) arg[0]).lookup();
+
+	    // get fieldName
+	    fieldName = arg[1].arg[0].toString();
+
+	    // Count dims in DeclaratorName
+	    if (arg[1] instanceof DecNameDim)
+		dimCount += ((DecNameDim) arg[1]).countDims();
+
+	    // Update the dim count of the TypSpec's SymName stored on 'names'
+	    fieldType.setDimCount(dimCount);
+
+	    // Create a Type object
+	    type = ci.getType(dimCount);
+
+	    // Create a new FieldInfo and add to the current method
+	    field = new FieldP(fieldName, 0, type, fieldType.getSignature());
+	    st.declare(field);
+	}
+    }
+
+
+    //**************************************************
+    // The next two classes are subclasses of AST_TypeName. They have lookup()
+    // methods because of this.
+    //**************************************************
+
+    //**************************************************
+    // PrimType extension class
+    //**************************************************
+    static public class PrimType extends $(ParentComponent).PrimType {
+	// This method is used to count the number of dimension bracket pairs
+	// ('[]') that appear in the AST_TypeName.
+	public int countDims() {
+	    // Test if optional node is empty
+	    if (arg[1].arg[0] == null)
+		return(0);
+
+	    return(((Dims) arg[1].arg[0]).countDims());
+	}
+
+	protected void buildSymbolTable2() {
+	    Symtab st = (Symtab) Symtab.instance();
+	    SymName name;
+
+	    if (! st.collectNames)
+		return;
+
+	    if (arg[0] instanceof BoolTyp)
+		name = new SymName("boolean");
+	    else if (arg[0] instanceof CharTyp)
+		name = new SymName("char");
+	    else if (arg[0] instanceof ByteTyp)
+		name = new SymName("byte");
+	    else if (arg[0] instanceof ShortTyp)
+		name = new SymName("short");
+	    else if (arg[0] instanceof IntTyp)
+		name = new SymName("int");
+	    else if (arg[0] instanceof LongTyp)
+		name = new SymName("long");
+	    else if (arg[0] instanceof FloatTyp)
+		name = new SymName("float");
+	    else if (arg[0] instanceof DoubleTyp)
+		name = new SymName("double");
+	    else if (arg[0] instanceof VoidTyp)
+		name = new SymName("void");
+	    else
+		name = null;
+
+	    name.setDimCount(countDims());
+	    st.names.addElement(name);
+	}
+
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(arg[0].lookup(leftClassification));
+	}
+    }
+
+
+    //**************************************************
+    // QNameType extension class
+    //**************************************************
+    static public class QNameType extends $(ParentComponent).QNameType {
+	// This method is used to count the number of dimension bracket pairs
+	// ('[]') that appear in the AST_TypeName.
+	public int countDims() {
+	    // Test if optional node is empty
+	    if (arg[1].arg[0] == null)
+		return(0);
+
+	    return(((Dims) arg[1].arg[0]).countDims());
+	}
+
+	protected void buildSymbolTable2() {
+	    Symtab st = (Symtab) Symtab.instance();
+	    SymName name;
+
+	    if (! st.collectNames)
+		return;
+
+	    name = new SymName(arg[0].toString().trim());
+
+	    name.setDimCount(countDims());
+	    st.names.addElement(name);
+	}
+
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(arg[0].lookup(leftClassification));
+	}
+    }
+
+
+    //**************************************************
+    // class AstList extension
+    //**************************************************
+    static public abstract class AstList extends $(ParentComponent).AstList {
+	//**************************************************
+	// Overrides buildSymbolTable1() of AstNode such that it calls
+	// buildSymbolTable1() of its children (AstListNode's).
+	//**************************************************
+	protected void buildSymbolTable1(CompilationUnit cu) {
+	    Lang.AstNode l;
+
+	    for (l=arg[0]; l != null; l = l.right)
+		l.buildSymbolTable1(cu);
+	}
+
+	//**************************************************
+	// Overrides buildSymbolTable2() of AstNode such that it calls
+	// buildSymbolTable2() of its children (AstListNode's).
+	//**************************************************
+	protected void buildSymbolTable2() {
+	    Lang.AstNode l;
+
+	    for (l=arg[0]; l != null; l = l.right)
+		l.buildSymbolTable2();
+	}
+    }
+
+
+    //**************************************************
+    // class AstOptNode extension
+    //**************************************************
+    static public class AstOptNode extends $(ParentComponent).AstOptNode {
+	//**************************************************
+	// buildSymbolTable1()
+	//**************************************************
+	protected void buildSymbolTable1(CompilationUnit cu) {
+	    if (arg[0] != null)
+		arg[0].buildSymbolTable1(cu);
+	}
+
+
+	//**************************************************
+	// buildSymbolTable2()
+	//**************************************************
+	protected void buildSymbolTable2() {
+	    if (arg[0] != null)
+		arg[0].buildSymbolTable2();
+	}
+    }
+
+    // Start of code from CodeTemplate.KernelBase
+
+    //**************************************************
+    // class Main extension
+    //**************************************************
+    static public class Main extends $(ParentComponent).Main {
+	private int myLayerID;
+
+	//**************************************************
+	// Method called by the top-most layer to allow a layer to request
+	// switches and arguments.
+	//**************************************************
+	protected void argInquire(int _layer) {
+	    Switch sw;
+
+	    // Save my layer number
+	    myLayerID = _layer;
+
+	    // Register my switches
+	    sw = new Switch("t", "symbol table dump", null, true, _layer);
+	    switchRegister(sw);
+
+	    // Call next layer
+	    Super(int).argInquire(nextLayer());
+	}
+
+
+	//**************************************************
+	// outputAST()
+	//**************************************************
+	protected void outputAST(ArgList argObjects, Lang.AstNode ast) {
+	    // Output symbol table if the '-t' switch was used.
+	    if (argObjects.find("t", Switch.class, myLayerID) != null) {
+		Symtab st = (Symtab) Symtab.instance();
+		PackageInfo dp = st.defaultPackage();
+		dp.dump(new PrintWriter(System.out), 0);
+	    }
+
+	    // Call next layer
+	    Super(ArgList,Lang.AstNode).outputAST(argObjects, ast);
+	}
+    }
+
+
+    //**************************************************
+    // class AstNode extension
+    //**************************************************
+    static public abstract class AstNode extends $(ParentComponent).AstNode {
+	static Scope context = null;
+	static boolean contextValid = false;
+
+	//**************************************************
+	// This method calls both passes of the symbol table building
+	// methods. It correctly sets up the context stack prior to
+	// each pass.
+	//**************************************************
+	public void buildSymbolTable() {
+	    Symtab st = (Symtab) Symtab.instance();
+	    Lang.AstNode root;
+	    CompilationUnit cu;
+
+	    // Create a CompilationUnit for this AST
+	    root = (Lang.AstNode) this;
+	    while (root.up != null)
+		root = root.up;
+
+	    // NOTE: If a CompilationUnit has already been created for this
+	    // AST then the internCompilationUnit() method will not create
+	    // a new one. If it does create a new one, it will have a null
+	    // File associated with it (which should be o.k. since not all
+	    // ASTs have files associated with them.
+	    cu = CompilationUnit.internCompilationUnit(null, root);
+
+	    // First pass of building symbol table
+	    st.activateScope(st.defaultPackage());
+	    buildSymbolTable1(cu);
+
+	    // Second pass of building symbol table
+	    st.clearScopeStack();
+	    st.activateScope(st.defaultPackage());
+	    buildSymbolTable2();
+	}
+
+	//**************************************************
+	// This method implements the first pass of building the symbol
+	// table. In the first pass we add entries for packages and classes
+	// defined in the file being parsed.
+	//**************************************************
+	protected void buildSymbolTable1(CompilationUnit cu) {
+	    // NOTE: Not sure why the test for null is needed.
+	    for (int i=0; i < arg.length; i++)
+		if (arg[i] != null)
+		    arg[i].buildSymbolTable1(cu);
+	}
+
+	//**************************************************
+	// This method adds entries not added in pass 1. The default
+	// action for AstNode's is to call buildSymbolTable for any child
+	// nodes. Other specializations will override this method to create
+	// symbols.
+	//**************************************************
+	protected void buildSymbolTable2() {
+	    // NOTE: Not sure why the test for null is needed.
+	    for (int i=0; i < arg.length; i++)
+		if (arg[i] != null)
+		    arg[i].buildSymbolTable2();
+	}
+
+
+	//**************************************************
+	// This method locates a symbol table entry which is a scope.
+	// This default simply asks it's parent. Classes which are
+	// responsible for creating a Scope object in the symbol
+	// table will override this method to return their Scope
+	// object.
+	//**************************************************
+	public Scope locateScope() {
+	    if (up == null)
+		return(null);
+	    return(up.locateScope());
+	}
+
+
+	//**************************************************
+	// The following methods allow for resetting, setting, and getting
+	// a Scope used by the lookup() methods of AST nodes. The lookup()
+	// and lookup(Scope context) methods call resetLookupContext()
+	// and setLookupContext(Scope context) methods, respectively.
+	// This allows us to delay calling locateScope() and also allow
+	// the option that the user passes the context as a parameter.
+	//**************************************************
+	protected void resetLookupContext() {
+	    context = null;
+	    contextValid = false;
+	}
+
+	protected void setLookupContext(Scope ctx) {
+	    context = ctx;
+	    contextValid = true;
+	}
+
+	protected Scope getLookupContext() {
+	    if (! contextValid)
+		context = locateScope();
+	    return(context);
+	}
+
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(null);
+	}
+
+	public CompilationUnit getCompilationUnit() {
+	    CompilationUnit cu;
+	    Enumeration scanPtr;
+	    Lang.AstNode root;
+	    Lang.AstNode myRoot;
+	    Scope context;
+
+	    // First try to find through the symbol table (shorter route)
+	    context = getLookupContext();
+	    if (context != null) {
+		cu = context.getCompilationUnit();
+		if (cu != null)
+		    return(cu);
+	    }
+
+	    // Else, locate root of AST and retrieve it that way.
+	    myRoot = (Lang.AstNode) this;
+	    while (myRoot.up != null)
+		myRoot = myRoot.up;
+
+	    // Now scan through all CompilationUnits until we find one with
+	    // this root.
+	    scanPtr = CompilationUnit.getCompilationUnits();
+	    while (scanPtr.hasMoreElements()) {
+		cu = (CompilationUnit) scanPtr.nextElement();
+		root = (Lang.AstNode) cu.getAST();
+		if (root == myRoot)
+		    return(cu);
+	    }
+
+	    return(null);
+	}
+
+    }
+
+    //**************************************************
+    // lookup() implementations
+    //**************************************************
+
+    //**************************************************
+    // AST_Exp extension class
+    //**************************************************
+    static public class AST_Exp extends $(ParentComponent).AST_Exp {
+
+	//**************************************************
+	// The user calls one of the first two methods. The third method,
+	// lookup(Declaration left_classification) is what gets specialized
+	// in derived grammar nodes.
+	//**************************************************
+
+	public Declaration lookup() {
+	    resetLookupContext();
+	    return(lookup((Declaration) null));
+	}
+
+	public Declaration lookup(Scope ctx) {
+	    setLookupContext(ctx);
+	    return(lookup((Declaration) null));
+	}
+
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(null);
+	}
+    }
+
+
+    //**************************************************
+    // PrimExpr extension class
+    //**************************************************
+    static public class PrimExpr extends $(ParentComponent).PrimExpr {
+	protected Declaration lookup(Declaration leftClassification) {
+	    Declaration dcl;
+	    Lang.AstNode suffix;	// ptr to SuffixesElem nodes
+
+	    dcl = ((AST_Exp) arg[0]).lookup((Declaration) null);
+	    if (dcl == null)
+		return(null);
+	    suffix = arg[1].arg[0];
+	    while (suffix != null) {
+		// Skip MthCall nodes. Predecessors have taken into account.
+		if (! (suffix.arg[0] instanceof Lang.MthCall)) {
+		    dcl = ((PrimarySuffix) suffix.arg[0]).lookup(dcl);
+		    if (dcl == null)
+			return(null);
+		}
+		suffix = suffix.right;
+	    }
+
+	    return(dcl);
+	}
+
+    }
+
+
+    //**************************************************
+    // PrimarySuffix extension class
+    //**************************************************
+    static public class PrimarySuffix
+	extends $(ParentComponent).PrimarySuffix {
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(null);
+	}
+    }
+
+
+    //**************************************************
+    // AST_QualifiedName extension class
+    //**************************************************
+    static public class AST_QualifiedName
+	extends $(ParentComponent).AST_QualifiedName {
+
+	public Declaration lookup() {
+	    return(lookup((Declaration) null));
+	}
+
+	protected Declaration lookup(Declaration leftClassification) {
+	    SymName sym;
+
+	    sym = new SymName(this.toString());
+	    return(lookupSym(sym, sym.getComponentCount()-1));
+	}
+
+	private Declaration lookupSym(SymName sym, int index) {
+	    int classification;
+	    Declaration result;
+	    PackageInfo pkg;
+	    ClassInfo cls;
+	    Lang.MthCall mcall;
+	    String msig;
+	    String name;
+	    int i;
+	    int count;
+
+	    try {
+		// Phase 1 - classify name type
+		classification = classify();
+
+		// Phase 2 - if type is AMBIGUOUS_NAME, then reclassify
+		if (classification == SymName.AMBIGUOUS_NAME)
+		    return(reclassifyAndBind(sym, index));
+
+	    // Phase 3 - determine name's meaning based on its type
+		switch (classification) {
+		case SymName.PACKAGE_NAME:
+		    // All components must be package names
+
+		    pkg = Symtab.instance().defaultPackage();
+		    for (i=0; i <= index; i++) {
+			name = sym.componentName(i);
+			pkg = pkg.findSubPackage(name);
+			if (pkg == null)
+			    return(null);
+		    }
+		    result = pkg;
+		    break;
+		case SymName.TYPE_NAME:
+		    result = bindTypeName(sym, index);
+		    break;
+		case SymName.METHOD_NAME:
+		    result = bindMethodName(sym);
+		    break;
+		case SymName.EXPRESSION_NAME:
+		    result = bindExpressionName(sym);
+		    break;
+		default:
+		    result = null;
+		}
+	    }
+	    catch (BadSymbolNameException e) {
+		Util.fatalError(e);
+		result = null;
+	    }
+
+	    return(result);
+	}
+
+
+	//**************************************************
+	// bindMethodName()
+	//**************************************************
+	protected MethodInfo bindMethodName(SymName sym)
+	    throws BadSymbolNameException {
+	    ClassInfo cls;
+	    Lang.MthCall mcall;
+	    String msig;
+	    MethodInfo result;
+	    int index;
+	    Scope scope;
+	    String name;
+	    Declaration dcl;
+
+	    index = sym.getComponentCount() - 1;
+	    name = sym.getName();
+	    if (index == 0) {
+		// simple name
+		scope = getLookupContext();
+		cls = null;
+		while (scope != null) {
+		    if (scope instanceof ClassInfo) {
+			cls = (ClassInfo) scope;
+			break;
+		    }
+		    scope = scope.getDeclaringEnv();
+		}
+		if (cls == null)
+		    return(null);
+	    }
+	    else {
+		// Qualified name
+		dcl = reclassifyAndBind(sym, index - 1);
+		if (dcl == null)
+		    return(null);
+		if (dcl instanceof ClassInfo)
+		    cls = (ClassInfo) dcl;
+		else {
+		    // must be a FieldInfo
+		    cls = ((FieldInfo) dcl).getType();
+		}
+	    }
+
+	    mcall = (Lang.MthCall) up.up.arg[1].arg[0].arg[0];
+	    msig = mcall.getArgumentSignature();
+	    result = cls.findMethod(name, msig);
+	    return(result);
+	}
+
+
+	//**************************************************
+	// bindExpressionName()
+	//**************************************************
+	protected Declaration bindExpressionName(SymName sym)
+	    throws BadSymbolNameException {
+	    int index;
+	    Scope scope;
+	    Declaration result;
+	    String name;
+
+	    index = sym.getComponentCount() - 1;
+	    name = sym.getName();
+	    if (index == 0) {
+		// simple name
+		scope = getLookupContext();
+		while (! (scope instanceof ClassInfo)) {
+		    if (scope instanceof BlockScope) {
+			result = ((BlockScope) scope).findField(name);
+			if (result != null) {
+			    sym.setType(index, SymName.EXPRESSION_NAME);
+			    return(result);
+			}
+		    }
+		    else if (scope instanceof MethodInfo) {
+			result = ((MethodInfo) scope).findField(name);
+			if (result != null) {
+			    sym.setType(index, SymName.EXPRESSION_NAME);
+			    return(result);
+			}
+		    }
+
+		    scope = scope.getDeclaringEnv();
+		}
+
+		if (! (scope instanceof ClassInfo)) {
+		    Util.fatalError("bindExpressionName: lookup failure!");
+		    return(null);
+		}
+
+		return(((ClassInfo) scope).findField(name));
+	    }
+
+	    // Qualified name. The left component must be either a field
+	    // (EXPRESSION_NAME) or a class. I think we can treat this as
+	    // an AMBIGUOUS_NAME and use reclassifyAndBind();
+	    result = reclassifyAndBind(sym, index - 1);
+	    if (result instanceof ClassInfo)
+		result = ((ClassInfo) result).findField(name);
+	    else {
+		// must be a FieldInfo - get it's type (class) then find field
+		result = ((FieldInfo) result).getType().findField(name);
+	    }
+
+	    return(result);
+	}
+
+
+	//**************************************************
+	// bindTypeName()
+	//**************************************************
+        protected ClassInfo bindTypeName(SymName sym, int index)
+	    throws BadSymbolNameException {
+	    PackageInfo pkg;
+	    PackageInfo subPkg;
+	    int i;
+	    ClassInfo result;
+	    String name = null;
+
+	    if (index > 1) {
+		// qualified name
+
+		// Q: Do we need a partially qualified name? (i.e. it looks
+		// qualified but contains no package - a nested class name
+		// that is "simple".)
+
+		// Name has zero or more package components and zero or
+		// more class/interface components.
+		i = 0;
+		pkg = Symtab.instance().defaultPackage();
+		while (i < index-1) {
+		    name = sym.componentName(i);
+		    subPkg = pkg.findSubPackage(name);
+		    if (subPkg == null)
+			break;
+		    i++;
+		    pkg = subPkg;
+		}
+
+		// Process one or more class components
+
+		// If there were no package names, then we must bind
+		// the first component as if it were a simple name
+		// (representing a class).
+		if (i == 0)
+		    result = bindSimpleTypeName(name);
+		else
+		    result = pkg.findClass(name);
+		if (result == null)
+		    return(null);
+
+		i++;
+
+		// If any other components are left they must be class
+		// names (nested classes).
+		while (i < index) {
+		    name = sym.componentName(i);
+		    result = result.findClass(name);
+		    if (result == null)
+			return(null);
+		    i++;
+		}
+
+		return(result);
+	    }
+	    else {
+		// Simple name
+		return(bindSimpleTypeName(sym.componentName(0)));
+	    }
+	}
+
+	protected ClassInfo bindSimpleTypeName(String name) {
+	    CompilationUnit cu = getCompilationUnit();
+	    ClassInfo result;
+	    Scope scope;
+	    Enumeration iods;	// "list" of IOD packages
+	    PackageInfo pkg;
+
+	    // Test single-type imports
+	    if (cu != null) {
+		result = cu.getImportType(name);
+		if (result != null)
+		    return(result);
+
+		// Check for a class declaration in the package of
+		// the current CU. (Also checks other CUs of this package.)
+		pkg = cu.getPackage();
+		result = pkg.findClass(name);
+		if (result != null)
+		    return(result);
+
+		// Import-on-demand finds a class of that name.
+		iods = cu.getIODPackages();
+		while (iods.hasMoreElements()) {
+		    pkg = (PackageInfo) iods.nextElement();
+		    result = pkg.findClass(name);
+		    if (result != null)
+			return(result);
+		}
+	    }
+	    else {
+		// If no CU is available, we still search java.lang
+		pkg = Symtab.instance().getJavaLangPackage();
+		result = pkg.findClass(name);
+		if (result != null)
+		    return(result);
+
+		// Should also search default package. (We know there isn't
+		// a package statement because if there were we'd have a
+		// CompilationUnit.
+		pkg = Symtab.instance().defaultPackage();
+		result = pkg.findClass(name);
+		if (result != null)
+		    return(result);
+	    }
+
+	    // Check for a binding to a nested class
+	    scope = getLookupContext();
+	    while (scope != null) {
+		if (scope instanceof ClassInfo) {
+		    if (name.compareTo(scope.getName()) == 0)
+			result = (ClassInfo) scope;
+
+		    // If we find a static class, do not search containment
+		    // chain any further.
+		    if ((((ClassInfo) scope).getModifiers() &
+			ClassInfo.ACC_STATIC) != 0)
+			break;
+		}
+		scope = scope.getDeclaringEnv();
+	    }
+
+	    // NOTE: result may be null if all IOD tests failed.
+	    return(result);
+	}
+
+
+	//**************************************************
+	// Used to classify a name (phase 1 of lookup).
+	//**************************************************
+
+	protected int classify() {
+	    // First, check if MthCall follows immediately
+	    if ((up instanceof Lang.PPQualName) &&
+		(up.up instanceof Lang.PrimExpr) &&
+		(up.up.arg[1].arg[0].arg[0] instanceof Lang.MthCall))
+		return(SymName.METHOD_NAME);
+
+	    if (up instanceof Lang.PackStm)
+		return(SymName.PACKAGE_NAME);
+	    if ((up instanceof Lang.ImpQual) &&
+		(up.arg[1] != null))
+		return(SymName.PACKAGE_NAME);
+
+	    if (up instanceof Lang.ExtClause)
+		return(SymName.TYPE_NAME);
+	    if (up instanceof Lang.ObjAllocExpr)
+		return(SymName.TYPE_NAME);
+
+		// This is an AST_TypeName subclass
+	    if (up instanceof Lang.QNameType)
+		return(SymName.TYPE_NAME);
+
+	    // not sure about this one.
+	    if ((up instanceof Lang.AsgExpr) &&
+		     (up.arg[0] == this))
+		return(SymName.EXPRESSION_NAME);
+
+	    //**************************************************
+	    // I don't understand this requirement and it's causing problems,
+	    // so I'm commenting it out until it's meaning is resolved.
+	    // (5/4/99)
+	    //**************************************************
+	    // NOTE: we require up.up to be non-null so that names
+	    // such as "java.lang.Object" will NOT classify as EXPRESSION_NAME.
+// 	    if ((up instanceof Lang.PPQualName) &&
+// 		(up.up != null))
+// 		return(SymName.EXPRESSION_NAME);
+
+	    return(SymName.AMBIGUOUS_NAME);
+	}
+
+	//**************************************************
+	// Used to re-classify an AmbiguousName (phase 2 of lookup).
+	// The name is that part of the SymName parameter which starts
+	// at 0 up to and including the index parameter.
+	//**************************************************
+
+	protected Declaration reclassifyAndBind(SymName sym, int index)
+	    throws BadSymbolNameException {
+	    Scope scope;
+	    String name;
+	    Declaration result;
+	    Enumeration iods;	// list of import-on-demand's
+	    PackageInfo pkg;
+	    ClassInfo cls;
+	    FieldInfo field;
+	    CompilationUnit cu;
+
+	    name = sym.componentName(index);
+	    if (index == 0) {
+		// A simple name
+
+		// First search for a variable
+		scope = getLookupContext();
+		while (scope != null) {
+		    if (scope instanceof PackageInfo) {
+			// Check for name as a class in the current package.
+			result = ((PackageInfo) scope).findClass(name);
+			if (result != null) {
+			    sym.setType(index, SymName.TYPE_NAME);
+			    return(result);
+			}
+
+			// Check for binding to scope itself
+			if (name.compareTo(scope.getName()) == 0) {
+			    result = (Declaration) scope;
+			    sym.setType(index, SymName.PACKAGE_NAME);
+			    return(result);
+			}
+			break;
+		    }
+		    if (scope instanceof BlockScope) {
+			result = ((BlockScope) scope).findField(name);
+			if (result != null) {
+			    sym.setType(index, SymName.EXPRESSION_NAME);
+			    return(result);
+			}
+		    }
+		    else if (scope instanceof MethodInfo) {
+			result = ((MethodInfo) scope).findField(name);
+			if (result != null) {
+			    sym.setType(index, SymName.EXPRESSION_NAME);
+			    return(result);
+			}
+		    }
+		    else if (scope instanceof ClassInfo) {
+			result = ((ClassInfo) scope).findField(name);
+			if (result != null) {
+			    sym.setType(index, SymName.EXPRESSION_NAME);
+			    return(result);
+			}
+
+			// Containment classes searched by findField, so
+			// we break here.
+			break;
+		    }
+
+		    scope = scope.getDeclaringEnv();
+		}
+
+		// See if we can bind to a class via single-type-import
+		// or class in current package, or import-on-demand.
+		result = bindSimpleTypeName(name);
+		if (result != null) {
+		    sym.setType(index, SymName.TYPE_NAME);
+		    return(result);
+		}
+
+		// If all else fails, assume package
+		pkg = Symtab.instance().defaultPackage();
+		result = pkg.findSubPackage(name);
+		if (result != null)
+		    sym.setType(index, SymName.PACKAGE_NAME);
+
+		// Note this can fail and return a null.
+		return(result);
+	    }
+
+	    // Else name must be qualified
+
+	    // Reclassify name to the left
+	    result = reclassifyAndBind(sym, index-1);
+
+	    if (result == null)
+		return(null);
+
+	    if (result instanceof PackageInfo) {
+		// name can be either a sub-package or a class
+
+		pkg = (PackageInfo) result;
+		result = pkg.findSubPackage(name);
+		if (result != null) {
+		    sym.setType(index, SymName.PACKAGE_NAME);
+		    return(result);
+		}
+
+		result = pkg.findClass(name);
+		if (result != null) {
+		    sym.setType(index, SymName.TYPE_NAME);
+		    return(result);
+		}
+	    }
+	    else if (result instanceof ClassInfo) {
+		// name can be either a class (nested) or a field. (Methods
+		// are taken care of by testing for MthCall.
+
+		cls = (ClassInfo) result;
+		result = cls.findClass(name);
+		if (result != null) {
+		    sym.setType(index, SymName.TYPE_NAME);
+		    return(result);
+		}
+
+		result = cls.findField(name);
+		if (result != null) {
+		    sym.setType(index, SymName.EXPRESSION_NAME);
+		    return(result);
+		}
+	    }
+	    else if (result instanceof FieldInfo) {
+		// expression using field access
+
+		field = (FieldInfo) result;
+		cls = field.getType();
+		result = cls.findField(name);
+		if (result != null)
+		    return(result);
+	    }
+
+	    return(null);
+	}
+    }
+
+
+    //**************************************************
+    // AST_TypeName extension class
+    //**************************************************
+    static public class AST_TypeName extends $(ParentComponent).AST_TypeName {
+
+	public Declaration lookup() {
+	    resetLookupContext();
+	    return(arg[0].lookup((Declaration) null));
+	}
+
+	public Declaration lookup(Scope ctx) {
+	    setLookupContext(ctx);
+	    return(arg[0].lookup((Declaration) null));
+	}
+    }
+
+
+    //**************************************************
+    // CastExpression extension class
+    //**************************************************
+    static public class CastExpression
+	extends $(ParentComponent).CastExpression {
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(arg[0].lookup(leftClassification));
+	}
+    }
+
+
+    //**************************************************
+    // PrimaryPrefix classes (encompasses Literal classes too)
+    //**************************************************
+
+    //**************************************************
+    // Literal classes
+    //**************************************************
+
+    //**************************************************
+    // IntLit extension class
+    //**************************************************
+    static public class IntLit extends $(ParentComponent).IntLit {
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(Symtab.Integer);
+	}
+    }
+
+    //**************************************************
+    // FPLit extension class
+    //**************************************************
+    static public class FPLit extends $(ParentComponent).FPLit {
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(Symtab.Float);
+	}
+    }
+
+    //**************************************************
+    // CharLit extension class
+    //**************************************************
+    static public class CharLit extends $(ParentComponent).CharLit {
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(Symtab.Character);
+	}
+    }
+
+    //**************************************************
+    // StrLit extension class
+    //**************************************************
+    static public class StrLit extends $(ParentComponent).StrLit {
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(Symtab.instance().lookup("java.lang.String"));
+	}
+    }
+
+    //**************************************************
+    // BooleanLiteral extension class
+    //**************************************************
+    static public class BooleanLiteral
+	extends $(ParentComponent).BooleanLiteral {
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(Symtab.Boolean);
+	}
+    }
+
+    //**************************************************
+    // NullLiteral extension class
+    //**************************************************
+    static public class NullLiteral extends $(ParentComponent).NullLiteral {
+	protected Declaration lookup(Declaration leftClassification) {
+	    // ??? not sure about this ???
+	    return(Symtab.instance().lookup("java.lang.Object"));
+	}
+    }
+
+    // end Literal classes
+
+    //**************************************************
+    // ThisPre extension class
+    //**************************************************
+    static public class ThisPre extends $(ParentComponent).ThisPre {
+	protected Declaration lookup(Declaration leftClassification) {
+	    Scope scope;
+	    String argSig;
+	    Declaration result;
+
+	    // Locate the enclosing class scope
+	    scope = getLookupContext();
+	    while (! (scope instanceof ClassInfo)) {
+		if (scope == null)
+		    return(null);
+		scope = scope.getDeclaringEnv();
+	    }
+
+	    // If MthCall doesn't follow this node, then we return the
+	    // enclosing class scope found above.
+	    if (! ((up instanceof PrimExpr) &&
+		   (up.arg[1].arg[0].arg[0] instanceof MthCall)))
+		return((Declaration) scope);
+
+	    // This is a method call
+	    argSig =
+		((MthCall) up.arg[1].arg[0].arg[0]).getArgumentSignature();
+	    try {
+		result = ((ClassInfo) scope).findMethod("<init>", argSig);
+	    }
+	    catch (BadSymbolNameException e) {
+		Util.fatalError(e);
+		result = null;
+	    }
+	    return(result);
+	}
+    }
+
+    //**************************************************
+    // SuperPre extension class
+    //**************************************************
+    static public class SuperPre extends $(ParentComponent).SuperPre {
+	protected Declaration lookup(Declaration leftClassification) {
+	    Scope scope;
+	    String argSig;
+	    ClassInfo superclass;
+	    MethodInfo method;
+	    MthCall mcall;
+	    String name;
+	    ClassInfo nclass;
+
+	    try {
+		// Locate the enclosing class scope
+		scope = getLookupContext();
+		while (! (scope instanceof ClassInfo)) {
+		    if (scope == null)
+			return(null);
+		    scope = scope.getDeclaringEnv();
+		}
+
+		// Get the superclass of the enclosing class scope
+		superclass = ((ClassInfo) scope).getSuperclass();
+
+		// Check to see if a MthCall class follows
+		name = arg[0].toString().trim();
+		if ((up instanceof PrimExpr) &&
+		    (up.arg[1].arg[0].arg[0] instanceof MthCall)) {
+		    mcall = (MthCall) up.arg[1].arg[0].arg[0];
+		    argSig = mcall.getArgumentSignature();
+		    method = superclass.findMethod(name, argSig);
+		    return(method);
+		}
+
+		// Check if we have a nested class
+		nclass = superclass.findClass(name);
+		if (nclass != null)
+		    return(nclass);
+
+	    // Must be a field name
+		return(superclass.findField(name));
+	    }
+	    catch (BadSymbolNameException e) {
+		Util.fatalError(e);
+		return(null);
+	    }
+	}
+    }
+
+    //**************************************************
+    // ExprPre extension class
+    //**************************************************
+    static public class ExprPre extends $(ParentComponent).ExprPre {
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(((AST_Exp) arg[0]).lookup(leftClassification));
+	}
+    }
+
+    //**************************************************
+    // AllocationExpression extension class
+    //**************************************************
+//     static public class AllocationExpression
+// 	extends $(ParentComponent).AllocationExpression {
+// 	protected Declaration lookup(Declaration leftClassification) {
+// 	    if (arg[0] instanceof PrimAllocExpr)
+// 		return(((PrimAllocExpr) arg[0]).lookup(leftClassification));
+// 	    return(((ObjAllocExpr) arg[0]).lookup(leftClassification));
+// 	}
+//     }
+
+    //**************************************************
+    // PrimAllocExpr extension class
+    //**************************************************
+    static public class PrimAllocExpr
+	extends $(ParentComponent).PrimAllocExpr {
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(((PrimitiveType) arg[0]).lookup(leftClassification));
+	}
+    }
+
+    //**************************************************
+    // PrimAllocExpr extension class
+    //**************************************************
+    static public class ObjAllocExpr
+	extends $(ParentComponent).ObjAllocExpr {
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(((AST_QualifiedName) arg[0]).lookup(leftClassification));
+	}
+    }
+
+    //**************************************************
+    // RTPre extension class
+    //**************************************************
+    static public class RTPre extends $(ParentComponent).RTPre {
+	protected Declaration lookup(Declaration leftClassification) {
+	    Symtab st = (Symtab) Symtab.instance();
+
+	    return(st.lookup("java.lang.Class"));
+	}
+    }
+
+    //**************************************************
+    // PPQualName extension class
+    //**************************************************
+    static public class PPQualName extends $(ParentComponent).PPQualName {
+	protected Declaration lookup(Declaration leftClassification) {
+	    // NOTE: The lookup() method in AST_QualifiedName will check to see
+	    // if MthCall follows.
+
+	    return(((AST_QualifiedName) arg[0]).lookup(leftClassification));
+	}
+    }
+
+
+    // end PrimaryPrefix classes
+
+    //**************************************************
+    // PrimarySuffix classes
+    //**************************************************
+
+    //**************************************************
+    // ThisSuf extension class
+    //**************************************************
+    static public class ThisSuf extends $(ParentComponent).ThisSuf {
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(leftClassification);
+	}
+    }
+
+    //**************************************************
+    // AllocSuf extension class
+    //**************************************************
+    static public class AllocSuf extends $(ParentComponent).AllocSuf {
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(((AllocationExpression) arg[0]).lookup(leftClassification));
+	}
+    }
+
+    //**************************************************
+    // ExprSuf extension class
+    //**************************************************
+    static public class ExprSuf extends $(ParentComponent).ExprSuf {
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(leftClassification);
+	}
+    }
+
+    //**************************************************
+    // QNameSuf extension class
+    //**************************************************
+    static public class QNameSuf extends $(ParentComponent).QNameSuf {
+	protected Declaration lookup(Declaration leftClassification) {
+	    String argSig;
+	    MethodInfo method;
+	    MthCall mcall;
+	    String name;
+	    ClassInfo cls;
+	    ClassInfo nclass;
+
+	    try {
+		// If 'left' is a FieldInfo or MethodInfo, use it to get
+		// a ClassInfo.
+		if (leftClassification instanceof FieldInfo)
+		    cls = ((FieldInfo) leftClassification).getType();
+		else if (leftClassification instanceof MethodInfo)
+		    cls = ((MethodInfo) leftClassification).getReturnType();
+		else if (leftClassification instanceof ClassInfo)
+		    cls = (ClassInfo) leftClassification;
+		else {
+		    Util.fatalError("Bad Expression");
+		    cls = null;
+		}
+
+		// Check to see if a MthCall class follows
+		name = arg[0].toString().trim();
+		if ((up instanceof PrimExpr) &&
+		    (up.arg[1].arg[0].arg[0] instanceof MthCall)) {
+		    mcall = (MthCall) up.arg[1].arg[0].arg[0];
+		    argSig = mcall.getArgumentSignature();
+		    method = cls.findMethod(name, argSig);
+		    return(method);
+		}
+
+		// Check if we have a nested class
+		nclass = cls.findClass(name);
+		if (nclass != null)
+		    return(nclass);
+
+		// Must be a field name
+		return(cls.findField(name));
+	    }
+	    catch (BadSymbolNameException e) {
+		Util.fatalError(e);
+		return(null);
+	    }
+	}
+    }
+
+    //**************************************************
+    // MthCall extension class
+    //**************************************************
+    static public class MthCall extends $(ParentComponent).MthCall {
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(leftClassification);
+	}
+
+	public String getArgumentSignature() {
+	    Lang.AstNode elemPtr;
+	    StringBuffer buffer;
+	    AST_Exp expr;
+	    ClassInfo cls;
+	    SymName symname;
+
+	    // MthCall->Args->AstOptNode->AST_ArgList
+	    elemPtr = arg[0].arg[0].arg[0];
+	    if (elemPtr == null)
+		return("");
+
+	    // AST_ArgList->AST_ArgListElem
+	    elemPtr = elemPtr.arg[0];
+	    buffer = new StringBuffer();
+	    while (elemPtr != null) {
+		expr = (AST_Exp) elemPtr.arg[0];
+		cls = Symtab.classOf(expr.lookup((Declaration) null));
+		symname = new SymName(cls.getFullName());
+		if (cls instanceof Type)
+		    symname.setDimCount(((Type) cls).getDim());
+		buffer.append(symname.getSignature());
+
+		elemPtr = elemPtr.right;
+	    }
+
+	    return(buffer.toString());
+	}
+    }
+
+    // end PrimarySuffix classes
+
+
+
+    //**************************************************
+    // PrimitiveType classes
+    //**************************************************
+
+    //**************************************************
+    // BoolTyp extension class
+    //**************************************************
+    static public class BoolTyp extends $(ParentComponent).BoolTyp {
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(Symtab.Boolean);
+	}
+    }
+
+    //**************************************************
+    // CharTyp extension class
+    //**************************************************
+    static public class CharTyp extends $(ParentComponent).CharTyp {
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(Symtab.Character);
+	}
+    }
+
+    //**************************************************
+    // ByteTyp extension class
+    //**************************************************
+    static public class ByteTyp extends $(ParentComponent).ByteTyp {
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(Symtab.Byte);
+	}
+    }
+
+    //**************************************************
+    // ShortTyp extension class
+    //**************************************************
+    static public class ShortTyp extends $(ParentComponent).ShortTyp {
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(Symtab.Short);
+	}
+    }
+
+    //**************************************************
+    // IntTyp extension class
+    //**************************************************
+    static public class IntTyp extends $(ParentComponent).IntTyp {
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(Symtab.Integer);
+	}
+    }
+
+    //**************************************************
+    // LongTyp extension class
+    //**************************************************
+    static public class LongTyp extends $(ParentComponent).LongTyp {
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(Symtab.Long);
+	}
+    }
+
+    //**************************************************
+    // FloatTyp extension class
+    //**************************************************
+    static public class FloatTyp extends $(ParentComponent).FloatTyp {
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(Symtab.Float);
+	}
+    }
+
+    //**************************************************
+    // DoubleTyp extension class
+    //**************************************************
+    static public class DoubleTyp extends $(ParentComponent).DoubleTyp {
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(Symtab.Double);
+	}
+    }
+
+    //**************************************************
+    // VoidTyp extension class
+    //**************************************************
+    static public class VoidTyp extends $(ParentComponent).VoidTyp {
+	protected Declaration lookup(Declaration leftClassification) {
+	    return(Symtab.Void);
+	}
+    }
+
+
+    //**************************************************
+    // Block extension class
+    //**************************************************
+
+    static public class Block extends $(ParentComponent).Block {
+	protected BlockScope blockScope;
+
+	protected void buildSymbolTable2() {
+	    // We'll forgo creating a BlockScope if our parent is a Method
+	    // declaration. That way the method parameters and local variable
+	    // declarations are in the same context.
+	    if (up instanceof Lang.MDSBlock) {
+		arg[0].buildSymbolTable2();
+		return;
+	    }
+
+	    Symtab st = (Symtab) Symtab.instance();
+
+	    // Create a BlockScope and declare it.
+	    blockScope = new BlockScope();
+	    st.declare(blockScope);
+
+	    // Activate block scope
+	    st.activateScope(blockScope);
+
+	    arg[0].buildSymbolTable2();
+
+	    // Deactivate block scope
+	    st.deactivateScope();
+	}
+
+	public Scope locateScope() {
+	    if (blockScope == null)
+		return(up.locateScope());
+	    return(blockScope);
+	}
+    }
+
+
+    //**************************************************
+    // CatchStmt extension class
+    //**************************************************
+    static public class CatchStmt extends $(ParentComponent).CatchStmt {
+
+	//**************************************************
+	// We entend buildSymbolTable2() to call buildSymbolTable2() of
+	// it's Block argument before that of it's FormalParameter argument.
+	// This is done so that the formal parameter declaration gets
+	// created in the scope of the block, not an outer scope.
+	//**************************************************
+	protected void buildSymbolTable2() {
+	    arg[1].buildSymbolTable2();
+	    arg[0].buildSymbolTable2();
+	}
+    }
+
+
+    //**************************************************
+    // Extensions to handle lookup's for arbitrary expressions.
+    //**************************************************
+
+    static public class AsgExpr extends $(ParentComponent).AsgExpr {
+	protected Declaration lookup(Declaration leftC) {
+	    Declaration dcl = ((Lang.AST_Exp) arg[0]).lookup(leftC);
+	    return(Symtab.classOf(dcl));
+	}
+    }
+
+    static public class QuestExpr extends $(ParentComponent).QuestExpr {
+	protected Declaration lookup(Declaration leftC) {
+	    Declaration dcl = ((Lang.AST_Exp) arg[1]).lookup(leftC);
+	    return(Symtab.classOf(dcl));
+	}
+    }
+
+    static public class CondOrExpr extends $(ParentComponent).CondOrExpr {
+	protected Declaration lookup(Declaration leftC) {
+	    return(Symtab.Boolean);
+	}
+    }
+
+    static public class CondAndExpr extends $(ParentComponent).CondAndExpr {
+	protected Declaration lookup(Declaration leftC) {
+	    return(Symtab.Boolean);
+	}
+    }
+
+    static public class InclOrExpr extends $(ParentComponent).InclOrExpr {
+	protected Declaration lookup(Declaration leftC) {
+	    return(Symtab.Integer);
+	}
+    }
+
+    static public class ExclOrExpr extends $(ParentComponent).ExclOrExpr {
+	protected Declaration lookup(Declaration leftC) {
+	    return(Symtab.Integer);
+	}
+    }
+
+    static public class AndExpr extends $(ParentComponent).AndExpr {
+	protected Declaration lookup(Declaration leftC) {
+	    return(Symtab.Integer);
+	}
+    }
+
+    static public class EqExpr extends $(ParentComponent).EqExpr {
+	protected Declaration lookup(Declaration leftC) {
+	    ClassInfo arg1Type, arg2Type;
+	    Lang.AstNode node;
+	    Declaration dcl;
+
+	    dcl = ((Lang.AST_Exp) arg[0]).lookup(leftC);
+	    arg1Type = Symtab.classOf(dcl);
+	    node = arg[1].arg[0].arg[0].arg[1];
+	    dcl = ((Lang.AST_Exp) node).lookup(leftC);
+	    arg2Type = Symtab.classOf(dcl);
+	    return(arg1Type.promotesTo(arg2Type));
+	}
+    }
+
+    static public class IoExpr extends $(ParentComponent).IoExpr {
+	protected Declaration lookup(Declaration leftC) {
+	    return(Symtab.Boolean);
+	}
+    }
+
+    static public class RelExpr extends $(ParentComponent).RelExpr {
+	protected Declaration lookup(Declaration leftC) {
+	    ClassInfo arg1Type, arg2Type;
+	    Lang.AstNode node;
+	    Declaration dcl;
+
+	    dcl = ((Lang.AST_Exp) arg[0]).lookup(leftC);
+	    arg1Type = Symtab.classOf(dcl);
+	    node = arg[1].arg[0].arg[0].arg[1];
+	    dcl = ((Lang.AST_Exp) node).lookup(leftC);
+	    arg2Type = Symtab.classOf(dcl);
+	    return(arg1Type.promotesTo(arg2Type));
+	}
+    }
+
+    static public class ShiftExpr extends $(ParentComponent).ShiftExpr {
+	protected Declaration lookup(Declaration leftC) {
+	    Declaration dcl = ((Lang.AST_Exp) arg[0]).lookup(leftC);
+	    return(Symtab.classOf(dcl));
+	}
+    }
+
+    static public class AddExpr extends $(ParentComponent).AddExpr {
+	protected Declaration lookup(Declaration leftC) {
+	    ClassInfo arg1Type, arg2Type;
+	    Lang.AstNode node;
+	    Declaration dcl;
+
+	    dcl = ((Lang.AST_Exp) arg[0]).lookup(leftC);
+	    arg1Type = Symtab.classOf(dcl);
+	    node = arg[1].arg[0].arg[0].arg[1];
+	    dcl = ((Lang.AST_Exp) node).lookup(leftC);
+	    arg2Type = Symtab.classOf(dcl);
+	    return(arg1Type.promotesTo(arg2Type));
+	}
+    }
+
+    static public class MultExpr extends $(ParentComponent).MultExpr {
+	protected Declaration lookup(Declaration leftC) {
+	    ClassInfo arg1Type, arg2Type;
+	    Lang.AstNode node;
+	    Declaration dcl;
+
+	    dcl = ((Lang.AST_Exp) arg[0]).lookup(leftC);
+	    arg1Type = Symtab.classOf(dcl);
+	    node = arg[1].arg[0].arg[0].arg[1];
+	    dcl = ((Lang.AST_Exp) node).lookup(leftC);
+	    arg2Type = Symtab.classOf(dcl);
+	    return(arg1Type.promotesTo(arg2Type));
+	}
+    }
+
+    static public class PlusUE extends $(ParentComponent).PlusUE {
+	protected Declaration lookup(Declaration leftC) {
+	    Declaration dcl = ((Lang.AST_Exp) arg[0]).lookup(leftC);
+	    return(Symtab.classOf(dcl).promotesTo(Symtab.Integer));
+	}
+    }
+
+    static public class MinusUE extends $(ParentComponent).MinusUE {
+	protected Declaration lookup(Declaration leftC) {
+	    Declaration dcl = ((Lang.AST_Exp) arg[0]).lookup(leftC);
+	    return(Symtab.classOf(dcl).promotesTo(Symtab.Integer));
+	}
+    }
+
+    static public class TildeUE extends $(ParentComponent).TildeUE {
+	protected Declaration lookup(Declaration leftC) {
+	    Declaration dcl = ((Lang.AST_Exp) arg[0]).lookup(leftC);
+	    return(Symtab.classOf(dcl).promotesTo(Symtab.Integer));
+	}
+    }
+
+    static public class PIncExpr extends $(ParentComponent).PIncExpr {
+	protected Declaration lookup(Declaration leftC) {
+	    Declaration dcl = ((Lang.AST_Exp) arg[0]).lookup(leftC);
+	    return(Symtab.classOf(dcl));
+	}
+    }
+
+    static public class PDecExpr extends $(ParentComponent).PDecExpr {
+	protected Declaration lookup(Declaration leftC) {
+	    Declaration dcl = ((Lang.AST_Exp) arg[0]).lookup(leftC);
+	    return(Symtab.classOf(dcl));
+	}
+    }
+
+    static public class NotUE extends $(ParentComponent).NotUE {
+	protected Declaration lookup(Declaration leftC) {
+	    return(Symtab.Boolean);
+	}
+    }
+
+}

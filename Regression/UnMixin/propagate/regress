@@ -1,0 +1,24 @@
+#!/bin/bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+echo "****************Propagation Regression Test***********"
+
+bash regress-one class c1 \
+&& bash regress-one class c2 \
+&& bash regress-one class c3 \
+&& bash regress-one class c4 \
+&& bash regress-one class c5 \
+&& bash regress-one class c6 \
+&& bash regress-one int i1 \
+&& bash regress-one int i2 \
+&& bash regress-one int i3 \
+&& bash regress-one int i4 \
+&& bash regress-one sm s1 \
+&& bash regress-one sm s2 \
+&& bash regress-one sm s3 \
+&& bash regress-one sm s4 \
+&& bash regress-one sm s5 \
+|| exit 1
+
+echo -e "\nPropagation Regression Test succeeded."

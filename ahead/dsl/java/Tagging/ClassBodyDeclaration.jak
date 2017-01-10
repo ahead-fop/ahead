@@ -1,0 +1,16 @@
+layer Tagging;
+
+refines class ClassBodyDeclaration {
+
+   // note: eventually, we would like to have this conditionally
+   // added.  Right now it is ALWAYS added
+
+   public void setSource( String s ) {
+
+      // label all of the children of this node first, including
+      // labeling the node itself
+
+      Super(String).setSource(s);
+      annotate();
+   }
+}

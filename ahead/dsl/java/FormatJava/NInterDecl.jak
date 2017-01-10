@@ -1,0 +1,21 @@
+layer FormatJava;
+
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+// This production has been deleted from the grammar file
+// static public class InterDecl extends lower.InterDecl {
+//   public void format( int position ) {
+//      newline_routins(position);
+//      Super(int).format(position);
+//   }
+// }
+   
+public refines class NInterDecl {
+    public void format( int position ) {
+        newline_routins( position );
+        super.format( position );
+    }
+}

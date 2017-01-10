@@ -1,0 +1,27 @@
+import java.util.*;
+import Jakarta.util.*;
+
+refines class pattern   {
+   node simple;
+   node cnf;
+
+   static void makeClauses() {
+      if (Main.outputModelPredicate) {
+         System.out.println();
+         System.out.println("// Pattern");
+      }
+
+      Iterator i = Ttable.values().iterator();
+      while ( i.hasNext() ) {
+         pattern p = ( pattern ) i.next();
+         p.simple = p.formula.klone().simplify();
+         if (Main.outputModelPredicate)
+            System.out.println(p.simple + " and");  /* dsb */
+         p.cnf    = p.simple.klone().cnf();
+         ArrayList al = new ArrayList();
+         p.cnf.reduce(al);
+         cnfClause.setFormula(al, p.formula);
+         cnfClause.clist.addAll(al);
+      }
+   }
+}

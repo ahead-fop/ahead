@@ -1,0 +1,9 @@
+// tests simplification
+
+layer test9a;
+
+extern inside Int range;
+extern outside Int val;
+
+provides inside range == 50;
+requires outside val == 4;

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+echo "****************jrename Regression Test***********"
+
+bash regress-one nestedc && \
+bash regress-one nestedi && \
+bash regress-one g1 && \
+bash regress-one cmid && \
+bash regress-one source && \
+bash regress-one state && \
+bash regress-one AliasTest && \
+bash regress-one is && \
+bash regress-one ws || \
+exit 1
+
+echo -e "\njrename Regression Test succeeded."

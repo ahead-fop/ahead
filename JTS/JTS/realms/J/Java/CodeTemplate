@@ -1,0 +1,241 @@
+//                              -*- Mode: Java -*- 
+// CodeTemplate --- 
+// Author          : Bernie Lofaso
+// Created On      : Thu Nov 13 10:44:15 1997
+// Last Modified By: 
+// Last Modified On: Tue Jun 01 09:06:54 1999
+// Update Count    : 31
+// Status          : Under Development
+// 
+// $Locker:  $
+// $Log: CodeTemplate,v $
+// Revision 1.3  2002-10-15 17:03:01  sarvela
+// Corrected "super" references to "Super".
+//
+// Revision 1.2  2002/02/22 18:19:35  sarvela
+// Removed carriage returns.
+//
+// Revision 1.1.1.1  1999/06/02 20:44:32  sarvela
+// Imported original v3.0beta4 sources from Webpage
+//
+// Revision 1.3  1999/06/02 20:44:32  lofaso
+// Fixed a bug where a few class names weren't fully qualified with 'Lang.'.
+//
+// Revision 1.2  1999/05/19 21:26:58  lofaso
+// Added getParser() method to allow needed changes in new symbol table code.
+//
+// Revision 1.1.1.1  1999/02/18 16:15:34  lofaso
+// Snapshot 2-18-99
+//
+// Revision 1.4  1998/09/25 21:48:39  lofaso
+// Modified JTS such that only default constructor and constructor taking a
+// single int is required for extending grammar classes.
+//
+// Revision 1.3  1998/06/22 18:52:39  lofaso
+// Layer update.
+//
+// Revision 1.2  1998/04/07 21:41:38  lofaso
+// After kernel and Main split.
+//
+// Revision 1.1.1.1  1997/12/15 21:00:55  lofaso
+// Imported sources
+//
+// 
+
+
+package $(LanguageName);
+
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+
+public class Java extends $(ParentComponent) {
+    //**************************************************
+    // Literal extension class
+    //**************************************************
+    public static class Literal extends $(ParentComponent).Literal {
+	public static Literal Make( String id ) {
+	    Lang.AstToken t = new Lang.AstToken().setParms(" ", id, 0);
+	    return(new Lang.StrLit().setParms(t));
+	}
+
+	public static Literal Make( int id ) {
+	    Lang.AstToken t = new Lang.AstToken().setParms(" ",
+						 new Integer(id).toString(),
+							   0);
+	    return new Lang.IntLit().setParms(t);
+	}
+
+	public static Literal makeLiteral(String str) {
+	    Lang.AstToken t = new Lang.AstToken().setParms("", str, 0);
+	    return(new Lang.StrLit().setParms(t));
+	}
+    }
+
+    static public class AST_QualifiedName extends $(ParentComponent).AST_QualifiedName {
+	// the following routines are used for converting strings (or string
+	// arrays) into AST_QualifiedName trees.  If an array of strings is
+	// given as an argument (id[0]="x"; id[1]="y"; id[2]="z"), what is
+	// returned is id{x.y.z}id
+
+	public static Lang.AST_QualifiedName Make( String id ) {
+	    Lang.AST_QualifiedName a = new Lang.AST_QualifiedName();
+	    Lang.AstToken dot = new Lang.AstToken().setParms("",".",0);
+	    Lang.NameId nid = new Lang.NameId().setParms(new Lang.AstToken().setParms(" ",id,0));
+	    a.add(new Lang.AST_QualifiedNameElem().setParms(dot, nid));
+	    return(a);
+	}
+
+	public static Lang.AST_QualifiedName Make( String[] id ) {
+	    Lang.AST_QualifiedName a = new Lang.AST_QualifiedName();
+	    Lang.AstToken dot;
+	    Lang.NameId nid;
+	    int i;
+
+	    for ( i = 0; i<id.length; i++) {
+		dot = new Lang.AstToken().setParms("",".",0);
+		nid = new Lang.NameId().setParms(new Lang.AstToken().setParms(" ",id[i],0));
+		a.add(new Lang.AST_QualifiedNameElem().setParms(dot, nid));
+	    }
+	    return(a);
+	}
+
+	public String GetName( ) {
+	    Lang.AstCursor c    = new Lang.AstCursor();
+	    String    name = null;
+
+	    for (c.First(this); c.More(); c.PlusPlus()) {
+		if (c.node instanceof Lang.NameId) {
+		    if (name != null) name = name + "." + c.node.tok[0].tokenName();
+		    else  name = c.node.tok[0].tokenName();
+		}
+	    }
+	    return name;
+	}
+    }
+
+
+    static public class Main extends $(ParentComponent).Main {
+	private int myLayerID;
+	static private BaliParser parser = null;
+	static public BaliParser getParser() { return(parser); }
+
+	//**************************************************
+	// Method called by the top-most layer to allow a layer to request
+	// switches and arguments.
+	//**************************************************
+	protected void argInquire(int layer) {
+	    Switch sw;
+
+	    // Save my layer number
+	    myLayerID = layer;
+
+	    // Register my switches
+	    sw = new Switch("d", "debug mode for parser", null, true, layer);
+	    switchRegister(sw);
+	    sw = new Switch("s", "send output to stdout", null, true, layer);
+	    switchRegister(sw);
+
+	    // Register my command line positional arguments
+	    posArgRegister(new PositionalArg("source file", layer));
+
+	    // Call next layer
+	    Super(int).argInquire(nextLayer());
+	}
+
+
+	//**************************************************
+	// createAST()
+	//**************************************************
+	protected Lang.AstNode createAST(ArgList argObjects) {
+	    FileInputStream fis;
+	    PositionalArg parg;
+	    File inputFile;
+	    Lang.AstNode root;
+
+	    parg = (PositionalArg) argObjects.first(PositionalArg.class,
+						    myLayerID);
+	    try {
+		inputFile = new File(parg.binding);
+		fis = new FileInputStream(inputFile);
+		mainProps.setProperty("input", inputFile);
+	    }
+	    catch (Exception e) {
+		Util.fatalError("Can't open file "+ parg.binding);
+		fis = null;
+	    }
+
+	    try {
+		parser = new BaliParser(fis);
+		root = getStartRoot(parser);
+	    }
+	    catch (ParseException e) {
+		Util.fatalError(e);
+		root = null;
+	    }
+
+	    return(root);
+	}
+
+	//**************************************************
+	// outputAST()
+	//**************************************************
+	protected void outputAST(ArgList argObjects, Lang.AstNode ast) {
+	    PrintWriter pw;
+	    String outputFileName;
+	    String inputFileName;
+	    int lastDot;
+	    File inputFile;
+
+	    pw = null;
+	    String lineSeparator =
+		System.getProperties().getProperty("line.separator");
+	    if (argObjects.find("s", Switch.class, myLayerID) != null) {
+		if (lineSeparator.compareTo("\n") != 0)
+		    pw = new PrintWriter(new FixDosOutputStream(System.out));
+		else
+		    pw = new PrintWriter(System.out);
+	    }
+	    else {
+		inputFile = (File) mainProps.getProperty("input");
+		inputFileName = inputFile.getAbsolutePath();
+		lastDot = inputFileName.lastIndexOf('.');
+		if (lastDot == -1)
+		    outputFileName = inputFileName + ".java";
+		else
+		    outputFileName = inputFileName.substring(0, lastDot) +
+			".java";
+		try {
+		    OutputStream os;
+		    FileOutputStream fos =
+			new FileOutputStream(outputFileName);
+
+		    if (lineSeparator.compareTo("\n") != 0)
+			os = new FixDosOutputStream(fos);
+		    else
+			os = fos;
+		    pw = new PrintWriter(os);
+		}
+		catch (IOException e) {
+		    Util.fatalError("Cannot open " + outputFileName + ": " +
+				    e.getMessage());
+		}
+	    }
+	    mainProps.setProperty("output", pw);
+	    ast.reduce2java(mainProps);
+// 	    pw.print(myLexer.lastWhiteSpace());
+	    pw.println();
+	    pw.flush();
+
+	    // Call outputAST() for other layers
+	    Super(ArgList,Lang.AstNode).outputAST(argObjects, ast);
+	}
+
+    }
+}

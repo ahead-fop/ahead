@@ -1,0 +1,10 @@
+layer FS;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+/** Brigade Fire Support Element OPFAC. **/
+public State_machine BdeFseMission extends FseMission {}

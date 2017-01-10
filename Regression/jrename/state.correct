@@ -1,0 +1,5 @@
+jrename: state.java:4: Error layer declarations not supported
+jrename: state.java:6: Error cannot have refines clauses in jrename translations
+
+
+refines

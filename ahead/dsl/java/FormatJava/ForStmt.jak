@@ -1,0 +1,27 @@
+layer FormatJava;
+
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public refines class ForStmt {
+    public void format( int position ) {
+        newline_routins( position );
+        if ( arg[0].arg[0] != null )
+            arg[0].arg[0].setComment( " " );
+        else
+            ( ( AstToken ) tok[2] ).white_space = " ";
+        ( ( AstToken ) tok[4] ).white_space = " ";
+        if ( arg[3] instanceof  BlockC )
+            super.format( position );
+        else {
+            arg[0].format( position );
+            arg[1].format( position );
+            arg[2].format( position );
+            position += CommentUtil.TabSpace;
+            arg[3].format( position );
+            position -= CommentUtil.TabSpace;
+        }
+    }
+}

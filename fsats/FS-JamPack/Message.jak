@@ -1,0 +1,22 @@
+layer FS;
+
+import laydown.*;
+
+import java.util.*;
+
+import fsats.util.DataContainer;
+
+public interface Message extends Event {
+    /** Get/set message source opfac. */
+    String getSource();
+    void setSource( String newval );
+
+    /** Get/set message destination opfac. */
+    String getDestination();
+    void setDestination( String newval );
+
+    /** Get a representation of message specific information. */
+    String getSpecific();
+
+    DataContainer toFsams();
+}

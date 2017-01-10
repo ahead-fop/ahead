@@ -1,0 +1,15 @@
++ '[' -z /usr/bin/bash ']'
++ echo '****************Local_Id Regression Test***********'
+****************Local_Id Regression Test***********
++ bash regress-one Ctop Cmid resultCtopCmid
+composing Ctop & Cmid -> resultCtopCmid ... succeeded
++ bash regress-one Ctop Cmid5 resultCtopCmid5
+composing Ctop & Cmid5 -> resultCtopCmid5 ... succeeded
++ bash regress-one Cmid Cmid resultCmidCmid
+composing Cmid & Cmid -> resultCmidCmid ... succeeded
++ bash regress-one Cmid Cmid2 resultCmidCmid2
+composing Cmid & Cmid2 -> resultCmidCmid2 ... succeeded
++ bash regress-one Ctop1 Cmid1 result12
+composing Ctop1 & Cmid1 -> result12 ... succeeded
++ echo '*****************Local_Id Regression Test Succeeded*******'
+*****************Local_Id Regression Test Succeeded*******

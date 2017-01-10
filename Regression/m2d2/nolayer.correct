@@ -1,0 +1,17 @@
+
+#! JavaM => metamodels/JavaM.ecore 
+
+
+layer = JavaM::Layer.new(:name => 'feature', :identifier => 'layer') 
+package_used = JavaM::Package.new(:name => 'used', :identifier => 'used', :ownerLayer => layer)
+package_feature = JavaM::Package.new(:name => 'feature', :identifier => 'feature', , :ownerLayer => layer)
+
+# nolayer.jak
+
+feature_foo = JavaM::Class.new(:name => 'foo', :identifier => 'feature.foo', :visibility => 'public', :isRefinement => true, :owner => package_feature)
+
+#  implicitly imported files
+
+
+# nolayer.jak
+

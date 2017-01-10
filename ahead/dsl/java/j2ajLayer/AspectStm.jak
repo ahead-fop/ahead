@@ -1,0 +1,15 @@
+/** @author Roberto E. Lopez-Herrejon
+*/
+layer j2ajLayer;
+
+// This layer adds the name of the layer to the properties
+
+public refines class AspectStm {
+
+    public void reduce2java( AstProperties props ) {
+        // Obtsin the qualified name
+        String layerName = ((AST_QualifiedName)arg[0]).GetName();
+        props.setProperty("LayerName",layerName);
+        // do nothing
+    }
+}

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+cat $1     | sed -f updates | tr -s '\n\r' '\n' > correct
+cat $1.jak | sed -f updates | tr -s '\n\r' '\n' > current
+
+if ! diff -w correct current ; then
+   echo "diff failed on $1"
+   exit 1
+fi

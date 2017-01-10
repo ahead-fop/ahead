@@ -1,0 +1,37 @@
+layer dfix;
+
+// this layer is to retrofit previously declared .jsm files
+// so that default Delivery_parameters are made explicit
+
+public refines class Main {
+
+    private int dfixLayer; 
+
+    protected void argInquire( int _layer ) {
+        Switch sw;
+
+        // Save my layer number
+        dfixLayer = _layer;
+
+        // Register my switches
+        sw = new Switch( "p", "state machine delivery parameters", 
+		                   new String[1],  true, _layer );
+        switchRegister( sw );
+
+        // Call next layer
+        Super( int ).argInquire( nextLayer() );
+    }
+
+    //**************************************************
+    // createAST()
+    //**************************************************
+    protected  AstNode createAST( ArgList argObjects ) {
+
+		  // register 
+        Switch sw = ( Switch ) argObjects.find( "p", Switch.class, dfixLayer );
+        if ( sw != null ) 
+            kernelConstants.deliverDefault = sw.args[0];
+
+        return Super( ArgList ).createAST( argObjects );
+    }
+}

@@ -1,0 +1,10 @@
+// tests nested interfaces
+
+interface i9 {
+   boolean biff();
+   final interface nested { 
+	   void foo();
+		final int v = 4;
+   }
+   void foo2();
+}

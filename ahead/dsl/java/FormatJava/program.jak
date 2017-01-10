@@ -1,0 +1,12 @@
+layer FormatJava;
+
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public refines class program {
+    public void format( int position ) {
+        super.format( position );
+    }
+}

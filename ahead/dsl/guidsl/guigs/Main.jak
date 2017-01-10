@@ -1,0 +1,10 @@
+import javax.swing.*;
+
+refines class Main  {
+   static Gui guiObj;
+   static public void process2() {
+	   Super().process2();
+           variable.clearUserVisible();
+           guiObj = new Gui(grammar.rootProduction.name);
+	}
+}

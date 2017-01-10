@@ -1,0 +1,31 @@
+package MissionWrffeMlrsL;
+
+import 
+    Jakarta.util.Util;
+import 
+    java.io.*;
+import 
+    F.Libraries.log.Log;
+
+ // BnFseMission
+
+    
+    public extends state_machine FistMission
+    {
+        // If MLRS took mission then stop immediately.
+        Enter wrffeMlrsAccepted { event(null); }
+
+        /*REFINES EDGE no longer supported.  
+   Move predicate or body into method, and extend method.
+Refines edge wrffeMlrsAccepted1 : wrffeMlrsAccepted -> stop
+            conditions true do {} */
+
+        // added -- net effect of above refinement is to
+        // make edge action a no-op, and conditions true
+
+        public void wrffeMlrsAccepted1Action( Event message) {}
+
+        public boolean wrffeMlrsAccepted1Test( Event message) {
+           return true;
+        }
+    }

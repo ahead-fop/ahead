@@ -1,0 +1,15 @@
+layer FormatLayer;
+
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public refines class AspectStm {
+    public void format( int position ) {
+        if ( CommentUtil.autoLayer ) {
+            CommentUtil.layerName = ( ( AST_QualifiedName ) arg[0] ).GetName();
+        }
+        newline_routins( position );
+        super.format( position );
+    }
+}

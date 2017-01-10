@@ -1,0 +1,39 @@
+layer Cmid;
+
+import java.util.*;
+
+SoUrCe  Cmid "Cmid.jak";
+
+ abstract
+
+ class top$$Cmid implements java.io.Serializable {
+
+   static int i$$Cmid,j$$Cmid;
+   int ii$$Cmid,jj$$Cmid;
+
+   static { i$$Cmid = 4; }
+
+   void foo$$Cmid(float x, float y) { /* do something */ }
+
+   float bar( float x ) { 
+       Super(float).bar(x);
+       return (float) 4.0; 
+   }
+}
+
+SoUrCe  Cmid "Cmid.jak";
+
+ class top extends top$$Cmid implements java.io.Serializable {
+
+   static int i$$Cmid,j$$Cmid;
+   int ii$$Cmid,jj$$Cmid;
+
+   static { i$$Cmid = 4; }
+
+   void foo$$Cmid(float x, float y) { /* do something */ }
+
+   float bar( float x ) { 
+       Super(float).bar(x);
+       return (float) 4.0; 
+   }
+}

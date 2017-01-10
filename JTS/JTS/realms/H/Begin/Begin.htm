@@ -1,0 +1,169 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>XC</title>
+</head>
+
+<body>
+
+<copy blocks.gif >
+<copy comp1.gif >
+<copy comp2.gif >
+
+<h1><font face="Arial" color="#0000FF">XC (HTML Composer)</font></h1>
+<p><font face="Arial">One of the key ideas of GenBorg is that all program
+representations can be synthesized from equations; just as we can synthesize
+.java files from base and extension code files, we should be able to synthesize
+HTML files from base and extension markup files.</font></p>
+<p><font face="Arial"><b>XC</b> is an elementary text preprocessor that is
+useful in composing base and extension HTML and (hopefully) XML files.&nbsp; <b>XC</b>
+really doesn't understand HTML or XML, so its utility isn't limited to HTML and
+XML.&nbsp; Never-the-less, <b>XC</b> is the first step toward a really useful
+document composition tool.</font></p>
+<h3><font face="Arial" color="#0000FF">Basic Idea</font></h3>
+<p><font face="Arial">A base document is a template: it has a set of <b>labeled
+holes</b> that are to be filled with document fragments. Extension documents
+contain named document fragments, which also might have labeled holes.&nbsp; The
+figure below shows a base document and two extension documents. The base
+document has two holes (holeA and holeB). Both extension documents have
+definitions for both holes.&nbsp; Note that the definition of holeA in extension
+document1 also has a hole (whose name is holeA).</font></p>
+<p align="center"><img border="0" src="blocks.gif" width="491" height="211"></p>
+<p><font face="Arial">There is a parallel between the above figures and abstract
+classes and their concrete subclasses.&nbsp; An abstract class has a set of
+abstract methods whose implementation is not specified.&nbsp; The implementation
+of abstract methods is provided by concrete subclasses.&nbsp; The analogy is the
+following: a base document is an abstract class; holes in the base document are
+abstract methods.&nbsp; Extension documents are concrete subclasses (or more
+exactly, mixins that assume an abstract superclass); hole definitions are method
+declarations.</font></p>
+<p><font face="Arial">Instead of using the terms &quot;hole&quot; and &quot;hole
+definition&quot; from this point on, we will use the term <b>call</b> (short for
+call-to-concrete method) and <b>method</b> (short for method declaration).&nbsp;
+Thus, the above base document makes a call to concrete methods holeA and holeB;
+both extension documents have methods holeA and holeB.</font></p>
+<p><font face="Arial">Given base and extension documents, it should be possible
+to compose them.&nbsp; The figure below represents the equation
+extension_document2( extension_document1( base_document )), where the resulting
+document is shown to the right:</font></p>
+<p align="center"><img border="0" src="comp1.gif" width="675" height="252"></p>
+<p><font face="Arial">Another composition corresponds to the equation
+extension_document2( base_document ), which yields a different document than the
+previous equation:</font></p>
+<p align="center"><img border="0" src="comp2.gif" width="476" height="252"></p>
+<p><font face="Arial">A base document consists of a single (implied) method
+called &quot;main&quot;.&nbsp; Main is a special method because it doesn't have
+to be declared.&nbsp; All other methods must be explicitly declared to <b>XC</b>.&nbsp;
+There can be zero or more method calls in a base document.</font></p>
+<p><font face="Arial">An extension document is a series of explicit method
+declarations, each of which may have zero or more method calls.&nbsp; A call
+never references methods within the current document; calls always reference
+methods of an extension document that will be composed with it. (In layer-speak,
+calls only reference methods of the next lower-layer or next extension).</font></p>
+<p><font face="Arial">Because HTML is such a forgiving language, it is easy to
+create base and extension HTML documents using standard HTML editors (e.g.,
+FrontPage).&nbsp; By flipping to the HTML source page, one can introduce <b>XC</b>
+commands to define calls and methods.&nbsp; These calls and methods are not
+displayed in HTML browsers.</font></p>
+<p><font face="Arial">The following sections describe methods, calls, and other
+features of <b>XC</b>.</font></p>
+<ul>
+<call featureList >
+  <li><font face="Arial"><a href="#Examples">Examples</a></font></li>
+  <li><font face="Arial"><a href="#Calling XC from the Command-Line">Calling XC
+    from the Command Line</a></font></li>
+  <li><font face="Arial"><a href="#Calling XC from a Program">Calling XC from
+    Programs</a></font></li>
+  <li><font face="Arial"><a href="#Limitations and Future Editions">Limitations</a></font></li>
+</ul>
+<call chapters >
+<h3><font face="Arial" color="#0000FF"><a name="Examples">Examples</a></font></h3>
+<p><font face="Arial">Consider the following base document <b>B</b>:</font></p>
+<blockquote>
+  <pre><font face="Courier New">1
+2
+&lt;call foo &gt;
+</font>6
+7
+&lt;call bar &gt;
+11
+12</pre>
+</blockquote>
+<p><font face="Arial">The composition of <b>B</b> with <b>E</b> (written as <b>E(B)</b>)
+yields:</font></p>
+<blockquote>
+  <pre><font face="Courier New">1
+2
+3</font><font face="Courier New">  -- method foo</font><font face="Courier New">
+4</font><font face="Courier New">  -- method foo</font><font face="Courier New">
+5</font><font face="Courier New">  -- method foo</font><font face="Courier New">
+6
+7
+8</font><font face="Courier New">  -- method bar</font><font face="Courier New">
+9</font><font face="Courier New">  -- method bar</font><font face="Courier New">
+10</font><font face="Courier New"> -- method bar</font><font face="Courier New">
+11
+12</font></pre>
+</blockquote>
+<h3><font face="Arial" color="#0000FF"><a name="Calling XC from the Command-Line">Calling XC from the Command-Line</a></font></h3>
+<p><font face="Arial">Use the following to invoke <b>XC</b> from the command
+line:</font></p>
+<blockquote>
+  <pre><font face="Courier New">&gt; XC.Main base.html ext1.html ext2.html ...</font></pre>
+</blockquote>
+<p><font face="Arial">The output of <b>XC</b> is placed in a file &quot;result.html&quot;.&nbsp;
+Error messages are sent to standard out.</font></p>
+<h3><font face="Arial" color="#0000FF"><a name="Calling XC from a Program">Calling XC from a Program</a></font></h3>
+<p><font face="Arial"><b>XC</b> is a package that can be called from another
+program.&nbsp; To use it is simple:</font></p>
+<blockquote>
+  <p><font face="Arial">(a) initialize error reporting stream</font></p>
+  <blockquote>
+    <pre><font face="Courier New">XC.MLObject.setReportStream( print_writer );</font></pre>
+    <p><font face="Arial">note: if this method isn't called, the report stream
+    goes to standard out.</font></p>
+  </blockquote>
+  <p><font face="Arial">(a) to parse a base or extension file, use:</font></p>
+  <blockquote>
+    <pre><font face="Courier New">try {
+</font>   <font face="Courier New">XC.MLObject base = new XC.MLObject( baseFileName );
+}
+catch (Exception e) {
+   // errors -- failed to open or create MLObject
+}</font></pre>
+  </blockquote>
+  <p><font face="Arial">(b) to compose a parsed base or extension file, use:</font></p>
+  <blockquote>
+    <pre><font face="Courier New">try {
+   base.compose( new XC.MLObject( extensionFileName );
+}
+catch (Exception e) {
+   // errors -- failed to open, create MLObject or to compose
+}</font></pre>
+  </blockquote>
+  <p><font face="Arial">(c) to write (output) a text representation of a
+  composed file, use:</font></p>
+  <blockquote>
+    <pre><font face="Courier New">try {
+   base.write( outputFileName );
+}
+catch (Exception e) {
+   // failed to write file
+}</font></pre>
+  </blockquote>
+</blockquote>
+<h3><font face="Arial" color="#0000FF"><a name="Limitations and Future Editions">Limitations and Future Editions</a></font></h3>
+<p><font face="Arial">XC is really primitive.&nbsp; It would be nice to add
+properties (i.e., variables with set and get methods) to XC files, and have
+conditional expansions.&nbsp; This can be done and should follow the notions
+already developed in GenVoca design rule checking.</font></p>
+<p><font face="Arial">Also, it is not clear that XC works with XML (or XML
+editors and browsers).&nbsp; So to make XC more general, we'll have to look into
+this too.</font></p>
+</body>
+
+</html>

@@ -1,0 +1,117 @@
+layer SmGen;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.util.*;
+import java.io.*;
+
+// _________________________________________________________________
+
+/** StateMachineCoreTemplate.java
+ * JEDI Project
+ * Department of Computer Sciences
+ * University of Texas at Austin
+ * Defines the contents of a Class document.
+ * @author Roberto E. Lopez-Herrejon
+ * Last Update: November 30, 2002
+ * @layer<SmGen>
+ */
+
+public class StateMachineCoreTemplate extends DocumentDescriptor {
+
+    // Adds the bindings to the class
+    public VelocityContext 
+        addBindings( ProgramElementDocJTS parsedProgramElement, 
+                VelocityContext context ) {
+
+        // Gets the states reference
+        StateMachineDocJTS _state = 
+                ( StateMachineDocJTS ) parsedProgramElement;
+
+        // Root Clause
+        String rootFlag = "false";
+        if ( _state.rootClauseName() != "" )
+            rootFlag = "true";
+        LinkedList ntcc = _state.noTransitionClauseClasses();
+        String transitionFlag = "false";
+        if ( ntcc.size() > 0 )
+            transitionFlag = "true";
+        context.put( "root", rootFlag );
+        context.put( "transitionFlag", transitionFlag );
+        context.put( "listTransitions", ntcc.toArray() );
+            
+        // Otherwise clause
+        String otherFlag = "false";
+        LinkedList occ = _state.otherwiseClauseClasses();
+        if ( occ.size() > 0 )
+            otherFlag = "true";
+        context.put( "otherFlag", otherFlag );
+        context.put( "listOthers", occ.toArray() );
+
+        // States clause 
+        String statesClauseFlag = "false";
+        LinkedList scs = _state.statesClauseStates();
+        if ( scs.size() > 0 )
+            statesClauseFlag = "true";
+        context.put( "statesClauseFlag", statesClauseFlag );
+        context.put( "listStatesClause", scs );
+            
+        // Exit Transitions
+        String existsFlag = "false";
+        LinkedList exits = _state.ExitTransitions();
+        if ( exits.size() > 0 )
+            existsFlag = "true";
+        context.put( "existsFlag", existsFlag );
+        context.put( "listExists", exits.toArray() );
+
+        // Enter Transitions
+        String enterFlag = "false";
+        LinkedList enters = _state.EnterTransitions();
+        if ( enters.size() > 0 )
+            enterFlag = "true";
+        context.put( "enterFlag", enterFlag );
+        context.put( "listEnters", enters.toArray() );
+
+        // Prepare Transitions
+        String prepareFlag = "false";
+        LinkedList prepares = _state.PrepareTransitions();
+        if ( prepares.size() > 0 )
+            enterFlag = "true";
+        context.put( "prepareFlag", prepareFlag );
+        context.put( "listPrepares", prepares.toArray() );
+
+        // Test Transitions
+        String testFlag = "false";
+        LinkedList tests = _state.TestTransitions();
+        if ( tests.size() > 0 )
+            testFlag = "true";
+        context.put( "testFlag", testFlag );
+        context.put( "listTests", tests.toArray() );
+
+        // Action Transitions
+        String actionFlag = "false";
+        LinkedList actions = _state.ActionTransitions();
+        if ( actions.size() > 0 )
+            actionFlag = "true";
+        context.put( "actionFlag", actionFlag );
+        context.put( "listActions", actions.toArray() );
+                   
+        // Transition Declarations
+        String transitiondeclFlag = "false";
+        LinkedList transitions = _state.TransitionDeclarations();
+        if ( transitions.size() > 0 )
+            transitiondeclFlag = "true";
+        context.put( "transitiondeclFlag", transitiondeclFlag );
+        context.put( "listTransitions", transitions );
+
+        // Otherwise Transitions
+        String otherwiseStateFlag = "false";
+        LinkedList  otherwise = _state.OtherwiseTransitions();
+        if ( otherwise.size() > 0 )
+            otherwiseStateFlag = "true";
+        context.put( "otherwiseStateFlag", otherwiseStateFlag );
+        context.put( "listOtherwises", otherwise.toArray() );
+
+        return context;
+    }
+}

@@ -1,0 +1,44 @@
++ '[' -z /usr/bin/bash ']'
++ echo '****************Class Regression Test***********'
+****************Class Regression Test***********
++ bash regress-two Cons1 Cons2 CExt1 C1C1E1
+composing Cons1 & Cons2 & CExt1 -> C1C1E1 ... succeeded
++ bash regress-one root0 root1 root
+composing root0 & root1 -> root ... succeeded
++ bash regress-one onec twoc 12result
+composing onec & twoc -> 12result ... succeeded
++ bash regress-one ref ref refresult
+composing ref & ref -> refresult ... succeeded
++ bash regress-one C0 mref C0mref
+composing C0 & mref -> C0mref ... succeeded
++ bash regress-one C1 mref C1mref
+composing C1 & mref -> C1mref ... succeeded
++ bash regress-one CBase0 CExt1 rc01
+composing CBase0 & CExt1 -> rc01 ... succeeded
++ bash regress-one CB0 CE1 long
+composing CB0 & CE1 -> long ... succeeded
++ bash regress-one Ctop Cmidthis resultCmidthis
+composing Ctop & Cmidthis -> resultCmidthis ... succeeded
++ bash regress-one CBase1 CExt0 resultlongname
+composing CBase1 & CExt0 -> resultlongname ... succeeded
++ bash regress-one CExt1 CExt1 rc11
+composing CExt1 & CExt1 -> rc11 ... succeeded
++ bash regress-one CExt1 CExt2 rc12
+composing CExt1 & CExt2 -> rc12 ... succeeded
++ bash regress-one CBase3 CExt3 rc33
+composing CBase3 & CExt3 -> rc33 ... succeeded
++ bash regress-two one two three rall
+composing one & two & three -> rall ... succeeded
++ bash regress-two eins zwei drei alles
+composing eins & zwei & drei -> alles ... succeeded
++ bash leftassoc one two three rall
+testing left-associativity (one & two) & three -> rall ... succeeded
++ bash rightassoc one two three rall
+testing right-associativity one & (two & three) -> rall ... succeeded
++ bash leftassoc eins zwei drei alles
+testing left-associativity (eins & zwei) & drei -> alles ... succeeded
++ bash rightassoc eins zwei drei alles
+testing right-associativity eins & (zwei & drei) -> alles ... succeeded
++ echo -e '\nClass Composition Regression Test succeeded.'
+
+Class Composition Regression Test succeeded.

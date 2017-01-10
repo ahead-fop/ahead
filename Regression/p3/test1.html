@@ -1,0 +1,424 @@
+Html interface empty { };
+
+Html <pre> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.atop.html#generate_Abs_Container_Type">; abstract class empcont implements java.io.Serializable {
+ 
+   abstract public boolean is_full();
+   abstract public void insert( emp e );
+   abstract public void insert( int empno, int age, java.lang.String dept, java.lang.String name );
+   abstract public void close(int cardpers);
+   abstract public void checkin();
+   //abstract public static CContTyp open(String namefile); we need it to be CContTYp =>PB
+} </a>;
+
+Html <pre> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.atop.html#generate_Abs_Cursor_Type">;
+		 
+   // abstract cursor declaration
+
+
+
+Html abstract class empcursor implements java.util.Enumeration {
+   abstract public emp obj();
+   abstract public void insert( emp e );
+   abstract public void insert( int empno, int age, java.lang.String dept, java.lang.String name );
+   
+   abstract public emp first();
+   abstract public boolean more();
+   abstract public emp next();
+   abstract public void remove();
+   abstract public emp position(int pos);
+   
+   abstract public boolean hasMoreElements();
+   abstract public Object nextElement();
+} </a>;
+
+Html static <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Container_Type.html#generate_class()">;
+final class empcont1 extends empcont implements empty { <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Container_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Container_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Container_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Container_Type.html#dataMembers()"> emp_1 first_2, last_2; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Container_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_Container_Type.html#dataMembers()"> </a> </a> </a> </a> </a> </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Container_Type.html#generate_class()">
+   
+   public empcont1() { 
+      if ( emp_1.cont == null ) emp_1.cont = this;
+      else
+     Jakarta.util.Util.fatalError("creating more than one instance"); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Container_Type.html#containerMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Container_Type.html#containerMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Container_Type.html#containerMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Container_Type.html#containerMethod()">
+     first_2 = last_2 = null; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Container_Type.html#containerMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_Container_Type.html#containerMethod()"> </a> </a> </a> </a> </a> </a>
+   } </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Container_Type.html#generate_class()"> public boolean is_full() { return </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Container_Type.html#is_fullMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Container_Type.html#is_fullMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Container_Type.html#is_fullMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Container_Type.html#is_fullMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Container_Type.html#is_fullMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_Container_Type.html#is_fullMethod()"> false</a></a></a></a></a></a>; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Container_Type.html#generate_class()">
+   } public void insert( emp e ) {
+      new emp_1 ( this, e ); </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Container_Type.html#insertMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Container_Type.html#insertMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Container_Type.html#insertMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Container_Type.html#insertMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Container_Type.html#insertMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_Container_Type.html#insertMethod()"> </a> </a> </a> </a> </a> </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Container_Type.html#generate_class()">
+	  //use the same for both methods
+	  //allows to add a counter in the method
+   } public void insert( int empno, int age, java.lang.String dept, java.lang.String name ) {
+      new emp_1( this, empno, age, dept, name ); </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Container_Type.html#insertMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Container_Type.html#insertMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Container_Type.html#insertMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Container_Type.html#insertMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Container_Type.html#insertMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_Container_Type.html#insertMethod()"> </a> </a> </a> </a> </a> </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Container_Type.html#generate_class()">
+	  //use the same for both methods
+	  //allows to add a counter in the method
+   } public void close(int cardpers) { </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Container_Type.html#storageMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Container_Type.html#storageMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Container_Type.html#storageMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Container_Type.html#storageMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Container_Type.html#storageMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_Container_Type.html#storageMethod()"> </a> </a> </a> </a> </a> </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Container_Type.html#generate_class()"> 
+      } public void checkin() { </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Container_Type.html#finishMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Container_Type.html#finishMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Container_Type.html#finishMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Container_Type.html#finishMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Container_Type.html#finishMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_Container_Type.html#finishMethod()"> </a> </a> </a> </a> </a> </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Container_Type.html#generate_class()"> 
+      } public static empcont1 open(String namefile) { empcont1 cont = null; </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Container_Type.html#openMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Container_Type.html#openMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Container_Type.html#openMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Container_Type.html#openMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Container_Type.html#openMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_Container_Type.html#openMethod()"> </a> </a> </a> </a> </a> </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Container_Type.html#generate_class()">
+   		return cont;
+      }
+     } </a>; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Element_Type.html#generate_class()">;
+final class emp_1 extends emp { static public empcont1 cont = null;
+   // element linking methods
+   
+
+   // element unlinking methods
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Element_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Element_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Element_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Element_Type.html#dataMembers()"> emp_1 left_2, right_2; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Element_Type.html#dataMembers()">
+   boolean df_4; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_Element_Type.html#dataMembers()"> </a> </a> </a> </a> </a> </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Element_Type.html#generate_class()"> emp_1 ( ) { } emp_1 ( empcont1 c, emp e ) {
+     super(e);
+   // element linking methods
+   
+
+   // element unlinking methods
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Element_Type.html#link()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Element_Type.html#link()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Element_Type.html#link()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Element_Type.html#link()">
+      dlist_relink_2(); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Element_Type.html#link()"> df_4 = false; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_Element_Type.html#link()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Element_Type.html#generate_class()">
+   } emp_1 ( empcont1 c, int empno, int age, java.lang.String dept, java.lang.String name ) {
+     super( empno, age, dept, name );
+   // element linking methods
+   
+
+   // element unlinking methods
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Element_Type.html#link()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Element_Type.html#link()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Element_Type.html#link()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Element_Type.html#link()">
+      dlist_relink_2(); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Element_Type.html#link()"> df_4 = false; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_Element_Type.html#link()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Element_Type.html#generate_class()">
+   }
+   // element linking methods
+   
+
+   // element unlinking methods
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Element_Type.html#relink()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Element_Type.html#relink()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Element_Type.html#relink()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Element_Type.html#relink()">
+   final void dlist_relink_2() {
+      left_2 = null;
+      if (cont.last_2 == null) cont.last_2 = this;
+      right_2 = cont.first_2;
+      cont.first_2 = this;
+      if (right_2 != null) right_2.left_2 = this;
+   } <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Element_Type.html#relink()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_Element_Type.html#relink()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Element_Type.html#generate_class()">
+   // element linking methods
+   
+
+   // element unlinking methods
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Element_Type.html#unlink()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Element_Type.html#unlink()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Element_Type.html#unlink()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Element_Type.html#unlink()">
+   final void dlist_unlink_2() {
+      if (left_2 != null) left_2.right_2 = right_2;
+      if (right_2 != null) right_2.left_2 = left_2;
+      if (cont.first_2 == this) cont.first_2 = right_2;
+      if (cont.last_2 == this) cont.last_2 = left_2;
+   } <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Element_Type.html#unlink()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_Element_Type.html#unlink()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Element_Type.html#generate_class()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Element_Type.html#generate_class()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Element_Type.html#generate_class()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Element_Type.html#generate_class()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Element_Type.html#generate_class()">
+                   public int empno() {
+                      return empno;
+                   }
+                   public int age() {
+                      return age;
+                   }
+                   public java.lang.String dept() {
+                      return dept;
+                   }
+                   public java.lang.String name() {
+                      return name;
+                   } <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Element_Type.html#generate_class()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Element_Type.html#generate_class()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Element_Type.html#generate_class()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Element_Type.html#generate_class()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Element_Type.html#generate_class()">
+				   public int empno( int _newvalue ) { <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_Element_Type.html#upd(int)"> empno = _newvalue; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/qualify_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/sort_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/inbetween_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/UpperLayer_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Element_Type.html#generate_class()">
+                      return empno;
+                   } <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Element_Type.html#generate_class()">
+				   public int age( int _newvalue ) { <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_Element_Type.html#upd(int)"> age = _newvalue; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/qualify_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/sort_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/inbetween_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/UpperLayer_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Element_Type.html#generate_class()">
+                      return age;
+                   } <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Element_Type.html#generate_class()">
+				   public java.lang.String dept( java.lang.String _newvalue ) { <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_Element_Type.html#upd(int)"> dept = _newvalue; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/qualify_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/sort_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/inbetween_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/UpperLayer_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Element_Type.html#generate_class()">
+                      return dept;
+                   } <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Element_Type.html#generate_class()">
+				   public java.lang.String name( java.lang.String _newvalue ) { <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_Element_Type.html#upd(int)"> name = _newvalue; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/qualify_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/sort_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/inbetween_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/UpperLayer_Element_Type.html#upd(int)"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Element_Type.html#generate_class()">
+                      return name;
+                   }
+}
+   // element linking methods
+   
+
+   // element unlinking methods
+    </a>; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_CommonCursor_Type.html#generate_class">;
+abstract class empcursor_1 extends empcursor implements java.util.Enumeration{
+
+   // encapsulates only added data members and insert/remove methods
+
+   public emp_1 obj;
+   public empcont1 cont;
+
+   // movement methods
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_CommonCursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_CommonCursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_CommonCursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_CommonCursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_CommonCursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_CommonCursor_Type.html#dataMembers()"> </a> </a> </a> </a> </a> </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_CommonCursor_Type.html#generate_class">
+   
+   public emp obj() {
+      return obj;
+   }
+
+   public boolean hasMoreElements() {
+      return more();
+   }
+
+   public Object nextElement() {
+      Object ret = obj;
+      next();
+      return ret;
+   }
+
+  
+   public void insert( emp e ) {
+      obj = new emp_1 ( cont, e );
+
+   // movement methods
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_CommonCursor_Type.html#insertMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_CommonCursor_Type.html#insertMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_CommonCursor_Type.html#insertMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_CommonCursor_Type.html#insertMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_CommonCursor_Type.html#insertMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_CommonCursor_Type.html#insertMethod()"> </a> </a> </a> </a> </a> </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_CommonCursor_Type.html#generate_class">
+   }
+
+   public void insert( int empno, int age, java.lang.String dept, java.lang.String name ) {
+      obj = new emp_1( cont, empno, age, dept, name );
+
+   // movement methods
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_CommonCursor_Type.html#insertMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_CommonCursor_Type.html#insertMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_CommonCursor_Type.html#insertMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_CommonCursor_Type.html#insertMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_CommonCursor_Type.html#insertMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_CommonCursor_Type.html#insertMethod()"> </a> </a> </a> </a> </a> </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_CommonCursor_Type.html#generate_class">
+   }
+
+   // note: once element is unlinked, it is effectively deleted from the container
+   //       and will be garbage collected by Java once the cursor no longer points
+   //       to it.
+
+   public void remove() {
+
+   // movement methods
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_CommonCursor_Type.html#removeMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_CommonCursor_Type.html#removeMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_CommonCursor_Type.html#removeMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_CommonCursor_Type.html#removeMethod()">
+      obj.dlist_unlink_2(); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_CommonCursor_Type.html#removeMethod()">
+      obj.df_4 = true; </a> </a> </a> </a> </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_CommonCursor_Type.html#generate_class">
+   }
+
+   // position method -- will be overloaded by those concrete cursors supporting
+   // postioning operation
+
+   public emp position(int pos) {
+      return null;
+   }
+
+   // movement methods
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_CommonCursor_Type.html#movementMethods()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_CommonCursor_Type.html#movementMethods()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_CommonCursor_Type.html#movementMethods()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_CommonCursor_Type.html#movementMethods()">
+      final protected void adv_2() { obj = obj.right_2; }
+      final protected void start_2() { obj = cont.first_2; }
+      final protected void back_2() { obj = obj.left_2; }
+      final protected void end_2() { obj = cont.last_2; } <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_CommonCursor_Type.html#movementMethods()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_CommonCursor_Type.html#movementMethods()"> </a> </a> </a> </a> </a> </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_CommonCursor_Type.html#generate_class">
+}
+
+   // movement methods
+    </a>;
+
+Html <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Cursor_Type.html#generate_class()">;
+	  
+final class old extends empcursor_1 {                  // cursor specific (user-defined) fields
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Cursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_Cursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.jak.p3Lib.delflag_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.jak.p3Lib.dlist_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.UpperLayer_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Cursor_Type.html#generate_class()">   // cursor-specific generated fields
+   public old (empcont1 cont000 ) {
+      obj = null; cont = cont000;                  // cursor specific (user-defined) fields
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.jak.p3Lib.delflag_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.jak.p3Lib.dlist_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.UpperLayer_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Cursor_Type.html#generate_class()">
+   }
+
+   static public java.util.Enumeration elements(empcont1 cont000 ) { old enum_cur = new old( cont000 );
+      enum_cur.first();
+      return enum_cur;
+   }
+
+   public emp first() {                  // cursor specific (user-defined) fields
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#firstMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#firstMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#firstMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#firstMth()"> start_2(); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#firstMth()">
+       while ( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#moreMth()"> obj != null<a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> && <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#lowerBoundExp(boolean)"><a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> ) { <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#nextMth()"> adv_2(); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()">
+       }
+         while ( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#moreMth()"> obj != null<a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> ) {
+            if ( !( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#upperBoundExp(boolean)"><a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> ) ) { <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#noMoreMth()">
+    obj = null; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()">
+               break;
+            }
+            if ( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#residualExp()"> obj. age() > 40<a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> )
+               break; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#nextMth()"> adv_2(); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()">
+         } <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#firstMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#firstMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.UpperLayer_Cursor_Type.html#firstMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Cursor_Type.html#generate_class()">
+      return obj;
+   }
+
+   public boolean more() { return </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#moreMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#moreMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#moreMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#moreMth()"> obj != null<a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"><a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#firstMth()"><a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#moreMth()"><a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.UpperLayer_Cursor_Type.html#moreMth()">; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Cursor_Type.html#generate_class()">
+   }
+
+   public emp next() {                  // cursor specific (user-defined) fields
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#nextMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#nextMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#nextMth()"> adv_2(); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()">
+         while ( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#moreMth()"> obj != null<a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> ) {
+            if ( !( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#upperBoundExp(boolean)"><a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> ) ) { <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#noMoreMth()">
+    obj = null; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()">
+               break;
+            }
+            if ( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#residualExp()"> obj. age() > 40<a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> )
+               break; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#nextMth()"> adv_2(); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()">
+         } <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#firstMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#nextMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.UpperLayer_Cursor_Type.html#nextMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Cursor_Type.html#generate_class()">
+      return obj;
+   }
+}                  // cursor specific (user-defined) fields
+    </a>;
+
+Html <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Cursor_Type.html#generate_class()">;
+	  
+final class all extends empcursor_1 {                  // cursor specific (user-defined) fields
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Cursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_Cursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.jak.p3Lib.delflag_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.jak.p3Lib.dlist_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.UpperLayer_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Cursor_Type.html#generate_class()">   // cursor-specific generated fields
+   public all (empcont1 cont000 ) {
+      obj = null; cont = cont000;                  // cursor specific (user-defined) fields
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.jak.p3Lib.delflag_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.jak.p3Lib.dlist_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.UpperLayer_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Cursor_Type.html#generate_class()">
+   }
+
+   static public java.util.Enumeration elements(empcont1 cont000 ) { all enum_cur = new all( cont000 );
+      enum_cur.first();
+      return enum_cur;
+   }
+
+   public emp first() {                  // cursor specific (user-defined) fields
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#firstMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#firstMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#firstMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#firstMth()"> start_2(); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#firstMth()">
+       while ( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#moreMth()"> obj != null<a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> && <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#lowerBoundExp(boolean)"><a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> ) { <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#nextMth()"> adv_2(); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()">
+       }
+         while ( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#moreMth()"> obj != null<a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> ) {
+            if ( !( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#upperBoundExp(boolean)"><a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> ) ) { <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#noMoreMth()">
+    obj = null; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()">
+               break;
+            }
+            if ( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#residualExp()"><a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> )
+               break; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#nextMth()"> adv_2(); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()">
+         } <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#firstMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#firstMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.UpperLayer_Cursor_Type.html#firstMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Cursor_Type.html#generate_class()">
+      return obj;
+   }
+
+   public boolean more() { return </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#moreMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#moreMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#moreMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#moreMth()"> obj != null<a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"><a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#firstMth()"><a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#moreMth()"><a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.UpperLayer_Cursor_Type.html#moreMth()">; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Cursor_Type.html#generate_class()">
+   }
+
+   public emp next() {                  // cursor specific (user-defined) fields
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#nextMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#nextMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#nextMth()"> adv_2(); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()">
+         while ( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#moreMth()"> obj != null<a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> ) {
+            if ( !( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#upperBoundExp(boolean)"><a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> ) ) { <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#noMoreMth()">
+    obj = null; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()">
+               break;
+            }
+            if ( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#residualExp()"><a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> )
+               break; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#nextMth()"> adv_2(); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()">
+         } <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#firstMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#nextMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.UpperLayer_Cursor_Type.html#nextMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Cursor_Type.html#generate_class()">
+      return obj;
+   }
+}                  // cursor specific (user-defined) fields
+    </a>;
+
+Html <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Cursor_Type.html#generate_class()">;
+	  
+final class allname extends empcursor_1 { public int x;                  // cursor specific (user-defined) fields
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#dataMembers()">
+         java.util.Vector vbuf_95; emp_1 []      buffer_95;
+         int              index_95;
+         int              asize_95; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Cursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_Cursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.jak.p3Lib.delflag_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.jak.p3Lib.dlist_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.UpperLayer_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Cursor_Type.html#generate_class()">   // cursor-specific generated fields
+   public allname (empcont1 cont000, int x000 ) {
+      obj = null; cont = cont000; x = x000;                  // cursor specific (user-defined) fields
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.jak.p3Lib.delflag_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.jak.p3Lib.dlist_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.UpperLayer_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Cursor_Type.html#generate_class()">
+   }
+
+   static public java.util.Enumeration elements(empcont1 cont000, int x000 ) { allname enum_cur = new allname( cont000, x000 );
+      enum_cur.first();
+      return enum_cur;
+   }
+
+   public emp first() {                  // cursor specific (user-defined) fields
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#firstMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#firstMth()">
+         vbuf_95 = new java.util.Vector( ); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#firstMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#firstMth()"> start_2(); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#firstMth()">
+       while ( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#moreMth()"> obj != null<a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> && <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#lowerBoundExp(boolean)"><a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> ) { <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#nextMth()"> adv_2(); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()">
+       }
+         while ( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#moreMth()"> obj != null<a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> ) {
+            if ( !( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#upperBoundExp(boolean)"><a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> ) ) { <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#noMoreMth()">
+    obj = null; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()">
+               break;
+            }
+            if ( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#residualExp()"> obj. age() == x<a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> )
+               break; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#nextMth()"> adv_2(); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()">
+         } <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#firstMth()">
+         while ( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#moreMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#moreMth()"> obj != null<a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"><a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#firstMth()"> ){
+            vbuf_95.addElement( obj ); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#nextMth()"> adv_2(); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()">
+         while ( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#moreMth()"> obj != null<a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> ) {
+            if ( !( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#upperBoundExp(boolean)"><a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> ) ) { <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#noMoreMth()">
+    obj = null; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()">
+               break;
+            }
+            if ( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#residualExp()"> obj. age() == x<a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> )
+               break; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#nextMth()"> adv_2(); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()">
+         } <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#firstMth()">
+         }
+
+         asize_95 = vbuf_95.size( );
+         buffer_95 = new emp_1[asize_95 + 1];
+         vbuf_95.copyInto( buffer_95 );
+         /* 
+          * add an extra null element to the array so that the 
+          * code for nextMethod() could be as simple as possible
+          */
+         buffer_95[asize_95] = null;
+         
+         /* sort the buffer if needed */
+         
+            int incr = asize_95 / 2;
+            while ( incr >= 1 ) {
+               for ( int i = incr; i < asize_95; i++ ) { emp_1 tmp = buffer_95[i];
+                  int j = i;
+                  while ( j >= incr && tmp. name().compareTo( 
+               buffer_95[j - incr]. name( )) <0 ) {
+                     buffer_95[j] = buffer_95[j - incr];
+                     j-= incr;
+                  }
+                  buffer_95[j] = tmp;
+               }
+               incr /= 2;
+            }
+
+         /* return the first element */
+         obj = buffer_95[0];
+         index_95 = 1; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#firstMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.UpperLayer_Cursor_Type.html#firstMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Cursor_Type.html#generate_class()">
+      return obj;
+   }
+
+   public boolean more() { return </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#moreMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#moreMth()"> index_95 <= asize_95<a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#moreMth()"><a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.UpperLayer_Cursor_Type.html#moreMth()">; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Cursor_Type.html#generate_class()">
+   }
+
+   public emp next() {                  // cursor specific (user-defined) fields
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#nextMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#nextMth()"> obj = buffer_95[index_95++]; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#nextMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.UpperLayer_Cursor_Type.html#nextMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Cursor_Type.html#generate_class()">
+      return obj;
+   }
+}                  // cursor specific (user-defined) fields
+    </a>;
+
+Html <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Cursor_Type.html#generate_class()">;
+	  
+final class allname1 extends empcursor_1 {                  // cursor specific (user-defined) fields
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Cursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_Cursor_Type.html#dataMembers()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.jak.p3Lib.delflag_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.jak.p3Lib.dlist_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.UpperLayer_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Cursor_Type.html#generate_class()">   // cursor-specific generated fields
+   public allname1 (empcont1 cont000 ) {
+      obj = null; cont = cont000;                  // cursor specific (user-defined) fields
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.delflag_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.malloc_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.jak.p3Lib.delflag_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.jak.p3Lib.dlist_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.UpperLayer_Cursor_Type.html#cursorMethod()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Cursor_Type.html#generate_class()">
+   }
+
+   static public java.util.Enumeration elements(empcont1 cont000 ) { allname1 enum_cur = new allname1( cont000 );
+      enum_cur.first();
+      return enum_cur;
+   }
+
+   public emp first() {                  // cursor specific (user-defined) fields
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#firstMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#firstMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#firstMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#firstMth()"> start_2(); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#firstMth()">
+       while ( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#moreMth()"> obj != null<a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> && <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#lowerBoundExp(boolean)"><a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> ) { <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#nextMth()"> adv_2(); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()">
+       }
+         while ( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#moreMth()"> obj != null<a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> ) {
+            if ( !( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#upperBoundExp(boolean)"><a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> ) ) { <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#noMoreMth()">
+    obj = null; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()">
+               break;
+            }
+            if ( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#residualExp()"> obj. name().compareTo( "Don")==0<a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> )
+               break; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#nextMth()"> adv_2(); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()">
+         } <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#firstMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#firstMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.UpperLayer_Cursor_Type.html#firstMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Cursor_Type.html#generate_class()">
+      return obj;
+   }
+
+   public boolean more() { return </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#moreMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#moreMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#moreMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#moreMth()"> obj != null<a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"><a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#firstMth()"><a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#moreMth()"><a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.UpperLayer_Cursor_Type.html#moreMth()">; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Cursor_Type.html#generate_class()">
+   }
+
+   public emp next() {                  // cursor specific (user-defined) fields
+    </a> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#nextMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#nextMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#nextMth()"> adv_2(); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()">
+         while ( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#moreMth()"> obj != null<a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> ) {
+            if ( !( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#upperBoundExp(boolean)"><a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> ) ) { <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#noMoreMth()">
+    obj = null; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()">
+               break;
+            }
+            if ( <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#residualExp()"> obj. name().compareTo( "Don")==0<a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()"> )
+               break; <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.dlist_Cursor_Type.html#nextMth()"> adv_2(); <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.qualify_Cursor_Type.html#nextMth()">
+         } <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.sort_Cursor_Type.html#firstMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.inbetween_Cursor_Type.html#nextMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.UpperLayer_Cursor_Type.html#nextMth()"> <a href = "C:/classes/JTS/p3packdoc/jak.p3Lib.top2ds_Cursor_Type.html#generate_class()">
+      return obj;
+   }
+}                  // cursor specific (user-defined) fields
+    </a>;

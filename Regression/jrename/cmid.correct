@@ -1,0 +1,10 @@
+jrename: cmid.java:1: Error layer declarations not supported
+jrename: cmid.java:5: Error LocalId clauses not supported
+jrename: cmid.java:6: Error LocalId clauses not supported
+jrename: cmid.java:7: Error LocalId clauses not supported
+jrename: cmid.java:9: Error cannot have refines clauses in jrename translations
+
+
+import java.util.*;
+
+refines

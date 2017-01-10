@@ -1,0 +1,214 @@
+/*
+University of Texas at Austin
+Computer Sciences Department
+JTSDOC project
+Implemented by : Roberto E. Lopez-Herrejon
+Doclet implementation composition.
+Last modified : July 29, 2001
+*/
+
+layer layersDoclet(DOCLETImpl lower)
+realm DOCLETImpl
+extends lower
+imports java.util.*,
+        jtsdoc.*,  
+        com.sun.javadoc.*,
+        java.io.*,
+        java.lang.reflect.*,
+        com.sun.tools.javadoc.*  
+{
+ 
+ static public class DocletJTS extends lower.DocletJTS
+ {
+   
+  // *** Pending ... 
+  public static boolean start(LayerDocJTS Alayer) {
+  String tagName = null; // readOptions(root.options());
+  
+  /*
+  try {
+   
+  layerFile = createOutFile((Alayer.name()).trim());
+  writeHTML("<HTML> <HEAD></HEAD> \n", layerFile);
+  writeHTML("<TITLE> Layer " + layer.name() +" </TITLE> \n", layerFile);
+  writeHTML("<H1> Layer </H1>", layerFile);
+  writeHTML("<BODY> \n", layerFile);
+  	  
+  // writeContents(layer, layerFile);
+  
+  writeHTML("</BODY> </HTML> \n", layerFile);
+  closeOutFile(layerFile);
+  
+  } catch(IOException e)
+  {
+    System.out.println("Error at start");
+  }
+  
+  */
+  return true;
+ }
+
+
+ /** Writes up a layer.
+ */
+ public static void writeALayer(LayerDocJTS Alayer, String _OutputDirectory) 
+	throws IOException
+ {
+ 
+  // Sets up the directory to write the documentation  
+  OutputDirectory = _OutputDirectory;
+   
+  // Header stuff	 
+  Writer layerFile = createOutFile((Alayer.name()).trim());
+  
+  // writes out the header of the state
+  writeLayerHeader(Alayer, layerFile);
+  
+  // writes out the body set up
+  writeLayerBodySetup(Alayer, layerFile);
+  
+  // writes out the state name
+  writeLayerName(Alayer, layerFile);
+  
+  // writes out the layer relationships
+  writeLayerRelationships(Alayer, layerFile);
+  
+  // writes out the imports list
+  writeLayerImports(Alayer, layerFile);
+  
+  // Displaying the Fields
+  writeFields((Alayer.classBody()).fields(), layerFile);
+
+  // Displaying the Methods
+  writeMethods((Alayer.classBody()).methods(), layerFile); 
+ 
+  // Displaying the Constructors
+  writeConstructors((Alayer.classBody()).constructors(), layerFile);
+
+  // Displaying the Interfaces
+  // writeInterfaces((Alayer.classBody()).interfaces(), layerFile);
+ 
+   // Displaying the Innerclasses
+  writeInnerclasses(Alayer.classBody(), layerFile);
+         
+  // Here is where the states or any other addend should go
+  // In the layer this should actually be $TEqn.appendContents
+  $TEqn.DocletJTS.appendContents(Alayer.classBody(), layerFile);
+    
+  // *** Footer stuff
+  writeLayerFooter(Alayer, layerFile);
+  
+  closeOutFile(layerFile); 
+  
+  } // writeContents
+ 
+ // Writes the innerclasses names only and puts the corresponding links.
+ public  static void writeInnerclasses(ClassDoc[] theClasses, Writer layerFile) 
+	 throws IOException
+ {
+	for (int i=0; i< theClasses.length ; i++)
+	{
+		writeHTML("<LI> InnerClass : " + theClasses[i].name() + " </LI>"
+				  , layerFile);
+		writeAClass(theClasses[i]);
+	}
+ }
+ 
+ // ***********************************************************************
+ // ***********************************************************************
+ // ***********************************************************************
+ // ***********************************************************************
+ // Methods that are defined for a State Document
+  public static void writeLayerHeader(LayerDocJTS Alayer, Writer layerFile)
+	 throws IOException
+ {							   
+  writeHTML("<HTML> <HEAD></HEAD> \n", layerFile);
+  writeHTML("<TITLE> Layer Layout </TITLE> \n", layerFile);
+ }
+
+ public static void writeLayerFooter(LayerDocJTS Alayer, Writer layerFile)
+	 throws IOException
+ {
+    writeHTML("</BODY> </HTML> \n", layerFile);
+ }
+ 
+ public static void writeLayerBodySetup(LayerDocJTS Alayer, Writer layerFile)
+	 throws IOException
+ {
+     writeHTML("<BODY BGCOLOR=\"white\"> \n", layerFile);
+ }
+ 
+ 
+ public static void writeLayerName(LayerDocJTS Alayer, Writer layerFile)
+	 throws IOException
+ {
+      writeHTML("<H2> <BR> Layer " + Alayer.name()+ " </H2>", layerFile); 
+ }
+ 
+ public static void writeLayerRelationships(LayerDocJTS Alayer, Writer layerFile)
+	 throws IOException
+ {	
+	 writeHTML("<DL> <DT>" + Alayer.modifiers() + "layer <B> " + Alayer.name()
+			   + "</B>", layerFile);
+	 
+	 writeHTML("<DT> Realm " + "<B> " + Alayer.realmName()+ "</B>",
+			   layerFile);	
+	 
+	 String parameterString = " ( ";
+     ParameterJTS[] arrayParameters = Alayer.parameters();
+     for (int i=0; i < arrayParameters.length ; i++)
+	 {
+	  // writeHTML("<LI> Parameter : " +  +
+	  //			 + "</LI>", layerFile);
+	  parameterString = parameterString + arrayParameters[i].typeName() + " ";
+	  parameterString = parameterString + arrayParameters[i].name();
+	  if (i < arrayParameters.length - 1)
+	  { parameterString = parameterString + ", "; }
+	 } // for al lthe parameters
+   
+	 parameterString = parameterString + " )";
+	 writeHTML("<DT> " + parameterString, layerFile);
+	 
+	 if (Alayer.superLayer()!= "") 
+		 writeHTML("<DT> " + " extends " + Alayer.superLayer(), layerFile);
+
+	 writeHTML("</DL>", layerFile);
+ } 
+ 
+ public static void writeLayerImports(LayerDocJTS Alayer, Writer layerFile)
+	 throws IOException
+ {
+	String[] importsList = Alayer.importsList();
+	if (importsList == null) return;      // there are no imports
+	if (importsList.length == 0 ) return;
+	
+    writeHTML("<BR> \n", layerFile);
+    writeHTML("<DL> \n", layerFile);
+    writeHTML("<DT> \n", layerFile);
+
+    writeHTML("<B> Imports </B> : ", layerFile);
+  
+    String importsString = "";
+    for (int i=0; i< importsList.length; i++)
+    {
+	  importsString = importsString + importsList[i];
+	  if (i < importsList.length - 1) 
+		  importsString = importsString + ", ";
+    }
+  
+    writeHTML(importsString + "</DT> \n", layerFile);
+    writeHTML("</DL> \n", layerFile);
+    writeHTML("<HR> \n", layerFile);
+	
+ } // of writeLayer Imports
+ 
+ // writers the appends Contents of a class
+ public static void appendContents(DOCLETJTS.Lang.ClassDocJTS Aclass,
+								   Writer outputFile) throws IOException 
+ {
+   lower.DocletJTS.appendContents(Aclass, outputFile);
+ }
+ 
+ } // class DocletJTS
+  
+}

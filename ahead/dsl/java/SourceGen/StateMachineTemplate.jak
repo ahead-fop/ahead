@@ -1,0 +1,36 @@
+layer SourceGen;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.util.*;
+import java.io.*;
+
+// of ClassTemplate
+
+public refines class StateMachineTemplate {
+
+    /** Fall back method for the extensions to the document layout 
+     * @layer<SourceGen>
+     */
+    public void extendsStateDocument() {
+
+        // Source 
+        SourceTemplate st = new SourceTemplate();
+        st.setName( "Source" );
+        st.setTemplateFile( "SourceTemplates/Source.vm" );
+
+        // Select the place where to put it
+        // State[2] -> Statebody[2] 
+
+        // Gets the Statebody refences, 2nd element of state
+        DocumentDescriptor statebody = getLayoutElement( 2 );
+        
+        // To the statebody add the source document as its 0th element
+        statebody.insertLayoutElement( st, 2 );
+
+        // Daisy chains the calls
+        Super().extendsStateDocument();
+
+    }
+
+}

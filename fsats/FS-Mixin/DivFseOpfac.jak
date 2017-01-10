@@ -1,0 +1,16 @@
+layer FS;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+SoUrCe RooT BasicL "C:!Java!FeatureOrientedProgramming!fsats!BasicL!DivFseOpfac.jak";
+
+public class DivFseOpfac extends FseOpfac {
+    public Mission newMission() 
+        {
+        return new DivFseMission();
+    }
+}

@@ -1,0 +1,23 @@
+#!/bin/bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+echo "****************jak2java GPL Regression Test***********" 
+
+rm -f -- *.java *.class
+
+FAILURES=0
+#for JAK in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace ; do
+#    java jak2java.Main "${JAK}.jak" || let ++FAILURES
+#done
+java jak2java.Main *.jak || FAILURES=1
+javac *.java || let ++FAILURES
+
+rm -f -- *.java *.class
+
+if ((FAILURES)) ; then
+   echo -e "\nj2j GPL Regression Test completed with ${FAILURES} FAILURES."
+   exit 1
+fi
+
+echo -e "\nj2j GPL Regression Test completed Successfully."

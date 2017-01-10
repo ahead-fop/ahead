@@ -1,0 +1,128 @@
+layer core;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+// *** layer that defines layers
+
+public class llayer {
+    public String name;
+    public  llayer down; // for type equations
+    public  predicate precondition;
+    public  predicate postcondition;
+    public  predicate prerestriction;
+    public  predicate postrestriction;
+    public String completeness;
+    public boolean isConstant;
+    public boolean isSingle;
+   
+    public llayer( String name, boolean isConst, boolean isSing ) {
+        this.name = name;
+        down = null;
+        precondition    = new  predicate().setLayer( name );
+        postcondition   = new  predicate().setLayer( name );
+        prerestriction  = new  predicate().setLayer( name );
+        postrestriction = new  predicate().setLayer( name );
+        completeness = "";
+        isConstant = isConst;
+        isSingle = isSing;
+    }
+  
+    // isComplete() returns true if there are no inside or
+    // outside requirements -- meaning that the equation
+    // should be compilable and runnable
+
+    public boolean isComplete() {
+        if ( precondition.isNonEmpty() )
+            completeness =  common.requiresLeft + precondition + "\n";
+        if ( prerestriction.isNonEmpty() )
+            completeness +=  common.requiresRight + prerestriction;
+        return ! ( precondition.isNonEmpty() || prerestriction.isNonEmpty() );
+    }
+
+    public void print2file( PrintWriter pw ) {
+        pw.println( "" );
+        if ( isSingle )
+            pw.print( "single " );
+        if ( isConstant )
+            pw.print( "constant " );
+        pw.println( "layer " + name + ";" );
+        pw.println( "" );
+        symtab.print2file( pw );
+        pw.println( "" );
+        if ( precondition.isNonEmpty() )
+            pw.println( common.requiresLeft + precondition + ";" );
+        if ( postcondition.isNonEmpty() )
+            pw.println( common.providesRight + postcondition + ";" );
+        if ( prerestriction.isNonEmpty() )
+            pw.println( common.requiresRight + prerestriction + ";" );
+        if ( postrestriction.isNonEmpty() )
+            pw.println( common.providesLeft + postrestriction + ";" );
+        pw.println( "" );
+    }
+
+    public  llayer setBelow( llayer inside ) {
+        down = inside;
+        return this;
+    }
+   
+    public void squash( llayer l ) {
+        if ( l == null )
+            return;
+        postcondition.implies( l.precondition );
+        precondition.and( l.precondition, postcondition );
+        postcondition.assign( l.postcondition );
+        squash( l.down );
+        postrestriction.implies( l.prerestriction );
+        prerestriction.and( l.prerestriction, postrestriction );
+        postrestriction.assign( l.postrestriction );
+    }
+
+    public void compose( llayer l ) {
+        if ( l == null )
+            AstNode.fatalError( "cannot compose null extension" );
+
+        // Step 1: on the "way down", see if current conditions
+        //         (postcondition) implies precondition of lower layer
+        //         and propagate conditions accordingly.
+
+        postcondition.implies( l.precondition );
+        precondition.and( l.precondition, postcondition );
+        postcondition.assign( l.postcondition );
+
+        // Step 2: on the "way up", see if current conditions
+        //         (l.postrestriction) implies prerestriction of 
+        //         upper layer, and propagate conditions accordingly.
+
+        l.postrestriction.implies( prerestriction );
+        l.prerestriction.and( prerestriction, l.postrestriction );
+        l.postrestriction.assign( postrestriction );
+
+        // Step 3: save result in postrestriction and prerestriction
+        //         of "this" layer.  If l (the inner term) is a constant
+        //         or function, then the result is a constant or function.
+        //         this assumes that "this" is always a function.  Check
+        //         Main to ensure that "constants" can only appear as
+        //         the innermost term of an equation
+
+        postrestriction = l.postrestriction;
+        prerestriction  = l.prerestriction;
+        isConstant = l.isConstant;
+    }
+   
+    public String toString() {
+        String result;
+        result = name + "{\n";
+        if ( precondition.isNonEmpty() )
+            result += "   " +  common.requiresLeft + precondition + ";\n";
+        if ( postcondition.isNonEmpty() )
+            result += "   " +  common.providesRight + postcondition + ";\n";
+        if ( prerestriction.isNonEmpty() )
+            result += "   " +  common.requiresRight + prerestriction + ";\n";
+        if ( postrestriction.isNonEmpty() )
+            result += "   " +  common.providesLeft + postrestriction + ";\n";
+        return result + "}\n";
+    }
+}

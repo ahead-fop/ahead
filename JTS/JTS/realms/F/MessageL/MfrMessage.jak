@@ -1,0 +1,50 @@
+package MessageL;
+
+import  
+    fsats.util.DataContainer;
+import 
+    F.Libraries.laydown.*;
+import 
+    java.util.*;
+
+
+
+    /** Message to relay weapon status **/
+    public class MfrMessage 
+        extends MissionStatusMessage 
+    {
+        public EventType getType() { return MessageType.mfr; }
+	public MfrMessage(String missionId) { super(missionId);
+          MfrMessageConstructor(missionId); }
+	public void MfrMessageConstructor(String missionId) {
+      }
+
+        public DataContainer toFsams()
+        {
+            DataContainer fsams = super.toFsams();
+            fsams.addField(new DataContainer("NAME", "Mission_Fired_Report"));
+
+            return fsams;
+        }
+
+        public static Message fromFsams(DataContainer fsams)
+        { MfrMessage m;
+
+            DataContainer content = fsams.getField("CONTENT");
+            m = new MfrMessage(content.getField("Target_Id").getValue());
+            m.setSource(LayDown.getSelf().getOpfacByUnit(
+                Integer.parseInt(fsams.getField("FROM").getValue())).getName());
+            m.setDestination(LayDown.getSelf().getOpfacByUnit(
+                Integer.parseInt(fsams.getField("TO").getValue())).getName());
+
+	    String initiatingUnitIdString = content.getField("Initiating_Unit").getField("Unit_Id").getValue();
+	    if (initiatingUnitIdString!=null && !initiatingUnitIdString.equals(""))
+		m.setInitiatingUnitId(Integer.parseInt(initiatingUnitIdString));
+
+	    String initiatingUnitObserverIdString = content.getField("Initiating_Unit").getField("Observer_Id").getValue();
+	    if (initiatingUnitObserverIdString!=null && !initiatingUnitObserverIdString.equals(""))
+		m.setInitiatingUnitObserverId(Integer.parseInt(initiatingUnitObserverIdString));
+
+            return m;
+        }
+    }

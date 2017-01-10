@@ -1,0 +1,12 @@
+
+layer foo;
+
+bottomup Bool bottom;
+bottomup Bool foo1;
+bottomup Bool foo2;
+topdown Bool search;
+
+
+provides below !bottom;
+provides above search;
+

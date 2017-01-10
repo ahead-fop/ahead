@@ -1,0 +1,15 @@
+layer FormatBase;
+
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+public class CommentUtil {
+    static int TabSpace = 4; // number of white spaces for an indentation
+    static int WhiteLine = 1; // maxium number of consecutive white lines allowed in the program
+    static String layerName = ""; // layer name to be added in JavaDoc comments
+    static boolean autoLayer = false; // automatically detect layer name and add into JavaDoc comments
+}

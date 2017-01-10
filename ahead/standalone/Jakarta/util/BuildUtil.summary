@@ -1,0 +1,108 @@
+* Compiles and runs the "Build" file
+
+	public static void executeBuild(String packagename, String filename)
+
+* Same as above except filename assumed to be "Build.java"
+
+	public static void executeBuild(String packagename)
+
+* Same as Util.findPackageDir
+
+	public static String workingDir(String packagename)
+
+* Build a given java file
+
+	public static int buildJava(String fullPath, String[] command)
+
+* Same as above except default "javac -g" is used for command
+
+	public static void buildJava(String fullPath)
+
+* Build all Java files in a directory
+
+	public static void buildAllJava(String cwd, String[] command)
+
+* Same as above except default "javac -g" is used for command
+
+	public static void buildAllJava(String cwd)
+
+* Build a given .jak file
+
+	public static int buildJak(String fullPath, String[] command)
+
+* Same as above except command defaults to "java JakBasic.Main"
+
+	public static void buildJak(String fullPath)
+
+* Build all Jak files in a directory
+
+	public static void buildAllJak(String cwd, String[] command)
+
+* Same as above except command defaults to "java JakBasic.Main"
+
+	public static void buildAllJak(String cwd)
+
+* Copy files from one directory to another using a FilenameFilter
+
+	public static void copyAll(String srcDir,
+				   String destDir,
+				   FilenameFilter ff)
+
+  Some FilenameFilter's provided are:
+	javaFileFilter - ends with ".java"
+	noBuildFileFilter - ends with ".java" and is not "Build.java"
+	jakFileFilter - ends with ".jak"
+
+* Copy a file (if needed)
+
+	public static void copyFile(String from, String to)
+
+* Appends the contents of one text file to another while substituting
+  all occurences of given patterns
+
+	public static void appendSubst(String fnameFrom, String fnameTo,
+				       String[] patFrom, String[] patTo)
+
+* Move a file
+
+	public static void moveFile(String fnameFrom, String fnameTo)
+
+* Delete a file
+
+	public static void deleteFile(String fname)
+
+* Execute an arbitrary command and redirect output and error streams
+
+	public static int execute(String[] cmd, BufferedReader in, 
+				  PrintWriter out, PrintWriter err)
+
+* Same as above except no stdin and System.out, System.err assumed.
+
+	public static int execute (String[] cmd)
+
+
+**************************************************
+
+Misc methods
+
+* Change the suffix of a string
+
+	public static String changeSuffix(String original, String fromSuffix,
+					  String toSuffix)
+
+* Take a string with suffix ".java" and change it to ".class"
+
+	public static String DotClassify(String dotjavaname)
+
+* Take a string with suffic ".jak" and change it to ".java"
+
+	public static String DotJavify(String dotjakname)
+
+* Return a string with all occurrences of substring "patFrom" replaced by
+  "patTo"
+
+	public static String subst(String line, String patFrom, String patTo)
+
+* Concatenate two arrays of strings
+
+	public static String[] catStringArrays(String[] arr1, String[] arr2)

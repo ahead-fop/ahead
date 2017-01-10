@@ -1,0 +1,17 @@
+layer FS;
+
+import fsats.util.DataContainer;
+
+import laydown.*;
+
+import java.util.*;
+
+/** Notifies a mission that its lock on an opfac has been granted. */
+public class LockGranted
+        extends BasicEvent {
+    public EventType getType() {
+        return EventType.lockGranted;
+    }
+    public LockGranted( String missionId ) { Super( String )( missionId );
+    }
+}

@@ -1,0 +1,40 @@
+/** @author Roberto E. Lopez-Herrejon */
+
+layer j2ajClassx;
+
+public refines class FldVarDec {
+
+    /** Reduce method */
+    public void reduce2java( AstProperties props ) {
+
+        // Checks to see if it is inside an aspect
+        String isAspect = (String) props.getProperty("Aspect");
+        if (isAspect!=null) {
+          // Add field properties
+          props.setProperty("isField","true");
+
+          // Reduce the modifiers
+          arg[0].reduce2java(props);
+
+          // Reduce the type
+          arg[1].reduce2java(props);
+
+          // Reduce the declarations
+          arg[2].reduce2java(props);
+
+          // Spits out a semicolon
+          props.print("; ");
+
+          // Remove properties
+          props.removeProperty("isField");
+
+        } else {
+         // It is not an aspect, proceed with normal reduction
+         arg[0].reduce2java(props);
+         arg[1].reduce2java(props);
+         arg[2].reduce2java(props);
+         props.print("; ");
+        }
+
+    }
+}

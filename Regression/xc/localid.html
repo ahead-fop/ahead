@@ -1,0 +1,174 @@
+<ul>
+<method layers >  layers for LOCALID method
+<li><font face="Arial">LocalId -- addresses the inadvertent capture problem when
+  collapsing inheritance hierarchies,</font></li>
+<call layers >
+</method> end layers method
+</ul>
+<ul>
+
+<method chapterLinks > chapterLinks method
+  <li><font face="Arial"><a href="#LocalIds">Local Identifiers and the Problem
+    of Inadvertent Capture</a></font></li>
+<call chapterLinks >
+</method> end chapterLinks method
+</ul>
+
+<method chapters > chapters method
+
+<h2><font face="Arial" color="#0000FF"><a name="LocalIds">Local
+Identifiers and the Problem of Inadvertent Capture</a></font></h2>
+
+<P><font face="Arial">PJ is a tool that is designed to compose different
+specifications (i.e., hierarchies of classes, interfaces, etc.) by macro
+expansion.</font> <font face="Arial">A standard problem of macro-expansion is <b>inadvertent
+capture</b>.&nbsp; It arises when variables in different classes are given the
+same names, and ambiguity arises when the classes are composed.&nbsp; Consider
+the following class hierarchy:</font>
+<blockquote>
+  <pre><font face="Courier New">class top {
+   int i;
+</font>   ... System.out.println(i); ...<font face="Courier New">
+}
+
+class bottom extends top {
+   double i;
+   </font>... System.out.println(i); ...<font face="Courier New">
+}</font></pre>
+</blockquote>
+<P><font face="Arial">The above is a legal Java program; the reason is that variable
+scoping differentiates the variable named &quot;i&quot; in class bottom from the
+variable named &quot;i&quot; in class top.&nbsp; Now, look what happens when top
+and bottom are blindly merged into a single class:</font>
+<blockquote>
+  <pre><font face="Courier New">class top {
+   int i;
+</font>   double i;  // illegal<font face="Courier New">
+   </font>... System.out.println(i); ... // ambiguous
+   ... System.out.println(i); ...<font face="Courier New"> 
+}</font></pre>
+</blockquote>
+<P><font face="Arial">That is, there are two variables named &quot;i&quot;
+and now references to variable &quot;i&quot; are ambiguous -- it is not obvious
+which variable is being referenced.&nbsp; This is
+typical of inadvertent capture.&nbsp; We will encounter such problems in PJ because of the way inheritance
+hierarchies are collapsed.&nbsp; The ambiguous (and
+incorrect) code above will be produced by PJ if class top were composed with the
+following extension:</font>
+<blockquote>
+  <pre><font face="Courier New">extends class top {
+   double i;
+   </font>... System.out.println(i); ...<font face="Courier New">
+}</font></pre>
+</blockquote>
+<h2><font face="Arial" color="#0000FF">The LocalID Declaration</font></h2>
+<P><font face="Arial">A way to avoid inadvertent capture is to declare
+identifiers &quot;local&quot; to a particular class, and have them &quot;mangled&quot; so that they are forever unique.&nbsp; In GenBorg,
+inadvertent capture is a bit more difficult because identifiers are local to a <b>layer</b>,
+and a layer encapsulates many classes (or class extensions).&nbsp; Each class
+can reference variables and methods that are local to other classes of that
+layer. So assigning a mangled name to an identifier must be done consistently
+across all classes of a layer.&nbsp;&nbsp;</font>
+<P><font face="Arial">The solution used in PJ is to introduce a <b>LocalId</b> declaration
+which simply lists the identifiers that are local to a layer and that are to be mangled.&nbsp; In
+effect, the translation of a <b>LocalId</b> declaration is a textual search and replace
+performed on the
+body of the PJ declaration (class, state machine, etc.) thereby yielding the
+correct specification.&nbsp; As an example, a way to declare class top above is:</font>
+<blockquote>
+  <pre><font face="Courier New"><span style="background-color: #FFFF00"><b>LocalId</b> i;   // list of names that are local to a layer, and are to be mangled</span>
+
+class top {
+   int i;
+</font>   ... System.out.println(i); ...<font face="Courier New">
+}</font></pre>
+</blockquote>
+<P><font face="Arial">When top is instantiated, the name &quot;i&quot; is mangled -- i.e., changed into
+a unique identifier.&nbsp; Assume the name mangling changes &quot;i&quot; to &quot;i$1&quot;, an instantiation of
+top yields:</font>
+<blockquote>
+  <pre><font face="Courier New">class top {
+   int i$1;
+</font>   ... System.out.println(i$1); ...<font face="Courier New">
+}</font></pre>
+</blockquote>
+<p><font face="Arial">The actual mangling used is &lt;variableName&gt;$$&lt;layerName&gt;.</font></p>
+<h3><font face="Arial" color="#0000FF">Examples</font></h3>
+<p><font face="Arial">Consider the following base class specification with local
+identifiers i, j, ii, jj, and foo.</font></p>
+<blockquote>
+  <pre><font face="Courier New">package Ctop; 
+
+import Jakarta.util.*;
+
+<span style="background-color: #FFFF00">LocalId i, j;
+LocalId ii, jj;
+LocalId foo;</span>
+
+class top {
+   static int <span style="background-color: #FFFF00">i,j</span>;
+   int <span style="background-color: #FFFF00">ii,jj</span>;
+
+   static { <span style="background-color: #FFFF00">i</span> = 4; }
+
+   top() {  <span style="background-color: #FFFF00">ii</span> = 5; }
+   top(int rj) { <span style="background-color: #FFFF00">jj</span> = rj; }
+
+   void foo(float x, float y) { <span style="background-color: #FFFF00">i</span> = <span style="background-color: #FFFF00">j</span> = x+y; }
+}</font></pre>
+</blockquote>
+<p><font face="Arial">Now consider an extension to top that uses exactly the
+same identifiers locally:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package Cmid;
+
+import java.util.*;
+
+<span style="background-color: #00FFFF">LocalId i, j, ii, jj, foo;</span>
+
+extends class top implements java.io.Serializable {
+
+   static int <span style="background-color: #00FFFF">i,j</span>;
+   int <span style="background-color: #00FFFF">ii,jj</span>;
+
+   static { <span style="background-color: #00FFFF">i</span> = 4; }
+
+   void foo(float x, float y) { <span style="background-color: #00FFFF">i = j</span> = x*y; }
+}</font></pre>
+</blockquote>
+<p><font face="Arial">PJ composes these two specifications to yield:</font></p>
+<blockquote>
+  <pre><font face="Courier New">package Ctop; 
+
+import Jakarta.util.*;
+
+import java.util.*;
+
+class top implements java.io.Serializable {
+   static int <span style="background-color: #FFFF00">i$$Ctop,j$$Ctop</span>;
+
+   static int <span style="background-color: #00FFFF">i$$Cmid,j$$Cmid</span>;
+
+   static { <span style="background-color: #FFFF00">i$$Ctop</span> = 4; }
+   static { <span style="background-color: #00FFFF">i$$Cmid</span> = 4; }
+
+   int <span style="background-color: #FFFF00">ii$$Ctop,jj$$Ctop</span>;
+   int <span style="background-color: #00FFFF">ii$$Cmid,jj$$Cmid</span>;
+
+   top() {  <span style="background-color: #FFFF00">ii$$Ctop</span> = 5; }
+   top(int rj) { <span style="background-color: #FFFF00">jj$$Ctop</span> = rj; }
+
+   void foo$$Ctop(float x, float y) { <span style="background-color: #FFFF00">i$$Ctop</span> = <span style="background-color: #FFFF00">j$$Ctop</span> = x+y; }
+
+   void <span style="background-color: #00FFFF">foo$$Cmid</span>(float x, float y) { <span style="background-color: #00FFFF">i$$Cmid</span> = <span style="background-color: #00FFFF">j$$Cmid</span> = x*y; }
+}</font></pre>
+</blockquote>
+<p><font face="Arial">Note that PJ first assigns unique (mangled) names to local
+identifiers before composing specifications.&nbsp; It doesn't matter if PJ is
+composing classes, interfaces, state machines or whatever.&nbsp; The <b>LocalId</b>
+feature works for them all.&nbsp; </font></p>
+<p><font face="Arial">Finally, note that the <b>LocalId</b> declaration(s) list
+all of the identifiers that are local to a layer.&nbsp; Not all identifiers
+listed need be present in the body of a base or extension specification.</font></p>
+<call chapters >
+</method>

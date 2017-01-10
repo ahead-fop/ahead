@@ -1,0 +1,18 @@
+echo "********* Now testing nested state constructs ****" 
+java jak2java.Main nested.spec \
+&& javac nested.java \
+&& java nested > junk \
+&& diff -b junk correct_nested \
+|| exit 1
+echo "********* Now testing error handlers in nested state constructs ****" 
+java jak2java.Main nestederror.spec \
+&& javac nestederror.java \
+&& java nestederror > junk \
+&& diff -b junk correct_nestederror \
+|| exit 1
+echo "********* Now testing transitions from nested states by sub-machines ***"
+java jak2java.Main n2.spec \
+&& javac n2.java \
+&& java n2 > junk \
+&& diff -b junk correct-n2 \
+|| exit 1

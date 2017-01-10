@@ -1,0 +1,16 @@
+echo running test $1
+
+composer --equation=Equations/$1.equation
+cd $1
+
+jak2java *.jak
+
+javac -nowarn *.java &> warnings
+# get rid of unchecked warnings
+cat warnings | grep -v "^Note:"
+cd ..
+
+java $1.Main TestV500E45K.bench v1 | sed -e/Time/d  > out
+
+diff -w out Correct/$1.correct
+

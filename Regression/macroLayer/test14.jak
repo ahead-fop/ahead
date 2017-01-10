@@ -1,0 +1,36 @@
+
+import java.io.PrintWriter;
+import Jakarta.kernel.*;
+import jak.Base.AST_Exp;
+import jak.Lang;
+
+public class test14 {
+    public static void main(String args[]) {
+
+	dummy d = new dummy();
+
+	d.test();
+    }
+}
+
+
+macro foo(AST_Exp y) stm{ x = y; }stm
+	
+class dummy {
+    environment x;
+
+    public void test() {
+	AST_Exp expression;
+	AstProperties props = new AstProperties();
+	PrintWriter pw = new PrintWriter(System.out);
+
+	props.setProperty("output", pw);
+	alias(x, exp{ xArr[ipos] }exp );
+	expression = exp{ x+y }exp;
+	expression.reduce2java(props);
+
+	#foo( exp{ x+y }exp );
+	pw.println();
+	pw.flush();
+    }
+}

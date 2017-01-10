@@ -1,0 +1,31 @@
+package MissionWrffeL;
+
+import 
+    Jakarta.util.Util;
+import 
+    java.io.*;
+import 
+    F.Libraries.log.Log;
+
+ // MissionImpl
+
+
+    public extends state_machine WeaponMission
+    {
+        /*REFINES EDGE no longer supported.  
+   Move predicate or body into method, and extend method.
+Refines edge wrffeInitiated1 : wrffeInitiated -> wrffeAssigned
+            conditions false do {} */
+ 
+        // If weapon selected do weapon specific edges. 
+        edge wrffeInitiated4 : wrffeInitiated -> wrffeAccepted
+            conditions (weaponSelected())
+            do { sendAccept(); }
+
+        // add -- net effect of Refines is to have a false edge condition
+
+        public boolean wrffeInitiated1Test(Message message) {
+           return false;
+        }
+
+    }

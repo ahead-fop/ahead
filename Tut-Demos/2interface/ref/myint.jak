@@ -1,0 +1,5 @@
+import more.*;
+
+refines interface myint {
+    int ref1( int x );
+}

@@ -1,0 +1,158 @@
+## Class.vm
+## JEDI Project
+## HTML Template for the Class/Interface
+## Author: Roberto E. Lopez-Herrejon
+## Last update: November 6, 2002
+
+<HTML> 
+<HEAD>
+</HEAD> 
+<TITLE> 
+
+ #if($isClassFlag == "true")
+  Class 
+ #end
+
+ #if($isInterfaceFlag == "true")
+  Interface  
+ #end
+
+ $class.name()  
+
+</TITLE> 
+
+<BODY BGCOLOR="white"> 
+<H2> 
+ #if($isClassFlag == "true")
+  <B> Class </B>
+ #end
+
+ #if($isInterfaceFlag == "true")
+  <B> Interface </B>
+ #end
+   $class.name() 
+</H2>
+
+ ## -- New grammar updates  @pending
+
+ ## If there is a layer name print it
+ #if ($isQualifiedLayer == "true")
+    <H4>
+     layer &nbsp; $class.getQualifiedLayerName()
+   </H4> 
+  #end 
+
+ ## If there is a source TypeDeclaration 
+ #if($isSourceFlag == "true")
+   SoUrCe &nbsp;
+  
+    ## Checks to see if it has root literal 
+    #if($class.getSourceHasRoot()) 
+      RooT &nbsp;
+    #end 
+    
+    $class.getSourceQualifiedName() &nbsp; 
+   
+    $class.getSourceStringLiteral() &nbsp;
+
+  #end  ## of isSource
+ 
+ ## -- end New grammar updates
+
+
+<DL> 
+ <DT> $class.modifiers() 
+
+  ## ---- New grammars updates
+   #if ($isExtendedFlag == "true")
+     extends	
+   #end 
+
+   ## From Base
+   #if ($isRefinesFlag == "true")
+     refines
+   #end
+
+   ## From Base
+   #if ($isOverridesFlag == "true")
+     overrides	
+   #end
+	
+   ## ---- end of New grammars updates
+
+
+   ## old
+   ## #if ($isExtendedFlag == "true")
+   ##  extends	
+   ## #end 
+
+   #if($isClassFlag == "true")
+    class 
+   #end
+
+   #if($isInterfaceFlag == "true")
+    interface 
+   #end 
+ 	
+   <B> $class.name() 
+   </B> 
+ </DT>
+
+#if ($superclass.name() != "")
+ <DT> extends $superclass.name() </DT>
+#end
+
+## if there are interfaces implemented by this class
+#if ($interfaces == "true")
+<DT> implements 
+ #foreach($interface in $listInterfaces)
+   $interface.name() &nbsp;  
+ #end
+</DT>
+#end
+
+</DL>
+
+## Header comment
+<P> $generator.descriptionComment($class.inlineTags()) </P> 
+
+<HR>
+
+## Field Summary
+#parse("templates/HTML/FieldSummary.vm")
+
+## Inherited fields should be here
+
+## Constructor Summary
+#parse("templates/HTML/ConstructorSummary.vm")
+
+## Method Summary
+#parse("templates/HTML/MethodSummary.vm")
+
+## Inner classes summary
+#parse("templates/HTML/InnerClassSummary.vm")
+
+## Extension summaries
+#foreach($extension in $extensionsList)
+  #parse($extension)  
+#end
+
+## inherited methods per class should be here eventually
+
+## *****************************************************************
+## *************************** DETAILS *****************************
+
+## Fields details
+#parse("templates/HTML/FieldDetails.vm")
+
+## Constructors details
+#parse("templates/HTML/ConstructorDetails.vm")
+
+## Methods details
+#parse("templates/HTML/MethodDetails.vm")
+
+</BODY> 
+</HTML>
+
+
+

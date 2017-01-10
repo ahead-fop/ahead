@@ -1,0 +1,5 @@
+jampack: constr4.java:9: Error Overriding of constructor with signature one(int,) not permitted
+jampack: constr4.java:11: Error Overriding of constructor with signature one(float,) not permitted
+jampack: constr4.java:13: Error Overriding of constructor with signature one() not permitted
+jampack: Summary 3 errors
+

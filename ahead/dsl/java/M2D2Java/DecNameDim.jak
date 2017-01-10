@@ -1,0 +1,25 @@
+layer M2D2Java;
+
+refines class DecNameDim {
+    // stolen, copied from j2jBase
+
+    public String Signature() {
+        Dims d = ( Dims ) arg[1].arg[0];
+        if ( d != null )
+            return d.Signature();
+        else
+            return "";
+   }
+
+    // not copied...
+
+   String GetName() {
+      return ((QName) arg[0]).GetName();
+   }
+
+   String GetDims() {
+      if (arg[1]!=null)
+         return arg[1].toString().replaceAll(" ",""); 
+      return "";
+   }
+}

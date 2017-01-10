@@ -1,0 +1,21 @@
+common
+m1
+M1 error handler 24
+nested error handler 24
+m2
+M2 start
+m2
+M2 start
+common
+nested error handler 23
+three
+common
+m2
+M2 error handler 22
+nested error handler 22
+M1 start
+m1
+M1 two
+three
+common
+stop

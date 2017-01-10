@@ -1,0 +1,48 @@
+AST_Program program AST_Imports AST_Class PackageDeclaration PackStm
+ImportDeclaration ImpQual DotTimes DotTimesC TypeDeclaration ModTypeDecl 
+EmptyTDecl UnmodifiedTypeDeclaration AST_Modifiers Modifier ModAbstract
+ModFinal ModPublic ModProtected ModPrivate ModStatic ModTransient ModVolatile
+ModNative ModSynchronized UnmodifiedClassDeclaration UmodClassDecl ExtendsClause
+ExtClause ImplementsClause ImplClause ClassBody ClsBody AST_FieldDecl 
+ClassBodyDeclaration NestedClassDeclaration NClassDecl MethodDeclarationLookahead
+MDeclLA InterfaceDeclaration InterDecl NestedInterfaceDeclaration NInterDecl
+UnmodifiedInterfaceDeclaration UmInterDecl IntExtClause IntExtClauseC
+InterfaceMemberDeclarations InterfaceMemberDeclaration NCDecl NIDecl MDecl FDecl
+FieldDeclaration FldVarDec AST_VarDecl VariableDeclarator VarDecl VarAssign
+VarAssignC VariableDeclaratorId DecNameDim Dims Dim Dim2 AST_VarInit ArrInit
+VarInitExpr AST_ArrayInit MethodDeclaration MethodDcl ThrowsClause ThrowsClauseC
+MethodDeclSuffix MDSBlock MDSEmpty MethodDeclarator MthDector AST_ParList 
+FormalParameter FormParDecl ConstructorDeclaration ConDecl ExplicitConstructorInvocation
+ConThis ConSuper PrimDot PrimDotC Initializer Init AST_TypeName PrimType QNameType
+PrimitiveType BoolTyp CharTyp ByteTyp ShortTyp IntTyp LongTyp FloatTyp DoubleTyp VoidTyp
+AST_QualifiedName QName NameId  AST_TypeNameList TName TNClass Expression AsgExpr
+AST_Exp AssignmentOperator Assign AssnTimes AssnDiv AssnMod AssnPlus AssnMinus
+AssnShL AssnShR AssnShRR AssnAnd AssnXor AssnOr ConditionalExpression QuestExpr
+ConditionalOrExpression CondOrExpr MoreCondOrExpr COEBody COEBod ConditionalAndExpression
+CondAndExpr MoreCondAndExpr CAEBody CAEBod InclusiveOrExpression InclOrExpr
+MoreInclOrExpr IOEBody IOEBod ExclusiveOrExpression ExclOrExpr MoreExclOrExpr EOEBody
+EOEBod AndExpression AndExpr MoreAndExpr AEBody AEBod EqualityExpression EqExpr
+MoreEqExpr EEBody EEBodyC EqExprChoices Eq Neq InstanceOfExpression IoExpr
+RelationalExpression RelExpr MoreRelExpr REBody REBod RelExprChoices LtOp GtOp LeOp GeOp
+ShiftExpression ShiftExpr MoreShiftExpr SEBody SEBodyC ShiftExprChoices LShift RShift 
+RRShift AdditiveExpression AddExpr MoreAddExpr AdEBody AdEBod AddExprChoices Plus Minus
+MultiplicativeExpression MultExpr MoreMultExpr MEBody MEBod MultExprChoices Mult Div Mod
+UnaryExpression PlusUE MinusUE PreIncrementExpression PIncExpr PreDecrementExpression
+PDecExpr UnaryExpressionNotPlusMinus TildeUE NotUE CastLookahead Cla1 Cla2 Cla3
+CastLookaheadChoices TildeLA BangLA OpParenLA IdLA ThisLA SuperLA NewLA LitLA
+PostfixExpression PEIncDec PEPostIncDec PlusPlus2 MinusMinus2 CastExpression
+CastExpr1 CastExpr2 PrimaryExpression PrimExpr Suffixes PrimaryPrefix ThisPre
+SuperPre ExprPre RTPre PPQualName PrimarySuffix ThisSuf AllocSuf ExprSuf QNameSuf MthCall
+Literal IntLit FPLit CharLit StrLit BooleanLiteral True False NullLiteral Null
+Arguments Args AST_ArgList AllocationExpression PrimAllocExpr ObjAllocExpr AllocExprChoices
+AnonClass ArrayDimsAndInits ArrDim1 ArrDim2 ExprDims ExDimBody ExDimBod Statement
+ExprStmt LabeledStatement LabeledStmt Block BlockC AST_Stmt BlockStatement BlockStmt
+BlkClassDcl BlkInterDcl LocalVariableDeclaration LocalVarDecl EmptyStatement Empty
+AST_ExpStmt StatementExpression PIExpr PDExpr PEStmtExpr StmtExprChoices PlusPlus
+MinusMinus AssnExpr SwitchStatement SwitchStmt AST_SwitchEntry SwitchEntryBody SEBod
+SwitchLabel CaseLabel DefLabel IfStatement IfStmt ElseClause ElseClauseC WhileStatement
+WhileStm DoStatement DoWhileStm ForStatement ForStmt ForInit FIExprList
+StatementExpressionList ForUpdate StmExprList BreakStatement BreakStm
+ContinueStatement ContinueStm ReturnStatement ReturnStm ThrowStatement ThrowStm
+SynchronizedStatement SyncStmt TryStatement TryStmt Finally FinallyC AST_Catches
+Catch CatchStmt

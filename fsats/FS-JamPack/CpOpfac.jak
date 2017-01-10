@@ -1,0 +1,14 @@
+layer FS;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+public class CpOpfac extends OpfacImpl {
+    public Mission newMission() 
+        {
+        return new CpMission();
+    }
+}

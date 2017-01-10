@@ -1,0 +1,10 @@
+package FsatsRmiL;
+
+import  java.rmi.*;
+
+
+   /** The actual interface exported by remote OPFAC objects **/
+   public interface OpfacRmi extends java.rmi.Remote 
+   {
+      public void receive( Message message ) throws RemoteException;
+   }

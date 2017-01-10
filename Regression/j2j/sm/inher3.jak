@@ -1,0 +1,36 @@
+
+// example that tests propagation of constructors UP a chain
+
+SoUrCe RooT L1 "myclass.jak";
+
+abstract State_machine myclass$$L1 extends class mytop {
+        Delivery_parameters(M m);
+        int a;
+        public myclass$$L1() { Super()(); a=5; }
+ }
+
+SoUrCe  L2 "myclass.jak";
+
+abstract State_machine myclass$$L2 extends myclass$$L1 { }
+
+SoUrCe  L3 "myclass.jak";
+
+abstract State_machine myclass$$L3 extends myclass$$L2 {
+       int c;
+       public myclass$$L3(int i) { Super(int)(i); c = 4; }
+ }
+
+SoUrCe  L4 "myclass.jak";
+
+abstract State_machine myclass$$L4 extends myclass$$L3 { }
+
+SoUrCe  L5 "myclass.jak";
+
+abstract State_machine myclass$$L5 extends myclass$$L4 {
+       double d;
+       public myclass$$L5( double d ) { Super(double)(d); this.d = d; }
+    }
+
+SoUrCe  L6 "myclass.jak";
+
+class myclass extends myclass$$L5 { }

@@ -1,0 +1,345 @@
+/* 
+ * debug layer
+ * 
+ * If this layer is present, cursors will not be allowed to perform
+ * actions that are not explicitly declared.
+ */
+
+package p3Lib;
+
+import JakBasic.Lang;
+
+
+public final class debug extends BaseDS implements DS {
+   //public DS        lower;
+   public TopParams tp;
+   environment;
+
+   public debug( DS lowerlevel ) { 
+      lower = lowerlevel;
+   }
+
+   public debug( ) { }
+
+   public DS_Container_Type make_container_type( TopParams t, ContParams c ) {
+      return new debug_Container_Type( this, t, c );
+   }
+
+   public DS_Element_Type make_element_type( ) {
+      return new debug_Element_Type( this );
+   }
+
+   public DS_CommonCursor_Type make_commoncursor_type( ) {
+      return new debug_CommonCursor_Type( this );
+   }
+
+   public DS_Cursor_Type make_cursor_type( Usage u ) { 
+        return new debug_Cursor_Type( this, u ); 
+   }
+
+   public DrcAttributes drc( DrcAttributes d ) {
+      d = lower.drc(d);
+      return d;
+   } 
+
+   public void set_keyword( TOP toplayer, TopParams tph ) {
+      tp = tph;
+      environment parent toplayer;
+      lower.set_keyword( toplayer, tp );
+   }
+
+   public Object ParseArgs( Lang.AstNode x ) {
+      // will this function be called?
+      Object result = null;
+
+      if ( x != null && x.arg[0] != null && x.arg[0].right != null )
+         result = ParseTE.parse( x );
+      if ( result == null || !( result instanceof DS ) ) 
+         ParseTE.parseError( "debug layer expecting single parameter of type DS");
+      lower = (DS) result;
+      return this;
+   }
+}
+
+final class debug_Container_Type implements DS_Container_Type {
+   ContParams        cp;
+   debug              _layer;
+   DS_Container_Type lower;
+   environment;
+
+   debug_Container_Type( DS debuglayer, TopParams t, ContParams c ) { 
+      // Step 1: save the arguments as we'll refer to them later
+
+      _layer    = (debug) debuglayer;
+      cp       = c;
+      _layer.tp = t;
+      environment parent _layer;
+
+      // Step 2: create chain of lower level containers
+
+      lower = _layer.lower.make_container_type( t, cp );
+   }
+
+   public void validate( ) {
+      // nothing to validate as debug has no nonrealm parameters
+      lower.validate( );
+   }
+
+   public Lang.AST_FieldDecl dataMembers( ) {
+      return mth{
+         public int       op_mode;
+         public boolean   op_del_allowed;
+         public boolean[] op_upd_allowed;
+         $mth(lower.dataMembers())
+      }mth;
+   }
+
+   public Lang.AST_Stmt containerMethod( ) {
+      return stm{
+         op_mode = 0;  // IDLE_MODE
+         $stm(lower.containerMethod());
+      }stm;
+   }
+
+   public Lang.AST_Exp is_fullMethod( ) {
+      return lower.is_fullMethod( );
+   }
+   
+   public Lang.AST_Stmt insertMethod(){
+     return lower.insertMethod();
+   }
+
+   public Lang.AST_Stmt storageMethod() {
+      return lower.storageMethod();
+   }
+
+   public Lang.AST_Stmt finishMethod() {
+     return lower.finishMethod();
+   }
+   
+   public Lang.AST_Stmt openMethod(){
+      return lower.openMethod();
+   } 
+
+}
+
+final class debug_Element_Type implements DS_Element_Type {
+   debug            _layer;
+   DS_Element_Type lower;
+   environment;
+
+   debug_Element_Type( DS debuglayer ) {
+      _layer = ( debug ) debuglayer;
+      lower = _layer.lower.make_element_type( );
+      environment parent _layer;
+   }
+
+   public Lang.AST_FieldDecl dataMembers( ) {
+      return lower.dataMembers( );
+   }
+
+   public Lang.AST_Stmt link( ) {
+      return lower.link( );
+   }
+
+   public Lang.AST_FieldDecl relink( ) {
+      return lower.relink( );
+   }
+
+   public Lang.AST_FieldDecl unlink( ) {
+      return lower.unlink( );
+   }
+
+   public Lang.AST_Stmt upd( int fieldno ) {
+      return stm{
+         if ( !( cont.op_mode == 0 || 
+               ( cont.op_mode == -1 
+                 && cont.op_upd_allowed[$exp(Lang.Literal.Make(fieldno))] ) ) )
+            throw new RuntimeException("Update not allowed!");
+         $stm(lower.upd( fieldno ));
+      }stm;
+   }
+}
+
+final class debug_CommonCursor_Type implements DS_CommonCursor_Type {
+   debug                 _layer;
+   DS_CommonCursor_Type lower;
+   environment;
+
+   debug_CommonCursor_Type( DS debuglayer ) {
+      _layer = ( debug ) debuglayer;
+      lower = _layer.lower.make_commoncursor_type( );
+      environment parent _layer;
+   }
+
+   public Lang.AST_FieldDecl dataMembers( ) {
+      return lower.dataMembers( );
+   }
+
+
+   public Lang.AST_Stmt insertMethod( ) {
+         return lower.insertMethod( );
+   }
+
+   public Lang.AST_Stmt removeMethod( ) {
+      return stm{
+         if ( !( cont.op_mode == -1 && cont.op_del_allowed ) )
+            throw new RuntimeException("Deletion not allowed!");
+         $stm(lower.removeMethod( ));
+      }stm;
+   }
+
+   public Lang.AST_FieldDecl movementMethods( ) {
+      return lower.movementMethods( );
+   }
+}
+
+
+class debug_Cursor_Type implements DS_Cursor_Type {
+   debug          _layer;
+   DS_Cursor_Type lower;
+   Usage          u;
+   boolean        write; 
+   
+   environment;
+   
+   debug_Cursor_Type( DS debuglayer, Usage usage ) {
+      _layer = (debug) debuglayer;
+      u     = usage;
+      lower = _layer.lower.make_cursor_type( u );
+
+      write = u.del;
+      for (int i = 0; i < u.upd.length; i++)
+         write = write || u.upd[i];
+
+      environment parent _layer;
+   }
+   
+   public Qopt optimize( Qopt q ) {
+      q = lower.optimize(q);
+      return q;
+   }
+   
+   public Lang.AST_FieldDecl dataMembers( ) {
+      return mth{
+         private boolean in_use;
+         $mth(lower.dataMembers( ))
+      }mth;
+   }
+   
+   public Lang.AST_Stmt cursorMethod( ) {
+      return stm{
+         in_use = false;
+         $stm(lower.cursorMethod( ));
+      }stm;
+   }
+   
+   public Lang.AST_Stmt firstMethod( ) {
+      if ( write ) {
+         Lang.AST_Stmt tmp;
+         if ( u.del ) 
+            tmp = stm{ cont.op_del_allowed = true; }stm;
+         else
+            tmp = stm{ cont.op_del_allowed = false; }stm;
+
+         tmp = stm{ $stm( tmp ); 
+                    cont.op_upd_allowed = new boolean[
+                    $exp( Lang.Literal.Make( u.upd.length ) )];
+               }stm;
+
+         for ( int i = 0; i < u.upd.length; i++ ) {
+            if ( u.upd[i] )
+               tmp = stm{ $stm( tmp );
+                          cont.op_upd_allowed[$exp( Lang.Literal.Make( i ) )] = true;
+                     }stm;
+            else
+               tmp = stm{ $stm( tmp );
+                          cont.op_upd_allowed[$exp( Lang.Literal.Make( i ) )] = false;
+                     }stm;
+         }
+
+         return stm{
+            if ( cont.op_mode != 0 )
+               throw new RuntimeException(
+               "Container is not in IDLE_MODE, update cursor cannot start!");
+
+            cont.op_mode = -1;  // WRITE_MODE
+            in_use = true;
+
+            $stm( tmp );
+
+            $stm( lower.firstMethod( ) );
+         }stm;
+      } 
+      else {
+         return stm{
+            if ( cont.op_mode == -1 )
+               throw new RuntimeException(
+               "Container is in WRITE_MODE, read cursor cannot start!");
+
+            cont.op_mode ++;  // READ_MODE
+            in_use = true;
+
+            $stm( lower.firstMethod( ) );
+         }stm;
+      }
+   }
+   
+   public Lang.AST_Exp moreMethod( ) {
+      return exp{ ($exp(lower.moreMethod())) ? true :
+                  (in_use && !(in_use = false) &&
+                  ((cont.op_mode = java.lang.Math.abs(cont.op_mode) - 1) < -1))
+             }exp;
+
+      /* The code above is an ugly version of the following code.
+       * It has to be so ugly in order to fit into an expression.
+
+      if ($exp(lower.moreMethod())) {
+         return true;
+      }
+      else if (in_use) { 
+         // the first time lower.moreMethod() return false
+         in_use = false;
+         
+         if (cont.op_mode == -1)
+            cont.op_mode = 0;  // clear WRITE_MODE
+         else
+            cont.op_mode --;   // clear READ_MODE
+
+         return false;
+      }
+      else {
+         return false;
+      }
+
+      */
+   }
+   
+   public Lang.AST_Stmt noMoreMethod( ) {
+      // can't imagine why upper layers would call this...
+      return lower.noMoreMethod( );
+   }
+   
+   public Lang.AST_Stmt nextMethod( )  {
+      return lower.nextMethod( );
+   }
+   
+   public Lang.AST_Exp lowerBound( boolean pos ) {
+      // can't imagine why lowerBound would be called from higher layers...
+      return lower.lowerBound( pos );
+   }
+   
+   public Lang.AST_Exp upperBound( boolean pos ) {
+      // can't imagine why upperBound would be called from higher layers...
+      return lower.upperBound( pos );
+   }
+   
+   public Lang.AST_Exp residual( ) {
+      // can't imagine why residual would be called from higher layers...
+      return lower.residual( );
+   }
+   
+   public Lang.AST_Stmt removeMethod( ) {
+      return lower.removeMethod( );
+   }
+}

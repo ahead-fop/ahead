@@ -1,0 +1,11 @@
+layer calcActions;
+import Jakarta.util.*;
+import java.io.*;
+import java.util.*;
+refines class Push {
+
+    public void execute (Stack S) {
+       S.push( new Integer( tok[0].tokenName() ) ); 
+    }
+
+}

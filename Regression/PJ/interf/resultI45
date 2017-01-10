@@ -1,0 +1,25 @@
+
+layer Iext4;
+
+import xyz.*;
+
+public
+
+transient refines interface MyInt extends xyz, biff {
+
+   int Zero = 0;
+   int One  = 1;
+
+    int Two  = 2;
+
+   void foo( int i ) throws barf;
+   void foo( int i, int j );
+
+    static
+
+   qrty bar( float i );
+
+   qrty baz();
+
+    String newmethod();
+}

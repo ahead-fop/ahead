@@ -1,0 +1,275 @@
+layer core;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+// can be factored into a separate layer later
+ 
+public class Int extends  common {
+   
+    // a Int is a ordered pair [lower,upper] that defines a range of 
+    // integer values.  The range can be inclusive or exclusive.
+    // "unknown" value is (-inf,+inf)
+   
+    public boolean minusInfinity; // true if lower = -infinity
+    public boolean plusInfinity; // true if upper = +infinity
+    public boolean includesLower; // true if [lower,.. otherwise (lower
+    public boolean includesUpper; // true if upper] otherwise upper)
+    public int lower;
+    public int upper;
+   
+    public Int( String pname ) {
+         Super( String )( pname ) ;
+        propertyType = "Int";
+        setMinusInfinity();
+        setPlusInfinity();
+    }
+   
+    public  Int setLayer( String name ) {
+        lastSetBy = name;
+        return this;
+    }
+  
+    public boolean typecheck( Pred p ) {
+        Element e = symtab.lookup( property );
+        if ( e == null ) {
+            error( "unable to lookup " + property );
+            return true;
+        }
+        String typeName = e.typeName;
+        return typeName.equals( "Int" ) && 
+                ( p == null || 
+                 p instanceof  IntLeft ||
+                 p instanceof  IntRight );
+    }
+
+    public  common factory() {
+        return new  Int( property );
+    }
+   
+    String inconsistent() {
+        return "range predicate (" + lower + " < " + property + " < " + 
+                 upper + ") is inconsistent for layer " + lastSetBy;
+    }
+   
+    public  Int set( Int x ) {
+        minusInfinity = x.minusInfinity;
+        plusInfinity  = x.plusInfinity;
+        includesLower = x.includesLower;
+        includesUpper = x.includesUpper;
+        lower =         x.lower;
+        upper =         x.upper;
+        return this;
+    }
+   
+    public  Int setUpperRange( int value, boolean includes ) {
+        plusInfinity = false;
+        includesUpper = includes;
+        upper = value;
+        if ( !minusInfinity && lower > upper )
+            error( inconsistent() );
+        return this;
+    }
+   
+    public  Int setLowerRange( int value, boolean includes ) {
+        minusInfinity = false;
+        includesLower = includes;
+        lower = value;
+        if ( !plusInfinity && lower > upper )
+            error( inconsistent() );
+        return this;
+    }
+   
+    public  Int setEquals( int value ) {
+        lower = upper = value;
+        minusInfinity = plusInfinity = false;
+        includesLower = includesUpper = true;
+        return this;
+    }
+   
+    public  Int setPlusInfinity() {
+        plusInfinity = true;
+        includesUpper = true;
+        upper = -1; // any non-null value will do
+        return this;
+    }
+       
+    public  Int setMinusInfinity() {
+        minusInfinity = true;
+        includesLower  = true;
+        lower = 1; // any non-null value will do
+        return this;
+    }
+   
+    public String toString() {
+        String result = "";
+        // check $TEqn.common case of equality
+        if ( !minusInfinity && !plusInfinity && includesUpper &&
+              includesLower && lower==upper )
+            return property + " == " + lower;
+   
+        // else default to general case
+        if ( !minusInfinity )
+            if ( includesLower )
+                result = lower + " <= " + property;
+            else
+                result = lower + " < " + property;
+        if ( !result.equals( "" ) && !plusInfinity )
+            result = result + " and ";
+        if ( !plusInfinity )
+            if ( includesUpper )
+                result += property + " <= " + upper;
+            else
+                result += property + " < " + upper;
+        return result;
+    }
+   
+    // implementation of the "$TEqn.common" version
+   
+    public  common and( common p ) {
+        return and( ( Int ) p );
+    }
+    
+    public  Int and( Int p ) {
+   
+        validateName( p );
+        setLayer( p.getLayer() );
+   
+        // Step 1: remember the most restrictive lower range
+   
+        if ( minusInfinity ) {
+            if ( p.minusInfinity )
+                ; // done -- both are at minus infinity
+            else {
+                minusInfinity = false;
+                includesLower = p.includesLower;
+                lower = p.lower;
+            }
+        }
+        else {
+            if ( p.minusInfinity )
+                ; // done -- self is already set
+            else {
+                if ( lower < p.lower ) {
+                    lower = p.lower; // remember more restrictive bounds
+                    includesLower = p.includesLower;
+                }
+                else
+                    if ( lower == p.lower ) {
+                        // remember if the lower was not includes in one range
+                        includesLower = ! ( !includesLower || !p.includesLower );
+                    }
+                    else
+                        ; // done!
+            }
+        }
+   
+        // Step 2: do the same thing for the upper range
+   
+        if ( plusInfinity ) {
+            if ( p.plusInfinity )
+                ; // done -- both are at infinity
+            else {
+                plusInfinity = false;
+                includesUpper = p.includesUpper;
+                upper = p.upper;
+            }
+        }
+        else {
+            if ( p.plusInfinity )
+                ; // done -- self is already set
+            else {
+                if ( upper > p.upper ) {
+                    upper = p.upper; // remember more restrictive bounds
+                    includesUpper = p.includesUpper;
+                }
+                else
+                    if ( upper == p.upper ) {
+                        // remember if the upper was not includes in one range
+                        includesUpper = ! ( !includesUpper || !p.includesUpper );
+                    }
+                    else
+                        ; // done!
+            }
+        }
+   
+        // Step 3: see if there is an inconsistency -- lower bound
+        //         exceeds the upper bound
+   
+        if ( ( minusInfinity || plusInfinity ) || ( lower < upper ) ||
+              ( lower == upper && includesLower && includesUpper ) )
+            return this; // ok
+   
+        error( inconsistent() );
+        set( p );
+        return this;
+    }
+   
+    public  common assign( common p ) {
+        return assign( ( Int ) p );
+    }
+   
+    public  common assign( Int p ) {
+        validateName( p );
+        set( p );
+        return this;
+    }
+   
+    public void impliesFailed( Int p ) {
+        error( "constraint (" + p + ") of layer " + p.lastSetBy +
+                " not satisfied by (" + this + ") set by " + lastSetBy );
+    }
+   
+    public boolean implies( common p ) {
+        return implies( ( Int ) p );
+    }
+  
+    public boolean implies( Int p ) {
+   
+        // Step 1: bottom range must be more shallow than precondition range
+   
+        if ( !minusInfinity ) {
+            // this has a lower bound
+            // if p has no lower bound, we're ok
+            // if p has a bound, it must be less than this.lower
+
+            if ( !p.minusInfinity && ( p.lower > lower || 
+                                    ( p.lower == lower && includesLower
+                                     && !p.includesLower ) ) ) {
+                impliesFailed( p );
+                return false;
+            }
+        }
+        else {
+            // this has no lower bound
+            // if p has a bound, we've failed
+            if ( !p.minusInfinity ) {
+                impliesFailed( p );
+                return false;
+            }
+        }
+   
+        // Step 2: upper range must be more shallow than precondition range
+          
+        if ( !plusInfinity ) {
+            // this has an upper bound
+            // if p has no upper bound, we're ok.
+            // if p has an upper bound, it must be greater than this.upper
+
+            if ( !p.plusInfinity && ( p.upper < upper ||
+                     ( p.upper == upper && includesUpper && !p.includesUpper ) ) ) {
+                impliesFailed( p );
+                return false;
+            }
+        }
+        else {
+            if ( !p.plusInfinity ) {
+                impliesFailed( p );
+                return false;
+            }
+        }
+        return true;
+    }
+}

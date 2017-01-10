@@ -1,0 +1,9 @@
+drc: test2.drc: Error attribute search referenced as Int but declared as Bool in layer foo
+drc: test2.drc: Error initialization predicate for attribute search is not of the correct type
+drc: test2.drc: Error initialization predicate for attribute range references attribute search
+drc: test2.drc: Error initialization predicate for attribute range is not of the correct type
+Symbol table Contents
+         outside Bool foo ()
+         outside Int range (3 < range and range <= 4 and ?search)
+         outside Bool search (search == 3)
+drc: Summary 4 errors

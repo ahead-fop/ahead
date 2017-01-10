@@ -1,0 +1,19 @@
+layer FS;
+
+import laydown.*;
+
+import java.util.*;
+
+import fsats.util.DataContainer;
+
+SoUrCe RooT FsatsL "C:!Java!FeatureOrientedProgramming!fsats!FsatsL!MessageTypeInterface.jak";
+
+abstract interface MessageTypeInterface$$FsatsL extends EventTypeInterface {}
+
+SoUrCe  MessageL "C:!Java!FeatureOrientedProgramming!fsats!MessageL!MessageTypeInterface.jak";
+
+/** An enumerated tactical message type. */
+public interface MessageTypeInterface extends MessageTypeInterface$$FsatsL {
+    /** Create a Message from an FSAMS message. **/
+    Message fromFsams( DataContainer fsams );
+}

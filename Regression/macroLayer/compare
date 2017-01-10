@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+sed -e "s/(.*$//" $1 > junk1
+sed -e "s/(.*$//" $2 > junk2
+diff -w junk1 junk2

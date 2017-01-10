@@ -1,0 +1,46 @@
+layer MissionWrffeMortarL;
+
+import java.io.*;
+
+import log.Log;
+
+public refines State_machine MissionImpl {
+    States wrffeMortarAccepted;
+
+    // Take this branch if accepting weapon is a mortar.
+    Transition wrffeAcceptedMortar : wrffeAccepted -> wrffeMortarAccepted
+        condition getWeaponType().equals( "MTR_PLT" )
+        do {}
+
+    // Relay EOM to gun and stop.
+    Transition wrffeMortarAccepted1 : wrffeMortarAccepted -> stop
+        condition wrffeMortarAccepted1Test( message )
+        do {
+            wrffeMortarAccepted1Action( message );
+        }
+
+    // Relay Shot and RoundsComplete to observer.
+    Transition wrffeMortarAccepted2 : wrffeMortarAccepted -> wrffeMortarAccepted
+        condition wrffeMortarAccepted2Test( message )
+        do {
+            wrffeMortarAccepted2Action( message );
+        }
+
+    // added
+    public void wrffeMortarAccepted1Action( Event message ) {
+        sendUp( ( Message )message.clone() );
+    }
+
+    public boolean wrffeMortarAccepted1Test( Event message ) {
+        return ( message instanceof EomMessage );
+    }
+
+    public void wrffeMortarAccepted2Action( Event message ) {
+        sendDown( ( Message )message.clone() );
+    }
+
+    public boolean wrffeMortarAccepted2Test( Event message ) {
+        return ( message instanceof ShotMessage )
+                || ( message instanceof RoundsCompleteMessage );
+    }
+}

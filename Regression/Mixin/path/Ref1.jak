@@ -1,0 +1,5 @@
+// tests if layer can be optional
+
+refines class MyClass { 
+   int foobar;
+}

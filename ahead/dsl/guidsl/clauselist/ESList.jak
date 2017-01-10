@@ -1,0 +1,24 @@
+import java.util.*;
+
+refines class ESList  {
+    static void makeClauses() {
+        if (Main.outputModelPredicate) {
+           System.out.println();
+           System.out.println("// ESList");
+        }
+
+        Iterator i = CTable.iterator();
+        while ( i.hasNext() ) {
+            node n = ( node ) i.next();
+            node simple = n.klone().simplify();
+            if (Main.outputModelPredicate)
+               System.out.println( simple  +  " and");   /*dsb*/
+            node cnf = simple.klone().cnf();
+
+            ArrayList al = new ArrayList();
+            cnf.reduce( al );
+            cnfClause.setFormula( al, n );
+            cnfClause.clist.addAll( al );
+        }
+    }
+}

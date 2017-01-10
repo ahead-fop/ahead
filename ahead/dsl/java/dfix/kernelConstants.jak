@@ -1,0 +1,9 @@
+layer dfix;
+
+refines class kernelConstants {
+
+   // this is the default value for state machine
+	// Delivery_parameter declarations
+
+   public static String deliverDefault = "AMI message";
+}

@@ -1,0 +1,78 @@
+// test of constructor inheritance
+
+
+
+ abstract class MissionImpl$$MissionL
+        implements Mission
+    {
+        public MissionImpl$$MissionL( String foo ) { /* a constructor! */ }
+    }
+
+
+
+ abstract  class MissionImpl$$ProxyL extends MissionImpl$$MissionL 
+        implements Mission
+    {
+      // inherited constructors
+
+
+        public MissionImpl$$ProxyL (  String foo ) { super(foo); } }
+
+
+
+ abstract  class MissionImpl$$MissionAnyL extends MissionImpl$$ProxyL
+        implements Mission
+    {
+        public MissionImpl$$MissionAnyL() {
+          MissionImplConstructor(); }
+
+        public void MissionImplConstructor() { /*something*/; }
+      // inherited constructors
+
+
+        public MissionImpl$$MissionAnyL (  String foo ) { super(foo); }
+
+    }
+
+
+
+ abstract  class MissionImpl$$MissionWrffeL extends MissionImpl$$MissionAnyL
+    {
+      // inherited constructors
+
+
+        public MissionImpl$$MissionWrffeL (  String foo ) { super(foo); }
+        public MissionImpl$$MissionWrffeL (  ) { super(); } }
+
+
+
+ abstract  class MissionImpl$$MissionWrffeArtyL extends MissionImpl$$MissionWrffeL 
+    {
+      // inherited constructors
+
+
+        public MissionImpl$$MissionWrffeArtyL (  String foo ) { super(foo); }
+        public MissionImpl$$MissionWrffeArtyL (  ) { super(); } }
+
+
+
+ abstract  class MissionImpl$$MissionWrffeMlrsL extends MissionImpl$$MissionWrffeArtyL
+    {
+        public MissionImpl$$MissionWrffeMlrsL( double d ) { /* constructor#2! */ }
+      // inherited constructors
+
+
+        public MissionImpl$$MissionWrffeMlrsL (  String foo ) { super(foo); }
+        public MissionImpl$$MissionWrffeMlrsL (  ) { super(); }
+    }
+
+
+
+    public  class MissionImpl extends MissionImpl$$MissionWrffeMlrsL
+    {
+      // inherited constructors
+
+
+        public MissionImpl (  String foo ) { super(foo); }
+        public MissionImpl (  double d ) { super(d); }
+        public MissionImpl (  ) { super(); } }

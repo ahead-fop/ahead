@@ -1,0 +1,6 @@
+// tests integer range conditions
+
+layer ;
+
+outside Int a;
+outside Int b;

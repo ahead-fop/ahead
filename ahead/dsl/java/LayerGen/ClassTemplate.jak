@@ -1,0 +1,33 @@
+layer LayerGen;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.util.*;
+import java.io.*;
+
+public refines class ClassTemplate {
+
+    /** Fall back method for the extensions to the document layout 
+     * @layer<LayerGen>
+     */
+    public void extendsClassDocument() {
+
+        // Layer 
+        LayerTemplate lt = new LayerTemplate();
+        lt.setName( "Layer" );
+        lt.setTemplateFile( "SourceTemplates/Layer.vm" );
+
+        // Select the place where to put it
+        // Class[2] -> Classbody[2] 
+
+        // Gets the Classbody refences, 2nd element of class
+        DocumentDescriptor classbody = getLayoutElement( 2 );
+        
+        // To the classbody add the layer document as it 1th element
+        classbody.insertLayoutElement( lt, 2 );
+
+        // Daisy chains the calls
+        Super().extendsClassDocument();
+    }
+
+}

@@ -1,0 +1,19 @@
+layer foo.bar.one;
+
+SoUrCe RooT foo.bar.one "C:!Java!FeatureOrientedProgramming!Regression!Mixin!class!eins.jak";
+
+abstract class c$$foo$bar$one {
+   int top;
+}
+
+SoUrCe  baz.bar.two "C:!Java!FeatureOrientedProgramming!Regression!Mixin!class!zwei.jak";
+
+ abstract class c$$baz$bar$two extends c$$foo$bar$one {
+  int mid;
+}
+
+SoUrCe  baz.baz.three "C:!Java!FeatureOrientedProgramming!Regression!Mixin!class!drei.jak";
+
+ class c extends c$$baz$bar$two {
+   int bottom;
+}

@@ -1,0 +1,986 @@
+/* rbtree - Red Black Tree */
+
+package p3Lib;
+
+import JakBasic.Lang;
+
+
+public final class rbtree extends BaseDS implements DS {
+   //public DS                  lower;
+   public TopParams           tp;
+
+   environment                left, right, next, pparent, isRed, 
+                              root, nil, 
+                              rbtree_relink, rbtree_unlink, 
+                              left_rotate, right_rotate;
+
+   public String              keyfield;
+   public Lang.AST_QualifiedName   keyfieldast;
+   public String              keytype;
+   public Lang.AST_QualifiedName   keytypeast;
+   public int                 keyid;
+
+   public rbtree( DS lowerlevel ) { 
+      lower = lowerlevel;
+   }
+
+   public rbtree( ) { }
+
+   public DS_Container_Type make_container_type( TopParams t, ContParams c ) {
+      return new rbtree_Container_Type( this, t, c );
+   }
+
+   public DS_Element_Type make_element_type( ) {
+      return new rbtree_Element_Type( this );
+   }
+
+   public DS_CommonCursor_Type make_commoncursor_type( ) {
+      return new rbtree_CommonCursor_Type( this );
+   }
+
+   public DS_Cursor_Type make_cursor_type( Usage u ) { 
+        return new rbtree_Cursor_Type( this, u ); 
+   }
+
+   public DrcAttributes drc( DrcAttributes d ) {
+      // check to see if there are multiple rbtree layers that have
+	  // the same key.  If so, flag the error otherwise remember
+	  // the annotation
+	  
+	  d.test_and_set_annotation("rbtree", "----");
+	  d.check_annotation("rbtree", keyfield);
+	  
+	  // right now, rbtree can be used anywhere, at any time.
+      // just signal to upper layers that there is a retrieval_layer_present
+
+      if ( !d.below_topmost_layers ) {
+         d.below_topmost_layers = true;
+         d.below_topmost_set    = "rbtree";
+      }
+
+      d.retrieval_layer_present = true;
+      d = lower.drc( d );
+      d.retrieval_layer_present = true;
+
+      return d;
+   } 
+
+   public void set_keyword( TOP toplayer, TopParams tph ) {
+      tp = tph;     
+      environment parent toplayer;
+      lower.set_keyword( toplayer, tp );
+   }
+
+   public Object ParseArgs( Lang.AstNode x ) {
+      Object result;
+
+      if ( x == null || x.arg[0] == null || x.arg[0].right == null 
+            || x.arg[0].right.right != null )
+         ParseTE.parseError( "rbtree layer expecting two arguments :  keyname and DS " );
+
+      if ( !( x.arg[0].arg[0].arg[0] instanceof Lang.AST_QualifiedName ) )
+         ParseTE.parseError( "rbtree layer expecting first argument as key name" );
+
+      keyfield = ( ( Lang.AST_QualifiedName ) x.arg[0].arg[0].arg[0] ).GetName( );
+
+      result = ParseTE.parse( x.arg[0].right.arg[0] );
+         
+      if ( result == null || !( result instanceof DS ) )
+         ParseTE.parseError( "rbtree layer's second argument should be of type DS" );
+
+      lower = ( DS ) result;
+      return this;
+   }
+}
+
+final class rbtree_Container_Type implements DS_Container_Type {
+   ContParams        cp;
+   rbtree            _layer;
+   DS_Container_Type lower;
+   environment;
+
+   rbtree_Container_Type( DS rbtreelayer, TopParams t, ContParams c ) { 
+      // Step 1: save the arguments as we'll refer to them later
+
+      _layer    = ( rbtree ) rbtreelayer;
+      cp       = c;
+      _layer.tp = t;
+      environment parent _layer;
+
+      // Step 2: create chain of lower level containers
+
+      lower = _layer.lower.make_container_type( t, cp );
+   }
+
+   public void validate( ) {
+      // Step 1: validation tests ensure that the keyfield specified
+      //         in the type equation actually corresponds to a known
+      //         attribute
+
+      _layer.keyid = _layer.tp.FieldIndex( _layer.keyfield );
+      if ( _layer.keyid == -1 )
+         ParseTE.parseError( _layer.keyfield + " is not an attribute for rbtree layer" );
+   
+      // Step 2: keyfield is legal, now go and remember a set of
+      //         derived values for later reference
+
+      _layer.keytype = _layer.tp.FieldType[_layer.keyid];
+
+      _layer.keyfieldast = Lang.AST_QualifiedName.Make( _layer.keyfield );
+      _layer.keytypeast = Lang.AST_QualifiedName.Make( _layer.keytype );
+
+      // Step 3: now proceed to validate lower layers
+
+      lower.validate( );
+   } 
+
+   public Lang.AST_FieldDecl dataMembers( ) {
+      return mth{
+         CElemTyp root;
+         CElemTyp nil;
+         $mth( lower.dataMembers( ) )
+      }mth;
+   }
+
+   public Lang.AST_Stmt containerMethod( ) {
+      return stm{
+         /* create one sentinel nil for the whole tree with color balck */
+         nil = new CElemTyp( );
+         nil.left = nil.right = nil.pparent = null;
+         nil.isRed = false;
+
+         /* initialize the root of the tree to nil ( not null!!!) */
+         root = nil;
+
+         $stm( lower.containerMethod( ) );
+      }stm;
+   }
+
+   public Lang.AST_Exp is_fullMethod( ) {
+      return lower.is_fullMethod( );
+   }
+   
+   public Lang.AST_Stmt insertMethod(){
+     return lower.insertMethod();
+   }
+
+   public Lang.AST_Stmt storageMethod() {
+      return lower.storageMethod();
+   }
+
+   public Lang.AST_Stmt finishMethod() {
+      return lower.finishMethod();
+   }
+   
+   public Lang.AST_Stmt openMethod() {
+      return lower.openMethod();
+   }
+
+
+}
+
+/*
+ * The data structure used here is shown in the following figure:
+ *
+ *     parent
+ *       |
+ *      ---          ---          ---          ---          --- 
+ *     | x |--next->|s1 |--next->|s2 |--next->|s3 |--next->|s4 |--next->null
+ *     |   |<-left--|   |<-left--|   |<-left--|   |<-left--|   |
+ *      ---         |   |         ---          ---         |   |
+ *     /   \        |   |---------------right------------->|   |
+ *   left right     |   |<--------------right--------------|   |
+ *                   ---                                    ---
+ *
+ *  x is a node on the tree, its parent, left and right fields are set according
+ *  to the tree algorithm
+ *    
+ *  s1, s2, s3 and s4 have the same key value as x and form a list "behind" x
+ *   
+ *  The parent fields of s1, s2, s3 and s4 are set to null to distinguish them from
+ *  nodes on the tree.  ( For a node on the tree, parent, left and right fields 
+ *  will never equals to null because the rbtree algorithm uses nil instead.)
+ *  
+ *  s1.right is set to s4 for backward retrieval
+ *  s4.right is set to s1 to go back to the tree when the list ends
+ *  s2.right and s3.right is currently set to null ( useful?)  
+ *  
+ */
+
+final class rbtree_Element_Type implements DS_Element_Type {
+   rbtree            _layer;
+   DS_Element_Type   lower;
+   environment;
+
+   rbtree_Element_Type( DS rbtreelayer ) {
+      _layer    = ( rbtree ) rbtreelayer;
+      lower    = _layer.lower.make_element_type( );
+      environment parent _layer;
+   }
+
+   // generate data members of transformed element class 
+
+   public Lang.AST_FieldDecl dataMembers( ) {
+      return mth{
+         CElemTyp left, right, pparent, next;
+         boolean  isRed;
+         $mth( lower.dataMembers( ) )
+      }mth;
+   }
+
+   // link is part of element constructors
+
+   public Lang.AST_Stmt link( ) {
+      return stm{
+         rbtree_relink( );
+         $stm( lower.link( ) );
+      }stm;
+   }
+
+   public Lang.AST_FieldDecl relink( ) {
+      range    r = new range("!dummy");
+      Lang.AST_Exp  tmp_eq_query = r.Translate( Lang.AST_QualifiedName.Make("x"), _layer.tp, 
+                              exp{ $id( _layer.keyfieldast )( ) == $id( _layer.keyfieldast ) }exp );
+      Lang.AST_Exp  tmp_lt_query = r.Translate( Lang.AST_QualifiedName.Make("x"), _layer.tp,
+                              exp{ $id( _layer.keyfieldast )( ) > $id( _layer.keyfieldast ) }exp );
+
+      return mth{
+
+         final void rbtree_relink( ) {
+            CElemTyp x;
+            CElemTyp y;
+            boolean  lt = true;  /* initilization is necessary here to fool the compiler */
+
+            x = cont.root;
+            y = cont.nil;
+   
+            while ( x != cont.nil ) {
+               y = x;
+      
+               if ($exp( tmp_eq_query ) ) {
+                  /* There is already an element with the same key value on
+                   * the tree, insert the current one to the head of list 
+                   * following that element.
+                   * This is much easier than the tree insertion!
+                   */
+                  next = x.next;
+                  x.next = this;
+                  left = x;
+                  if ( next == null ) {
+                     right = this;
+                  }
+                  else {
+                     next.left = this;
+                     right = next.right;
+                     next.right = null;
+                     right.right = this;
+                  }
+                  pparent = null;
+                  isRed = false;
+
+                  /* we are finished! */
+                  return;
+               }
+         
+               /* otherwise, keep finding the right place to insert the element */
+               lt = $exp( tmp_lt_query );
+               if ( lt )
+                  x = x.left;
+               else
+                  x = x.right;
+            }
+   
+            /* insert the current element into the tree */
+
+            pparent = y;
+            left = cont.nil;
+            right = cont.nil;
+            next = null;
+
+            if ( y == cont.nil ) {
+               cont.root = this;
+            }
+            else {
+               if ( lt )
+                  y.left = this;
+               else
+                  y.right = this;
+            }
+   
+            /* and here comes the ugly code for red-black tree insertion fixup */
+
+            x = this;
+
+            x.isRed = true;
+   
+            while ( x != cont.root && x.pparent.isRed ) {
+               if ( x.pparent == x.pparent.pparent.left ) {
+                  y = x.pparent.pparent.right;
+
+                  if ( y.isRed ) {
+                     x.pparent.isRed = false;
+                     y.isRed = false;
+                     x.pparent.pparent.isRed = true;
+                     x = x.pparent.pparent;
+                  }
+                  else {
+                     if ( x == x.pparent.right ) {
+                        x = x.pparent;
+                        left_rotate( x );
+                     }
+
+                     x.pparent.isRed = false;
+                     x.pparent.pparent.isRed = true;
+                     right_rotate( x.pparent.pparent );
+                  }
+               }
+               else {
+                  y = x.pparent.pparent.left;
+
+                  if ( y.isRed ) {
+                     x.pparent.isRed = false;
+                     y.isRed = false;
+                     x.pparent.pparent.isRed = true;
+                     x = x.pparent.pparent;
+                  }
+                  else {
+                     if ( x == x.pparent.left ) {
+                        x = x.pparent;
+                        right_rotate( x );
+                     }
+
+                     x.pparent.isRed = false;
+                     x.pparent.pparent.isRed = true;
+                     left_rotate( x.pparent.pparent );
+                  }
+               }
+            }
+
+            cont.root.isRed = false;
+         }
+
+         final void left_rotate( CElemTyp x )
+         {
+            CElemTyp y;
+
+            y = x.right;
+            x.right = y.left;
+
+            if ( y.left != cont.nil )
+               y.left.pparent = x;
+
+            y.pparent = x.pparent;
+
+            if ( x.pparent == cont.nil ) {
+               cont.root = y;
+            }
+            else {
+               if ( x == x.pparent.left )
+                  x.pparent.left = y;
+               else
+                  x.pparent.right = y;
+            }
+
+            y.left = x;
+            x.pparent = y;
+         }
+
+         final void right_rotate( CElemTyp x )
+         {
+            CElemTyp y;
+
+            y = x.left;
+            x.left = y.right;
+
+            if ( y.right != cont.nil )
+               y.right.pparent = x;
+
+            y.pparent = x.pparent;
+
+            if ( x.pparent == cont.nil ) {
+               cont.root = y;
+            }
+            else {
+               if ( x == x.pparent.right )
+                  x.pparent.right = y;
+               else
+                  x.pparent.left = y;
+            }
+
+            y.right = x;
+            x.pparent = y;
+         }
+         
+         $mth( lower.relink( ) )
+
+      }mth;
+   }
+
+   public Lang.AST_FieldDecl unlink( ) {
+      return mth{
+
+         final void rbtree_unlink( ) {
+            CElemTyp x;
+            CElemTyp y;
+            boolean  tmp_isRed;
+
+            if ( pparent == null ) {
+               /* The element we want to unlink is inside a list.
+                * Much easier than unlinking from the tree!
+                */
+
+               left.next = next;
+               if ( next != null ) {
+                  next.left = left;
+                  if ( right != null ) {
+                     next.right = right;
+                     right.right = next;
+                  }
+               }
+               else if ( right != null && right != this ) {
+                  right.right = left;
+                  left.right = right;
+               }
+
+               /* we are finished! */
+               return;
+            }
+            else if ( next != null ) {
+               /* The element we want to unlink is on the tree, but
+                * it has a linked list following it.
+                * Unlink in this case is also easy!
+                */
+               
+               x = next;
+
+               if ( x.next != null ) {
+                  x.next.right = x.right;
+                  x.right.right = x.next;
+               }
+               
+               x.pparent = pparent;
+               x.left = left;
+               x.right = right;
+               x.isRed = isRed;
+
+               if ( pparent == cont.nil ) {
+                  cont.root = x;
+               }
+               else {
+                  if ( this == pparent.left )
+                     pparent.left = x;
+                  else
+                     pparent.right = x;
+               }
+
+               if ( x.left != cont.nil )
+                  x.left.pparent = x;
+               if ( x.right != cont.nil )
+                  x.right.pparent = x;
+
+               /* we are finished! */
+               return;
+            }
+
+            /* red-black tree deletion */
+
+            if ( left == cont.nil || right == cont.nil ) {
+               y = this;
+            }
+            else {
+               y = right;
+               while ( y.left != cont.nil )
+                  y = y.left;
+            }
+
+            if ( y.left != cont.nil )
+               x = y.left;
+            else
+               x = y.right;
+
+            x.pparent = y.pparent;
+
+            if ( y.pparent == cont.nil ) {
+               cont.root = x;
+            }
+            else {
+               if ( y == y.pparent.left )
+                  y.pparent.left = x;
+               else
+                  y.pparent.right = x;
+            }
+
+            tmp_isRed = y.isRed;
+
+            if ( y != this ) {
+               /* Let's call the element we want to unlink as z.
+                * Instead of copying all data fields of y into z
+                * as in the standard algorithm (which is not very
+                * easy here because we don't know how many data
+                * fields y has), I copy the whole tree structure
+                * surrounding z to y, in other words, put y right 
+                * into where z was in the tree.
+                */
+
+               y.pparent = pparent;
+               if ( pparent == cont.nil ) {
+                  cont.root = y;
+               }
+               else {
+                  if ( this == pparent.left )
+                     pparent.left = y;
+                  else
+                     pparent.right = y;
+               }
+
+               y.left = left;
+               if ( left != cont.nil )
+                  left.pparent = y;
+
+               y.right = right;
+               if ( right != cont.nil )
+                  right.pparent = y;
+
+               y.isRed = isRed;
+
+               /* since x.pparent may point to this, ADD THIS ! */
+               if ( x.pparent == this )
+                  x.pparent = y;
+            }
+
+            if ( !tmp_isRed ) {
+               /* here comes the red-black tree deletion fixup */
+
+               while ( x != cont.root && !x.isRed ) {
+                  if ( x == x.pparent.left ) {
+                     y = x.pparent.right;
+                     if ( y.isRed ) {
+                        y.isRed = false;
+                        x.pparent.isRed = true;
+                        left_rotate( x.pparent );
+                        y = x.pparent.right;
+                     }
+                     if ( !y.left.isRed && !y.right.isRed ) {
+                        y.isRed = true;
+                        x = x.pparent;
+                     }
+                     else {
+                        if ( !y.right.isRed ) {
+                           y.left.isRed = false;
+                           y.isRed = true;
+                           right_rotate( y );
+                           y = x.pparent.right;
+                        }
+                        y.isRed = x.pparent.isRed;
+                        x.pparent.isRed = false;
+                        y.right.isRed = false;
+                        left_rotate( x.pparent );
+                        x = cont.root;
+                     }
+                  }
+                  else {
+                     y = x.pparent.left;
+                     if ( y.isRed ) {
+                        y.isRed = false;
+                        x.pparent.isRed = true;
+                        right_rotate( x.pparent );
+                        y = x.pparent.left;
+                     }
+                     if ( !y.right.isRed && !y.left.isRed ) {
+                        y.isRed = true;
+                        x = x.pparent;
+                     }
+                     else {
+                        if ( !y.left.isRed ) {
+                           y.right.isRed = false;
+                           y.isRed = true;
+                           left_rotate( y );
+                           y = x.pparent.left;
+                        }
+                        y.isRed = x.pparent.isRed;
+                        x.pparent.isRed = false;
+                        y.left.isRed = false;
+                        right_rotate( x.pparent );
+                        x = cont.root;
+                     }
+                  }
+               }
+
+               x.isRed = false;
+            }
+         }
+
+         $mth( lower.unlink( ) )
+
+      }mth;
+   }
+
+   // can update attributes at will, except for the keyfield
+
+   public Lang.AST_Stmt upd( int fieldno ) {
+      if ( fieldno == _layer.keyid ) 
+         return stm{ 
+            rbtree_unlink( );
+            $stm( lower.upd( fieldno ) );
+            rbtree_relink( );
+         }stm;
+      return lower.upd( fieldno );
+   }   
+}
+
+final class rbtree_CommonCursor_Type implements DS_CommonCursor_Type {
+   rbtree _layer;
+   DS_CommonCursor_Type lower;
+   environment;
+
+   rbtree_CommonCursor_Type( DS rbtreelayer ) {
+      _layer = ( rbtree ) rbtreelayer;
+      lower = _layer.lower.make_commoncursor_type( );
+      environment parent _layer;
+   }
+
+   public Lang.AST_FieldDecl dataMembers( ) {
+      return lower.dataMembers( );
+   }
+
+   public Lang.AST_Stmt insertMethod( ) {
+        return lower.insertMethod( );
+   }
+
+   public Lang.AST_Stmt removeMethod( ) {
+      return stm{
+         obj.rbtree_unlink( );
+         $stm( lower.removeMethod( ) );
+      }stm;
+   }
+
+   public Lang.AST_FieldDecl movementMethods( ) {
+      /* methods like start( ), adv( ), end( ), back( ) are not provided here
+       * because for different predicates the code generated would be different
+       */
+      return lower.movementMethods( );
+   }
+}
+
+final class rbtree_Cursor_Type extends RetSometimes implements DS_Cursor_Type {
+   rbtree      _layer;
+   range       r;
+   Usage       u;
+   boolean     fwd;
+   boolean     equ;
+   Lang.AST_Exp     lbt;
+   Lang.AST_Exp     lbf;
+   Lang.AST_Exp     ubt;
+   Lang.AST_Exp     ubf;
+   environment x, y;
+
+   rbtree_Cursor_Type( DS rbtreelayer, Usage usage ) {
+      _layer = ( rbtree ) rbtreelayer;
+      u = usage;
+      lower = _layer.lower.make_cursor_type( u );
+
+      r = new range( _layer.keyfield );
+      r.DetermineRange( u.predicate );
+      lbt = r.Translate( id{ obj }id, _layer.tp, r.LowerPredicate( true ) );
+      lbf = r.Translate( id{ obj }id, _layer.tp, r.LowerPredicate( false ) );
+      ubt = r.Translate( id{ obj }id, _layer.tp, r.UpperPredicate( true ) );
+      ubf = r.Translate( id{ obj }id, _layer.tp, r.UpperPredicate( false ) );
+
+      environment parent _layer;
+   }
+
+   public void optimizeAction( Qopt q ) {
+      int cost = Qopt.INFINITY;
+
+      /* decide whether to go forward or backward
+       * if actual_order == desired_order, use the direction user specifies
+       * otherwise, choose forward (which is a little bit simpler) unless the 
+       * query type is UPPER_SCAN_QUERY (in this case backward is faster)
+       */
+      if ( u.order == -1 || u.order == _layer.keyid )
+         fwd = u.forward;
+      else if ( r.QueryType( ) == range.UPPER_SCAN_QUERY )
+         fwd = false;
+      else
+         fwd = true;
+
+      equ = false;
+      switch ( r.QueryType( ) ) {
+      case range.SCAN_QUERY:       cost = Qopt.TREESCAN; break;
+      case range.UPPER_SCAN_QUERY: cost = ( fwd ? Qopt.TREESCAN : Qopt.HALF_TREESCAN ); break;
+      case range.LOWER_SCAN_QUERY: cost = ( fwd ? Qopt.HALF_TREESCAN : Qopt.TREESCAN ); break;
+      case range.RANGE_QUERY:      cost = Qopt.HALF_TREESCAN; break;
+      case range.POINT_QUERY:      cost = Qopt.RBTREE_LOCATE; equ = true; break;
+      }
+
+      if ( q.cost > cost ) {
+         q.fastest_layer = _layer;
+         q.cost = cost;
+
+         q.requires_skip = true;
+         q.requires_buffering = u.upd[_layer.keyid];
+         q.requires_sorting = ( u.order != -1 ) && ( u.order != _layer.keyid );
+         q.requires_inbetween = u.del && !q.requires_buffering && !q.requires_sorting;
+      }
+   }
+
+   public DS thisLayer( ) {
+      return _layer;
+   }
+
+   public Lang.AST_FieldDecl dataMembers( ) {
+      return lower.dataMembers( );
+   }
+
+   public Lang.AST_Stmt cursorMethod( ) {
+      return lower.cursorMethod( );
+   }
+
+   // firstMth - returns the first element
+
+   public Lang.AST_Stmt firstMth( ) {
+      if ( !equ && fwd ) {
+         if ( lbt == null ) return stm{
+            /* find the tree minimum */
+            obj = cont.root;
+            if ( obj != cont.nil )
+               while ( obj.left != cont.nil )
+                  obj = obj.left;
+         }stm;
+                        
+         return stm{
+            CElemTyp x = cont.nil;
+
+            /* Pretend we are going to insert the lowerbound value 
+             * into the tree, see where we end up with.
+             */
+            obj = cont.root;
+            while ( obj != cont.nil ) {
+               x = obj;
+               if ( $exp( lbt ) )
+                  obj = obj.left;
+               else
+                  obj = obj.right;
+            }
+
+            if ( x != cont.nil ) {
+               /* If x satisfies the lowerbound, it is the one we are looking for. */
+               obj = x;
+               if ( $exp( lbf ) ) { 
+                  /* Otherwise, go to the successor of x.
+                   * It can be proved that this wound be the one we are looking for. */
+                  /* NOTE: When converting the data structure to pure binary tree
+                   * the following code segment need to be rewritten.
+                   */
+                  if ( obj.right != cont.nil ) {
+                     obj = obj.right;
+                     while ( obj.left != cont.nil )
+                        obj = obj.left;
+                  }
+                  else {
+                     x = obj.pparent;
+                     while ( x != cont.nil && obj == x.right ) {
+                        obj = x;
+                        x = obj.pparent;
+                     }
+                     obj = x;
+                  }
+               }
+            }
+         }stm;
+      }
+
+      if ( !equ ) {
+         if ( ubt == null ) return stm{
+            /* find the tree maximum */
+            obj = cont.root;
+            if ( obj != cont.nil )
+               while ( obj.right != cont.nil )
+                  obj = obj.right;
+            if ( obj != cont.nil && obj.next != null )
+               /* go to the end of the list */
+               obj = obj.next.right;
+         }stm;
+
+         return stm{
+            CElemTyp x = cont.nil;
+
+            /* Pretend we are going to insert the upperbound value 
+             * into the tree, see where we end up with.
+             */
+            obj = cont.root;
+            while ( obj != cont.nil ) {
+               x = obj;
+               if ( $exp( ubt ) )
+                  obj = obj.right;
+               else
+                  obj = obj.left;
+            }
+
+            if ( x != cont.nil ) {
+               /* If x satisfies the upperbound, it is the one we are looking for. */
+               obj = x;
+               if ( $exp( ubf ) ) { 
+                  /* Otherwise, go to the predecessor of x.
+                   * It can be proved that this wound be the one we are looking for. */
+                  /* NOTE: When converting the data structure to pure binary tree
+                   * the following code segment need to be rewritten.
+                   */
+                  if ( obj.left != cont.nil ) {
+                     obj = obj.left;
+                     while ( obj.right != cont.nil )
+                        obj = obj.right;
+                  }
+                  else {
+                     x = obj.pparent;
+                     while ( x != cont.nil && obj == x.left ) {
+                        obj = x;
+                        x = obj.pparent;
+                     }
+                     obj = x;
+                  }
+               }
+
+               if ( obj != cont.nil && obj.next != null )
+                  /* go to the end of the list */
+                  obj = obj.next.right;
+            }
+         }stm;
+      }
+
+      Lang.AST_Stmt s1 = stm{
+         /* binary tree search */
+         obj = cont.root;
+         while ( obj != cont.nil && ( $exp( ubf ) ) ) {
+            if ( $exp( lbt ) )
+               obj = obj.left;
+            else
+               obj = obj.right;
+         }
+      }stm;
+
+      if ( fwd )
+         return s1;
+
+      return stm{
+         $stm( s1 );
+         if ( obj != cont.nil && obj.next != null )
+            /* go to the end of the list */
+            obj = obj.next.right;
+      }stm;
+   }
+
+   // moreMth - tests for physical end-of-data structure 
+   //           the qualify layer tests for logical end-of-data structure
+
+   public Lang.AST_Exp moreMth( ) {
+      return exp{ obj != null && obj != cont.nil }exp;
+   }
+
+   // noMoreMth( ) - sets cursor to the physical end of list 
+
+   public Lang.AST_Stmt noMoreMth( ) {
+      return stm{ obj = null; }stm;
+   }
+
+   // nextMth - returns the next ( unqualified ) element
+   public Lang.AST_Stmt nextMth( )  {
+      if ( !equ && fwd ) return stm{
+         if ( obj.next != null ) {
+            obj = obj.next;
+         }
+         else {
+            if ( obj.pparent == null )
+               /* back to the tree */
+               obj = obj.right.left;
+
+            /* find the tree successor */
+            if ( obj.right != cont.nil ) {
+               obj = obj.right;
+               while ( obj.left != cont.nil )
+                  obj = obj.left;
+            }
+            else {
+               CElemTyp y;
+               y = obj.pparent;
+               while ( y != cont.nil && obj == y.right ) {
+                  obj = y;
+                  y = obj.pparent;
+               }
+               obj = y;
+            }
+         }
+      }stm;
+
+      if ( !equ ) return stm{
+         if ( obj.pparent == null ) {
+            obj = obj.left;
+         }
+         else {
+            /* find the tree predecessor */
+            if ( obj.left != cont.nil ) {
+               obj = obj.left;
+               while ( obj.right != cont.nil )
+                  obj = obj.right;
+            }
+            else {
+               CElemTyp y;
+               y = obj.pparent;
+               while ( y != cont.nil && obj == y.left ) {
+                  obj = y;
+                  y = obj.pparent;
+               }
+               obj = y;
+            }
+
+            if ( obj != cont.nil && obj.next != null )
+               /* go to the end of the list */
+               obj = obj.next.right;
+         }
+      }stm;
+
+      if ( fwd ) return stm{
+         obj = obj.next;
+      }stm;
+
+      return stm{
+         if ( obj.pparent != null )
+            obj = null;
+         else
+            obj = obj.left;
+      }stm;
+
+   }
+
+   public Lang.AST_Exp lowerBoundExp( boolean pos ) {
+      /* Always return null since we have handle the lowerbound in FirstMth() */
+      return null;
+   }
+
+   public Lang.AST_Exp upperBoundExp( boolean pos ) {
+      if ( equ )
+         return null;
+      else if ( fwd )
+         return r.UpperPredicate( pos );
+      else
+         return r.LowerPredicate( pos );
+   }
+
+   // return translated residual predicate
+   // Note: in the case that there is no residual, a null pointer
+   // is returned rather than exp{true}exp.  this should make
+   // it easier to do optimizations
+   
+   public Lang.AST_Exp residualExp( ) {
+      if ( u.predicate != null )
+         return r.Residual( _layer.tp, u.predicate );
+//       return r.Translate( id{ obj }id, _layer.tp, u.predicate);
+      return null;
+   }
+
+   public Lang.AST_Stmt removeMethod( ) {
+      return lower.removeMethod( );
+   }
+
+}
+

@@ -1,0 +1,44 @@
+layer FS;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+import java.io.*;
+
+/** Fire Support Team OPFAC. **/
+public State_machine FistMission extends FseMission {
+    // Don't wait for MFR on EOM.
+
+    Transition_action wrffeArtyAccepted1 {
+        if ( false )
+            Proceed( message );
+    }
+
+    Transition_condition wrffeArtyAccepted1 false && Proceed( message );
+
+            /*REFINES EDGE no longer supported.  
+       Move predicate or body into method, and extend method. 
+    Refines Transition wrffeArtyAccepted1 : wrffeArtyAccepted -> wrffeArtyEnding
+                condition false do {} */
+
+            // Relay EOM to gun and stop.
+    Transition wrffeArtyAccepted3 : wrffeArtyAccepted -> stop
+        condition ( message instanceof EomMessage )
+        do {
+            sendUp( ( Message )message.clone() );
+        }
+    // If MLRS took mission then stop immediately.
+    Enter wrffeMlrsAccepted {
+        delivery( null );
+    }
+
+    Transition_action wrffeMlrsAccepted1 {
+        if ( false )
+            Proceed( message );
+    }
+
+    Transition_condition wrffeMlrsAccepted1 true || Proceed( message );
+}

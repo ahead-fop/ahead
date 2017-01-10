@@ -1,0 +1,15 @@
+//tests ability to parse a DRC file and predicates 
+
+single layer foo;
+
+outside Bool floor ;
+outside Bool search ;
+outside Int  range ( range <= 4 and 3 < range );
+inside Bool Search;
+inside Bool Floor;
+inside Int Range;
+
+requires inside ?Search and Range < 4;
+provides outside search and range < 5;
+requires outside floor;
+provides inside ?Search and Range < 4 and !Floor;

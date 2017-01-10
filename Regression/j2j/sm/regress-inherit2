@@ -1,0 +1,33 @@
+#!/bin/bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+function normalize() {
+    sed -e 's#//.*$##' \
+    | sed -e 's#^[ \t]*$##' \
+    | tr -s '\040\n\r\t' '\040'
+}
+
+function compare() {
+    normalize < "${1}" > "${1}.tmp"
+    normalize < "${2}" > "${2}.tmp"
+    if diff -Bbw "${1}.tmp" "${2}.tmp" ; then
+	rm --force -- "${1}.tmp" "${2}.tmp"
+	return 0
+    fi
+    return 1
+}
+
+echo "******************* constructor propagation test ***************"
+cp mytop.jjava mytop.java
+cp myclasstest.jjava myclasstest.java
+javac mytop.java
+
+java jak2java.Main inher2.jak\
+&& javac inher2.java && javac myclasstest.java \
+|| exit 1
+
+rm myclasstest.class
+java jak2java.Main inher3.jak\
+&& javac inher3.java && javac myclasstest.java \
+|| exit 1

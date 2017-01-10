@@ -1,0 +1,24 @@
+layer SourceHarvest;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+// *******************************************************************
+// ********** Auxiliary Class not present in the grammar *************
+
+public refines class program {
+    public void execute() {
+        // containingProgram = new $TEqn.ProgramDocJTS(ProgramName);
+        Super().execute();
+
+    // @debug
+    //  System.out.println("Program arg[2] " + arg[2].className());
+    // if (arg[2].arg[0] != null)
+    //    System.out.println("Program arg[2,0] " + 
+    // arg[2].arg[0].className());
+    // System.out.println("Program[2,0,0] " + 
+    // arg[2].arg[0].arg[0].className());
+    }
+}

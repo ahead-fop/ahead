@@ -1,0 +1,13 @@
+layer IRooT1;
+
+import x.y.z.*;
+import java.io.Serializable;
+
+// first
+
+public interface MyInt extends FooInterface { 
+    int Silent = 0;
+    void foo() throws AFit;
+    SomeType bar( int x );
+}
+   

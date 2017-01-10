@@ -1,0 +1,59 @@
+
+jampack: root11.java:16: Warning state d in transition e5 declaration has not yet been defined
+jampack: root11.java:16: Warning state e in transition e5 declaration has not yet been defined
+jampack: root11.java:20: Warning state c in transition e6 declaration has not yet been defined
+jampack: ext14.java:15: Warning state d in transition e55 declaration has not yet been defined
+jampack: ext14.java:15: Warning state e in transition e55 declaration has not yet been defined
+jampack: ext14.java:19: Warning state c in transition e66 declaration has not yet been defined
+// tests composition of extensions that have state and transition declarations
+// and method declarations
+
+layer root11;
+
+State_machine root {
+
+   Delivery_parameters( M m );
+   Unrecognizable_state { ignore(m); }
+
+   // from root11
+   States g;
+   States h;
+
+   // Otherwise_default { Super().fromext11(); }
+
+   // from ext 14
+   States g1;
+   States h1;
+
+   // from root11
+   Transition e5 : d -> e 
+   condition m!=null
+   do { /* action 2 */ }
+
+   Transition e6 : c -> d
+   condition true
+   do { /* action 3 */ }
+
+   Exit h { /* action a */ }
+
+   // from ext14
+   Transition e55 : d -> e 
+   condition m!=null
+   do { /* action 2 */ fromext11$$root11(); }
+
+   Transition e66 : c -> d
+   condition true
+   do { /* action 3 */ fromext11$$root11(); }
+
+   Exit h1 { fromext11$$root11(); }
+
+
+   // from root11
+   void fromext11(  ){ fromext11$$root11(  ); }
+
+   // from root11
+   final void fromext11$$root11() { as = 5; }
+
+   // from ext14
+   void fromext14() { fromext11$$root11(); }
+}

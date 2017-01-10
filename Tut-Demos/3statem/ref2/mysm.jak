@@ -1,0 +1,4 @@
+refines State_machine mysm {
+
+    States byItself;
+}

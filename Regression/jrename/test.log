@@ -1,0 +1,24 @@
++ '[' -z /usr/bin/bash ']'
++ echo '****************jrename Regression Test***********'
+****************jrename Regression Test***********
++ bash regress-one nestedc
+nestedc...succeeded
++ bash regress-one nestedi
+nestedi...succeeded
++ bash regress-one g1
+g1...succeeded
++ bash regress-one cmid
+cmid...succeeded
++ bash regress-one source
+source...succeeded
++ bash regress-one state
+state...succeeded
++ bash regress-one AliasTest
+AliasTest...succeeded
++ bash regress-one is
+is...succeeded
++ bash regress-one ws
+ws...succeeded
++ echo -e '\njrename Regression Test succeeded.'
+
+jrename Regression Test succeeded.

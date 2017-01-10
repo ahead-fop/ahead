@@ -1,0 +1,17 @@
+layer FormatJava;
+
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public refines class ImpQual {
+    public void format( int position ) {
+        newline_routins( position );
+        arg[0].setComment( " " );
+        arg[0].format( position );
+         
+    // clearWSArg( arg[0] );
+    // clearWSTok0( tok[1] );
+    }
+}

@@ -1,0 +1,10 @@
+layer test;
+
+class foo {
+   void inc() throws a, Exception { }
+   void bin() throws RuntimeException {}
+
+   foo() throws a, Exception {}
+   foo(int x) throws RuntimeException {}
+}
+   

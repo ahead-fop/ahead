@@ -1,0 +1,49 @@
+package MessageL;
+
+import  
+    fsats.util.DataContainer;
+import 
+    F.Libraries.laydown.*;
+import 
+    java.util.*;
+
+
+
+    public abstract class MissionStatusMessage
+        extends BasicMessage
+    {
+	public MissionStatusMessage(String missionId) { super(missionId);
+          MissionStatusMessageConstructor(missionId); }
+	public void MissionStatusMessageConstructor(String missionId) {
+      }
+
+        public DataContainer toFsams()
+        {
+            DataContainer fsams = super.toFsams();
+            DataContainer content = fsams.addField("CONTENT");
+            content.addField("Target_Id").setValue(getMissionId());
+            return fsams;
+        }
+
+        /*
+        public static Message fromFsams(DataContainer fsams)
+        {
+            Message m;
+            m = AcceptMessage.fromFsams(fsams);
+            if (m!=null) return m;
+            m = DenyMessage.fromFsams(fsams);
+            if (m!=null) return m;
+            m = ShotMessage.fromFsams(fsams);
+            if (m!=null) return m;
+            m = SplashMessage.fromFsams(fsams);
+            if (m!=null) return m;
+            m = RoundsCompleteMessage.fromFsams(fsams);
+            if (m!=null) return m;
+            m = MfrMessage.fromFsams(fsams);
+            if (m!=null) return m;
+            m = EomMessage.fromFsams(fsams);
+
+            return m;
+        }
+        */
+    }

@@ -1,0 +1,17 @@
+layer CBase0;
+
+import x.y.z.*;
+import java.io.Serializable;
+import anotherPackage;
+
+public transient class MyClass extends anotherClass implements yyy, java.io.Serializable { 
+   int i;
+   int j;
+   public MyClass(int i)  { MyClassConstructor(i); }
+
+   public final void MyClassConstructor$$CBase0( int i) { this.i = i; }
+   public void MyClassConstructor(int i) {
+      MyClassConstructor$$CBase0(i);
+      j = i + 3;
+   }
+}

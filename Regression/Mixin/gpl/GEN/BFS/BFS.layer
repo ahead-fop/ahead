@@ -1,0 +1,135 @@
+// Graph Algorithms Product Line (GPL)
+// University of Texas at Austin
+// Department of Computer Sciences
+// Product-Line Architecture Research Group
+// Edge-Neighbor Representation
+// BFS : breadth first search layer
+// Last Update: May 15, 2001
+// Written by: Roberto E. Lopez-Herrejon (rlopez@cs.utexas.edu)
+
+layer BFS ( GEN lower )
+realm GEN
+extends lower
+imports java.util.LinkedList
+{
+   // Edge-Neighbor implementation
+   
+   // *************************************************************************	   
+   static public class Graph extends lower.Graph {
+   
+    // Graph search receives a Working Space, and 
+      public void GraphSearch( WorkSpace w ) {
+         int           s, c;
+         $TEqn.Vertex  v;
+  
+         // Step 1: initialize visited member of all nodes
+
+         s = vertices.size();
+         if (s == 0) return;
+         
+         // Showing the initialization process
+         for (c = 0; c < s; c++) {
+            v = ($TEqn.Vertex) vertices.get(c);  
+            v.init_vertex( w );
+         }
+
+         // Step 2: traverse neighbors of each node
+         
+         for (c = 0; c < s; c++) {
+            v = ($TEqn.Vertex) vertices.get(c);  
+            if (!v.visited)  {
+               w.nextRegionAction(v);
+               v.bftNodeSearch( w);
+            }
+         } //end for
+         
+      }
+   }
+      
+  // *************************************************************************
+      
+   static public class Vertex extends lower.Vertex {
+      public boolean visited;
+      public static LinkedList Queue =  new LinkedList();
+
+      public Vertex() {
+         VertexConstructor();
+      }
+
+      public void VertexConstructor() {
+         visited = false;
+      }
+      
+      public void init_vertex( WorkSpace w ) {
+         visited = false;
+         w.init_vertex( ($TEqn.Vertex) this);
+      } 
+   
+      public void bftNodeSearch( WorkSpace w) {
+         int           s, c;
+         $TEqn.Vertex  v;
+         $TEqn.Vertex  header;
+         $TEqn.Neighbor n;
+
+         // Step 1: if preVisitAction is true or if we've already
+         //         visited this node
+
+	w.preVisitAction(($TEqn.Vertex) this);
+		
+	if (visited) return;
+
+         // Step 2: Mark as visited, put the unvisited neighbors in the queue 
+         //         and make the recursive call on the first element of the queue
+         //         if there is such if not you are done
+
+         visited = true;
+         
+         // Step 3: do postVisitAction now, you are no longer going through the
+         // node again, mark it as black
+         w.postVisitAction(($TEqn.Vertex) this);
+        
+	 s = neighbors.size();
+        
+	 // enqueues the vertices not visited
+	 for (c = 0; c < s; c++) 
+	 {
+		n = ($TEqn.Neighbor) neighbors.get(c);  
+		v = n.end;
+
+		// if your neighbor has not been visited then enqueue 
+		if (!v.visited)
+		{
+			Queue.add(v);
+		}
+			
+  	 } // end of for           
+         
+      
+	// while there is something in the queue
+	while(Queue.size()!=0)
+	{
+ 	  header = ($TEqn.Vertex) Queue.get(0);
+	  Queue.remove(0);
+	  header.bftNodeSearch(w);
+	}                           
+                  
+      } // of bfsNodeSearch
+
+      public void display() {
+         if (visited)
+            System.out.print("  visited ");
+         else
+            System.out.println(" !visited ");
+         Base().display();
+      }
+   }
+
+   // *************************************************************************
+   public static class WorkSpace {           // supply template actions
+      public void init_vertex( $TEqn.Vertex v ) { }
+      public void preVisitAction( $TEqn.Vertex v ) { }
+      public void postVisitAction( $TEqn.Vertex v ) { }
+      public void nextRegionAction( $TEqn.Vertex v ) { }
+      public void checkNeighborAction($TEqn.Vertex vsource, $TEqn.Vertex vtarget) { }
+   }
+}

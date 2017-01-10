@@ -1,0 +1,10 @@
+layer FS;
+
+SoUrCe RooT MortarL "C:!Java!FeatureOrientedProgramming!fsats!MortarL!MortarOpfac.jak";
+
+public class MortarOpfac extends WeaponOpfac {
+    public Mission newMission() 
+        {
+        return new MortarMission();
+    }
+}

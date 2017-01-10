@@ -1,0 +1,97 @@
+
+import java.io.PrintWriter;
+import Jakarta.symtab.*;
+import jak.Lang;
+
+public class test3 {
+    private static PrintWriter pw = new PrintWriter(System.out);
+
+    public static void main(String[] args) {
+	Lang.AST_Program prg = prg{
+	    package MyPackage;
+
+	    import Jakarta.util.Util;
+	    import Jakarta.symtab.*;
+
+	    public class outerRefined extends outer {
+		int bar;
+
+		static public class nestedTopLevel {
+		    String string;
+		}
+
+		public class memberClass {
+		}
+	    }
+
+	    class outer {
+		float bar;
+		double baz;
+	    }
+	}prg;
+
+	Symtab st = Lang.Symtab.instance();
+
+	// Build symbol table
+	prg.buildSymbolTable();
+
+	Scope outerRefined = (Scope) st.lookup("MyPackage.outerRefined");
+
+	Scope nestedTopLevel =
+	    (Scope) st.lookup("MyPackage.outerRefined.nestedTopLevel");
+
+	Scope memberClass = 
+	    (Scope) st.lookup("MyPackage.outerRefined.memberClass");
+
+	// Bind the symbol 'bar' in the nested top-level context. This test
+	// should fail due to the class being top-level.
+	Declaration dcl = st.lookup("bar", nestedTopLevel);
+	show(dcl, "bar", "nested top-level");
+
+	// This test should bind to an integer variable.
+	dcl = st.lookup("bar", memberClass);
+	show(dcl, "bar", "member class");
+
+	// Should bind to field baz in outer (inheritance)
+	dcl = st.lookup("baz", outerRefined);
+	show(dcl, "baz", "outer refined");
+
+	// This test should fail since the top-level class has no superclass
+	dcl = st.lookup("baz", nestedTopLevel);
+	show(dcl, "baz", "nested top-level");
+
+	// This should bind to the FieldInfo for baz inherited.
+	dcl = st.lookup("baz", memberClass);
+	show(dcl, "baz", "member class");
+
+	// Should bind to the String field.
+	dcl = st.lookup("string", nestedTopLevel);
+	if (dcl instanceof FieldInfo)
+	    dcl = ((FieldInfo) dcl).getType();	// get ClassInfo for field type
+	show(dcl, "string", "nested top-level");
+
+	// Should bind to Util class.
+	dcl = st.lookup("Util", memberClass);
+	show(dcl, "Util", "member class");
+
+	// Should bind to Symtab class.
+	dcl = st.lookup("Symtab", memberClass);
+	show(dcl, "Symtab", "member class");
+
+	// Dump symbol table
+	pw.println("*** SymbolTable ***");
+	st.dump(pw);
+	pw.println("*** End SymbolTable ***");
+
+	pw.close();
+    }
+
+    private static void show(Declaration dcl, String phrase, String whereAt) {
+	if (dcl == null)
+	    pw.println("Binding of " + phrase + " in " + whereAt + " failed");
+	else {
+	    pw.print("Binding of " + phrase + " in " + whereAt + " : ");
+	    dcl.dump(pw, 0);
+	}
+    }
+}

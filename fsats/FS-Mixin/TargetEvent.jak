@@ -1,0 +1,32 @@
+layer FS;
+
+import fsats.util.DataContainer;
+
+import laydown.*;
+
+import java.util.*;
+
+SoUrCe RooT MessageL "C:!Java!FeatureOrientedProgramming!fsats!MessageL!TargetEvent.jak";
+
+/** Message to start a new mission **/
+public class TargetEvent
+        extends BasicEvent {
+    public EventType getType() {
+        return EventType.target;
+    }
+
+    public TargetEvent( String missionId, MissionData missionData )
+	{
+            Super( String )( missionId );
+        this.missionData = missionData;
+    }
+      
+    protected MissionData missionData;
+    public MissionData getMissionData() {
+        return missionData;
+    }
+
+    public String getSpecific() {
+        return ""+missionData;
+    }
+}

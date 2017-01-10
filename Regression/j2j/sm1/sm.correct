@@ -1,0 +1,134 @@
+class  foo {
+               static int stateNumGenerator = 0;
+   final static int start = stateNumGenerator++; 
+   final static int stop = stateNumGenerator++; 
+   final static int a = stateNumGenerator++; 
+   final static int b = stateNumGenerator++; 
+   final static int c = stateNumGenerator++;
+            protected interface disp {
+                void exit(  Event e );
+            }
+            protected int current_state = start;
+            protected disp dispatch = new disp() {
+                public void exit(  Event e ) {
+                    start_exit( e );
+                }
+            };
+
+   // methods for state a
+
+   void a_branches(  Event e ) {
+      if (starBranches( e ) ) a_otherwise( e );
+   }
+   void a_enter(  Event e ) {
+      current_state = a;
+      dispatch = new disp() { public void exit(  Event e ) { a_exit( e ); } };
+
+      a_enter_user(e);
+    }
+   void a_enter_user(  Event e ) { ;
+   }
+   void a_exit(  Event e ) { ; }
+   void a_otherwise( Event e) { otherwise_Default(e);}
+   void a_prepare(  Event e ) { ; }
+            final public boolean atStop() {
+                return current_state == stop;
+            }
+
+   // methods for state b
+
+   void b_branches(  Event e ) {
+      if (starBranches( e ) ) b_otherwise( e );
+   }
+   void b_enter(  Event e ) {
+      current_state = b;
+      dispatch = new disp() { public void exit(  Event e ) { b_exit( e ); } };
+
+      b_enter_user(e);
+    }
+   void b_enter_user(  Event e ) { ;
+   }
+   void b_exit(  Event e ) { ; }
+   void b_otherwise( Event e) { otherwise_Default(e);}
+   void b_prepare(  Event e ) { ; }
+
+   // methods for state c
+
+   void c_branches(  Event e ) {
+      if (starBranches( e ) ) c_otherwise( e );
+   }
+   void c_enter(  Event e ) {
+      current_state = c;
+      dispatch = new disp() { public void exit(  Event e ) { c_exit( e ); } };
+
+      c_enter_user(e);
+    }
+   void c_enter_user(  Event e ) { ;
+   }
+   void c_exit(  Event e ) { ; }
+   void c_otherwise( Event e) { otherwise_Default(e);}
+   void c_prepare(  Event e ) { ; }
+      // delivery method
+
+   public void delivery(  Event e ) {      
+      if (current_state == start) { start_prepare(e); start_branches(e); return; }
+      if (current_state == stop) { stop_prepare(e); stop_branches(e); return; }
+      if (current_state == a) { a_prepare(e); a_branches(e); return; }
+      if (current_state == b) { b_prepare(e); b_branches(e); return; }
+      if (current_state == c) { c_prepare(e); c_branches(e); return; }
+      
+        System.err.println( "Unrecognizable_state" + current_state );
+        System.exit( 1 );
+   }
+
+   // getState method
+
+   public String getState() {
+      if (current_state == start) return "start";
+      if (current_state == stop) return "stop";
+      if (current_state == a) return "a";
+      if (current_state == b) return "b";
+      if (current_state == c) return "c";
+      return "Unrecognizable_State";
+   }
+   // otherwise_Default method
+   void otherwise_Default( Event e) { ; }
+   boolean starBranches(  Event e ) { 
+       return true; }
+
+   // methods for state start
+
+   void start_branches(  Event e ) {
+      if (starBranches( e ) ) start_otherwise( e );
+   }
+   void start_enter(  Event e ) {
+      current_state = start;
+      dispatch = new disp() { public void exit(  Event e ) { start_exit( e ); } };
+
+      start_enter_user(e);
+    }
+   void start_enter_user(  Event e ) { ;
+   }
+   void start_exit(  Event e ) { ; } 
+   void start_otherwise( Event e) { otherwise_Default(e);}
+   void start_prepare(  Event e ) { ; }
+
+   // methods for state stop
+
+   void stop_branches(  Event e ) {
+      if (starBranches( e ) ) stop_otherwise( e );
+   }
+   void stop_enter(  Event e ) {
+      current_state = stop;
+      dispatch = new disp() { public void exit(  Event e ) { stop_exit( e ); } };
+
+      stop_enter_user(e);
+    }
+   void stop_enter_user(  Event e ) { ;
+   }
+   void stop_exit(  Event e ) { ; }
+   void stop_otherwise( Event e) { otherwise_Default(e);}
+   void stop_prepare(  Event e ) { ; }
+   foo() {/* goto_state a */  dispatch.exit (null); a_enter (null);;
+   }
+        }

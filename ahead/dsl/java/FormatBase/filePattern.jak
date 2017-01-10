@@ -1,0 +1,26 @@
+layer FormatBase;
+
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+// used to filter file names
+
+class filePattern implements FilenameFilter {
+   
+    public boolean accept( File dir, String filename ) {
+        boolean result = false;
+        try {
+            File f = new File( dir, filename );
+            result = f.isFile();
+        }
+        catch ( Exception e ) {
+            System.err.println( e.getMessage() );
+            System.exit( 1 );
+        }
+        return result;
+    }
+}

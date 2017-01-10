@@ -1,0 +1,41 @@
+
+single constant layer strata4;
+
+// defined attributes
+
+right2left Bool artilleryPresent;
+right2left Bool artyMissionPresent;
+right2left Bool basicPresent;
+left2right Bool configurationPresent;
+right2left Bool factoryPresent;
+right2left Bool fsatsPresent;
+right2left Int fsatsRank;
+right2left Bool initPresent;
+left2right Bool libraries;
+right2left Bool localOrRemotePresent;
+left2right Bool main;
+right2left Bool messagePresent;
+right2left Bool missionPresent;
+right2left Bool missionanyPresent;
+right2left Bool mlrsMissionPresent;
+right2left Bool mlrsPresent;
+right2left Bool mortarMissionPresent;
+right2left Bool mortarPresent;
+right2left Bool networkPresent;
+right2left Bool opfacPresent;
+right2left Bool proxyPresent;
+right2left Bool scriptPresent;
+right2left Bool targetPresent;
+left2right Bool uses_artillery;
+left2right Bool uses_mlrs;
+left2right Bool uses_mortars;
+right2left Bool weaponPresent;
+right2left Bool wrffeCommonPresent;
+
+// externally defined attributes
+
+
+
+provides right configurationPresent and libraries and main;
+provides left artilleryPresent and artyMissionPresent and basicPresent and fsatsPresent and fsatsRank == 4 and localOrRemotePresent and messagePresent and missionPresent and missionanyPresent and mlrsMissionPresent and mlrsPresent and mortarMissionPresent and mortarPresent and networkPresent and opfacPresent and proxyPresent and scriptPresent and targetPresent and weaponPresent and wrffeCommonPresent;
+

@@ -1,0 +1,38 @@
+layer JavaHarvest;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+
+/** AST_ParList
+ *: FormalParameter ( "," FormalParameter )*
+ *;
+ * @layer<JavaHarvest>
+ */
+    
+public refines class AST_ParList {
+    public LinkedList parametersList;
+    public  ParameterJTS[] parametersArray;
+
+    public void execute() {
+        Super().execute();
+
+        // Adds the parameters to the 
+        parametersList = new LinkedList();
+          
+        AstCursor c = new AstCursor(); // c to traverse list
+        AstNode   e = this; // e instanceOf Lang.AstList
+            
+        for ( c.FirstElement( e ); c.MoreElement(); c.NextElement() ) {
+            parametersList.add( ( ( FormParDecl )c.node )._harvest_parameter );
+        }
+                   
+        // now make it an array so that you can pass it to the method
+        parametersArray=new  ParameterJTS[parametersList.size()];
+        for( int i=0; i< parametersList.size(); i++ )
+            parametersArray[i] = 
+                            ( ParameterJTS )parametersList.get( i );
+    } // of execute
+}

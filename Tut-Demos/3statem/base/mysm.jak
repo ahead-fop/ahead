@@ -1,0 +1,23 @@
+import something.*;
+
+State_machine mysm {
+
+    Delivery_parameters( Evnt e );
+
+    States midpoint; // the start, stop states are implicitly defined
+
+    Transition begin: start -> midpoint
+        condition e != null
+        do {
+            commonaction( e );
+        }
+
+    Transition end: midpoint -> stop
+        condition e != null
+        do {
+            commonaction( e );
+        }
+
+    void commonaction( Evnt e ) { /* do something */
+    }
+}

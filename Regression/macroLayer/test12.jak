@@ -1,0 +1,20 @@
+// This program tests for conformity to section 6.3 of the macro paper.
+
+macro st( AST_Exp x )
+    stm{ y = x; }stm
+
+class test12 {
+    static public void main(String[] args) {
+	#st( 3*4 );
+	#st( exp{ 3*4 }exp );
+    }
+}
+
+macro name(AST_QualifiedName x)
+cls{
+    class y extends x {}
+}cls
+
+#name( id{ q.r.s }id )
+
+#name( q.r.s )

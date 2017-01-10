@@ -1,0 +1,30 @@
+layer FsatsL;
+
+import 
+    laydown.*;
+import 
+    java.util.*;
+
+
+
+    /** 
+     * Interface for an OPFAC 
+     */
+    static interface Opfac 
+        extends Cloneable, java.io.Serializable
+    {
+        /** Psuedo constructor **/
+        void init(OpfacDataWrapper record, Network network);
+        
+        void deliver( Event event);
+
+        String getName();
+
+	int getUnit(); OpfacType getType();
+
+        /** A list of currently active Missions. */
+        Collection getActiveMissions(); Location getLocation();
+        
+        /** This opfac's commanding unit **/
+        String getSuperior();
+    }

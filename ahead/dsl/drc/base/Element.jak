@@ -1,0 +1,64 @@
+layer core;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+// *** elements stored in symbol table ****
+// *** one element for each defined attribute ***
+
+public class Element {
+    public static final int defined  = 1;
+    public static final int imported = 2;
+    public static final int external = 3;
+
+    public int             extern;
+    public boolean         outside;
+    public boolean         isSingle;
+    public String          typeName;
+    public String          name;
+    public  common    c;
+    public  predicate p;
+
+    public Element( boolean imp, boolean outside, String typeName, 
+                      String name,  predicate p,  common c, boolean single ) {
+        this.extern = imp? imported : defined;
+        this.outside = outside;
+        this.name     = name;
+        this.typeName = typeName;
+        this.c        = c;
+        this.p        = p;
+        this.isSingle = single;
+    }
+
+    public void println() {
+        if ( extern == defined )
+            System.out.print( "         " );
+        else
+            System.out.print( "extern " );
+        if ( outside )
+            System.out.print( common.outside ); // outside
+        else
+            System.out.print( common.inside ); // inside
+        System.out.println( typeName + " " + name + " (" + p + ")" );
+    }
+
+    public void print2file( PrintWriter pw ) {
+        if ( extern == external )
+            pw.print( "extern " );
+        if ( outside )
+            pw.print( common.outside ); // outside
+        else
+            pw.print( common.inside ); // inside
+        pw.print( typeName + " " + name );
+        if ( p.isNonEmpty() )
+            pw.print( " (" + p + ")" );
+        pw.println( ";" );
+    }
+
+    public void promoteImported() {
+        if ( extern == imported )
+            extern = external;
+    }
+}

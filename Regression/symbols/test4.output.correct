@@ -1,0 +1,179 @@
+Binding of myFunc in program : void myFunc(double)
+    double bar;
+Binding of Build in myFunc : Class: Build
+    Class: BuildFilter implements java.io.FilenameFilter
+        boolean accept(java.io.File, java.lang.String)
+        void <init>()
+        void <init>(Build$1)
+    Class: DirectoryFilter implements java.io.FilenameFilter
+        boolean accept(java.io.File, java.lang.String)
+        void <init>()
+        void <init>(Build$1)
+    boolean access$000(java.io.File, java.lang.String)
+    boolean access$100(java.io.File, java.lang.String)
+    boolean isBuildableDirectory(java.io.File, java.lang.String)
+    boolean isNonCVSDirectory(java.io.File, java.lang.String)
+    void <init>()
+    void buildClean()
+    void buildLanguages()
+    void buildRealms()
+    void buildSupport()
+    void main(java.lang.String[])
+    void usage(java.io.PrintStream, java.lang.String)
+Binding of bar in myFunc : double bar;
+Binding of this.bar in myFunc : int bar;
+Binding of this in myFunc : Class: memberClass
+    void myFunc(double)
+        double bar;
+Binding of true in myFunc : Class: boolean
+Binding of 5.35 in myFunc : Class: float
+Binding of bar in outerRefined class : int bar;
+Binding of super.bar in outerRefined class : float bar;
+*** SymbolTable ***
+
+Package: DEFAULT_PACKAGE
+    Class: Build
+        Class: BuildFilter implements java.io.FilenameFilter
+            boolean accept(java.io.File, java.lang.String)
+            void <init>()
+            void <init>(Build$1)
+        Class: DirectoryFilter implements java.io.FilenameFilter
+            boolean accept(java.io.File, java.lang.String)
+            void <init>()
+            void <init>(Build$1)
+        boolean access$000(java.io.File, java.lang.String)
+        boolean access$100(java.io.File, java.lang.String)
+        boolean isBuildableDirectory(java.io.File, java.lang.String)
+        boolean isNonCVSDirectory(java.io.File, java.lang.String)
+        void <init>()
+        void buildClean()
+        void buildLanguages()
+        void buildRealms()
+        void buildSupport()
+        void main(java.lang.String[])
+        void usage(java.io.PrintStream, java.lang.String)
+    Class: boolean
+    Class: byte
+    Class: char
+    Class: double
+    Class: float
+    Class: int
+    Class: long
+    Class: short
+    Class: void
+
+    Package: MyPackage
+        Class: outer
+            double baz;
+            float bar;
+        Class: outerRefined extends MyPackage.outer
+            Class: memberClass
+                void myFunc(double)
+                    double bar;
+            Class: nestedTopLevel
+                String string;
+            int bar;
+
+    Package: java
+
+        Package: java.io
+            Class: FilenameFilter
+                boolean accept(java.io.File, java.lang.String)
+
+        Package: java.lang
+            Class: Object
+                boolean equals(java.lang.Object)
+                int hashCode()
+                java.lang.Class getClass()
+                java.lang.Object clone()
+                java.lang.String toString()
+                void <clinit>()
+                void <init>()
+                void finalize()
+                void notify()
+                void notifyAll()
+                void registerNatives()
+                void wait()
+                void wait(long)
+                void wait(long, int)
+            Class: String implements java.io.Serializable, java.lang.Comparable
+                Class: CaseInsensitiveComparator implements java.io.Serializable, java.util.Comparator
+                    int compare(java.lang.Object, java.lang.Object)
+                    void <init>()
+                    void <init>(java.lang.String$1)
+                    long serialVersionUID;
+                boolean endsWith(java.lang.String)
+                boolean equals(java.lang.Object)
+                boolean equalsIgnoreCase(java.lang.String)
+                boolean regionMatches(boolean, int, java.lang.String, int, int)
+                boolean regionMatches(int, java.lang.String, int, int)
+                boolean startsWith(java.lang.String)
+                boolean startsWith(java.lang.String, int)
+                byte[] getBytes()
+                byte[] getBytes(java.lang.String)
+                byte[] getBytes(sun.io.CharToByteConverter)
+                char charAt(int)
+                char[] toCharArray()
+                int compareTo(java.lang.Object)
+                int compareTo(java.lang.String)
+                int compareToIgnoreCase(java.lang.String)
+                int hashCode()
+                int indexOf(int)
+                int indexOf(int, int)
+                int indexOf(java.lang.String)
+                int indexOf(java.lang.String, int)
+                int lastIndexOf(int)
+                int lastIndexOf(int, int)
+                int lastIndexOf(java.lang.String)
+                int lastIndexOf(java.lang.String, int)
+                int length()
+                java.lang.String concat(java.lang.String)
+                java.lang.String copyValueOf(char[])
+                java.lang.String copyValueOf(char[], int, int)
+                java.lang.String intern()
+                java.lang.String replace(char, char)
+                java.lang.String substring(int)
+                java.lang.String substring(int, int)
+                java.lang.String toLowerCase()
+                java.lang.String toLowerCase(java.util.Locale)
+                java.lang.String toString()
+                java.lang.String toUpperCase()
+                java.lang.String toUpperCase(java.util.Locale)
+                java.lang.String trim()
+                java.lang.String valueOf(boolean)
+                java.lang.String valueOf(char)
+                java.lang.String valueOf(char[])
+                java.lang.String valueOf(char[], int, int)
+                java.lang.String valueOf(double)
+                java.lang.String valueOf(float)
+                java.lang.String valueOf(int)
+                java.lang.String valueOf(java.lang.Object)
+                java.lang.String valueOf(long)
+                sun.io.ByteToCharConverter getBTCConverter(java.lang.String)
+                sun.io.CharToByteConverter getCTBConverter(java.lang.String)
+                void <clinit>()
+                void <init>()
+                void <init>(byte[])
+                void <init>(byte[], int)
+                void <init>(byte[], int, int)
+                void <init>(byte[], int, int, int)
+                void <init>(byte[], int, int, java.lang.String)
+                void <init>(byte[], int, int, sun.io.ByteToCharConverter)
+                void <init>(byte[], java.lang.String)
+                void <init>(char[])
+                void <init>(char[], int, int)
+                void <init>(int, int, char[])
+                void <init>(java.lang.String)
+                void <init>(java.lang.StringBuffer)
+                void getBytes(int, int, byte[], int)
+                void getChars(int, int, char[], int)
+                char[] value;
+                int count;
+                int hash;
+                int offset;
+                java.io.ObjectStreamField[] serialPersistentFields;
+                java.lang.ThreadLocal btcConverter;
+                java.lang.ThreadLocal ctbConverter;
+                java.util.Comparator CASE_INSENSITIVE_ORDER;
+                long serialVersionUID;
+*** End SymbolTable ***

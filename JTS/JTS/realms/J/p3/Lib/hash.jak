@@ -1,0 +1,643 @@
+/* hash - HashTable */
+
+package p3Lib;
+
+import JakBasic.Lang;
+
+
+public final class hash extends BaseDS implements DS {
+   //public DS                  lower;
+   public TopParams           tp;
+
+   environment                bucket, left, right, hval, 
+                              hash_relink, hash_unlink, predhash;
+
+   public String              keyfield;
+   public Lang.AST_QualifiedName   keyfieldast;
+   public String              keytype;
+   public Lang.AST_QualifiedName   keytypeast;
+   public int                 keyid;
+
+   public Lang.AST_Exp             keyGetHashVal;
+   public Lang.Literal             bnum;
+   
+   public hash( DS lowerlevel ) { 
+      lower = lowerlevel;
+   }
+
+   public hash( ) { }
+
+   public DS_Container_Type make_container_type( TopParams t, ContParams c ) {
+      return new hash_Container_Type( this, t, c );
+   }
+
+   public DS_Element_Type make_element_type( ) {
+      return new hash_Element_Type( this );
+   }
+
+   public DS_CommonCursor_Type make_commoncursor_type( ) {
+      return new hash_CommonCursor_Type( this );
+   }
+
+   public DS_Cursor_Type make_cursor_type( Usage u ) { 
+        return new hash_Cursor_Type( this, u ); 
+   }
+
+   public DrcAttributes drc( DrcAttributes d ) {
+      // check to see if there is another hash layer with the same
+	  // key - if so, flag it as an error, otherwise remember the
+	  // annotation
+	 
+	  d.test_and_set_annotation("hash", "----");
+	  d.check_annotation("hash", keyfield);
+
+	 
+	 
+	 // right now, hash can be used anywhere, at any time.
+     // just signal to upper layers that there is a retrieval_layer_present
+
+      if ( !d.below_topmost_layers ) {
+         d.below_topmost_layers = true;
+         d.below_topmost_set    = "hash";
+      }
+      d.retrieval_layer_present = true;
+      d = lower.drc( d );
+      d.retrieval_layer_present = true;
+
+      return d;
+   } 
+
+   public void set_keyword( TOP toplayer, TopParams tph ) {
+      tp = tph;     
+      environment parent toplayer;
+      lower.set_keyword( toplayer, tp );
+   }
+
+   public Object ParseArgs( Lang.AstNode x ) {
+      Object result;
+      String s;
+      
+      if ( x == null || x.arg[0] == null 
+            || x.arg[0].right == null || x.arg[0].right.right == null 
+            || x.arg[0].right.right.right != null )
+         ParseTE.parseError( "hash layer expecting 3 arguments : keyname number of buckets DS");
+
+      if ( !( x.arg[0].arg[0].arg[0] instanceof Lang.AST_QualifiedName ) )
+         ParseTE.parseError( "hash layer expecting first argument as key name" );
+      
+      keyfield = ( ( Lang.AST_QualifiedName ) x.arg[0].arg[0].arg[0] ).GetName( );
+      
+      if ( !( x.arg[0].right.arg[0] instanceof Lang.Literal ) )
+         ParseTE.parseError( "hash layer expecting second argument as the number of buckets" );
+
+      s = ( ( Lang.AstToken ) x.arg[0].right.arg[0].tok[0] ).tokenName( );
+      if ( Integer.parseInt( s ) <= 0 )
+         ParseTE.parseError( "The number of buckets should be a positive integer" );
+               
+      bnum = Lang.Literal.Make( s );
+
+      result = ParseTE.parse( x.arg[0].right.right.arg[0] );
+      if ( result == null || !( result instanceof DS ) )
+         ParseTE.parseError( "hash layer's third argument should be of type DS");
+      
+      lower = ( DS ) result;
+      return this;
+   }
+}
+
+final class hash_Container_Type implements DS_Container_Type {
+   ContParams        cp;
+   hash              _layer;
+   DS_Container_Type lower;
+   environment;
+
+   hash_Container_Type( DS hashlayer, TopParams t, ContParams c ) { 
+      // Step 1: save the arguments as we'll refer to them later
+
+      _layer    = ( hash ) hashlayer;
+      cp       = c;
+      _layer.tp = t;
+      environment parent _layer;
+
+      // Step 2: create chain of lower level containers
+
+      lower = _layer.lower.make_container_type( t, cp );
+   }
+
+   public void validate( ) {
+      // Step 1: validation tests ensure that the keyfield specified
+      //         in the type equation actually corresponds to a known
+      //         attribute
+
+      _layer.keyid = _layer.tp.FieldIndex( _layer.keyfield );
+      if ( _layer.keyid == -1 )
+         ParseTE.parseError( _layer.keyfield+ " is not an attribute for hash layer" );
+
+      // Step 2: keyfield is legal, now go and remember a set of
+      //         derived values for later reference
+
+      _layer.keytype = _layer.tp.FieldType[_layer.keyid];
+
+      _layer.keyfieldast = Lang.AST_QualifiedName.Make( _layer.keyfield );
+      _layer.keytypeast = Lang.AST_QualifiedName.Make( _layer.keytype );
+
+      // Step 3: create an expression that can be used to get the hash value of the key field
+      //         ( for primitive types we need to create a wrapper class object first )
+
+      String primitiveTypes = ":boolean:char:byte:short:int:long:float:double:";
+      Lang.AST_Exp expr = exp{ $id(_layer.keyfieldast) }exp;
+
+      switch ( primitiveTypes.indexOf( _layer.keytype ) ) {
+      case 1:
+         _layer.keyGetHashVal = exp{ ( new Boolean( $exp( expr ) ) ).hashCode( ) }exp;
+         break;
+      case 9:
+         _layer.keyGetHashVal = exp{ ( new Character( $exp( expr ) ) ).hashCode( ) }exp;
+         break;
+      case 14:
+      case 19:
+      case 25:
+         _layer.keyGetHashVal = exp{ ( new Integer( ( int ) $exp( expr ) ) ).hashCode( ) }exp;
+         break;
+      case 29:
+         _layer.keyGetHashVal = exp{ ( new Long( $exp( expr ) ) ).hashCode( ) }exp;
+         break;
+      case 34:
+         _layer.keyGetHashVal = exp{ ( new Float( $exp( expr ) ) ).hashCode( ) }exp;
+         break;
+      case 40:
+         _layer.keyGetHashVal = exp{ ( new Double( $exp( expr ) ) ).hashCode( ) }exp;
+         break;
+      default:
+         _layer.keyGetHashVal = exp{ $exp( expr ).hashCode( ) }exp;
+      }
+
+      // Step 4: now proceed to validate lower layers
+
+      lower.validate( );
+   } 
+
+   public Lang.AST_FieldDecl dataMembers( ) {
+      return mth{
+         CElemTyp [] bucket;
+         $mth( lower.dataMembers( ) )
+      }mth;
+   }
+
+   public Lang.AST_Stmt containerMethod( ) {
+      return stm{
+         bucket = new CElemTyp[$exp( _layer.bnum )];
+         for ( int i = 0; i < $exp( _layer.bnum ); i++ ) 
+            bucket[i] = null;
+         $stm( lower.containerMethod( ) );
+      }stm;
+   }
+
+   public Lang.AST_Exp is_fullMethod( ) {
+      return lower.is_fullMethod( );
+   }
+   
+   public Lang.AST_Stmt insertMethod(){
+     return lower.insertMethod();
+   }
+
+   public Lang.AST_Stmt storageMethod() {
+      return lower.storageMethod();
+   }
+
+   public Lang.AST_Stmt finishMethod() {
+      return lower.finishMethod();
+   }
+   
+   public Lang.AST_Stmt openMethod(){
+      return lower.openMethod();
+   } 
+
+}
+
+/*
+ * The data structure used here is shown in the following figure:
+ *
+ *  bucket[i]
+ *   | 
+ *   |    ---           ---           ---           --- 
+ *   \-->|e1 |--right->|e2 |--right->|e3 |--right->|e4 |--right->null
+ *       |   |         |   |         |   |         |   |   
+ *    /--|   |<--left--|   |<--left--|   |<--left--|   |<--\  
+ *    |   ---           ---           ---           ---    |
+ *    |                                                    |
+ *    \----left--------------------------------------------/
+ *
+ */
+
+final class hash_Element_Type implements DS_Element_Type {
+   hash              _layer;
+   DS_Element_Type   lower;
+   environment;
+
+   hash_Element_Type( DS hashlayer ) {
+      _layer = ( hash ) hashlayer;
+      lower = _layer.lower.make_element_type( );
+      environment parent _layer;
+   }
+
+   // generate data members of transformed element class 
+
+   public Lang.AST_FieldDecl dataMembers( ) {
+      return mth{
+         CElemTyp left, right;
+         int hval;
+         $mth( lower.dataMembers( ) )
+      }mth;
+   }
+
+   // link statements as part of element constructors
+
+   public Lang.AST_Stmt link( ) {
+      return stm{
+         hash_relink( );
+         $stm( lower.link( ) );
+      }stm;
+   }
+
+   public Lang.AST_FieldDecl relink( ) {
+      return mth{
+         final void hash_relink( ) {
+            /* find out the hash value */
+            hval = java.lang.Math.abs( $exp( _layer.keyGetHashVal ) ) % $exp( _layer.bnum );
+
+            if ( cont.bucket[hval] == null ) {
+               /* first element in the list */
+               cont.bucket[hval] = this;
+               left = this;
+               right = null;
+            }
+            else {
+               /* insert at the end of the list */
+               left = cont.bucket[hval].left;
+               right = null;
+               left.right = this;
+               cont.bucket[hval].left = this;
+            }
+         }
+         $mth( lower.relink( ) )
+      }mth;
+   }
+
+   public Lang.AST_FieldDecl unlink( ) {
+      return mth{
+         final void hash_unlink( ) {
+            if ( right != null ) 
+               right.left = left;
+            else
+               cont.bucket[hval].left = left;
+
+            if ( this == cont.bucket[hval] ) {
+               cont.bucket[hval] = right;
+               left = null;  /* useful when next( ) is called and forward is false */
+            }
+            else {
+               left.right = right;
+            }
+         }
+         $mth( lower.unlink( ) )
+      }mth;
+   }
+
+   // can update attributes at will, except for the keyfield
+
+   public Lang.AST_Stmt upd( int fieldno ) {
+      if ( fieldno == _layer.keyid ) 
+         return stm{ 
+            hash_unlink( );
+            $stm( lower.upd( fieldno ) );
+            hash_relink( );
+         }stm;
+      return lower.upd( fieldno );
+   }   
+}
+
+final class hash_CommonCursor_Type implements DS_CommonCursor_Type {
+   hash _layer;
+   DS_CommonCursor_Type lower;
+   environment;
+
+   hash_CommonCursor_Type( DS hashlayer ) {
+      _layer = ( hash ) hashlayer;
+      lower = _layer.lower.make_commoncursor_type( );
+      environment parent _layer;
+   }
+
+   public Lang.AST_FieldDecl dataMembers( ) {
+      return lower.dataMembers( );
+   }
+
+
+  public Lang.AST_Stmt insertMethod( ) {
+        return lower.insertMethod( );
+   }
+
+   public Lang.AST_Stmt removeMethod( ) {
+      return stm{
+         obj.hash_unlink( );
+         $stm( lower.removeMethod( ) );
+      }stm;
+   }
+
+   public Lang.AST_FieldDecl movementMethods( ) {
+      /* methods like start( ), adv( ), end( ), back( ) are not provided here
+       * because for different predicates the code generated would be different
+       */
+      return lower.movementMethods( );
+   }
+}
+
+final class hash_Cursor_Type extends RetSometimes implements DS_Cursor_Type {
+   hash           _layer;
+   Lang.AST_Exp        pred;
+   boolean        fwd;
+   boolean[]      upd;
+   int            ord;
+   range          r;   
+   Lang.AST_Exp        eqExp;
+   Lang.AST_Exp        hashExp;
+   environment;
+
+   hash_Cursor_Type( DS hashlayer, Usage u ) {
+      _layer = ( hash ) hashlayer;
+      lower = _layer.lower.make_cursor_type( u );
+      pred  = u.predicate;
+      fwd = u.forward;
+      upd = u.upd;
+      ord = u.order;
+
+      r = new range( _layer.keyfield );
+      r.DetermineRange( pred );
+      if ( r.QueryType( ) == range.POINT_QUERY ) {
+         /* it's a equlity predicate!  that's where we can do a lot of optimization
+          * set eqExp to the target value, and hashExp to the hash value of eqExp
+          * e.g., if the predicate is "age() == 23"
+          *       then eqExp will be "23", 
+          *       hashExp will be "( new Integer( 23 ) ).hashCode( )"
+          */
+          
+         String primitiveTypes = ":boolean:char:byte:short:int:long:float:double:";
+
+         eqExp = r.LowerBound;
+         switch ( primitiveTypes.indexOf( _layer.keytype ) ) {
+         case 1:
+            hashExp = exp{ ( new Boolean( $exp( eqExp ) ) ).hashCode( ) }exp;
+            break;
+         case 9:
+            hashExp = exp{ ( new Character( $exp( eqExp ) ) ).hashCode( ) }exp;
+            break;
+         case 14:
+         case 19:
+         case 25:
+            hashExp = exp{ ( new Integer( ( int ) $exp( eqExp ) ) ).hashCode( ) }exp;
+            break;
+         case 29:
+            hashExp = exp{ ( new Long( $exp( eqExp ) ) ).hashCode( ) }exp;
+            break;
+         case 34:
+            hashExp = exp{ ( new Float( $exp( eqExp ) ) ).hashCode( ) }exp;
+            break;
+         case 40:
+            hashExp = exp{ ( new Double( $exp( eqExp ) ) ).hashCode( ) }exp;
+            break;
+         default:
+            hashExp = exp{ $exp( eqExp ).hashCode( ) }exp;
+         }
+      }
+      else {
+         eqExp = null;
+         hashExp = null;
+      }
+
+      environment parent _layer;
+   }
+
+   public void optimizeAction( Qopt q ) {
+      int cost;
+
+      if ( eqExp != null )
+         cost = Qopt.HASH_LOCATE;
+      else
+         cost = Qopt.HASH_LISTSCAN;
+       
+      if ( q.cost > cost ) {
+         q.fastest_layer = _layer;
+         q.cost          = cost;
+
+         q.requires_skip = false;
+         /* indeed it doesn't matter whether we set it to true or false
+          * since the lowerBoundExp( ) method will always return null
+          * ( see the code in qualify.jak )
+          * but setting it to false makes more sense to me
+          */
+
+         q.requires_buffering = upd[_layer.keyid];
+         q.requires_sorting = ( ord != -1 );
+
+         q.requires_inbetween = false;
+         /* the unlink( ) and next( ) methods are designed carefully so that even
+          * if the element currently pointed by the cursor is deleted, next( )
+          * will still move the cursor to next valid element
+          */
+
+          if ( q.requires_buffering || q.requires_sorting )
+            fwd = true;
+      }
+   }
+
+   public DS thisLayer( ) {
+      return _layer;
+   }
+
+   public Lang.AST_FieldDecl dataMembers( ) {
+      if ( eqExp == null )
+         /* not equality predicate */
+         return lower.dataMembers( );
+      else if ( eqExp instanceof Lang.Literal )
+         /* equlity predicate and the target value is a constant
+          * compute its hash value once and store into a static variable
+          */
+         return mth{
+            static int predhash = java.lang.Math.abs( $exp( hashExp ) ) % $exp( _layer.bnum );
+            $mth( lower.dataMembers( ) )
+         }mth;
+      else
+         /* equlity predicate and the target value is not a constant
+          * declare a variable to store the hash value which will be 
+          * computed very time first( ) is called
+          */
+         return mth{
+            int predhash;
+            $mth( lower.dataMembers( ) )
+         }mth;
+   }
+
+   public Lang.AST_Stmt cursorMethod( ) {
+      return lower.cursorMethod( );
+   }
+
+   // firstMth - returns the first element
+
+   public Lang.AST_Stmt firstMth( ) {
+      if ( eqExp == null ) {
+         /* scan through the whole hash table */
+         if ( fwd )
+            return stm{
+               obj = null;
+               for ( int i = 0; i < $exp( _layer.bnum ); i++ )
+                  if ( cont.bucket[i] != null ) {
+                     obj = cont.bucket[i];
+                     break;
+                  }
+            }stm;
+         else
+            return stm{
+               obj =  null;
+               for ( int i = $exp( _layer.bnum ) - 1; i >= 0; i-- )
+                  if ( cont.bucket[i] != null ) {
+                     obj = cont.bucket[i].left;
+                     break;
+                  }
+            }stm;
+      }
+      else {
+         /* scan though only one list */
+         Lang.AST_Stmt tmp;
+
+         if ( fwd )
+            tmp = stm{
+               obj = cont.bucket[predhash];
+            }stm;
+         else
+            tmp = stm{
+               obj = cont.bucket[predhash];
+               if ( obj != null )
+                  obj = obj.left;
+            }stm;
+
+         if ( eqExp instanceof Lang.Literal ) {
+            return tmp;
+         }
+         else {
+            return stm{
+               predhash = java.lang.Math.abs( $exp( hashExp ) ) % $exp( _layer.bnum );
+               $stm( tmp );
+            }stm;
+         }
+      }
+   }
+
+   // moreMth - tests for physical end-of-data structure 
+   //           the qualify layer tests for logical end-of-data structure
+
+   public Lang.AST_Exp moreMth( ) {
+      return exp{ obj != null }exp;
+   }
+
+   // noMoreMth( ) - sets cursor to the physical end of list 
+
+   public Lang.AST_Stmt noMoreMth( ) {
+      return stm{ obj = null; }stm;
+   }
+
+   // nextMth - returns the next ( unqualified ) element
+
+   public Lang.AST_Stmt nextMth( )  {
+      if ( eqExp == null ) {
+         /* scan through the whole hash table */
+         if ( fwd )
+            return stm{
+               if ( obj.right == null ) {
+                  int i = obj.hval;
+                  obj = null;
+                  while ( i < $exp( _layer.bnum ) - 1 ) {
+                     i++;
+                     if ( cont.bucket[i] != null ) {
+                        obj = cont.bucket[i];
+                        break;
+                     }
+                  }
+               }
+               else {
+                  obj = obj.right;
+               }
+            }stm;
+         else
+            return stm{
+               if ( obj.left == null || cont.bucket[obj.hval] == obj ) {
+                  int i = obj.hval;
+                  obj = null;
+                  while ( i > 0 ) {
+                     i--;
+                     if ( cont.bucket[i] != null ) {
+                        obj = cont.bucket[i].left;
+                        break;
+                     }
+                  }
+               }
+               else {
+                  obj = obj.left;
+               }
+            }stm;
+      }
+      else {
+         /* scan though only one list */
+         if ( fwd )
+            return stm{
+               obj = obj.right;
+            }stm;
+         else
+            return stm{
+               if ( cont.bucket[obj.hval] == obj )
+                  obj = null;
+               else
+                  obj = obj.left;
+            }stm;
+      }
+   }        
+
+   /* always return null because hash table is not odered,
+    * hence lowerBound and upperBound are not applicable
+    */
+
+   public Lang.AST_Exp lowerBoundExp( boolean pos ) {
+      return null;
+   }         
+
+   public Lang.AST_Exp upperBoundExp( boolean pos ) {
+      return null;
+   }
+
+   // return translated residual predicate
+   // Note: in the case that there is no residual, a null pointer
+   // is returned rather than exp{true}exp.  this should make
+   // it easier to do optimizations
+
+   public Lang.AST_Exp residualExp( ) {
+/*
+   the following code seems to be correct and optimized, but it is not.
+   indeed we still need to apply "age() == 23" to each element in the list
+   even when eqExp != null
+
+      if ( pred != null )  {
+         if ( eqExp != null )
+            return r.Residual( _layer.tp, pred );
+         else
+            return r.Translate( id{ obj }id, _layer.tp, pred );
+      }
+*/
+      if ( pred != null )
+         return r.Translate( id{ obj }id, _layer.tp, pred );
+      
+      return null;
+   }
+
+   public Lang.AST_Stmt removeMethod( ) {
+      return lower.removeMethod( );
+   }
+}

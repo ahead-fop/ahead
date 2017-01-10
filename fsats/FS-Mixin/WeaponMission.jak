@@ -1,0 +1,42 @@
+layer FS;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+import java.io.*;
+
+SoUrCe RooT BasicL "C:!Java!FeatureOrientedProgramming!fsats!BasicL!WeaponMission.jak";
+
+/** Generic Weapon OPFAC. **/
+abstract State_machine WeaponMission$$BasicL extends MissionImpl {}
+
+SoUrCe  MissionWrffeL "C:!Java!FeatureOrientedProgramming!fsats!MissionWrffeL!WeaponMission.jak";
+
+// MissionImpl
+
+public State_machine WeaponMission extends WeaponMission$$BasicL {
+            /*REFINES EDGE no longer supported.  
+       Move predicate or body into method, and extend method.
+    Refines Transition wrffeInitiated1 : wrffeInitiated -> wrffeAssigned
+                condition false do {} */
+
+    Transition_condition wrffeInitiated1 false && Proceed( message );
+ 
+    // If weapon selected do weapon specific Transitions. 
+    Transition wrffeInitiated4 : wrffeInitiated -> wrffeAccepted
+        condition ( weaponSelected() )
+        do {
+            sendAccept();
+        }
+/*
+        // add -- net effect of Refines is to have a false Transition condition
+
+        public boolean wrffeInitiated1Test(Message message) {
+           return false;
+        }
+*/
+
+}

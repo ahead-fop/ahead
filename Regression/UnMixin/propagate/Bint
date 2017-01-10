@@ -1,0 +1,3 @@
+layer two;
+
+refines interface x extends y { }

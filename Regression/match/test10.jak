@@ -1,0 +1,52 @@
+import jak.Lang;
+import java.io.PrintWriter;
+
+public class test10 {
+    public static void main(String args[]) {
+	Lang.AST_Class t;
+	m x;
+	Lang.AstProperties prop = Lang.AstProperties.open((String) null);
+	PrintWriter pw = (PrintWriter) prop.getProperty("output");
+
+	t = cls{
+	    class casep {
+		public static void main(String args[]) {
+		    int x = Integer.parseInt(args[0]);
+
+		    switch (x) {
+		    case 0: break;
+		    case 1: ;
+		    case 2: System.out.println("Hi");
+		    case 3: System.out.println("Hi");
+		    default: ;
+		    }
+		}
+	    }
+	}cls;
+	t.print(prop);
+	pw.println();
+	x = new m();
+	x.searchCase(t);
+    }
+}
+
+class m {
+    void searchCase( Lang.AstNode t ) {
+	Lang.AstCursor e = new Lang.AstCursor();
+	Lang.AstCursor s = new Lang.AstCursor();
+	Lang.AstCursor n = new Lang.AstCursor();
+	PrintWriter pw;
+	Lang.AST_SwitchEntry pattern = match case{ case $exp(e) : $stm(s); }case;
+
+	Lang.AstProperties props = Lang.AstProperties.open((String) null);
+	pw = (PrintWriter) props.getProperty("output");
+	n.First(t);
+	while (pattern.findPattern(n, null)) {
+	    e.node.print(props);
+	    s.node.print(props);
+	    pw.flush();
+	    System.out.println("");
+	}
+    }
+}
+

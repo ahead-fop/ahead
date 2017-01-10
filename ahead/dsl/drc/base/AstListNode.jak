@@ -1,0 +1,12 @@
+layer core;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+public abstract refines class AstListNode {
+    public void reduce() {
+        fatalError( "AstListNode.reduce() method should not be called" );
+    }
+}

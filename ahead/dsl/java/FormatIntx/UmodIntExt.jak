@@ -1,0 +1,21 @@
+layer FormatIntx;
+
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public refines class UmodIntExt {
+    public void format( int position ) {
+        inline_routins( position );
+        arg[0].format( position );
+        arg[1].format( position );
+        if ( ( arg[2].arg[0] == null ) && ( ( ( AstToken ) tok[2] ).white_space.trim().length() == 0 ) )
+            ( ( AstToken ) tok[2] ).white_space = "";
+        else {
+            position += CommentUtil.TabSpace;
+            arg[2].format( position );
+            position -= CommentUtil.TabSpace;
+            CommentUtil.token_routins( ( AstToken ) tok[2], position );
+        }
+    }
+}

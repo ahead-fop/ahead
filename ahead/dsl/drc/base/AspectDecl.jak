@@ -1,0 +1,35 @@
+layer core;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+public refines class AspectDecl {
+    static String layerName;
+    static boolean isConstant;
+    static boolean isSingle;
+
+    public void reduce() {
+
+        // Step 1: harvest name of layer
+
+        layerName = tok[1].tokenName();
+        if ( layerName.equals( "" ) )
+            layerName =  Main.deriveLayerName();
+
+        // Step 2: if singleton, then add an element that
+        //         defines an attribute with this layer's name
+
+        isSingle = ( arg[0].arg[0] != null );
+        if ( isSingle ) {
+            Element e = new  Element( false, true, "Bool", layerName,
+                              new  predicate(), new  Bool( "" ), true );
+            symtab.add( layerName, e );
+        }
+
+        // Step 3: if constant, then mark the layer as such
+
+        isConstant = ( arg[1].arg[0] != null );
+    }
+}

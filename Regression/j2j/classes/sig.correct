@@ -1,0 +1,17 @@
+jak2java: sig.jak:10: Error multiple constructors have the same signature: (int,int[],int[][])
+jak2java: sig.jak:12: Error multiple constructors have the same signature: (int,int,int)
+// this test evaluates the signature methods and in particular
+// the Dims productions
+
+// it should report errors
+
+
+
+class foo {
+   foo( int a, int[] b, int[] c[]) {}
+	foo( int a, int b[], int c[][]) {}
+	foo( int a, int b, int c) {}
+	foo( int a, int b, int c) {}
+
+}
+jak2java: Summary 2 errors

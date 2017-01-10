@@ -1,0 +1,36 @@
+layer M2D2Base;
+
+import java.io.*;
+
+// the purpose of this class is a facade.
+// the initial design is to collect information in 
+// a string, and eventually output it to a file.
+// perhaps future implementations of this facade
+// will output to a file directly.
+
+class m2d2result {
+
+   String contents = "";
+
+   void add( String value ) { 
+      if (value == null) return;
+      if (Main.debug) System.out.println( "adding " + value );
+      contents=contents +"\n"+value; 
+   }
+
+   void blankLine() {
+      contents=contents +"\n";
+   }
+
+   void commentLine( String comment ) {
+      contents=contents +"\n# " + comment + "\n";
+   }
+
+   void line( String lineval ) {
+      contents=contents +"\n" + lineval + " \n";
+   }
+
+   void put(File f) { System.out.println(contents); }
+
+   void init() { contents="";}
+}

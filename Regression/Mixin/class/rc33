@@ -1,0 +1,24 @@
+layer CRooT0;
+
+import x.y.z.*;
+import java.io.Serializable;
+import anotherPackage;
+
+SoUrCe RooT CRooT0 "C:!Java!FeatureOrientedProgramming!Regression!Mixin!class!CBase3.jak";
+
+abstract class MyClass$$CRooT0 extends anotherClass { 
+   int i;
+   public MyClass$$CRooT0(int i)  { MyClassConstructor(i); }
+
+   public void MyClassConstructor( int i) { this.i = i; }
+}
+
+SoUrCe  CExt1 "C:!Java!FeatureOrientedProgramming!Regression!Mixin!class!CExt3.jak";
+
+public transient class MyClass extends MyClass$$CRooT0 implements yyy, java.io.Serializable {
+   int j;
+   public void MyClassConstructor(int i) {
+      Super(int).MyClassConstructor(i);
+      j = i + 3;
+   }
+}

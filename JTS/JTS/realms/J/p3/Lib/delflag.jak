@@ -1,0 +1,271 @@
+/* delflag - this is a terminal layer that simply outputs calls to it */
+
+package p3Lib;
+
+import JakBasic.Lang;
+
+
+public final class delflag extends BaseDS implements DS {
+   //public DS        lower;
+   public TopParams tp;
+   environment df;          // mangleable keywords local to delflag
+
+   public delflag( DS lowerlevel ) { 
+      lower = lowerlevel;
+   }
+
+   public delflag( ) { }
+
+   public DS_Container_Type make_container_type( TopParams t, ContParams c ) {
+      return new delflag_Container_Type( this, t, c );
+   }
+
+   public DS_Element_Type make_element_type( ) {
+      return new delflag_Element_Type( this );
+   }
+
+   public DS_CommonCursor_Type make_commoncursor_type() {
+      return new delflag_CommonCursor_Type( this );
+   }
+
+   public DS_Cursor_Type make_cursor_type( Usage u ) { 
+        return new delflag_Cursor_Type( this, u ); 
+   }
+
+   public DrcAttributes drc( DrcAttributes d ) {
+      // test preconditions
+      
+       if (d.logical_del_layer_present) {
+	           if ("delflag".compareTo(d.logical_del_set) == 0)
+	              d.DrcError(
+	               "too many logical deletion layers:   keep only one delflag layer");
+	           else
+	              d.DrcError(
+	               "too many logical deletion layers:  remove delflag or "
+	                + d.logical_del_set);
+	        }
+	   d.logical_del_layer_present = true;
+	   d.logical_del_set = "delflag";
+
+	  
+      return lower.drc(d);
+   } 
+ 
+   public void set_keyword( TOP toplayer, TopParams tph ) {
+      tp = tph;   
+      environment parent toplayer;
+      lower.set_keyword( toplayer, tp );
+   }
+
+   public Object ParseArgs( Lang.AstNode x ) {
+      Object result = null;
+
+      if (x != null && x.arg[0] != null && x.arg[0].right == null)
+         result = ParseTE.parse(x.arg[0].arg[0]);
+      if (result == null || !(result instanceof DS))
+         ParseTE.parseError("delflag layer expecting single argument of type DS");
+      lower = (DS) result;
+      return this;
+   }
+}
+
+
+
+final class delflag_Container_Type implements DS_Container_Type {
+   ContParams        cp;
+   String            ElemName;
+   String            ContName;
+   delflag           _layer;
+   DS_Container_Type lower;
+   environment;
+
+   delflag_Container_Type( DS delflaglayer, TopParams t, ContParams c ) { 
+      // Step 1: save the arguments as we'll refer to them later
+
+      _layer    = (delflag) delflaglayer;
+      cp       = c;
+      _layer.tp = t;
+      environment parent _layer;
+
+      // Step 2: create chain of lower level containers
+
+      lower = _layer.lower.make_container_type( t, cp );
+   }
+
+   public void validate() {
+
+      // Step 1: nothing really to validate as there are no nonrealm params
+
+      lower.validate();
+   }
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return lower.dataMembers();
+   }
+
+   public Lang.AST_Stmt containerMethod() {
+     return lower.containerMethod();
+   }
+
+   public Lang.AST_Exp is_fullMethod() {
+     return lower.is_fullMethod();
+   }
+   
+   public Lang.AST_Stmt insertMethod(){
+     return lower.insertMethod();
+   }
+
+   public Lang.AST_Stmt storageMethod() {
+      return lower.storageMethod();
+   }
+
+   public Lang.AST_Stmt finishMethod() {
+      return lower.finishMethod();
+   }
+   
+   public Lang.AST_Stmt openMethod(){
+      return lower.openMethod();
+   } 
+
+}
+
+
+class delflag_Element_Type implements DS_Element_Type {
+   delflag _layer;
+   DS_Element_Type lower;
+   environment; 
+
+   delflag_Element_Type( DS delflaglayer ) {
+      _layer = (delflag) delflaglayer;
+      lower = _layer.lower.make_element_type();
+      environment parent _layer;
+   }
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return mth{
+   boolean df;
+   $mth(lower.dataMembers())
+       }mth;
+   }
+
+   // link statements as part of element constructors
+
+   public Lang.AST_Stmt link() {
+      return stm{ df = false;
+                 $stm(lower.link()); }stm;
+   }
+
+   // link to head of the list
+
+   public Lang.AST_FieldDecl relink() {
+      return lower.relink();
+   }
+
+   // remove from list
+
+   public Lang.AST_FieldDecl unlink() {
+      return lower.unlink();
+   }
+
+   // can update attributes at will
+
+   public Lang.AST_Stmt upd( int fieldno ) {
+      return lower.upd( fieldno );
+   }
+   
+}
+
+final class delflag_CommonCursor_Type implements DS_CommonCursor_Type {
+   delflag _layer;
+   DS_CommonCursor_Type lower;
+   environment;
+
+   delflag_CommonCursor_Type( DS d_list ) {
+      _layer = (delflag) d_list;
+      lower = _layer.lower.make_commoncursor_type();
+      environment parent _layer;
+   }
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return lower.dataMembers();
+   }
+
+
+   public Lang.AST_Stmt insertMethod( ) {
+         return lower.insertMethod( );
+   }
+
+   public Lang.AST_Stmt removeMethod() {
+      return stm{
+      obj.df = true;
+      }stm;
+   }
+
+   public Lang.AST_FieldDecl movementMethods() {
+      return lower.movementMethods();
+   }
+}
+
+
+class delflag_Cursor_Type implements DS_Cursor_Type {
+    delflag _layer;
+    DS_Cursor_Type lower;
+    Lang.AST_Exp pred;
+    environment;
+
+    delflag_Cursor_Type( DS delflaglayer, Usage u ) {
+       _layer = (delflag) delflaglayer;
+       lower = _layer.lower.make_cursor_type( u );
+       pred  = u.predicate;
+       environment parent _layer;
+    }
+
+    public Qopt optimize( Qopt q ) {
+       // always a retrieval layer
+       return lower.optimize(q);
+    }
+
+    public Lang.AST_FieldDecl dataMembers() {
+       return lower.dataMembers();
+    }
+
+    public Lang.AST_Stmt cursorMethod() {
+       return lower.cursorMethod();
+    }
+
+    public Lang.AST_Stmt firstMethod() {
+       return lower.firstMethod();
+    }
+
+    public Lang.AST_Exp moreMethod() {
+       return lower.moreMethod();
+    }
+
+    public Lang.AST_Stmt nextMethod()  {
+       return lower.nextMethod();
+    }
+
+    public Lang.AST_Exp lowerBound( boolean pos ) {
+       return lower.lowerBound( pos );
+    }
+
+    public Lang.AST_Exp upperBound( boolean pos ) {
+       return lower.upperBound( pos );
+    }
+
+    public Lang.AST_Exp residual( ) {
+       Lang.AST_Exp q = lower.residual();
+       if (q == null) 
+         return exp{ !obj.df }exp;
+       else
+         return exp{ ( !obj.df && ($exp(q))) }exp;
+    }
+
+    public Lang.AST_Stmt noMoreMethod( ) {
+       return lower.noMoreMethod();
+    }
+
+    public Lang.AST_Stmt removeMethod( ) {
+       return lower.removeMethod();
+    }
+}

@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+[ -z "$BASH" ] && exec bash $0 $@
+
+case "$(command -p uname)" in
+    CYGWIN*) CP="${CLASSPATH};." ;;
+    *)       CP="${CLASSPATH}:." ;;
+esac
+
+echo -e "\n****************SM Regression Tests***********\n"
+
+rm -f -- *.ser *.class *.java
+
+cp -f -- M.jjava M.java
+cp -f -- wrffe.jjava wrffe.java
+
+javac M.java wrffe.java
+
+FAILURES=0
+for TEST in extension decl refined fist fo mortar artillery mlrs repeater inherit inherit2 star nested; do
+    env CLASSPATH="${CP}" bash "regress-${TEST}" || let ++FAILURES
+done
+
+if [ "${FAILURES}" -ne 0 ]; then
+    echo "SM Regression Tests had ${FAILURES} failures"
+    exit 1
+fi
+
+rm --force -- *.class *.ser *.java
+echo -e "SM Regression Tests Succeeded"

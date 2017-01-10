@@ -1,0 +1,20 @@
+import more.stuff;
+
+refines class myclass {
+
+    // introduce a new variable called refVariable
+    int refVariable = 0;
+
+    // introduce a new method called refMethod
+    int refMethod() {
+        return refVariable; // a comment appears here
+    }
+
+    void baseMethod() {
+        // extension of baseMethod
+        // an "execution" around advice in AOP
+        before_stuff( 1 );
+        Super().baseMethod(); // AOP "proceed"
+        after_stuff( 2 );
+    }
+}

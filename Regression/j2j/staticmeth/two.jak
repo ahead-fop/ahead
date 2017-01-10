@@ -1,0 +1,35 @@
+
+// tests the refinement of static methods
+
+SoUrCe RooT L1 "two.jak";
+
+abstract class two$$L1 extends EventType {
+   public static void main(String[] args ) { 
+      Super(String[]).main(null);
+      System.out.println( "L1 " );
+   }
+}
+
+SoUrCe  L2 "two.jak";
+
+abstract  class two$$L2 extends two$$L1 {
+   public static void main(String[] args ) { 
+      Super(String[]).main(null);
+      System.out.println( "L2 " );
+   }
+}
+
+
+SoUrCe  L3 "two.jak";
+
+abstract  class two$$L3 extends two$$L2 { }
+
+
+SoUrCe  L4 "two.jak";
+
+public abstract  class two extends two$$L3 {
+   public static void main(String[] args) {
+      Super(String[]).main(null);
+      System.out.println( "two ");
+   }
+}

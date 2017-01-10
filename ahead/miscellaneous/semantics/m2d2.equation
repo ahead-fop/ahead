@@ -1,0 +1,18 @@
+dsl/kernel
+build/m2d2/syntax
+dsl/java/Java
+dsl/java/Comments
+dsl/java/M2D2Base
+dsl/java/M2D2Java
+dsl/java/M2D2Extra
+# dsl/java/M2D2Ast
+# dsl/java/M2D2Gscope
+# dsl/java/M2D2Ahead
+# dsl/java/M2D2Source
+# dsl/java/M2D2LocalId
+# dsl/java/M2D2Layer
+# dsl/java/M2D2Sm
+dsl/java/M2D2ClassX
+dsl/java/M2D2Intx
+# dsl/java/M2D2Smx
+# dsl/support/antDerive

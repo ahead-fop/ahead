@@ -1,0 +1,28 @@
+#!/bin/sh
+#  
+# Submit "summary" command to Condor batch queue.
+#=============================================================================#
+
+PATH="/usr/bin:/bin"
+export PATH
+
+#=============================================================================#
+# Run Condor commands from the right place:
+#
+function condor() {
+    BIN="/usr/local/condor/bin"
+    CMD="condor_${1:-q}"
+    shift
+    "${BIN}/${CMD}" "$@"
+}
+
+#=============================================================================#
+# Create Condor output files with the right permissions:
+#
+cat /dev/null >condor.log
+cat /dev/null >summary.run
+
+chmod 644 condor.log
+chmod 666 summary.run
+
+condor submit etc/summary.condor

@@ -1,0 +1,41 @@
+#!/bin/bash
+
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+echo "****************jak2java Class Regression Test***********"
+rm *.java
+
+bash regress-one SourceErr \
+&& bash regress-one rootm \
+&& bash regress-one rootj \
+&& bash regress-one jnk0 \
+&& bash regress-one jnk \
+&& bash regress-one base \
+&& bash regress-one sig \
+&& bash regress-one dbl \
+&& bash regress-one inher1 \
+&& bash regress-one inher2 \
+&& bash regress-one inher3 \
+&& bash regress-one inher4 \
+&& bash regress-one statik1 \
+&& bash regress-one sig \
+&& bash regress-one dbl \
+&& bash regress-one inher1 \
+&& bash regress-one inher2 \
+&& bash regress-one inher3 \
+&& bash regress-one inher4 \
+&& bash regress-one statik1 \
+&& bash regress-one MessageType \
+&& bash regress-one Mt2 \
+&& bash regress-one Mt3 \
+&& bash regress-one Mt4 \
+&& bash regress-one Mt5 \
+&& bash regress-one Ex1 \
+&& bash regress-one Ex2 \
+|| exit 1
+
+echo -e "\nj2j Class Regression Test succeeded."
+
+

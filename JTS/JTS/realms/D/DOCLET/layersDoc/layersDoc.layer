@@ -1,0 +1,36 @@
+/*
+University of Texas at Austin
+Computer Sciences Department
+JTSDOC project
+Implemented by : Roberto E. Lopez-Herrejon
+Doclet composition.
+Last modified : July 18, 2001
+*/
+
+layer layersDoc(DOCLET lower)
+realm DOCLET
+extends lower
+{
+  static public class ClassDocJTS extends lower.ClassDocJTS
+  {
+    public ClassDocJTS() { super(); }
+    public ClassDocJTS(String name) { super(name); }   
+  }  // of classDocJTS
+
+
+ static public class ProgramDocJTS extends lower.ProgramDocJTS 
+ {
+  /** Default Constructor
+  */ 
+  public ProgramDocJTS() { super(); }  
+  
+  /** Name constructor
+  */
+  public ProgramDocJTS(String _name)
+  { 
+	  super(_name);
+  }
+  
+ } // end of Program ProgramDocJTS  
+  
+}

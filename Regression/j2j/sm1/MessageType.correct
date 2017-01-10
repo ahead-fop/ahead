@@ -1,0 +1,20 @@
+
+
+abstract class MessageType$$FsatsL extends EventType implements MessageTypeInterface {
+      // inherited constructors
+
+      MessageType$$FsatsL( String v0) { super(  v0); }}
+
+
+
+
+public abstract  class MessageType extends MessageType$$FsatsL
+        implements MessageTypeInterface
+    {
+
+        protected MessageType(String name)
+        {
+            super(name);
+          MessageTypeConstructor(name);
+        }
+    }

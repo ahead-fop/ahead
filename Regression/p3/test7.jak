@@ -1,0 +1,25 @@
+interface empty { };
+
+container<emp> empcont;
+
+cursor<empcont> empcursor;
+
+container empcont1 extends empcont implements empty
+   using odlist( age, malloc( ) );
+
+cursor t0(empcont1 e);
+
+cursor t1(empcont1 e) where dept() == "Biology" ;
+
+cursor t2(empcont1 e) where age() > 20;
+
+cursor t3(empcont1 e) where age() > 20 && dept() == "Biology";
+
+cursor t4(empcont1 e) where age() < 40;
+
+cursor t5(empcont1 e) where age() < 40  && dept() == "Biology";
+
+cursor t6(empcont1 e) where age() > 20 && age() < 40 && dept() == "Biology";
+
+cursor t7(empcont1 e) where age() > 20 && age() < 40;
+

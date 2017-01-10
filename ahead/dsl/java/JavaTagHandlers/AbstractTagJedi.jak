@@ -1,0 +1,182 @@
+layer JavaTagHandlers;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+// **********************************************************************
+// **********************************************************************
+// **********************************************************************
+
+/** Abstract Tag Handler.
+ * Contains the handler code shared by all tags.
+ * Extensible Tag Parser for Jedi
+ * @author Roberto E. Lopez-Herrejon
+ * Product-Lines Architecture Research Lab
+ * Department of Computer Sciences
+ * University of Texas at Austin
+ * Last Update: November 20, 2002
+ * @layer<JavaTagHandlers>
+ */
+
+public abstract class AbstractTagJedi {
+
+    /** Parses the corresponding tag and fills in the the corresponding 
+     * comment data structures. 
+     * @layer<JavaTagHandlers>
+     */
+    public abstract void parse( DocJTS Document,  CommentJedi comment, 
+                 String stringTag );
+
+    //  ********* Interface methods that have to be implemented ************
+
+    /** Returns the name of the Tag. 
+     * @layer<JavaTagHandlers>
+     */
+    public String name() {
+        return name;
+    }
+    
+    /** Returns the kind of the tag. 
+     * @layer<JavaTagHandlers>
+     */
+    public String kind() {
+        return kind;
+    }
+
+    /** Returns the text of the tag. 
+     * @layer<JavaTagHandlers>
+     */
+    public String text() {
+        return text;
+    }
+
+    /** Returns the holder of the tag 
+     * @layer<JavaTagHandlers>
+     */
+    public  DocJTS holder() {
+        return holder;
+    }
+
+    /** Returns the LinkedList of inline tags. 
+     * @layer<JavaTagHandlers>
+     */
+    public LinkedList inlineTags() {
+        return inlineTags;
+    }
+
+    /** Current implementation Kind:Text 
+     * @layer<JavaTagHandlers>
+     */
+    public String toString() {
+        return kind() + ":"+ text() ;
+    }
+
+    /** Returns the list of first sentence tags. 
+     * @layer<JavaTagHandlers>
+     */
+    public LinkedList firstSentenceTags() {
+        return firstSentenceTags;
+    }
+
+    /**************** Implementation members *************************
+     * @layer<JavaTagHandlers>
+     */
+
+    /** Text of the tag. */
+    String text;
+
+    /** Name of the tag. 
+     * @layer<JavaTagHandlers>
+     */
+    String name;
+
+    /** Reference to the Doc object to where the Tag belongs. 
+     * @layer<JavaTagHandlers>
+     */
+    DocJTS holder = null ;
+
+    /** Contains the kind of tag. 
+     * @layer<JavaTagHandlers>
+     */
+    String kind;
+
+    /** List with the firstSentence Tags. 
+     * @layer<JavaTagHandlers>
+     */
+    LinkedList firstSentenceTags = new LinkedList();
+
+    /** List with the inlineTags.  
+     * @layer<JavaTagHandlers>
+     */
+    LinkedList inlineTags = new LinkedList();
+
+    /** Assigns the parameters to the fields in that order. 
+     * @layer<JavaTagHandlers>
+     */
+    // @pending -> remove until all of the childs define a correct 
+    //     constructor    
+    // public TagJedi ($TEqn.DocJTS _holder, String _text, String _name)
+    // { holder = _holder; text = _text; name = _name; }
+          
+    /** Sets the value of kind variable.  */
+    public void setKind( String _kind ) {
+        kind = _kind;
+    }
+
+    /** Sets the holder document of this tag. 
+     * @layer<JavaTagHandlers>
+     */
+    public void setHolder( DocJTS _holder ) 
+  {
+        holder = _holder;
+    }
+
+    /** Sets the name of this tag 
+     * @layer<JavaTagHandlers>
+     */
+    public void setName( String _name ) {
+        name = _name;
+    }
+    
+    /** Sets the text of this tag 
+     * @layer<JavaTagHandlers>
+     */
+    public void setText( String _text ) {
+        text = _text;
+    }
+
+    /** Sets the first sentence Tags. 
+     * @layer<JavaTagHandlers>
+     */
+    public void setFirstSentenceTags( LinkedList _firstSentenceTags )
+  {
+        firstSentenceTags = _firstSentenceTags;
+    }
+
+    /** Adds a new first sentence tag 
+     * @layer<JavaTagHandlers>
+     */
+    public void addFirstSentenceTag( DefaultTagJedi newTag ) {
+        inlineTags.add( newTag );
+    }
+
+    /** Sets the inline tags. 
+     * @layer<JavaTagHandlers>
+     */
+    public void setInlineTags( LinkedList _inlineTags )
+  {
+        inlineTags = _inlineTags;
+    }
+
+    /** Adds a new inline tag 
+     * @layer<JavaTagHandlers>
+     */
+    public void addInlineTag( DefaultTagJedi newTag ) {
+        inlineTags.add( newTag );
+    }
+
+}

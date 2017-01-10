@@ -1,0 +1,11 @@
+
+layer cm;
+
+refines class top {
+
+   public final void foo$$cm( float x, float y ) { /* something more */ }
+
+   public void foo( float x, float y ) { /* something more */ }
+
+   float foobar() { foo$$cm(0, 0); }
+}

@@ -1,0 +1,23 @@
+layer X;
+
+SoUrCe RooT X "one.jak";
+
+abstract class junk$$X {
+   int a,b,c;
+   junk$$X( int a ) { this.a=a; b=0; c=0; }
+   public String toString() { return a + " " + b + " " + c; }
+}
+
+SoUrCe  y "two.jak";
+
+ class junk extends  junk$$X  {
+   int d = 4; 
+   //junk(String x) { Super(int)(4); System.out.println(x); }
+   junk(String x) { this(4); }
+   public String toString() { return Super().toString() + " " + d; }
+
+   public static void main( String args[] ) {
+      junk j = new junk( "2" );
+      System.out.println( j );
+   }
+}

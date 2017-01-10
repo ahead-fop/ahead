@@ -1,0 +1,374 @@
+layer FS;
+
+import laydown.OpfacDataWrapper;
+
+import log.Log;
+
+import java.util.*;
+
+import fsats.util.*;
+
+import laydown.*;
+
+SoUrCe RooT OpfacL "C:!Java!FeatureOrientedProgramming!fsats!OpfacL!OpfacImpl.jak";
+
+// OpfacThread
+
+    /** Basic OPFAC functionality **/
+abstract class OpfacImpl$$OpfacL 
+        implements Opfac {
+    protected SynchronizedQueue deliveryQueue = null;
+
+    protected OpfacThread opfacThread; // BDH test
+
+    /*
+            class OpfacThread extends Thread
+            {
+                public void run()
+                {
+                    while (true)
+                    {
+                        $TEqn.Event event = ($TEqn.Event)deliveryQueue.get();
+                        receive(event);
+                    }
+                }
+            }
+    */
+
+    public void deliver( Event event )
+        {
+        /*
+        if(!opfacThread.isAlive())
+        {
+            opfacThread = new $TEqn.OpfacThread(this);
+            opfacThread.start();
+            Iterator i = getActiveMissions().iterator();
+            while(i.hasNext())
+                System.out.println("State for "+getName()+": "+(($TEqn.Mission)i.next()).getState());
+        }
+        */
+
+        deliveryQueue.put( event );
+    }
+
+    protected void receive( Event event ) 
+        {
+        // Debugging
+        Log.log( "Opfac "+getName()+" received "+event );
+    }
+
+    protected String _name;
+    protected int _unit;
+    protected OpfacType _type;
+    protected String _superior;
+    protected Location _location;
+    protected Network _network;
+
+    public Object clone() 
+        {
+        try {
+            return Super().clone();
+        }
+        catch ( Exception e ) {}
+        return null;
+    }
+
+    /** Initializer sets fields according to laydown record **/
+    public void init( OpfacDataWrapper record, Network network ) 
+    {
+        // Initialize fields according to laydown record
+        _network    = network;
+
+        _name      = record.getName();
+        _unit      = record.getUnit();
+        _type      = OpfacType.fromString( record.getType() );
+        _superior  = record.getSuperior();
+        _location =
+                new LocationLatLong( record.getLatitude(),
+                    record.getLongitude() );
+
+        // Register with net object
+        if( _network != null ) {
+            _network.register( _name, ( Opfac ) this );
+        }
+            
+        deliveryQueue = new SynchronizedQueue();
+        opfacThread = new OpfacThread( ( OpfacImpl ) this ); // BDH test -- added cast
+        opfacThread.start(); // BDH test
+    //new $TEqn.OpfacThread(this).start();
+    }
+
+    private static OpfacFactory factory = new OpfacFactory();
+
+    public static Opfac create( OpfacDataWrapper record, Network network )
+        {
+        return factory.create( record, network );
+    }
+
+    /** A list of currently active Missions. */
+    public Collection getActiveMissions() {
+        return Collections.EMPTY_SET;
+    }
+
+    /** Current location of Opfac. */
+    public Location getLocation() 
+        {
+        return _location;
+    }
+
+    /** 
+     * A unique identifier.  
+     * Should be meaningful, will be shown to the user.
+     */
+    public String getName() {
+        return _name;
+    }
+
+    /** The unit number of the Opfac. */
+    public int getUnit() {
+        return _unit;
+    }
+
+    /** The type of the Opfac. fo, fist, etc.  */
+    public OpfacType getType() {
+        return _type;
+    }
+
+    /** This opfac's commanding unit **/
+    public String getSuperior() {
+        return _superior;
+    }
+
+    /** Schedule a timeout. */
+    public void timeout( float delay, Timeout event ) 
+    {
+        new OpfacTimeout( ( Opfac )this, delay, event );
+    }
+
+    /** Send a message to another opfac. */
+    public void sendTo( String to, Message message )
+        {
+        message.setSource( getName() );
+        message.setDestination( to );
+        _network.send( message );
+    }
+}
+
+SoUrCe  ProxyL "C:!Java!FeatureOrientedProgramming!fsats!ProxyL!OpfacImpl.jak";
+
+/** Add proxies for itself and its superior to an opfac. */
+abstract class OpfacImpl$$ProxyL extends OpfacImpl$$OpfacL 
+implements Opfac {
+    /** 
+     * Proxies which missions can be delegated to.
+     * Mapped by opfac name.
+     */
+    protected Proxy selfProxy;
+    protected Proxy superProxy;
+
+    public Proxy getSelfProxy() {
+        return selfProxy;
+    }
+    public Proxy getSuperProxy() {
+        return superProxy;
+    }
+
+    /** Create a set of proxies of this opfac's subordinates **/
+    public void init( OpfacDataWrapper record, Network network ) 
+        {
+        Super( OpfacDataWrapper,Network ).init( record, network ); // added
+        selfProxy = ProxyImpl.create( getName() );
+        superProxy = ProxyImpl.create( getSuperior() );
+    }
+}
+
+SoUrCe  BasicL "C:!Java!FeatureOrientedProgramming!fsats!BasicL!OpfacImpl.jak";
+
+abstract class OpfacImpl$$BasicL extends OpfacImpl$$ProxyL {
+    // Abstract - should never be called.
+    public Mission newMission() {
+        return null;
+    }
+}
+
+SoUrCe  MissionAnyL "C:!Java!FeatureOrientedProgramming!fsats!MissionAnyL!OpfacImpl.jak";
+
+/** Refinement of OPFAC to handle missions **/
+abstract class OpfacImpl$$MissionAnyL extends OpfacImpl$$BasicL 
+        implements Opfac {
+    /** A collection of active missions **/
+    private HashMap allMissions = null;
+
+    //
+
+    public boolean canElevate( Mission mission )
+        {
+        return false;
+    }
+
+    public boolean canSee( Location location )
+        {
+        return false;
+    }
+
+    public boolean hasDuplicate( Mission mission )
+        {
+        Iterator i = allMissions.values().iterator();
+        while ( i.hasNext() )
+            {
+            Mission duplicate= ( Mission )i.next();
+            if ( mission!=duplicate && mission.isDuplicate( duplicate ) )
+                return true;
+        }
+        return false;
+    }
+
+    // Mission id generation.
+
+    protected int nextMissionNumber = 0;
+    protected String baseMissionId;
+
+    protected String getMissionId()
+        {
+        String number = ""+nextMissionNumber;
+        ++nextMissionNumber;
+        return 
+                baseMissionId.substring( 0, baseMissionId.length()-number.length() ) + number;
+    }
+
+    public void init( OpfacDataWrapper opfac, Network network )
+        {
+        allMissions = new HashMap();
+        allMissions = new HashMap();
+        pendingMissions = new LinkedList();
+        Super( OpfacDataWrapper,Network ).init( opfac, network );
+        baseMissionId=opfac.getMinTargetNumber();
+        baseMissionId=
+                baseMissionId + "AA0000".substring( baseMissionId.length() );
+    }
+
+    // Mission serialization.
+
+    protected LinkedList pendingMissions = null;
+    protected Mission currentMission = null;
+
+    public void missionLock( Mission mission )
+        {
+        if ( currentMission==null )
+            {
+            currentMission=mission;
+            mission.delivery( new LockGranted( mission.getId() ) );
+        }
+        else
+            if ( !pendingMissions.contains( mission ) )
+                pendingMissions.add( mission );
+            else
+                Log.error( ""+mission+" requested lock twice." );
+                        
+    }
+
+    public void missionFree( Mission mission )
+        {
+        String missionId = mission.getId();
+        if ( mission==currentMission )
+            {
+            currentMission=null;
+            if ( pendingMissions.size()>0 )
+                {
+                currentMission= ( Mission )pendingMissions.remove( 0 );
+                currentMission.delivery( new LockGranted( missionId ) );
+            }
+        }
+        else
+            Log.warn( ""+mission+" called free but doesn't hold lock." );
+    }
+
+    public void ponder( float seconds )
+        {
+        try 
+            {
+            Thread.sleep( ( int ) ( seconds*1000 ) );
+        }
+        catch ( Exception e ) {}
+    }
+
+    // Mission creation and message dispatching.
+
+    protected Mission findMission( String id )
+        {
+        return ( Mission )allMissions.get( id );
+    }
+
+    protected Mission createMission( String missionId )
+        {
+        Mission mission = 
+                newMission().init( ( Opfac )this, missionId );
+        allMissions.put( missionId, mission );
+        return mission;
+    }
+       
+    /** A list of currently active Missions. */
+    public Collection getActiveMissions() 
+        {
+        return allMissions.values();
+    }
+
+    protected void receive( Event message ) 
+        {
+        Super( Event ).receive( message );
+
+        String missionId = message.getMissionId();
+ 
+        if ( message instanceof TargetEvent )
+            {
+            TargetEvent target = ( TargetEvent )message;
+            if ( canSee( target.getMissionData().getTarget().getLocation() ) )
+                {
+                if ( missionId.equals( "" ) )
+                    missionId=getMissionId();
+                Mission active = findMission( missionId );
+                if ( active!=null )
+                    Log.warn( "Ignoring target with same id as "+active );
+                else
+                    {
+                    active=createMission( missionId );
+                    active.delivery( message );
+                }
+            }
+        }
+        else 
+            {
+            Mission active = findMission( missionId );
+            if ( active==null )
+                active=createMission( missionId );
+            active.delivery( message );
+        }
+    }
+}
+
+SoUrCe  GuiL "C:!Java!FeatureOrientedProgramming!fsats!GuiL!OpfacImpl.jak";
+
+/** Modify opfacs to notify the GUI of relevant events to display. */
+public class OpfacImpl extends OpfacImpl$$MissionAnyL {
+    /** Notify GUI after an opfac is created. */
+    public void init( OpfacDataWrapper opfac, Network network )
+        {
+        Super( OpfacDataWrapper,Network ).init( opfac, network );
+        guiClass.gui.stateChanged( new OpfacAdapter( this ) );
+    }
+
+    /** Notify GUI when an opfac is sent a message. */
+    public void deliver( Event message )
+        {
+        Super( Event ).deliver( message );
+        if ( message instanceof Message )
+            guiClass.gui.messageSent( new MessageAdapter( ( Message )message ) );
+    }
+
+    /** Notify GUI after an opfac processes an event. */
+    protected void receive( Event event )
+        {
+        Super( Event ).receive( event );
+        guiClass.gui.stateChanged( new OpfacAdapter( this ) );
+    }
+}

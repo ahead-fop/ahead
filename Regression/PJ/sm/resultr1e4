@@ -1,0 +1,6 @@
+jampack: ext4.java: Error transition e1 is defined both in ext4.java and in root1.java
+jampack: ext4.java: Error state c is defined both in ext4.java and in root1.java
+jampack: ext4.java: Error state b is defined both in ext4.java and in root1.java
+jampack: ext4.java: Error state a is defined both in ext4.java and in root1.java
+jampack: Summary 4 errors
+

@@ -1,0 +1,72 @@
+/* VarContext.java
+ * This class holds a context structure for variables.
+ * Required for project jakj2aj translator
+ * Nested scopes are determined by markers
+ * The first element is that of the top of the stack.
+ * @author Roberto E. Lopez-Herrejon
+ */
+
+layer j2ajAhead;
+
+import java.util.*;
+
+public class VarContext {
+
+    private Stack stack = new Stack();
+
+    private final String MARKER  = "<";
+
+     /** Puts a marker to delimit a nested scope */
+    public void pushMarker() {
+    String result = (String) stack.push(MARKER);
+    }
+
+    /** Pushes an item on the stack */
+    public void push(String item) { stack.push(item); }
+
+    /** Pops an item out of the stack */
+    public String pop() { return (String)stack.pop(); }
+
+    /** Clears the context completely */
+    public void clear() { stack.clear(); }
+
+    /** Traverses the stack to see if a variable is in it or not */
+    public boolean findVar(String var) {
+    int result = stack.search(var);
+    return (result!=-1);
+    }
+
+    /** Pops the stack until it finds a marker or empties the stack */
+    public void popContext() {
+
+    // If the stack is empty simply return, there is nothing to pop
+    if (stack.empty()) return;
+
+    // Peeks into the top of the stack
+    String nextItem = (String) stack.peek();
+
+    // While stack is not empty and a marker has not been found
+    while(!stack.empty() && !nextItem.equals(MARKER)) {
+        nextItem = (String) stack.pop();
+     }
+
+     // Also remove the marker
+     if (!stack.empty() && nextItem.equals(MARKER)) stack.pop();
+
+    }
+
+    /** Prints the contents of the context */
+    public String toString() {
+    String result = "";
+    ListIterator it = stack.listIterator();
+    String nextItem = "";
+
+    // while there are elements on the list
+    while(it.hasNext()) {
+        nextItem  = (String) it.next();
+        result+= " " + nextItem;
+    }
+    return result;
+    }
+
+}

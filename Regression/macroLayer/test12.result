@@ -1,0 +1,27 @@
+
+
+class test12 {
+    static public void main(String[] args) {
+	 y = 3*4;;
+	 y = (Lang.MultExpr)((Lang.MultExpr) new Lang.MultExpr().markStack())
+.setParms( (Lang.IntLit) new Lang.IntLit().setParms( 
+new Lang.AstToken().setParms(" ","3", 0)) /* Lang.IntLit */
+,  (Lang.MoreMultExpr) new Lang.MoreMultExpr()
+
+.add( (Lang.MoreMultExprElem) new Lang.MoreMultExprElem().setParms( (Lang.MEBod) new Lang.MEBod().setParms( 
+ (Lang.Mult) new Lang.Mult().setParms( 
+new Lang.AstToken().setParms("","*", 0)) /* Lang.Mult */
+,  (Lang.IntLit) new Lang.IntLit().setParms( 
+new Lang.AstToken().setParms("","4", 0)) /* Lang.IntLit */
+) /* Lang.MEBod */
+))/* Lang.MoreMultExprElem + add */
+).patch() /* Lang.MultExpr */
+;;
+    }
+}
+
+
+    class y extends q.r.s {}
+
+
+    class y extends q.r.s {}

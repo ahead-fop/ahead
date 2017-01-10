@@ -1,0 +1,23 @@
+layer M2D2Java;
+
+refines class AST_ParList {
+
+    // completely stolen, copied verbatim from j2jBase
+
+    public String Signature() {
+        String sig = "";
+        AstCursor c = new AstCursor();
+        for ( c.FirstElement( this ); c.MoreElement(); c.NextElement() ) {
+            if ( c.node instanceof FormParDecl ) {
+                String typeSig = ( ( AST_TypeName ) c.node.arg[0] ).Signature();
+                String varSig  = ( ( DecNameDim ) c.node.arg[1] ).Signature();
+                if ( ! ( sig.equals( "" ) ) )
+                    sig = sig + ",";
+                sig = sig + typeSig + varSig;
+            }
+            else
+                AstNode.fatalError( "can't produce signature of a variable declaration" );
+        }
+        return sig;
+    }
+}

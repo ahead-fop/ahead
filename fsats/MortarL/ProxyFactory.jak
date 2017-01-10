@@ -1,0 +1,7 @@
+layer MortarL;
+
+public refines class ProxyFactory {
+    refines ProxyFactory() {
+        register( OpfacType.MTR_PLT, new MortarProxy() );
+    }
+}

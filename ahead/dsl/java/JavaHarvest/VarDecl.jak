@@ -1,0 +1,25 @@
+layer JavaHarvest;
+
+import java.util.Vector;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+import java.util.*;
+
+/** VariableDeclarator
+ *  : VariableDeclaratorId [ VarAssign ]::VarDecl
+ *  ;
+ * @layer<JavaHarvest>
+ */
+    
+public refines class VarDecl {
+    public  FieldDocJTS _harvest_field;
+    public void execute() 
+    {
+        Super().execute();
+        String field_name = 
+                ( ( AstToken )arg[0].arg[0].tok[0] ).tokenName();
+        _harvest_field = new  FieldDocJTS( field_name );
+       
+    } // of execute
+}

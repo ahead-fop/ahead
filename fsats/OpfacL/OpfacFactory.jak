@@ -1,0 +1,35 @@
+layer OpfacL;
+
+import laydown.OpfacDataWrapper;
+
+import log.Log;
+
+import java.util.*;
+
+import fsats.util.*;
+
+/** Extend Factory to produce opfacs. */
+public class OpfacFactory {
+    private Map prototypes = new HashMap();
+
+    protected void register( OpfacType name, Opfac prototype )
+        {
+        prototypes.put( name, prototype );
+    }
+
+    public Opfac create( OpfacDataWrapper record, Network network )
+        {
+        System.out.println( "In OpfacL.create(): record.getType() = " +
+                                   record.getType() );
+        OpfacType opfacType = OpfacType.fromString( record.getType() );
+        Opfac opfac = ( Opfac )prototypes.get( opfacType );
+        if ( opfac==null )
+            Log.error( "Cannot create opfac of type " + record.getType() );
+        else
+            {
+            opfac = ( Opfac )opfac.clone();
+            opfac.init( record, network );
+        }
+        return opfac;
+    }
+}

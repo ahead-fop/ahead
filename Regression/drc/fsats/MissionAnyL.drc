@@ -1,0 +1,14 @@
+single layer MissionAny;
+
+extern outside Int  fsatsRank;
+extern outside Bool weaponPresent;
+extern outside Bool missionanyPresent;
+extern outside Bool missionPresent;
+extern outside Bool opfacPresent;
+extern outside Bool proxyPresent;
+extern inside  Bool libraries;
+
+requires outside fsatsRank == 2 and weaponPresent and missionPresent
+                 and opfacPresent and proxyPresent;
+provides outside fsatsRank == 3 and missionanyPresent;
+requires inside  libraries;

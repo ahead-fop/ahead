@@ -1,0 +1,12 @@
+layer BasicL;
+
+extern outside Int fsatsRank; 
+extern outside Bool opfacPresent;
+extern outside Bool proxyPresent;
+extern outside Bool basicPresent;
+extern inside  Bool libraries;
+
+requires outside fsatsRank == 1 and proxyPresent and opfacPresent;
+
+provides outside basicPresent and fsatsRank == 2 ;
+requires inside  libraries;

@@ -1,0 +1,59 @@
+pattern1 is not a prefix
+pattern1 contained in instance
+	patStart bound to:
+	    x = 3;
+
+pattern2 is a prefix
+pattern2 contained in instance
+	patStart bound to:
+	    x = 1;
+	    x = 2;
+	    x = 3;
+	    x = 2;
+
+pattern3 is not a prefix
+pattern3 contained in instance
+	patStart bound to:
+	    x = 2;
+
+0Lang.AST_Stmt
+ 1Lang.AST_StmtElem
+  2Lang.ExprStmt
+   3Lang.AsgExpr
+    4Lang.PPQualName
+     5Lang.AST_QualifiedName
+      6Lang.AST_QualifiedNameElem
+       7Lang.NameId
+    4Lang.Assign
+    4Lang.IntLit
+ 1Lang.AST_StmtElem
+  2Lang.ExprStmt
+   3Lang.AsgExpr
+    4Lang.PPQualName
+     5Lang.AST_QualifiedName
+      6Lang.AST_QualifiedNameElem
+       7Lang.NameId
+    4Lang.Assign
+    4Lang.IntLit
+ 1Lang.AST_StmtElem
+  2Lang.ExprStmt
+   3Lang.AsgExpr
+    4Lang.PPQualName
+     5Lang.AST_QualifiedName
+      6Lang.AST_QualifiedNameElem
+       7Lang.NameId
+    4Lang.Assign
+    4Lang.IntLit
+ 1Lang.AST_StmtElem
+  2Lang.ExprStmt
+   3Lang.AsgExpr
+    4Lang.PPQualName
+     5Lang.AST_QualifiedName
+      6Lang.AST_QualifiedNameElem
+       7Lang.NameId
+    4Lang.Assign
+    4Lang.IntLit
+pattern3 found at node 
+	    x = 2;
+pattern3 found at node 
+	    x = 2;

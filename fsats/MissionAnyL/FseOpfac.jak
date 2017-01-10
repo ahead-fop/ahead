@@ -1,0 +1,17 @@
+layer MissionAnyL;
+
+import java.util.*;
+
+import laydown.*;
+
+import log.Log;
+
+// class OPFAC
+
+public refines class FseOpfac {
+    public boolean canElevate( Mission mission )
+        {
+        Proxy up = getSuperProxy();
+        return up!=null && up.canShoot( mission );
+    }
+}

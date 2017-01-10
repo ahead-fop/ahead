@@ -1,0 +1,141 @@
+//                              -*- Mode: JTS -*-
+// Version         :
+// Author          : Robert S. MacDonald
+// Last Modified By: Bryan D. Hopkins
+// Last Modified On: Fri Jan 28 15:13:00 2000
+
+layer RemoteL ( F lower )
+realm F
+    extends lower
+	    imports java.rmi.*, 
+	    java.io.*,
+	    java.net.InetAddress, 
+	    java.net.UnknownHostException, 
+	    java.util.*,
+	    //F.Libraries.RmiStuff.*, 
+	    F.Libraries.laydown.*, 
+	    F.Libraries.log.Log
+{
+    /** Refinement of Main application class **/
+    public static class Main 
+        extends lower.Main 
+    {
+	private String  _processId;        // name of process
+	private String _machineName;        // name of machine
+
+	/** Determine whether a given hostname/processid
+	    refers to this process
+	**/
+	private boolean isLocal(InetAddress host, String processId) {
+	    try {
+		if( host.equals(InetAddress.getLocalHost())
+		    && processId.equals(_processId) ) {
+		    return true;
+		} else {
+		    return false;
+		}
+	    } catch( java.net.UnknownHostException e) {
+		Log.error("Couldn't find IP address of local host");
+		System.exit(10);
+	    }
+	    return false;
+	}
+
+
+	/** Parse and validate the command line arguments **/
+	protected void validateArguments( String args[] ) {
+	    // Step 1: make sure calling sequence is correct
+	    if (args.length != 1) {
+		System.out.println("Usage: java FS.Main processid");
+		System.exit(10);
+	    }
+
+	    // Get process name from command line
+	    _processId = args[0];
+
+	    // Try to resolve hostname of local machine
+	    try {
+		InetAddress ia = InetAddress.getLocalHost();
+		_machineName = ia.getHostName();
+	    }
+	    catch ( UnknownHostException e ) {
+		System.out.println("Unknown Local Host");
+		System.exit(10);
+	    }
+	}
+
+
+	/** Create this simulation's network objects **/
+        protected void makeNetwork(NetworkDataWrapper record)
+        {
+            if( _network != null ) {
+                Log.error("Only one Network object allowed per process.");
+                return;
+                //System.exit(10);
+            }
+
+            // Find the canonical host name where this network object
+            // resides
+            InetAddress targetHost = null;
+            try {
+                targetHost = InetAddress.getByName(record.getSite());
+            } catch( java.net.UnknownHostException e ) {
+                Log.error("Can't locate network object host " +
+                          record.getSite());
+                System.exit(10);
+            }
+            
+            String name = record.getName();
+
+            // If the network object does reside locally
+            if ( isLocal(targetHost, record.getProcessId()) ) {
+                // Create the Network Object locally
+                _network = new $TEqn.NetworkImpl(record);
+                Log.log("Network Object " + name + " created.");
+            } 
+            /*
+            else {
+                try {
+                    // Connect to the remote network object and
+                    // create a local wrapper for it
+                    _network = new $TEqn.LocalNOWrapper(name);
+                    Log.log("Network object " + name + " found.");
+                } 
+                catch (NotBoundException e) {
+                    Log.error("network " + name +
+                              " was not found in registry");
+                    System.exit(10);
+                } 
+                catch (RemoteException e) {
+                    Log.error("Time error: " + e);
+                    System.exit(10);
+                } 
+                catch (java.net.MalformedURLException e) {
+                    Log.error("URL error: " + e);
+                    System.exit(10);
+                }
+            }
+            */
+        }
+
+	/** Create the opfac objects **/
+	protected void makeOpfac(OpfacDataWrapper record) 
+        {
+            // Make sure that we're dealing with the correct machine
+            InetAddress targetHost = null;
+            try {
+                targetHost = InetAddress.getByName(record.getSite());
+            } catch( java.net.UnknownHostException e ) {
+                //continue;
+                Log.error("Can't locate network object host "+
+                          record.getSite());
+            }
+
+            if( isLocal( targetHost, record.getProcessId() ) ) 
+                super.makeOpfac(record);
+        }
+    } // class Main
+}
+
+
+

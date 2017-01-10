@@ -1,0 +1,11 @@
+layer mid;
+
+refines class c {
+   final void b$$mid() { /* new code */ }
+   overrides void b() {
+      b$$mid();
+      /* new code2 */ 
+   }
+   new void d() { }
+   new void e() { }
+}

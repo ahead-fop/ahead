@@ -1,0 +1,6 @@
+
+
+class foo extends biff { 
+   foo() { int x = ((foo) this).bar(); }
+   int bar() { return ((foo) this).bar(); }
+}

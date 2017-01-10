@@ -1,0 +1,23 @@
+package Kalc.asgn.calcCont;
+
+public class pairs {
+   protected int value;
+   public int value() { return value; }
+   public int value(int x) { return value = x; }
+
+   protected String name;
+   public String name() { return name; }
+   public String name(String x) { return name = x; }
+
+   public pairs() { }
+
+   public pairs( pairs p ) {
+     value = p.value;
+     name  = p.name;
+   }
+
+   public pairs( int v, String n ) {
+      value = v;
+      name  = n;
+   }
+}

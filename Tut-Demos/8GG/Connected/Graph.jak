@@ -1,0 +1,17 @@
+layer Connected;
+
+// *****************************************************************
+   
+public refines class Graph {
+    // Executes Connected Components
+    public void run( Vertex s )
+    {
+        ConnectedComponents();
+        Super( Vertex ).run( s );
+    }
+
+    public void ConnectedComponents() 
+    {
+        GraphSearch( new RegionWorkSpace() );
+    }
+}

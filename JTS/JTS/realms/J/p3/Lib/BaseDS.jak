@@ -1,0 +1,22 @@
+/*
+ * BaseDS.jak
+ *
+ * BaseDS is the super class for all data structure layers.
+ *
+ * Xiaozhou Li
+ * May 1998
+ */
+
+package p3Lib;
+
+import JakBasic.Lang;
+
+public class BaseDS {
+  environment;
+
+  public DS lower;
+
+  BaseDS() { }
+
+  DS getLowerDS() { return lower; }
+}

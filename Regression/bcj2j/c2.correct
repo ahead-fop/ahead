@@ -1,0 +1,7 @@
+
+
+ class foo extends stub.foo  { 
+    foo() { super();  stuff; }
+
+   void bar() { super.bar(4); }
+}

@@ -1,0 +1,74 @@
+#!/bin/bash
+
+if [ -z "$BASH" ] ; then
+    exec bash $0 $@
+fi
+
+echo
+echo Executing regression tests in P3-second
+echo
+
+rm *.class test*.java
+
+sed -e s/TE/dlist\(malloc\(\)\)/ test.tmpl > test_dlist_1.jak
+bash regress-one _dlist_1 $1
+
+sed -e s/TE/dlist\(delflag\(malloc\(\)\)\)/ test.tmpl > test_dlist_2.jak
+bash regress-one _dlist_2 $1
+
+sed -e s/TE/delflag\(dlist\(malloc\(\)\)\)/ test.tmpl > test_dlist_3.jak
+bash regress-one _dlist_3 $1
+
+
+sed -e s/TE/odlist\(age,malloc\(\)\)/ test.tmpl > test_odlist_1.jak
+bash regress-one _odlist_1 $1
+
+sed -e s/TE/odlist\(dept,malloc\(\)\)/ test.tmpl > test_odlist_2.jak
+bash regress-one _odlist_2 $1
+
+sed -e s/TE/odlist\(name,malloc\(\)\)/ test.tmpl > test_odlist_3.jak
+bash regress-one _odlist_3 $1
+
+
+sed -e s/TE/hashcmp\(name,odlist\(empno,malloc\(\)\)\)/ test.tmpl > test_hashcmp_1.jak
+bash regress-one _hashcmp_1 $1
+
+
+sed -e s/TE/hash\(age,97,malloc\(\)\)/ test.tmpl > test_hash_1.jak
+bash regress-one _hash_1 $1
+
+sed -e s/TE/hash\(name,203,malloc\(\)\)/ test.tmpl > test_hash_2.jak
+bash regress-one _hash_2 $1
+
+
+sed -e s/TE/bstree\(age,malloc\(\)\)/ test.tmpl > test_bstree_1.jak
+bash regress-one _bstree_1 $1
+
+sed -e s/TE/bstree\(name,malloc\(\)\)/ test.tmpl > test_bstree_2.jak
+bash regress-one _bstree_2 $1
+
+sed -e s/TE/bstree\(dept,malloc\(\)\)/ test.tmpl > test_bstree_3.jak
+bash regress-one _bstree_3 $1
+
+sed -e s/TE/bstree\(empno,malloc\(\)\)/ test.tmpl > test_bstree_4.jak
+bash regress-one _bstree_4 $1
+
+
+sed -e s/TE/rbtree\(age,malloc\(\)\)/ test.tmpl > test_rbtree_1.jak
+bash regress-one _rbtree_1 $1
+
+sed -e s/TE/rbtree\(name,malloc\(\)\)/ test.tmpl > test_rbtree_2.jak
+bash regress-one _rbtree_2 $1
+
+sed -e s/TE/rbtree\(dept,malloc\(\)\)/ test.tmpl > test_rbtree_3.jak
+bash regress-one _rbtree_3 $1
+
+sed -e s/TE/rbtree\(empno,malloc\(\)\)/ test.tmpl > test_rbtree_4.jak
+bash regress-one _rbtree_4 $1
+
+
+sed -e s/TE/hashcmp\(name,odlist\(empno,dlist\(rbtree\(age,malloc\(\)\)\)\)\)/ test.tmpl > test_complex_1.jak
+bash regress-one _complex_1 $1
+
+sed -e s/TE/rbtree\(age,rbtree\(name,hash\(name,203,delflag\(malloc\(\)\)\)\)\)/ test.tmpl > test_complex_2.jak
+bash regress-one _complex_2 $1

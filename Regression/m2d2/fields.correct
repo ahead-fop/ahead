@@ -1,0 +1,34 @@
+
+#! JavaM => metamodels/JavaM.ecore 
+
+
+layer = JavaM::Layer.new(:name => 'test', :identifier => 'layer') 
+package_used = JavaM::Package.new(:name => 'used', :identifier => 'used', :ownerLayer => layer)
+package_feature = JavaM::Package.new(:name => 'test', :identifier => 'feature', , :ownerLayer => layer)
+
+# fields.jak
+
+package_java_util = JavaM::Package.new(:name => 'java.util', :identifier => 'java.util', :isImported => true, :ownerLayer => layer)
+feature_foo = JavaM::Class.new(:name => 'foo', :identifier => 'feature.foo', :visibility => 'package', :isRefinement => false, :owner => package_feature)
+java_lang_String = JavaM::Class.new(:name => 'String', :identifier => 'java.lang.String', :owner => package_used)
+java_util_TreeMap = JavaM::Class.new(:name => 'TreeMap', :identifier => 'java.util.TreeMap', :owner => package_used)
+feature_foo.importsPackage << package_java_util
+
+#  implicitly imported files
+
+primitiveType_int = JavaM::PrimitiveType.new(:name =>'int', :identifier =>'int', :owner => package_used)
+primitiveType_float = JavaM::PrimitiveType.new(:name =>'float', :identifier =>'float', :owner => package_used)
+
+# fields.jak
+
+field_feature_foo_a = JavaM::Field.new(:name => 'feature.foo.a', :identifier => 'feature.foo.a', :type => primitiveType_int, :visibility => 'package', :nesting => 0, :isStatic => false, :isFinal => false, :ownerClass => feature_foo)
+field_feature_foo_b = JavaM::Field.new(:name => 'feature.foo.b', :identifier => 'feature.foo.b', :type => primitiveType_int, :visibility => 'package', :nesting => 0, :isStatic => false, :isFinal => false, :ownerClass => feature_foo, :value => '=4')
+field_feature_foo_c = JavaM::Field.new(:name => 'feature.foo.c', :identifier => 'feature.foo.c', :type => primitiveType_int, :visibility => 'package', :nesting => 1, :isStatic => false, :isFinal => false, :ownerClass => feature_foo)
+field_feature_foo_j = JavaM::Field.new(:name => 'feature.foo.j', :identifier => 'feature.foo.j', :type => primitiveType_float, :visibility => 'private', :nesting => 1, :isStatic => false, :isFinal => false, :ownerClass => feature_foo)
+field_feature_foo_k = JavaM::Field.new(:name => 'feature.foo.k', :identifier => 'feature.foo.k', :type => primitiveType_float, :visibility => 'private', :nesting => 1, :isStatic => false, :isFinal => false, :ownerClass => feature_foo)
+field_feature_foo_l = JavaM::Field.new(:name => 'feature.foo.l', :identifier => 'feature.foo.l', :type => primitiveType_float, :visibility => 'private', :nesting => 2, :isStatic => false, :isFinal => false, :ownerClass => feature_foo)
+field_feature_foo_x = JavaM::Field.new(:name => 'feature.foo.x', :identifier => 'feature.foo.x', :type => java_lang_String, :visibility => 'package', :nesting => 1, :isStatic => false, :isFinal => false, :ownerClass => feature_foo)
+field_feature_foo_y = JavaM::Field.new(:name => 'feature.foo.y', :identifier => 'feature.foo.y', :type => java_lang_String, :visibility => 'package', :nesting => 1, :isStatic => false, :isFinal => false, :ownerClass => feature_foo)
+field_feature_foo_z = JavaM::Field.new(:name => 'feature.foo.z', :identifier => 'feature.foo.z', :type => java_lang_String, :visibility => 'package', :nesting => 1, :isStatic => false, :isFinal => false, :ownerClass => feature_foo)
+field_feature_foo_q = JavaM::Field.new(:name => 'feature.foo.q', :identifier => 'feature.foo.q', :type => feature_foo, :visibility => 'package', :nesting => 0, :isStatic => false, :isFinal => false, :ownerClass => feature_foo)
+field_feature_foo_w = JavaM::Field.new(:name => 'feature.foo.w', :identifier => 'feature.foo.w', :type => java_util_TreeMap, :visibility => 'package', :nesting => 0, :isStatic => false, :isFinal => false, :ownerClass => feature_foo)

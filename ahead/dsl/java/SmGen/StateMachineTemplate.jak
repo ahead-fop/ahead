@@ -1,0 +1,62 @@
+layer SmGen;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.util.*;
+import java.io.*;
+
+// _________________________________________________________________
+
+/** StateMachineTemplate.java
+ * JEDI Project
+ * Department of Computer Sciences
+ * University of Texas at Austin
+ * Defines the contents of a Class document.
+ * @author Roberto E. Lopez-Herrejon
+ * Last Update: November 30, 2002
+ * @layer<SmGen>
+ */
+
+public class StateMachineTemplate extends DocumentDescriptor {
+
+    // Adds the bindings to the class
+    public VelocityContext 
+        addBindings( ProgramElementDocJTS parsedProgramElement, 
+                VelocityContext context ) {
+
+        StateMachineDocJTS _state = 
+                ( StateMachineDocJTS )parsedProgramElement;
+
+        context.put( "state", _state );
+        context.put( "generator", new GeneratorTools() );
+
+        // ---- @pending, this addtions should not be here
+        // but in their corresponding layer
+        // for the time being there are put here for testing only
+
+        // Refines for UnmodifiedTypeExtensions
+        String isRefinesFlag = "false";
+        if ( _state.isRefines() )
+            isRefinesFlag = "true";
+        context.put( "isRefinesFlag", isRefinesFlag );
+
+        // --- @pending, this should not go here
+        // Adds the source information 
+        String isSourceFlag = "false";
+        if ( _state.getSourceStringLiteral() != "" )
+            isSourceFlag = "true";
+        context.put( "isSourceFlag", isSourceFlag );
+
+        // --- @pending, this should not go here
+        // Adds layer information
+        String isQualifiedLayer = "false";
+        if ( _state.getQualifiedLayerName() != "" )
+            isQualifiedLayer = "true";
+        context.put( "isQualifiedLayer",isQualifiedLayer );
+
+        return context;
+    }
+
+    public void extendsStateDocument() {}
+
+}

@@ -1,0 +1,86 @@
+layer NetworkWithTransmitL;
+
+import java.util.*;
+
+import fsats.doe.*;
+
+import fsats.util.*;
+
+import log.Log;
+
+import laydown.*;
+
+public refines class NetworkImpl
+        implements Network {
+    /** ID of process on which NetworkImpl is running. **/
+    protected String processId;
+
+    /** Site on which NetworkImpl is running. **/
+    protected String site;
+
+    /** DOE object for communicating with the TMT_TRANSLATOR **/
+    protected TmtContainerHandler tmtContainerHandler;
+
+    /* REMOVE
+            public NetworkImpl(NetworkDataWrapper record)
+            {
+                Super(NetworkDataWrapper)(record);
+              NetworkImplConstructor(record);
+            }
+
+            public void NetworkImplConstructor(NetworkDataWrapper record) {
+
+                Super(NetworkDataWrapper).NetworkImplConstructor(record); //added
+                processId = record.getProcessId();
+                site = record.getSite();
+
+                tmtContainerHandler = new TmtContainerHandler(this);
+          }
+
+     ***** REMOVE */
+    public NetworkImpl( NetworkDataWrapper record )
+        {
+            Super( NetworkDataWrapper )( record );
+        processId = record.getProcessId();
+        site = record.getSite();
+
+        tmtContainerHandler = new TmtContainerHandler( this );
+    }
+
+    public void send( Message message )
+        {
+        if( message.getDestination()!=null && !message.getDestination().equals( "" ) )
+            {
+            if( _opfacs.get( message.getDestination() ) == null )
+                tmtContainerHandler.send( message );
+
+            // Puts the message on the message sending queue.
+            sendQueue.put( ( Message )message.clone() );
+        }
+    }
+
+    /**
+     * Receives messages from the TmtContainerHandler object
+     * and puts them on the message sending queue.
+     */
+    public void handleIncomingMsg( Message message )
+        {
+        sendQueue.put( ( Message )message.clone() );
+    }
+
+    /**
+     * Returns the ID of the process on which the NetworkImpl is running.
+     */
+    public String getProcessId()
+        {
+        return processId;
+    }
+
+    /**
+     * Returns the site on which the NetworkImpl is running.
+     */
+    public String getSite()
+        {
+        return site;
+    }
+}

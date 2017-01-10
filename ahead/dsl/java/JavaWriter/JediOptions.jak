@@ -1,0 +1,206 @@
+layer JavaWriter;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+ // end of Program ProgramDocJTS
+
+// **********************************************************************
+// **********************************************************************
+// *************** Handling of Command Line Options *********************
+
+/** JediOptions.java
+ * JEDI Project
+ * Using Regular expressions to parse input commands for the JEDI Project.
+ * Department of Computer Sciences
+ * University of Texas at Austin
+ * Product-Line Architecture Research Group 
+ * @author Roberto E. Lopez-Herrejon
+ * @since November 20, 2002 
+* @layer<JavaWriter>
+*/
+
+public class JediOptions {
+
+    // Static final Values for filling up results linked list
+    public static final int fileList = 0;
+    public static final int realmList = 1;
+    public static final int packageList = 2;
+    public static final int extensionList = 3;
+    public static final int outputList = 4;
+
+    // This has to return 4 Linkedlist
+    // for the files, for the packages, for the realms, for the extensions
+    public LinkedList listFiles = new LinkedList();
+    public LinkedList listPackages = new LinkedList();
+    public LinkedList listRealms = new LinkedList();
+    public LinkedList listExtensions = new LinkedList();
+ 
+    // and a String for the OutputDirectory
+    public String outputDirectory = ".";
+  
+    public String statusMessage = "";
+    public boolean success = true;
+
+    // Displays the default message options 
+    public void WrongCommand() {
+        System.out.println( "Usage: -p package1 package2 ... " );
+        System.out.println( "       -f file1 file2 ..." );
+        System.out.println( "       -r realm1 realm2 ..." );
+        System.out.println( "       -e extension1 extension2 ..." );
+        System.out.println( "       -o output dir " );
+        System.out.println( "Default directory : ." );
+        System.out.println( "Default extension : .jak" );
+        System.exit( 0 );
+    }
+    // of WrongCommand
+
+     /** Returns whether the string received is either a Jedi flag
+       *  or not.
+       * @layer<JavaWriter>
+       */
+    public boolean matchesFlags( String argString ) {
+
+        // Pattern and matches objects
+        String patternString = "(^-[frpeo])(.*)";
+        Pattern p = Pattern.compile( patternString );
+        Matcher m = p.matcher( argString );
+
+        // Test to see if there was a match
+        boolean result = m.find();
+
+        // If there was one show the matching groups
+        if ( result ) {
+            String secondString = m.group( 2 );
+            secondString = secondString.trim();
+            if ( !secondString.equals( "" ) )
+                result = false;
+        }
+        return result;
+    }
+    // of matchesFlags
+
+      /** Computes the Jedi arguments obtained from the list of arguments 
+       * Approach: 
+       * 1) Look for the -f -p -r -e -o and create strings based on them
+       * @layer<JavaWriter>
+       */
+    public void computeArguments( String[] args ) {
+        String currentString = "";
+        int currentIndex = -1;
+        String[] lineArguments = new String[5];
+        lineArguments[0] = lineArguments[1] = lineArguments[2] = "";
+        lineArguments[3] = lineArguments[4] = "";
+
+        int MaximumNumber = 5;
+
+        for ( int i=0; i < args.length; i++ ) {
+    
+            if ( matchesFlags( args[i] ) ) {
+                currentIndex++;
+                if ( currentIndex >= MaximumNumber ) {
+                    success = false;
+                    statusMessage = "Error: More flags that expected ";
+                    break;
+                }
+            }
+
+            // The first argument has to be a valid flag
+            if ( currentIndex < 0 ) {
+                success = false;
+                statusMessage = "Error: Command arguments start with" +
+                                              " valid flag -f -r -o -e";
+                break;
+            }
+
+            // keep adding to current lineArgument
+            lineArguments[currentIndex] = 
+                        lineArguments[currentIndex] + " " + args[i];
+           
+        } // for all arguments
+        
+        // If there was no success, then return
+        if ( success == false ) {
+            System.out.println( "Arguments malformed " );
+            System.out.println( statusMessage );
+            WrongCommand();
+        }
+
+        // At this point here we should have the lines of arguments
+        for( int i=0; i <= currentIndex; i++ ) {
+            lineArguments[i] = lineArguments[i].trim();
+        }
+
+        // Fills up the linked list correspondingly
+        fillArgumentsLists( lineArguments );
+    
+    }
+    // ComputeArguments
+
+       /** Fills up the five possible flags available 
+        * @layer<JavaWriter>
+        */
+    public void fillArgumentsLists( String[] lineArguments ) {
+        
+        // fillList(0, lineArguments[0]);
+        // For each of the line arguments
+        for ( int i=0; i< lineArguments.length; i++ ) {
+            
+            // Identify what type or argument is that
+            if ( lineArguments[i].startsWith( "-f" ) )
+                fillAList( 0, lineArguments[i] );
+            if ( lineArguments[i].startsWith( "-r" ) )
+                fillAList( realmList, lineArguments[i] );
+            if ( lineArguments[i].startsWith( "-p" ) )
+                fillAList( packageList, lineArguments[i] );
+            if ( lineArguments[i].startsWith( "-e" ) )
+                fillAList( extensionList, lineArguments[i] );
+            if ( lineArguments[i].startsWith( "-o" ) )
+                fillAList( outputList, lineArguments[i] );
+
+        } // for all lineArguments
+    } // of fillArgumentsList
+
+    public void fillAList( int listNumber, String argument ) {
+        String token =""; // for parsing purposes
+
+        // Create a tokenizer that splits the line by whitespaces
+        StringTokenizer tokens = new StringTokenizer( argument, " ", false );
+      
+        // Eats the flag name
+        if ( tokens.hasMoreTokens() )
+            token = tokens.nextToken();
+  
+        // while there are tokens on the argument line put them in their spot
+        while( tokens.hasMoreTokens() ) {
+            // Reads next token
+            token = tokens.nextToken();
+
+            switch( listNumber )
+            {
+                case fileList :
+                listFiles.add( token );
+                break;
+                case realmList:
+                listRealms.add( token );
+                break;
+                case packageList:
+                listPackages.add( token );
+                break;
+                case extensionList :
+                listExtensions.add( token ) ;
+                break;
+                case outputList:
+                outputDirectory = token;
+                break;
+                default:
+                break; // for future used
+       } // of switch
+    
+        } // of while tokens
+    } // of fillAlist
+
+}

@@ -1,0 +1,10 @@
+
+// hook constraint harvesting into enterGspec file
+
+refines class enterGspec {
+
+   public void action( ESList n ) { 
+	  n.eharvest();
+	}
+}
+

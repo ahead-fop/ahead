@@ -1,0 +1,8 @@
+The fsats_properties file in this directory is needed to specify the plan.
+The file needs to contain the following properties with appropriately
+modified values.
+
+fsats.sql.user=FSATS_PLAN_3
+fsats.sql.password=FSATS_DB_DAEMON
+fsats.sql.plan.dc=/usr/fsats/plans/plan_3.dc
+fsats.jts.laydown=/usr/fsats/configuration/laydown.config

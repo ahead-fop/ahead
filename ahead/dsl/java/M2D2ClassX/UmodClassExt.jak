@@ -1,0 +1,35 @@
+layer M2D2Java;
+
+refines class UmodClassExt {
+
+   public void extract( context c ) {
+      // very similar code as extract method in UmodClassDecl
+
+      String visibility = "public";  // default
+
+      String className = ((QName)arg[0]).GetName();
+      if (Main.debug) {
+         System.out.println( up.up.getClass().getName() );
+         System.out.println("up.up : " + up.up.arg[0] + " " + up.up.arg[0].getClass().getName());
+         up.up.arg[0].dumpnode();
+      }
+      AST_Modifiers am = (AST_Modifiers) up.up.arg[0].arg[0];
+      if (Main.debug) {
+         System.out.println("up2 : " + am);
+         System.out.println( "Modifiers :"+am);
+      }
+
+      if (am!=null) visibility=am.visibility();
+
+      c.setClassName(className);
+      c.isClass = true;
+      String fclassName = c.getClassName();
+      c.Header.add(RubyInstCreator.createClass( className, fclassName, visibility, true, "feature" ));
+
+      // now descend into the class definitions
+
+      c.Footer.commentLine(c.fileName);
+      if (arg[1].arg[0] != null) arg[1].arg[0].extract(c);  // impls clause
+      arg[2].extract(c);                                    // body
+   }
+}

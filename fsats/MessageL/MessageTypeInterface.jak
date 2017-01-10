@@ -1,0 +1,13 @@
+layer MessageL;
+
+import fsats.util.DataContainer;
+
+import laydown.*;
+
+import java.util.*;
+
+/** An enumerated tactical message type. */
+public refines interface MessageTypeInterface {
+    /** Create a Message from an FSAMS message. **/
+    Message fromFsams( DataContainer fsams );
+}

@@ -1,0 +1,235 @@
+layer JavaWriter;
+
+import org.apache.velocity.*;
+import org.apache.velocity.app.*;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+// of GlobalWrapper
+
+ /** Main function.     
+  * @layer<JavaWriter>
+  */
+  
+public class Start {
+ 
+    public static void main( String[] args )
+    throws IOException
+    {
+
+        int currentList = -1; // 0-> pack, 1-> files, 2->realms, 3->extensions
+
+        // Uses the JediOptions class to get the lists of packages, files,
+        // realms, files, and extensions as well as the output directory 
+        JediOptions selector = new JediOptions();
+        if ( args.length ==0 )
+            selector.WrongCommand();
+
+        // Parses the command line arguments
+        selector.computeArguments( args );
+
+        // Assigns the values obtain to the local variables
+        List packList = selector.listPackages;
+        List filesList = selector.listFiles;
+        List realmsList = selector.listRealms;
+        List extList = selector.listExtensions;
+        String outDir = selector.outputDirectory;
+        
+        File outDirFile = new File( outDir ) ;
+
+        // @debug
+        // System.out.println("OutputDirectory ---->"+ outDir);
+        
+        // Creates the templates and document descriptors for classes
+        // and states here, once and for all
+
+        LinkedList documentsList = new LinkedList();
+        File templatesDir = null;
+
+        if ( packList.size()>0 || filesList.size()>0 || realmsList.size()>0 ) {
+            // @pending -> remove once it is upgraded
+                // Creates the Templates directory temporarly 
+            templatesDir = new File( "TargetTemplates","" );
+            if ( templatesDir.isDirectory() ) {
+                System.out.println( "TargetTemplates already exists!" );
+            }
+            else {
+                templatesDir.mkdirs();
+            }
+
+            // Debugging, should be used later for composition
+            System.out.println( "Creating document templates " );
+            
+            // For a Class
+            ClassTemplate classDocument = 
+                         ClassGenerator.createClassDocument();
+            ClassGenerator.GenerateTemplates( classDocument );
+            documentsList.add( classDocument );
+            
+            // For the State
+            StateMachineTemplate stateDocument = 
+                         StateGenerator.createStateDocument();
+            ClassGenerator.GenerateTemplates( stateDocument );
+            documentsList.add( stateDocument );
+
+        } // if there are something to do
+ 
+        // Generates the files selected with -p
+        if ( packList.size() > 0 )
+            System.out.println( "Packages List " );
+        for( int i=0; i < packList.size(); i++ )
+        {
+            System.out.println( packList.get( i ) );
+            String packageDirectory = ( String )packList.get( i );
+            String outpath ="";
+
+            // Computes the path of the components in the realm
+            String path = packageDirectory;
+            File outFile = new File( path ) ;
+
+            // If output directory specified then create the
+            // realmDirectory in that output directory and 
+            // adjust the output path appropiately
+            if ( outDir != "" )
+                {
+                 
+                outpath = outDir + File.separator + outpath;
+                File outputDirectory = new File( outpath,"" );
+                if ( !outputDirectory.isDirectory() )
+                    outputDirectory.mkdirs();
+                System.out.println( "Directory " + outputDirectory 
+                                                       + " Created " + outputDirectory.isDirectory() );
+            }
+                
+            // For all the extensions
+            if ( extList.size()==0 )
+                extList.add( "jak" );
+            for( int j=0; j< extList.size(); j++ )
+                {
+                String extension = "." + ( String )extList.get( j );
+                fileManager exts = new fileManager( path,extension );
+                String[] listexts = exts.listFiles( true );
+                                
+                if ( listexts!=null )
+                    for( int k=0; k< listexts.length; k++ ) {
+                        String FileName = path + File.separator + 
+                                                                            listexts[k];
+                        System.out.println( " \t\tGenerating " + 
+                                                                                                                           FileName );
+                        GlobalWrapper.CallGenerator( FileName,
+                                                                                                                                                outpath,documentsList );
+
+                    } // for all the ext files
+            } // for all j the extensions
+        } // for all the packages list
+
+        // Generates the files selected with -f
+        if ( filesList.size() > 0 )
+            System.out.println( "Files List" );
+
+        for ( int i=0; i< filesList.size(); i++ )
+        {
+            // @debug only, remove later in final version
+            // System.out.println("Files -> " + filesList.get(i));
+
+            File outputDirectory = new File( outDir,"" );
+            if ( !outputDirectory.isDirectory() )
+                outputDirectory.mkdirs();
+            try {
+                GlobalWrapper.CallGenerator( ( String )filesList.get( i ), outDir, 
+                                                                  documentsList );
+            }
+            catch( Exception e ) {
+                System.out.println( "Error in File Generation " );
+                e.printStackTrace();
+                   
+            // @debug only
+            // e.printStackTrace(System.out);
+            }
+        }
+        
+        // Generates the files selected with -r
+        if ( realmsList.size() > 0 )
+            System.out.println( "Realms List" );
+        for( int i=0; i< realmsList.size(); i++ )
+        {
+            String outpath ="";
+            String realmDirectory = ( String )realmsList.get( i );
+            fileManager components  = new fileManager( realmDirectory, "" );
+            String[] listComponents = components.listDirectories( true );
+
+            // List all the components of a realm
+            if ( listComponents!= null ) {
+
+                // For all the components obtain their jak files
+                for ( int j=0; j < listComponents.length; j++ ) {
+
+                    // Computes the path of the components in the realm
+                    String path = realmDirectory + File.separator 
+                                                            + listComponents[j];
+                                            
+                    outpath = path;
+
+                    // If output directory specified then create the
+                    // realmDirectory in that output directory and 
+                    // adjust the output path appropiately
+                    if ( outDir != "" )
+                                            {
+                        outpath = outDir + File.separator + outpath;
+                        File outputDirectory = new File( outpath,"" );
+                        if ( !outputDirectory.isDirectory() ) {
+                            boolean outcome =  outputDirectory.mkdirs();
+
+                        }
+                    }
+ 
+                    // For all the extensions
+                    if ( extList.size()==0 )
+                        extList.add( "jak" );
+                    for( int k=0; k< extList.size(); k++ )
+                                            {
+                        String extension = "." + ( String )extList.get( k );
+                        fileManager exts = new fileManager( path,extension );
+                        String[] listexts = exts.listFiles( true );
+                                                
+                        if ( listexts!=null )
+                            for( int l=0; l< listexts.length; l++ ) {
+                                String FileName = path + File.separator + 
+                                                                                                                                    listexts[l];
+                                System.out.println( " \t\tGenerating " + 
+                                                                                                                                                                outpath + FileName );
+                                try {
+                                    GlobalWrapper.CallGenerator( FileName, outpath,
+                                                                                                                                                                                                                             documentsList );
+                                }
+                                catch( Exception e ) {}
+                                                                                                                
+                            } // for all the l ext files
+                    } // for all k the extensions
+
+                } // for all the j components
+            } // if there are components
+
+        } // for all the i components
+ 
+        // Cleans the target templates dir
+        cleanTemplatesDir( templatesDir );
+ 
+    }
+    // main method 
+
+      // @temporarly
+      /** Method that removes the templates files and firectory from the 
+       * current directory 
+       *
+       * @layer<JavaWriter>
+       */
+    public static void cleanTemplatesDir( File templatesDir ) {
+
+        fileManager tempman = new fileManager( "TargetTemplates",".vm" );
+        tempman.deleteFiles( true );
+        templatesDir.delete();
+    }
+
+}

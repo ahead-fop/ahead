@@ -1,0 +1,329 @@
+layer SmHarvest;
+
+import java.util.*;
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.io.*;
+
+/**  
+ * SmClassBody
+ *: "{" [ RootClause ] [ OtherwiseClauses ] [ StatesList ] [ ESList ] 
+ *  [ AST_FieldDecl ] "}" :: SmClassDecl
+ *;
+ * @layer<SmHarvest>
+ */
+   
+public refines class SmClassBody {
+
+        // --- begin old copy
+
+    // information from RootClause and 
+    public String rootClauseName="";
+    public  ParameterJTS[] parameters = 
+                     new  ParameterJTS[0];
+    public LinkedList noTransitionClauseClasses = new LinkedList();
+    public LinkedList otherwiseClauseClasses = new LinkedList();
+    public LinkedList statesClauseStates = new LinkedList();
+    
+    // information from [ESList] 
+    public LinkedList  ExitTransitions = new LinkedList();
+    public LinkedList  EnterTransitions = new LinkedList();
+    public LinkedList  PrepareTransitions =  new LinkedList();
+    public LinkedList  TestTransitions =  new LinkedList();
+    public LinkedList  ActionTransitions = new LinkedList();
+    public LinkedList  TransitionDeclarations = new LinkedList();
+    public LinkedList  OtherwiseTransitions = new LinkedList();
+    
+    // These lists are for the AST_FieldDecl part
+    public   LinkedList listOfMethods = new LinkedList();
+    public   LinkedList listOfInnerClasses = new LinkedList();
+    public   LinkedList listOfConstructors = new LinkedList();
+    public   LinkedList listOfFields = new LinkedList();
+    public   LinkedList listOfStates = new LinkedList();
+    
+    // Class that contains the AST_FieldDecl part
+    public  ClassDocJTS _sd_class;
+    
+    public void execute() {
+        Super().execute();
+
+        // System.out.println("Parsing SmClassBody ");
+         
+        _sd_class = new  ClassDocJTS();
+            
+        // System.out.println("Arg[0] " + arg[0].className());
+
+        // **** [RootClause]
+        AstNode e0 = arg[0].arg[0];
+        if ( e0 != null ) { // there is a root clause
+
+            rootClauseName = "";
+                    // @pending deprecated should be removed from API
+                    
+                // e0.arg[0] is DelivClause
+            // Parameters are now in e0.arg[0].arg[1] is AST_ParList
+                    // They will be added later
+
+                    // Checks to see if there is NoTransitionClause
+                    // e0.arg[1] is Lang.AstOptNode
+                    // e0.arg[1].arg[0] is Lang.NoTransDecl
+                    // e00 = e0.arg[1].arg[0]   
+            // e00,0 = Lang.BlockC
+                    // e00,00 = Lang.AstOptNode
+                    // block = Lang.AST_Stmt <- this is the one to be passed
+
+            AstNode e00 = e0.arg[1].arg[0];
+
+            // System.out.println("e00 = " + e00.className());
+            // System.out.println("e00,0 = " + e00.arg[0].className());
+                    
+            AstNode block = e00.arg[0].arg[0].arg[0];
+            if ( block!=null ) {
+                // System.out.println("block = " + block.className());
+                // Parses the blocks for classes and states
+                noTransitionClauseClasses = 
+                                                 GlobalWrapper.parseBlock( block );
+            }
+
+        // if (e0.arg[1].arg[0] != null) {
+        //   System.out.println("e0.arg[1,0,0] " + 
+        //        e0.arg[1].arg[0].arg[0].className());
+        //if (e0.arg[1]!=null) System.out.println("e0.arg[1].arg[0] " +
+         //        e0.arg[1].arg[0].className());
+        //if (e0.arg[1].arg[0].arg[0] != null)
+        //        System.out.println("e0[1,000] " + 
+        //        e0.arg[1].arg[0].arg[0].className());
+
+         // Parses the blocks for classes and states
+         // noTransitionClauseClasses = 
+         // parseBlock(e0.arg[1].arg[0].arg[0].arg[0]);
+                                   
+        // }        
+                
+        /*
+        // There is no clause name any more
+        // e0.arg[0] is DelivClause, e0.arg[0].arg[0] is Qname
+        // rootClauseName = 
+        //    (($TEqn.AstToken)e0.arg[0].arg[0].tok[0]).tokenName();
+        rootClauseName = "";
+               
+        // e0.arg[0].arg[1] is AST_ParList
+        /// @pending -> now they are in e0.arg[0].arg[0]
+        // parameters = ((AST_ParList)(e0.arg[0].arg[1])).
+        // parametersArray;
+                           
+        // @error, commented only for debuging
+        System.out.println("e0.arg[1] " + e0.arg[1].className());
+        if (e0.arg[1]!=null) System.out.println("e0.arg[1].arg[0] " +
+                 e0.arg[1].arg[0].className());
+        // Now, parse list is arg[0], not 1
+                 
+        // e0.arg[1] is NoTransDecl, e0.arg[1].arg[0] is BlockC
+        $TEqn.AstNode e00 = e0.arg[1].arg[0].arg[0];
+        if (e00 != null)  {        
+            noTransitionClauseClasses = 
+                $TEqn.GlobalWrapper.parseBlock(e00.arg[0]);
+        } // if there are statements in the block           
+        */
+ 
+        } // If there is a root clause
+                   
+        // **** [OtherwiseClause]
+        AstNode otherwises = arg[1].arg[0];
+        if ( otherwises != null ) { // there is an otherwise clause
+                // System.out.println("otherwises = " + 
+                // otherwises.className());
+            // System.out.println("otherwises.0 = " + 
+                // otherwises.arg[0].className());
+                        
+            AstCursor oc = new AstCursor();
+            AstNode   o1 = otherwises; // e instanceOf Lang.AstList
+                         
+            // Each node in the list is of type is ODefaultDecl
+            if ( o1 != null ) {
+                for( oc.FirstElement( o1 ); oc.MoreElement();oc.NextElement() ) {
+                    // System.out.println("Node -> " + oc.node.className() + 
+                    //                                        oc.node.toString());
+                     // Parsers the block of the otherwisedefault clause
+                    AstNode oblock = oc.node.arg[0].arg[0];
+                    // System.out.println("oblock = " + oblock.className());
+
+                    // The extra arg[0] skips the optional node of the block
+                    if ( oblock.arg[0] != null )
+                        otherwiseClauseClasses = 
+                                                                                                 GlobalWrapper.parseBlock( oblock.arg[0] );
+                                   
+                } // for all the otherwise clauses
+            }
+
+        /*
+        // e1 is ODefaultDecl
+        // e1.arg[0] Block
+        $TEqn.AstNode e10 = e1.arg[0].arg[0];
+        // error, commented for debuging
+                 
+        if (e10 != null) { // there are elements in the block
+            otherwiseClauseClasses = parseBlock(e10.arg[0]);      
+        } // if there are elements in the block
+        */           
+
+        } // if there is an otherwise clause
+
+        // **** [StatesClause] 
+        AstCursor c2= new AstCursor(); // c to traverse list
+        AstNode   stateslist = 
+                        arg[2].arg[0]; // pointer to a StatesList
+                  
+        // arg[2] is AST_OptNode
+        // arg[2].arg[0] is StatesList
+        // arg[2].arg[0].arg[0] is StatesListElement
+        
+        // if there are state in the list 
+        if ( stateslist!= null ) {
+
+            // Traverses all states in the statelist
+            for ( c2.FirstElement( stateslist ); c2.MoreElement(); 
+                                                                              c2.NextElement() ) {
+                AstCursor c21 = new AstCursor();
+                AstNode stateclause = c2.node;
+                                 
+                // At this point a node could be either StatesDecl or
+                // NStateDecl, so identify the cases 
+                if ( stateclause instanceof  StatesDecl ) {
+
+                    // Gets all the states defined in the class
+                    for ( c21.FirstElement( stateclause.arg[0] ); 
+                                                               c21.MoreElement();
+                                                               c21.NextElement() ) {
+                        AST_QualifiedName sn =
+                                                                            ( ( AST_QualifiedName )c21.node.arg[0].arg[0] );
+                        String state_name = 
+                                                                                                 GlobalWrapper.getAST_QualifiedName( sn );
+                        statesClauseStates.add( state_name );
+                    } // for all the states decls
+
+                } // of StatesDecl
+
+                // @pending there are more options other than StateDecl
+                if ( stateclause instanceof  NStateDecl ) {} // of NStateDecl
+
+            } // for all the state in the states in state list
+                
+        } // if there are states
+
+        // @pending the if case to handle NESTED_STATE option
+
+        // **** [ESList]
+        // arg[3] => Lang.AstOptNode
+        // Arg[3].arg[0] => Lang.ESList
+        // arg[3].arg[0].arg[0] => Lang.ESListElem
+                   
+        AstCursor c3 = new AstCursor();
+        AstNode   e3 = arg[3].arg[0]; // e instanceOf Lang.AstList
+                 
+        if ( e3 != null ) {
+            for ( c3.FirstElement( e3 ); c3.MoreElement(); c3.NextElement() ) {
+                if ( c3.node instanceof ExitDecl )
+                    ExitTransitions.add( ( ( ExitDecl )c3.node ).exit_transition );
+
+                if ( c3.node instanceof EnterDecl )
+                    EnterTransitions.add( ( ( EnterDecl )c3.node ).enter_transition );
+
+                if ( c3.node instanceof PrepareDecl )
+                    PrepareTransitions.add( ( ( PrepareDecl )c3.node ).prepare_transition );
+
+                if ( c3.node instanceof TestDecl )
+                    TestTransitions.add( ( ( TestDecl )c3.node ).test_transition );
+
+                if ( c3.node instanceof ActionDecl )
+                    ActionTransitions.add( ( ( ActionDecl )c3.node ).action_transition );
+
+                if ( c3.node instanceof TransitionDecl )
+                    TransitionDeclarations.add( ( ( TransitionDecl )c3.node ).transition_declaration );
+
+                if ( c3.node instanceof OtherDecl )
+                    OtherwiseTransitions.add( ( ( OtherDecl )c3.node ).other_transition );
+
+            } // for all the states
+        } // if there are states
+                   
+        // Sets the list of the states in the 
+                   
+        // **** [AST_FieldDecl]
+        // AST_FieldDecl -> (ClassBodyDeclaration)+
+        // We can use the same approach here to collect the data
+        // in the same fashion as in UmodClassDecl
+                   
+        // Traverses the tree of AST_FieldDecl to get the methods, 
+        // nestedclasses, interfaces, etc
+        AstCursor c4 = new AstCursor(); // c to traverse list
+                   
+        // arg[4] is AST_FieldDecl, arg[0] is the OptNode, 
+        // arg[0] is the first element
+        AstNode   e4 = arg[4].arg[0]; // e instanceOf Lang.AstList
+                 
+        if ( e4 != null ) {
+            for ( c4.FirstElement( e4 ); c4.MoreElement(); c4.NextElement() ) {
+                                    
+                if ( c4.node instanceof MethodDcl ) {
+                    MethodDocJTS met = 
+                                                                ( ( MthDector )c4.node.arg[2] )._harvest_method;
+                    listOfMethods.add( met );
+                }
+                                                  
+                if ( c4.node instanceof NestedClassDeclaration ) {
+                    ClassDocJTS cls = 
+                                                                ( ( UmodClassDecl )c4.node.arg[1] )._harvest_class;
+                    GlobalWrapper.adjustNestedElements( cls, 
+                                                                                c4.node.arg[0].arg[0] );
+                    listOfInnerClasses.add( cls );
+                }
+                                                  
+                if ( c4.node instanceof NestedInterfaceDeclaration ) {
+                    ClassDocJTS cls = 
+                                                                ( ( UmInterDecl )c4.node.arg[1] )._harvest_class;
+                    GlobalWrapper.adjustNestedElements( cls, 
+                                                                                c4.node.arg[0].arg[0] );
+                    listOfInnerClasses.add( cls );
+                }
+                                                  
+                if ( c4.node instanceof ConDecl ) {
+                    ConstructorDocJTS cons = 
+                                                                ( ( ConDecl )c4.node )._harvest_constructor;
+                    listOfConstructors.add( cons );
+                }
+                                                  
+                if ( c4.node instanceof FldVarDec ) {
+                    LinkedList tempList = ( ( FldVarDec )c4.node ).fieldsList;
+                    for( int i=0; i< tempList.size(); i++ ) {
+                        listOfFields.add( ( FieldDocJTS )
+                                                                                                                             tempList.get( i ) );
+                    }
+                // fieldsList
+                }
+
+            // @pending -> update use of nested state machines, 
+                    // modify this code
+                    // if (c4.node instanceof NSmDecl){
+                //                        $TEqn.StateMachineDocJTS theState = 
+                    //                ((NSmDecl)c4.node)._harvest_state;
+                    //            listOfStates.add(theState);
+                    // }
+                                      
+            } // end of for
+        } // if there members of the class
+                   
+        // what about default constructors? probably not needed   
+        _sd_class.setMethods( listOfMethods );
+        _sd_class.setInnerClasses( listOfInnerClasses );
+        _sd_class.setInterfaces( new LinkedList() );
+        _sd_class.setConstructors( listOfConstructors );
+        _sd_class.setFields( listOfFields );
+       
+              // @pending -> update of innerstates position
+      
+    // --- end old copy
+
+    } // of execute
+
+}

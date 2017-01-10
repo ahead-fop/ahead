@@ -1,0 +1,228 @@
+<?xml version="1.0"?>
+
+<project name="Regression Tests for Jakarta Tool Suite" default="default">
+
+    <description>
+    Runs regression tests for the Jakarta Tool Suite.
+    </description>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Project-level properties define build parameters.	       -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- The "project" properties are used to generate other property  -->
+    <!-- names and to define substitutions into project documents.     -->
+    <!-- Definitions are taken from the first place where found in the -->
+    <!-- following list:  (A) Command line; (B) "build.properties"     -->
+    <!-- in the base directory; (C) The definitions in this file.      -->
+    <!-- The command-line may be specified by a higher-level build.    -->
+    <!--							       -->
+    <!-- PROJECT PARAMETERS (should be defined in this file):	       -->
+    <!-- * project.name ....... generate property and file names;      -->
+    <!-- * project.Name ....... capitalized name for documentation;    -->
+    <!-- * project.owner ...... copyright owner of this code;          -->
+    <!-- * project.title ...... capitalized title for documentation;   -->
+    <!-- * project.version .... the release, state and patch level.    -->
+    <!--							       -->
+    <!-- PROJECT PARAMETERS (may be defined by higher-level build):    -->
+    <!-- * jakarta.version .... the release, state and patch level.    -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <property name="project.name"	value="regression"/>
+    <property name="project.Name"	value="Regression"/>
+    <property name="project.title"	value="Tests for Jakarta Tool Suite"/>
+
+    <property
+        name="project.owner"
+        value="The University of Texas at Austin"/>
+
+    <property
+        id="version"
+        name="${project.name}.version"
+	value="v2002.06.20alpha"/>
+
+    <property name="project.version"	refid="version"/>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <property name="build.debug"	value="true"/>
+    <property name="build.deprecation"	value="false"/>
+    <property name="build.optimize"	value="false"/>
+
+    <property name="build.bin"          value="bin"/>
+    <property name="build.languages"    value="JTS/languages"/>
+    <property name="build.lib"          value="lib"/>
+    <property name="build.lib.ant"      value="${build.lib}/ant"/>
+    <property name="build.realms"       value="JTS/realms"/>
+    <property name="build.tmp"          value="tmp"/>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <property name="compile.debug"		value="${build.debug}"/>
+    <property name="compile.deprecation"	value="${build.deprecation}"/>
+    <property name="compile.optimize"		value="${build.optimize}"/>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <property name="fix.eof"	value="remove"/> <!-- add, asis, remove  -->
+    <property name="fix.eol"	value="lf"/>	 <!-- asis, cr, lf, crlf -->
+    <property name="fix.tab"	value="asis"/>	 <!-- add, asis, remove  -->
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "clean" target removes generated files *other* than those -->
+    <!-- generated to define the build configuration, if any.	       -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="clean" depends="initialize">
+
+	<patternset id="clean.patterns">
+	    <exclude name="**/CVS/**"/>
+	    <include name="**/*~"/>
+	    <include name="**/#*#"/>
+	    <include name="**/.#*"/>
+	    <include name="**/%*%"/>
+	    <include name="**/*.bak"/>
+	    <include name="**/*.BAK"/>
+	    <include name="**/*.pyc"/>
+	    <include name="**/*.pyo"/>
+	    <include name="**/core"/>
+	</patternset>
+
+	<delete includeEmptyDirs="true" quiet="true">
+	    <fileset dir="." includes="**/*.class"/>
+        </delete>
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "default" target specifies the default tests.             -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="default" depends="standard"/>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "fix" target adjusts endline and tab characters in all    -->
+    <!-- text files to match the UNIX standard.  This is because the   -->
+    <!-- CVS repository and test environment is on a UNIX system.      -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="fix" depends="initialize">
+
+	<fixcrlf
+            eof="${fix.eof}"
+            eol="${fix.eol}"
+            javafiles="true"
+            tab="${fix.tab}">
+
+	    <include name="**/*.jak"/>
+	    <include name="**/*.java"/>
+	    <include name="**/*.layer"/>
+	</fixcrlf>
+
+	<fixcrlf
+            eof="${fix.eof}"
+            eol="${fix.eol}"
+            tab="${fix.tab}">
+
+	    <include name="**/*.txt"/>
+	    <include name="**/*.xml"/>
+	</fixcrlf>
+
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "initialize" target calculates a set of initial dynamic build -->
+    <!-- properties such as timestamps and copyrights.  It also prints an  -->
+    <!-- informative message about the build.                              -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="initialize">
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- Create the time stamps for current build:                 -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<tstamp>
+	    <format property="initialize.date" pattern="yyyy/MM/dd"/>
+	    <format property="initialize.time" pattern="HH:mm:ss"/>
+	    <format property="initialize.year" pattern="yyyy"/>
+	</tstamp>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- Calculate range of years to put into copyright notice:    -->
+	<!-- * cr.alpha .......	first year source was created;	       -->
+	<!-- * cr.omega .......	last year source was modified;	       -->
+	<!-- * cr.range .......	range of years for copyright.	       -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<property name="cr.alpha" value="1998"/>
+	<property name="cr.owner" value="${project.owner}"/>
+
+	<condition property="cr.range" value="${cr.alpha}">
+	    <equals arg1="${cr.alpha}" arg2="${initialize.year}"/>
+	</condition>
+
+	<condition property="cr.range" value="${cr.alpha}-${initialize.year}">
+            <not>
+                <equals arg1="${cr.alpha}" arg2="${initialize.year}"/>
+            </not>
+        </condition>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- Create copyright messages:                                -->
+	<!-- * copyright.base ... text with year(s) and owner;         -->
+	<!-- * copyright.html ... for inclusion into HTML documents;   -->
+	<!-- * copyright.text ... for inclusion into text documents.   -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<property name="copyright.base" value="${cr.range} ${cr.owner}"/>
+	<property name="copyright.html"	value="&#169; ${copyright.base}"/>
+	<property name="copyright.text"	value="(C) ${copyright.base}"/>
+
+	<echo message="Build begins ${initialize.date} ${initialize.time}"/>
+	<echo message=""/>
+	<echo message="${project.title}"/>
+	<echo message="${copyright.text}"/>
+
+    </target>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "prepare" target creates the core build directories.      -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="prepare" depends="initialize">
+
+	<!-- Currently has no tasks. -->
+
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- The "standard" target runs the standard tests.                -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="standard" depends="prepare">
+	    <exec executable="bash">
+		    <arg value="./driver"/> 
+	    </exec>
+    </target>
+
+</project>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: xml
+sgml-omittag:nil
+sgml-shorttag:nil
+sgml-namecase-general:nil
+sgml-general-insert-case:lower
+sgml-ignore-undefined-elements:nil
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:4
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->

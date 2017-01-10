@@ -1,0 +1,17 @@
+#!/bin/bash
+
+echo -n "composing $1 and $2 --> $3 ... "
+
+cd ../..
+
+(echo ; java jampack.Main -a Foo.Bar PJ/path/$1.jak PJ/path/$2.jak) 2>&1 | sed -f PJ/path/updates | tr -s '\n\r' '\n' > PJ/path/current
+(echo ; cat PJ/path/$3) | sed -f PJ/path/updates  | tr -s '\n\r' '\n' > PJ/path/correct
+
+if diff -w PJ/path/correct PJ/path/current ; then
+    rm -f PJ/path/correct PJ/path/current || :
+    echo succeeded
+else
+    rm -f PJ/path/correct PJ/path/current || :
+    echo failed
+    exit 1
+fi

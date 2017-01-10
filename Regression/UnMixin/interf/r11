@@ -1,0 +1,22 @@
+package IBase1;
+
+import x.y.z.*;
+import java.io.Serializable;
+
+SoUrCe RooT IBase1 "IBase1.jak";
+
+ abstract
+
+interface MyInt$$IBase1 extends FooInterface { 
+    int Silent = 0;
+    void foo() throws AFit;
+    SomeType bar( int x );
+}
+
+SoUrCe  Iext1 "IExt1.jak";
+
+public transient  interface MyInt extends yyy, java.io.Serializable, MyInt$$IBase1 {
+    int Terse = 2;
+    void foo() throws SomeException;
+    int increment( int i );
+}

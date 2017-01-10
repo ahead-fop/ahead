@@ -1,0 +1,21 @@
+package MessageL;
+
+import  
+    fsats.util.DataContainer;
+import 
+    F.Libraries.laydown.*;
+import 
+    java.util.*;
+
+
+
+    /** Time that observer watches for fall of shot. */
+    public class WatchTime
+        extends BasicTimeout 
+    {
+        public EventType getType() { return TimeoutType.watchTime; }
+	public WatchTime(String missionId) { super(missionId);
+          WatchTimeConstructor(missionId); }
+	public void WatchTimeConstructor(String missionId) {
+      }
+    }

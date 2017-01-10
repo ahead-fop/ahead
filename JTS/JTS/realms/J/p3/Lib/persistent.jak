@@ -1,0 +1,290 @@
+/* persistent : DS */
+
+package p3Lib;
+
+import JakBasic.Lang;
+
+
+public final class persistent extends BaseDS implements DS {
+   public TopParams tp;
+   environment;
+
+   public persistent( ) { }
+
+   public DS_Container_Type make_container_type( TopParams t, ContParams c ) {
+      return new persistent_Container_Type( this, t, c );
+   }
+
+   public DS_Element_Type make_element_type() {
+      return new persistent_Element_Type( this );
+   }
+
+   public DS_CommonCursor_Type make_commoncursor_type() { 
+      return new persistent_CommonCursor_Type( this );
+   }
+
+   public DS_Cursor_Type make_cursor_type( Usage u ) { 
+      return new persistent_Cursor_Type( this, u );
+   }
+
+   public DrcAttributes drc( DrcAttributes d ) {
+
+      // test preconditions - if error, make primitive attempt at error recovery
+
+      if (!d.retrieval_layer_present) {
+         DrcAttributes.DrcError("no retrieval layer above persistent");
+      }
+      d.retrieval_layer_present = false;
+      return d;
+   }
+
+   public void set_keyword( TOP toplayer, TopParams tph ) {
+      tp = tph;
+      environment parent toplayer;
+   }
+
+   public Object ParseArgs( Lang.AstNode x ) {
+      if (x == null || (x.arg[0] == null && x.arg[0].right == null))
+         return this;
+      ParseTE.parseError("persistent layer has no parameters");
+      return null;
+   }
+}
+
+
+
+final class persistent_Container_Type implements DS_Container_Type {
+   ContParams cp;
+   persistent     _layer;
+   environment;
+
+   persistent_Container_Type( DS persistentlayer, TopParams t, ContParams c ) { 
+      // Step 1: save the arguments as we'll refer to them later
+
+      _layer    = (persistent) persistentlayer;
+      cp       = c;
+      _layer.tp = t;
+      environment parent _layer;
+   }
+
+   public void validate() {
+
+      // Step 1: nothing to validate as persistent has no non-realm parameters
+   }
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return mth{
+         String pmemFileName;
+      }mth;
+   }
+
+   public Lang.AST_Stmt containerMethod() {
+     return stm{ }stm;
+   }
+
+   public Lang.AST_Exp is_fullMethod() {
+     return exp{ false }exp;
+   }
+
+   public Lang.AST_Stmt insertMethod(){
+     return stm{   }stm;
+   }
+   
+   public Lang.AST_Stmt storageMethod() {
+    return stm{ }stm;
+   }
+   
+   
+   public Lang.AST_Stmt finishMethod(){
+      return stm{
+	   try {
+	        java.io.ObjectOutputStream objOut = new java.io.ObjectOutputStream(
+   	                 new java.io.FileOutputStream(pmemFileName));
+	        objOut.writeLong(0x123456789ABCDEFL); // magic number
+	        objOut.writeLong(0L);               // version number
+	        objOut.writeObject(this);
+	        objOut.close();
+	        }
+	        catch (Exception e) {
+	           System.err.println("Exception: " + e);
+	           System.exit(1);
+             }
+	  }stm;
+   }
+   
+   public Lang.AST_Stmt openMethod() {
+      Lang.AST_Stmt setStatic;
+      if (_layer.tp.Unique)
+         setStatic = stm{ CElemTyp.cont = cont; }stm;
+      else
+         setStatic = stm{ }stm;
+      
+      return stm{
+  
+      cont = new CContTyp();
+      try {
+         java.io.ObjectInputStream objIn = new java.io.ObjectInputStream(
+            new java.io.FileInputStream(namefile));
+         long t1 = objIn.readLong();
+         long t2 = objIn.readLong();
+         if (t1 == 0x123456789ABCDEFL && t2 == 0L) {
+            cont = (CContTyp)(objIn.readObject());
+         }
+         objIn.close();
+      }
+      catch (Exception e) {
+         if (!(e instanceof java.io.FileNotFoundException)) {
+            System.err.println("Exception: " + e);
+            System.exit(1);
+         }
+      }
+      cont.pmemFileName = namefile;
+      $stm(setStatic);
+     
+     }stm;
+  }
+   
+
+}
+
+final class persistent_Element_Type implements DS_Element_Type {
+   persistent    _layer;
+   TopParams tp;
+   environment;
+
+   persistent_Element_Type( DS persistentlayer ) {
+      _layer = (persistent) persistentlayer;
+      tp = _layer.tp;
+      environment parent _layer;
+   }
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return mth{ }mth;
+   }
+
+   public Lang.AST_Stmt link() {
+      return stm{ }stm;
+   }
+
+   // there are no element relinking methods to generate
+
+   public Lang.AST_FieldDecl relink(){
+      return mth{ }mth;
+   }
+
+   // there are no element unlinking methods to generate
+
+   public Lang.AST_FieldDecl unlink(){
+      return mth{ }mth;
+   }
+
+   // there are no update statements
+
+   public Lang.AST_Stmt upd( int i ) {
+      Lang.AST_QualifiedName n = (Lang.AST_QualifiedName) tp.AST_FieldName[i].clone();
+      return stm{ $id(n) = _newvalue; }stm;
+   }
+}
+
+
+class persistent_CommonCursor_Type implements DS_CommonCursor_Type {
+   persistent _layer;
+   environment;
+   
+   persistent_CommonCursor_Type( DS thislayer ) {
+      _layer = (persistent) thislayer;
+      environment parent _layer;
+   }
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return mth{ }mth;
+   }
+
+   public Lang.AST_Stmt insertMethod( ) {
+         return stm{}stm;
+   }
+	
+   public Lang.AST_Stmt removeMethod() {
+      return stm{ }stm;
+   }
+
+   public Lang.AST_FieldDecl movementMethods() {
+      return mth{ }mth;
+   }
+} 
+
+class persistent_Cursor_Type implements DS_Cursor_Type {
+   persistent _layer;
+   environment;
+
+   persistent_Cursor_Type( DS persistentlayer, Usage u ) {
+      _layer = (persistent) persistentlayer;
+      environment parent _layer;
+   }
+
+   private void error( String routine ) {
+      System.out.println("Fatal Error: P3 is making illegal call to " + routine + "\n");
+      System.exit(1);
+   }
+
+   public Qopt    optimize( Qopt q ) {
+      // basically, don't select persistent as a retrieval layer
+      return q;
+   }
+
+   public Lang.AST_FieldDecl dataMembers() {
+      return mth{ }mth;
+   }
+
+   // note: persistent should add nothing to the cursor
+
+   public Lang.AST_Stmt cursorMethod() {
+      return stm{ }stm;
+   }
+
+   public Lang.AST_Stmt firstMethod() {
+      // should never be called
+      error("persistent:firstMethod");
+      return null;
+   }
+
+   public Lang.AST_Exp moreMethod() {
+      // should never be called
+      error("persistent:moreMethod");
+      return null;
+   }
+
+   public Lang.AST_Stmt noMoreMethod() {
+      // should never be called
+      error("persistent:noMoreMethod");
+      return null;
+   }
+
+   public Lang.AST_Stmt nextMethod() {
+      // should never be called
+      error("persistent:nextMethod");
+      return null;
+   }
+
+   public Lang.AST_Exp lowerBound( boolean pos ) {
+      // should never be called
+      error("persistent:lowerBound");
+      return null;
+   }
+
+   public Lang.AST_Exp upperBound( boolean pos ) {
+      // should never be called
+      error("persistent:upperBound");
+      return null;
+   }
+
+   public Lang.AST_Exp residual() {
+      // should never be called
+      error("persistent:residual");
+      return null;
+   }
+
+   public Lang.AST_Stmt removeMethod() {
+      return null;
+   }
+}

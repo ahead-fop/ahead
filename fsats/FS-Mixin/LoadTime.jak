@@ -1,0 +1,19 @@
+layer FS;
+
+import fsats.util.DataContainer;
+
+import laydown.*;
+
+import java.util.*;
+
+SoUrCe RooT MessageL "C:!Java!FeatureOrientedProgramming!fsats!MessageL!LoadTime.jak";
+
+/** Message that weapon loading is done **/
+public class LoadTime
+        extends BasicTimeout {
+    public EventType getType() {
+        return TimeoutType.loadTime;
+    }
+    public LoadTime( String missionId ) { Super()( missionId );
+    }
+}

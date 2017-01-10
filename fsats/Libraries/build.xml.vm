@@ -1,0 +1,4 @@
+#set( $status = $javaDirectoriesList.add( "excis" ) )
+#set( $status = $javaDirectoriesList.add( "fsats" ) )
+#set( $status = $javaDirectoriesList.add( "laydown" ) )
+#set( $status = $javaDirectoriesList.add( "log" ) )

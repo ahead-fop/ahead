@@ -1,0 +1,20 @@
+#!/bin/bash
+
+echo -n "testing left-associativity ($1 & $2) & $3 -> $4 ... "
+
+rm -f tmp000.jak
+java mixin.Main -f tmp000.jak $1.jak $2.jak 
+
+(echo ; java mixin.Main tmp000.jak $3.jak) | sed -f updates | tr -s '\n\r' '\n' > current
+(echo ; cat $4) | sed -f updates  | tr -s '\n\r' '\n' > correct
+
+#rm -f tmp000.jak
+
+if diff -w correct current ; then
+    rm -f correct current || :
+    echo succeeded
+else
+    rm -f correct current || :
+    echo failed
+    exit 1
+fi

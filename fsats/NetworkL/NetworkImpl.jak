@@ -1,0 +1,99 @@
+layer NetworkL;
+
+import java.util.*;
+
+import fsats.measures.Time ;
+import fsats.util.*;
+
+import log.Log;
+
+import laydown.*;
+
+public class NetworkImpl 
+implements Network {
+    protected SynchronizedQueue sendQueue = new SynchronizedQueue();
+
+    protected Thread networkThread = new Thread() {
+        public void run()
+            {
+            while ( true )
+                {
+                Object o = sendQueue.get();
+                deliver( ( Message )o );
+            }
+        }
+    };
+
+    /** String identifier for this network object **/
+    protected String _name;
+    protected float transmitDelay;
+
+    /** Map of OPFACS that have registered with this netobj **/
+    protected Map _opfacs = new HashMap();
+   
+    public NetworkImpl( NetworkDataWrapper record )
+	{
+        _name = record.getName();
+        transmitDelay = record.getTransmitDelay();
+        networkThread.start();
+    }
+
+    /** Add an opfac to the registry **/
+    public synchronized boolean register( String opfacName, Opfac opfac ) 
+    {
+        // Look for existing opfac with that name
+        if( _opfacs.containsKey( opfacName ) ) {
+            Log.error( "NetObj: Opfac " + opfacName + 
+                                      " is already registered." );
+            return false;
+        }
+        else {
+            _opfacs.put( opfacName, opfac );
+            return true;
+        }
+    }
+   
+    /** Remove an opfac from the registry **/
+    public synchronized boolean unregister( String opfacName ) 
+    {
+        Object opfac = _opfacs.remove( opfacName );
+
+        // Was the named opfac actually registered ?
+        if( opfac == null ) {
+            Log.warn( "NetObj: Can't unregister opfac " + opfacName + " ." );
+        }
+        return ( opfac == null );
+    }
+
+    protected synchronized Opfac find( String opfacName )
+        {
+        Object o = _opfacs.get( opfacName );
+        if ( o==null )
+            {
+            Log.error( "NetObj: Message recipient " + opfacName + " not found." );
+        }
+        return ( Opfac )o;
+    }
+
+    public void send( Message message )
+        {
+        // Puts the message on the message sending queue.
+        if( message.getDestination()!=null && !message.getDestination().equals( "" ) )
+            sendQueue.put( ( Message )message.clone() );
+    }
+
+    /** Relay a message from one opfac to another **/
+    protected void deliver( Message message ) 
+    {
+        Opfac opfac=find( message.getDestination() );
+        if ( opfac!=null )
+            {
+            try 
+                {
+                Thread.sleep( ( int ) ( transmitDelay * Time.SECOND ) );
+            }
+            catch ( Exception e ) {}
+            opfac.deliver( message );
+        }
+    }
+}

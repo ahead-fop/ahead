@@ -1,0 +1,28 @@
+layer MissionWrffeArtyL;
+
+import java.io.*;
+
+import log.Log;
+
+// MissionImpl
+
+public refines State_machine BnFseMission {
+    // Don't relay MFR to FIST.
+
+    Transition_action wrffeArtyEnding1 {
+        if ( false )
+            Proceed( message ); /*do nothing*/
+    }
+
+        /*REFINES EDGE no longer supported.  
+   Move predicate or body into method, and extend method.
+Refines Transition wrffeArtyEnding1 : wrffeArtyEnding -> stop
+            condition (message instanceof MfrMessage)
+            do { } 
+
+        // net effect of above is to override action of Transition to do nothing
+
+        public void wrffeArtyEnding1Action(Message message) { }
+       */
+
+}

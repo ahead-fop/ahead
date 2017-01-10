@@ -1,0 +1,13 @@
+layer FormatJava;
+
+import Jakarta.util.FixDosOutputStream;
+import Jakarta.util.Util;
+import java.util.*;
+import java.io.*;
+
+public refines class AST_ExpStmt {
+    public void format( int position ) {
+        newline_routins( position );
+        super.format( position );
+    }
+}

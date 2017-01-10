@@ -1,0 +1,13 @@
++ '[' -z /usr/bin/bash ']'
++ echo -e '\nJava 1.1 regression test'
+
+Java 1.1 regression test
++ echo '****************************************'
+****************************************
++ java jak2java.Main -s test1.java
++ diff -w output test1.result
++ echo 'Test succeeded'
+Test succeeded
++ echo -e '\nJava 1.1 regression test succeeded.'
+
+Java 1.1 regression test succeeded.

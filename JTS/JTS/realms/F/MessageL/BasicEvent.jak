@@ -1,0 +1,32 @@
+package MessageL;
+
+import  
+    fsats.util.DataContainer;
+import 
+    F.Libraries.laydown.*;
+import 
+    java.util.*;
+
+
+
+    public abstract class BasicEvent
+        implements Event
+    {
+	protected String missionId;
+      	public String getMissionId() { return missionId; }
+
+        public String toString() { return getType()+" "+missionId; }
+
+        protected BasicEvent(String missionId) {
+          BasicEventConstructor(missionId); }
+
+        protected void BasicEventConstructor(String missionId) { this.missionId=missionId;
+      }
+
+        public Object clone() 
+        { 
+            Object o = null;
+            try { o=super.clone(); } catch (Exception e) {}
+            return o;
+        }
+    }

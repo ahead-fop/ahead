@@ -1,0 +1,18 @@
+#!/bin/sh
+# $1 is the given model directory name
+
+echo "Available layer(s) in $1 directory:"
+
+for dir in `ls $1`; 
+do
+  if [ -d $1/$dir ]; then
+    #   if there are .jak files in the directory, run bcjak2java
+    if ls $1/$dir/*.jak 1>/dev/null 2>/dev/null ; then
+       echo -n $dir " "
+       cd $1/$dir
+       bcjak2java *.jak
+       cd ../..
+    fi
+  fi
+done;
+echo "done"
