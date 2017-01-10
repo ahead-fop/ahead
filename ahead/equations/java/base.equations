@@ -9,7 +9,7 @@ ast-bcjak2java = super.ast-bcjak2java
 ast-jak2aj     = super.ast-jak2aj
 
 jak2java   = super.jak2java   dsl/java/j2jBase
-jampack    = super.jampack    base+error dsl/java/preprocess dsl/java/tagging
+jampack    = super.jampack    base+error dsl/java/preprocess dsl/java/Tagging
 mixin      = super.mixin      base+error dsl/java/mixinbase
 mmatrix    = super.mmatrix    dsl/java/Basemm
 unmixin    = super.unmixin    dsl/java/unmixinbase

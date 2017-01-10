@@ -521,24 +521,6 @@ public class JCodePane extends JEditorPane
     altGrEnabled = b;
   } // end fixAltGrBug
 
-  /**
-   * Returns true if the parameter is a char that is generated
-   * via the AltGr key.
-   */
-  /*private final static boolean isAltGrKey(char c) {
-    switch (c) {
-      case '²': case '³':
-	  case '{': case '}':
-	  case '[': case ']':
-	  case '@': case '€':
-	  case '~': case '|':
-      case 'µ': case '\\':
-        return true;
-      default:
-        return false;
-    } // end switch;
-  } // end isAltGrKey*/
-
   protected void processKeyEvent(KeyEvent e) {
     /*int modifiers = e.getModifiers();
 

@@ -3,8 +3,6 @@
 ****************GPL unmixin Regression Test***********
 + rm -f -r GEN
 + cp -f -r CorrectGEN GEN
-++ cat updatedFiles
-cat: updatedFiles: No such file or directory
 + FAILURES=0
 + cd GPL
 + java unmixin.Main Edge.java Graph.java Main.java Neighbor.java NumberWorkSpace.java Vertex.java WorkSpace.java

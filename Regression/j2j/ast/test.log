@@ -2,7 +2,7 @@
 + case "$(command -p uname)" in
 ++ command -p uname
 ++ uname
-+ CP='C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.'
++ CP='C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.'
 + echo -e '\nAST regression test'
 
 AST regression test
@@ -74,15 +74,15 @@ AST regression test
 Generating base case ...
 + cp g0 g0.java
 + javac g0.java
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g0 foo
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g0 foo
 foo/makefile was created
 + mv foo base
 + echo -e '\nTesting g77'
 
 Testing g77
 + java jak2java.Main g77.jakk
-+ javac -classpath 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g77.java
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g77
++ javac -classpath 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g77.java
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g77
 + diff -w junk g77.correct
 + echo 'Test succeeded for'
 Test succeeded for
@@ -101,13 +101,13 @@ Testing g1.jak ...
 + javac g1.java
 + echo -e '\tcreating g0gen.java'
 	creating g0gen.java
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g1
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g1
 + echo -e '\tcompiling g0gen.java'
 	compiling g0gen.java
 + javac g0gen.java
 + echo -e '\trunning g0gen'
 	running g0gen
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g0 foo
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g0 foo
 foo/makefile was created
 + diff -w base/makefile foo/makefile
 + echo 'Test succeeded for' g1.jak
@@ -126,13 +126,13 @@ Testing g2.jak ...
 + javac g2.java
 + echo -e '\tcreating g0gen.java'
 	creating g0gen.java
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g2
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g2
 + echo -e '\tcompiling g0gen.java'
 	compiling g0gen.java
 + javac g0gen.java
 + echo -e '\trunning g0gen'
 	running g0gen
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g0 foo
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g0 foo
 foo/makefile was created
 + diff -w base/makefile foo/makefile
 + echo 'Test succeeded for' g2.jak
@@ -151,13 +151,13 @@ Testing g3.jak ...
 + javac g3.java
 + echo -e '\tcreating g0gen.java'
 	creating g0gen.java
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g3
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g3
 + echo -e '\tcompiling g0gen.java'
 	compiling g0gen.java
 + javac g0gen.java
 + echo -e '\trunning g0gen'
 	running g0gen
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g0 foo
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g0 foo
 foo/makefile was created
 + diff -w base/makefile foo/makefile
 + echo 'Test succeeded for' g3.jak
@@ -176,13 +176,13 @@ Testing g4.jak ...
 + javac g4.java
 + echo -e '\tcreating g0gen.java'
 	creating g0gen.java
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g4
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g4
 + echo -e '\tcompiling g0gen.java'
 	compiling g0gen.java
 + javac g0gen.java
 + echo -e '\trunning g0gen'
 	running g0gen
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g0 foo
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g0 foo
 foo/makefile was created
 + diff -w base/makefile foo/makefile
 + echo 'Test succeeded for' g4.jak
@@ -201,13 +201,13 @@ Testing g5.jak ...
 + javac g5.java
 + echo -e '\tcreating g0gen.java'
 	creating g0gen.java
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g5
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g5
 + echo -e '\tcompiling g0gen.java'
 	compiling g0gen.java
 + javac g0gen.java
 + echo -e '\trunning g0gen'
 	running g0gen
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g0 foo
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g0 foo
 foo/makefile was created
 + diff -w base/makefile foo/makefile
 + echo 'Test succeeded for' g5.jak
@@ -226,13 +226,13 @@ Testing g6.jak ...
 + javac g6.java
 + echo -e '\tcreating g0gen.java'
 	creating g0gen.java
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g6
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g6
 + echo -e '\tcompiling g0gen.java'
 	compiling g0gen.java
 + javac g0gen.java
 + echo -e '\trunning g0gen'
 	running g0gen
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g0 foo
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g0 foo
 foo/makefile was created
 + diff -w base/makefile foo/makefile
 + echo 'Test succeeded for' g6.jak
@@ -251,13 +251,13 @@ Testing g7.jak ...
 + javac g7.java
 + echo -e '\tcreating g0gen.java'
 	creating g0gen.java
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g7
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g7
 + echo -e '\tcompiling g0gen.java'
 	compiling g0gen.java
 + javac g0gen.java
 + echo -e '\trunning g0gen'
 	running g0gen
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g0 foo
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g0 foo
 foo/makefile was created
 + diff -w base/makefile foo/makefile
 + echo 'Test succeeded for' g7.jak
@@ -276,13 +276,13 @@ Testing g8.jak ...
 + javac g8.java
 + echo -e '\tcreating g0gen.java'
 	creating g0gen.java
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g8
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g8
 + echo -e '\tcompiling g0gen.java'
 	compiling g0gen.java
 + javac g0gen.java
 + echo -e '\trunning g0gen'
 	running g0gen
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g0 foo
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g0 foo
 foo/makefile was created
 + diff -w base/makefile foo/makefile
 + echo 'Test succeeded for' g8.jak
@@ -301,13 +301,13 @@ Testing g9.jak ...
 + javac g9.java
 + echo -e '\tcreating g0gen.java'
 	creating g0gen.java
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g9
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g9
 + echo -e '\tcompiling g0gen.java'
 	compiling g0gen.java
 + javac g0gen.java
 + echo -e '\trunning g0gen'
 	running g0gen
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g0 foo
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g0 foo
 foo/makefile was created
 + diff -w base/makefile foo/makefile
 + echo 'Test succeeded for' g9.jak
@@ -326,13 +326,13 @@ Testing g10.jak ...
 + javac g10.java
 + echo -e '\tcreating g0gen.java'
 	creating g0gen.java
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g10
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g10
 + echo -e '\tcompiling g0gen.java'
 	compiling g0gen.java
 + javac g0gen.java
 + echo -e '\trunning g0gen'
 	running g0gen
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g0 foo
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g0 foo
 foo/makefile was created
 + diff -w base/makefile foo/makefile
 + echo 'Test succeeded for' g10.jak
@@ -351,13 +351,13 @@ Testing g11.jak ...
 + javac g11.java
 + echo -e '\tcreating g0gen.java'
 	creating g0gen.java
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g11
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g11
 + echo -e '\tcompiling g0gen.java'
 	compiling g0gen.java
 + javac g0gen.java
 + echo -e '\trunning g0gen'
 	running g0gen
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g0 foo
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g0 foo
 foo/makefile was created
 + diff -w base/makefile foo/makefile
 + echo 'Test succeeded for' g11.jak
@@ -376,13 +376,13 @@ Testing g12.jak ...
 + javac g12.java
 + echo -e '\tcreating g0gen.java'
 	creating g0gen.java
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g12
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g12
 + echo -e '\tcompiling g0gen.java'
 	compiling g0gen.java
 + javac g0gen.java
 + echo -e '\trunning g0gen'
 	running g0gen
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g0 foo
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g0 foo
 foo/makefile was created
 + diff -w base/makefile foo/makefile
 + echo 'Test succeeded for' g12.jak
@@ -401,13 +401,13 @@ Testing g13.jak ...
 + javac g13.java
 + echo -e '\tcreating g0gen.java'
 	creating g0gen.java
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g13
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g13
 + echo -e '\tcompiling g0gen.java'
 	compiling g0gen.java
 + javac g0gen.java
 + echo -e '\trunning g0gen'
 	running g0gen
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g0 foo
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g0 foo
 foo/makefile was created
 + diff -w base/makefile foo/makefile
 + echo 'Test succeeded for' g13.jak
@@ -426,13 +426,13 @@ Testing g14.jak ...
 + javac g14.java
 + echo -e '\tcreating g0gen.java'
 	creating g0gen.java
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g14
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g14
 + echo -e '\tcompiling g0gen.java'
 	compiling g0gen.java
 + javac g0gen.java
 + echo -e '\trunning g0gen'
 	running g0gen
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g0 foo
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g0 foo
 foo/makefile was created
 + diff -w base/makefile foo/makefile
 + echo 'Test succeeded for' g14.jak
@@ -451,13 +451,13 @@ Testing g66.jak ...
 + javac g66.java
 + echo -e '\tcreating g0gen.java'
 	creating g0gen.java
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g66
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g66
 + echo -e '\tcompiling g0gen.java'
 	compiling g0gen.java
 + javac g0gen.java
 + echo -e '\trunning g0gen'
 	running g0gen
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' g0 foo
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' g0 foo
 foo/makefile was created
 + diff -w base/makefile foo/makefile
 + echo 'Test succeeded for' g66.jak

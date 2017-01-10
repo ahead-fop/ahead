@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type"
 content="text/html; charset=iso-8859-1">
-<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="GENERATOR" content="Microsoft FrontPage 12.0">
 <title>AST Constructors</title>
 </head>
 
@@ -73,7 +73,7 @@ example:</font></p>
 <blockquote>
   <pre>Exp x = exp{ 7 + x*8 }exp;
 AST_Stm y = stm{ y = ($exp(x)) * 8; }stm;</pre>
-  <pre>System.out.println(y);        // outputs &quot;y = ( 7 + q*8 ) * 8;&quot;</pre>
+  <pre>System.out.println(y);        // outputs &quot;y = ( 7 + x*8 ) * 8;&quot;</pre>
 </blockquote>
 <p><font face="Arial">That is, the <b>$exp(e)</b> escape substitutes the AST for 
 variable e at the designated spot in the <b>stm{...}stm</b> code constructor. 
@@ -655,7 +655,7 @@ face="Verdana"><strong> </strong></font></p>
 <p><font face="Verdana"><b>Copyright © Software Systems
 Generator Research Group. All rights reserved.</b> <br>
 <b>Revised:&nbsp;<!--webbot bot="TimeStamp" startspan
-s-format="%B %d, %Y" s-type="EDITED" -->September 21, 2004<!--webbot
-bot="TimeStamp" i-CheckSum="37959" endspan -->.</b> </font></p>
+s-format="%B %d, %Y" s-type="EDITED" -->December 10, 2012<!--webbot
+bot="TimeStamp" i-CheckSum="39590" endspan -->.</b> </font></p>
 </body>
 </html>

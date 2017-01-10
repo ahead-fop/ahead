@@ -1,7 +1,9 @@
+layer base2;
+
 import initial.stuff;
 
 class myclass {
-    // a base variable called "baseVariable"
+    // a base variable
     int baseVariable;
 
     // a base method

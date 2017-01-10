@@ -40,7 +40,8 @@
        if (Util.errorCount() == 0) {
             // we had no errors, maybe some warnings
             inputRoot.print(props);
-            System.out.println();
+            pw.println();
+            pw.println()
             pw.flush();
          }
     } //end main()

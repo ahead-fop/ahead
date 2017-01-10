@@ -2,7 +2,7 @@
 + case "$(command -p uname)" in
 ++ command -p uname
 ++ uname
-+ CP='C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.'
++ CP='C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.'
 + echo '****************GPL Regression Test***********'
 ****************GPL Regression Test***********
 + rm -f -r GPL
@@ -11,8 +11,8 @@
 + java jak2java.Main -v something
 + sed -es/Lang.//g demo2.jjava
 + FAILURES=0
-+ javac -classpath 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' demo2.java
-+ java -cp 'C:\java\fop\ahead\build\lib\bali2jak.jar;C:\java\fop\ahead\build\lib\bali2javacc.jar;C:\java\fop\ahead\build\lib\balicomposer.jar;C:\java\fop\ahead\build\lib\bcjak2java.jar;C:\java\fop\ahead\build\lib\jak2java.jar;C:\java\fop\ahead\build\lib\jakarta.jar;C:\java\fop\ahead\build\lib\jampack.jar;C:\java\fop\ahead\build\lib\jrename.jar;C:\java\fop\ahead\build\lib\mixin.jar;C:\java\fop\ahead\build\lib\mmatrix.jar;C:\java\fop\ahead\build\lib\unmixin.jar;C:\java\fop\ahead\build\lib\xak.jar;.' demo2
++ javac -classpath 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' demo2.java
++ java -cp 'C:\java\FOP\ahead\build\lib\bali2jak.jar;C:\java\FOP\ahead\build\lib\bali2javacc.jar;C:\java\FOP\ahead\build\lib\balicomposer.jar;C:\java\FOP\ahead\build\lib\bcjak2java.jar;C:\java\FOP\ahead\build\lib\jak2java.jar;C:\java\FOP\ahead\build\lib\jakarta.jar;C:\java\FOP\ahead\build\lib\jampack.jar;C:\java\FOP\ahead\build\lib\jrename.jar;C:\java\FOP\ahead\build\lib\mixin.jar;C:\java\FOP\ahead\build\lib\mmatrix.jar;C:\java\FOP\ahead\build\lib\unmixin.jar;C:\java\FOP\ahead\build\lib\xak.jar;.' demo2
 + for TEST in Edge Graph Main Neighbor NumberWorkSpace Vertex WorkSpace
 + bash regress-one Edge
 Comparing GPL/Edge.jak gpl-correct/Edge.jak ... succeeded

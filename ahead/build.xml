@@ -316,9 +316,9 @@
 
     <target
         name="composer"
-        depends="use.jar.balicomposer,use.jar.jakarta,use.jar.jampack,use.jar.mixin,use.jar.velocity,use.jar.xak,use.jar.drc,use.jar.mix"
+        depends="use.jar.balicomposer,use.jar.jakarta,use.jar.jampack,use.jar.mixin,use.jar.velocity,use.jar.xak,use.jar.mix"
         description="Builds the hierarchical composition driver.">
-   <!-- removed use.jar.xc from depends -->
+   <!-- removed use.jar.xc use.jar.drc from depends -->
 	<ant dir="${dir.composer}" target="jar" inheritall="false">
 
 	    <property name="build.sysclasspath"	value="${build.sysclasspath}"/>

@@ -18,9 +18,11 @@ public class Tool {
 
     cnfModel model;
 
+    protected Tool() {} // for Rui's extension
+
     public Tool ( String modelFileName ) {
 
-        // Step 1: open the guidsl model file 
+        // Step 1: open the guidsl model file
 
         FileInputStream  inputFile = null;
         try {
@@ -49,35 +51,35 @@ public class Tool {
         try {
            Main.process( inputRoot );
         }
-		  catch( SemanticException e ) {
+          catch( SemanticException e ) {
             int errorCnt = Util.errorCount();
-		      Util.fatalError( errorCnt + " error(s) found");
-		  }
+              Util.fatalError( errorCnt + " error(s) found");
+          }
 
-		  // Step 4: initialize any additional state variables
+          // Step 4: initialize any additional state variables
 
         model = cnfModel.init();
 
     } // end constructor
 
    public boolean modelDebug( SATtest t, boolean saveInFile )  {
-	   boolean result = false;
+       boolean result = false;
 
       SATSolver s = new SATSolver();
-		try {
+        try {
          if ( saveInFile ) {
             solverTest.createOutputFile( model, t );
             result = s.solve( solverTest.input2SATSolver );
          }
          else { // use in-memory file
             solverTest.createOutputBuffer( model, t );
-            result = s.solve( new LineNumberReader( 
-			                     new StringReader( solverTest.cnfFileString ) ) );
+            result = s.solve( new LineNumberReader(
+                                 new StringReader( solverTest.cnfFileString ) ) );
          }
-		}
-		catch (Exception e) {
-		   Util.fatalError( "failed in debugging model " + e.getMessage() );
-		}
-		return result == t.isSat;
+        }
+        catch (Exception e) {
+           Util.fatalError( "failed in debugging model " + e.getMessage() );
+        }
+        return result == t.isSat;
    }
 }
