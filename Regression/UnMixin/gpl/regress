@@ -9,6 +9,7 @@ echo "****************GPL unmixin Regression Test***********"
 
 rm -f -r GEN
 cp -f -r CorrectGEN GEN
+chmod -R a+rw GEN
 
 FAILURES=0
 

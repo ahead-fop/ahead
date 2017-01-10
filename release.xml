@@ -60,7 +60,7 @@
 	 <!-- values were computed           -->
 
 	 <property name="release.jdk"       value="1.7.0_10"/>
-	 <property name="release.cygwin"    value="1.7.9-1"/>
+	 <property name="release.cygwin"    value="1.7.17-1"/>
 	 <property name="release.ant"       value="1.8.4"/>
 	 <property name="release.javacc"    value="5.0"/>
 

@@ -22,9 +22,9 @@ composing Iext0 & Iext1 -> resultI01 ... succeeded
 composing Iext4 & Iext5 -> resultI45 ... succeeded
 + echo -n 'comp1 test ... '
 comp1 test ... + java jampack.Main -t top.java mid.java
-+ tr -s '\n\r' '\n'
 + echo
 + java jampack.Main -t tmp bot.java
++ tr -s '\n\r' '\n'
 + echo
 + cat comp1.result
 + tr -s '\n\r' '\n'

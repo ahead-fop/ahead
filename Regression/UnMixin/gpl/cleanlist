@@ -18,4 +18,5 @@ rmfile(correct)
 rmfile(current)
 rmfile(test.log)
 #
-rmrecursive(GEN)
+rmrecursive(GEN*)
+
